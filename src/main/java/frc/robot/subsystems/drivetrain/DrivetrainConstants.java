@@ -15,26 +15,25 @@ public final class DrivetrainConstants {
     throw new IllegalStateException(CONSTRUCTOR_EXCEPTION);
   }
 
-  // FIXME: update all CAN IDs
   // FIXME: update all steer offsets
-  public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 7;
-  public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 6;
-  public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 8;
+  public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 9;
+  public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 8;
+  public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 10;
   public static final double FRONT_LEFT_MODULE_STEER_OFFSET = 118.0371;
 
-  public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 13;
-  public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 12;
-  public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 14;
+  public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 12;
+  public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 11;
+  public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 7;
   public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = 102.9968;
 
-  public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 10;
-  public static final int BACK_LEFT_MODULE_STEER_MOTOR = 9;
-  public static final int BACK_LEFT_MODULE_STEER_ENCODER = 11;
+  public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 3;
+  public static final int BACK_LEFT_MODULE_STEER_MOTOR = 2;
+  public static final int BACK_LEFT_MODULE_STEER_ENCODER = 4;
   public static final double BACK_LEFT_MODULE_STEER_OFFSET = -189.7051;
 
-  public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 16;
-  public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 15;
-  public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 17;
+  public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 6;
+  public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 5;
+  public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 1;
   public static final double BACK_RIGHT_MODULE_STEER_OFFSET = 40.3335;
 
   public static final int PIGEON_ID = 18;
