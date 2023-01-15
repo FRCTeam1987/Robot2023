@@ -4,8 +4,6 @@
 
 package frc.lib.team3061.gyro;
 
-import static frc.robot.Constants.*;
-
 import com.kauailabs.navx.frc.AHRS;
 
 public class GyroIONavx implements GyroIO {
@@ -17,8 +15,8 @@ public class GyroIONavx implements GyroIO {
 
   @Override
   public void updateInputs(GyroIOInputs inputs) {
-    inputs.connected = gyro.isConnected();
-    inputs.positionDeg = gyro.getRotation2d().getDegrees(); // degrees
-    inputs.velocityDegPerSec = gyro.getRate(); // degrees per second
+    inputs.connected = true;
+    inputs.positionDeg = -gyro.getYaw(); // degrees
+    inputs.velocityDegPerSec = -gyro.getRate(); // degrees per second
   }
 }
