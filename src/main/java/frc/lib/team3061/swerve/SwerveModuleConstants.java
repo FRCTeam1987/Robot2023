@@ -35,13 +35,13 @@ public final class SwerveModuleConstants {
   public static final boolean MK4_L2_CAN_CODER_INVERTED = false;
 
   // FIXME: assign these constants to the appropriate swerve module variant
-  public static final double WHEEL_DIAMETER_METERS = MK4_L2_WHEEL_DIAMETER_METERS;
-  public static final double WHEEL_CIRCUMFERENCE = MK4_L2_WHEEL_CIRCUMFERENCE;
-  public static final double DRIVE_GEAR_RATIO = MK4_L2_DRIVE_GEAR_RATIO;
-  public static final boolean DRIVE_MOTOR_INVERTED = MK4_L2_DRIVE_MOTOR_INVERTED;
-  public static final double ANGLE_GEAR_RATIO = MK4_L2_ANGLE_GEAR_RATIO;
-  public static final boolean ANGLE_MOTOR_INVERTED = MK4_L2_ANGLE_MOTOR_INVERTED;
-  public static final boolean CAN_CODER_INVERTED = MK4_L2_CAN_CODER_INVERTED;
+  public static final double WHEEL_DIAMETER_METERS = MK4I_L2_WHEEL_DIAMETER_METERS;
+  public static final double WHEEL_CIRCUMFERENCE = MK4I_L2_WHEEL_CIRCUMFERENCE;
+  public static final double DRIVE_GEAR_RATIO = MK4I_L2_DRIVE_GEAR_RATIO;
+  public static final boolean DRIVE_MOTOR_INVERTED = MK4I_L2_DRIVE_MOTOR_INVERTED;
+  public static final double ANGLE_GEAR_RATIO = MK4I_L2_ANGLE_GEAR_RATIO;
+  public static final boolean ANGLE_MOTOR_INVERTED = MK4I_L2_ANGLE_MOTOR_INVERTED;
+  public static final boolean CAN_CODER_INVERTED = MK4I_L2_CAN_CODER_INVERTED;
 
   public static final double OPEN_LOOP_RAMP = 0.25;
   public static final double CLOSED_LOOP_RAMP = 0.0;
