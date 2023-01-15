@@ -18,10 +18,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.lib.team3061.gyro.GyroIO;
-import frc.lib.team3061.gyro.GyroIOPigeon2;
+import frc.lib.team3061.gyro.GyroIONavx;
 import frc.lib.team3061.pneumatics.Pneumatics;
 import frc.lib.team3061.pneumatics.PneumaticsIO;
-import frc.lib.team3061.pneumatics.PneumaticsIORev;
 import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIO;
 import frc.lib.team3061.swerve.SwerveModuleIOSim;
@@ -29,7 +28,6 @@ import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
 import frc.lib.team3061.vision.Vision;
 import frc.lib.team3061.vision.VisionConstants;
 import frc.lib.team3061.vision.VisionIO;
-import frc.lib.team3061.vision.VisionIOPhotonVision;
 import frc.lib.team3061.vision.VisionIOSim;
 import frc.robot.Constants.Mode;
 import frc.robot.commands.FeedForwardCharacterization;
@@ -67,9 +65,9 @@ public class RobotContainer {
     // create real, simulated, or replay subsystems based on the mode and robot specified
     if (Constants.getMode() != Mode.REPLAY) {
       switch (Constants.getRobot()) {
-        case ROBOT_2022_PRESEASON:
+        case ROBOT_2023_TEST:
           {
-            GyroIO gyro = new GyroIOPigeon2(PIGEON_ID);
+            GyroIO gyro = new GyroIONavx();
 
             SwerveModule flModule =
                 new SwerveModule(
@@ -116,8 +114,8 @@ public class RobotContainer {
                     MAX_VELOCITY_METERS_PER_SECOND);
 
             drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
-            new Pneumatics(new PneumaticsIORev());
-            new Vision(new VisionIOPhotonVision(CAMERA_NAME));
+            // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
+            // new Vision(new VisionIOPhotonVision(CAMERA_NAME)); // Should have PhotonVision on PI
             break;
           }
         case ROBOT_SIMBOT:

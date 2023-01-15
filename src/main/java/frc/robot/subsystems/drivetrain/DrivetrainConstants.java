@@ -2,6 +2,7 @@ package frc.robot.subsystems.drivetrain;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.team3061.swerve.SwerveModuleConstants;
 import java.util.HashMap;
@@ -45,17 +46,18 @@ public final class DrivetrainConstants {
    *
    * <p>Should be measured from center to center.
    */
-  public static final double TRACKWIDTH_METERS = 0.5715; // 22.5 inches
+  public static final double TRACKWIDTH_METERS = Units.inchesToMeters(23.75); // 22.5 inches
 
   /**
    * The front-to-back distance between the drivetrain wheels.
    *
    * <p>Should be measured from center to center.
    */
-  public static final double WHEELBASE_METERS = 0.5969; // 23.5 inches
+  public static final double WHEELBASE_METERS = TRACKWIDTH_METERS; // 23.5 inches
 
-  public static final double ROBOT_WIDTH_WITH_BUMPERS = 0.89; // meters
-  public static final double ROBOT_LENGTH_WITH_BUMPERS = 0.91; // meters
+  public static final double ROBOT_WIDTH_WITH_BUMPERS =
+      Units.inchesToMeters(29 + (0.75 + 2.5) * 2); // meters
+  public static final double ROBOT_LENGTH_WITH_BUMPERS = ROBOT_WIDTH_WITH_BUMPERS; // meters
 
   /* The geometry and coordinate systems can be confusing. Refer to this document
   for a detailed explanation: https://docs.google.com/document/d/17dg5cIfqVOlQTTbo2ust4QxTZlUoPNzuBu2oe58Ov84/edit#heading=h.x4ppzp81ed1

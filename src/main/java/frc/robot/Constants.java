@@ -43,7 +43,7 @@ public final class Constants {
     if (RobotBase.isReal()) {
       if (ROBOT == RobotType.ROBOT_SIMBOT) { // Invalid robot selected
         invalidRobotAlert.set(true);
-        return RobotType.ROBOT_2022_PRESEASON;
+        return RobotType.ROBOT_2023_TEST;
       } else {
         return ROBOT;
       }
@@ -55,6 +55,9 @@ public final class Constants {
   // FIXME: update for various robots
   public static Mode getMode() {
     switch (getRobot()) {
+      case ROBOT_2023_TEST:
+        return RobotBase.isReal() ? Mode.REAL : Mode.REPLAY;
+
       case ROBOT_2022_PRESEASON:
         return RobotBase.isReal() ? Mode.REAL : Mode.REPLAY;
 
@@ -68,6 +71,7 @@ public final class Constants {
 
   // FIXME: update for various robots
   public enum RobotType {
+    ROBOT_2023_TEST,
     ROBOT_2022_PRESEASON,
     ROBOT_SIMBOT
   }
