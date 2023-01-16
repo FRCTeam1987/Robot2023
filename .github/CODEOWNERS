@@ -1,0 +1,8 @@
+# Lines starting with '#' are comments.
+# Each line is a file pattern followed by one or more owners.
+# Reference: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# These owners will be the default owners for everything in the repo.
+* @j0n5m1th @kenschenke
+
+# Order is important. The last matching pattern has the most precedence.
