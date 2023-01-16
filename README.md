@@ -1,4 +1,4 @@
-# Robot 2023
+# Robot 2023 ![Build Status](https://github.com/FRCTeam1987/Robot2023/actions/workflows/main.yml/badge.svg)
 
 Uses [3061-lib (cc46ad0)](https://github.com/HuskieRobotics/3061-lib/tree/cc46ad0)
 
