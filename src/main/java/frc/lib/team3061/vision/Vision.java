@@ -1,5 +1,7 @@
 package frc.lib.team3061.vision;
 
+import static frc.lib.team3061.vision.VisionConstants.*;
+
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
@@ -30,9 +32,9 @@ public class Vision extends SubsystemBase {
   private SwerveDrivePoseEstimator poseEstimator;
 
   private Alert noAprilTagLayoutAlert =
-      new Alert(
-          "No AprilTag layout file found. Update APRILTAG_FIELD_LAYOUT_PATH in VisionConstants.java",
-          AlertType.WARNING);
+          new Alert(
+                  "No AprilTag layout file found. Update APRILTAG_FIELD_LAYOUT_PATH in VisionConstants.java",
+                  AlertType.WARNING);
 
   public Vision(VisionIO visionIO) {
     this.visionIO = visionIO;
@@ -84,11 +86,19 @@ public class Vision extends SubsystemBase {
             Pose3d tagPose = tagPoseOptional.get();
             Pose3d cameraPose = tagPose.transformBy(cameraToTarget.inverse());
             Pose3d robotPose = cameraPose.transformBy(VisionConstants.ROBOT_TO_CAMERA.inverse());
-            poseEstimator.addVisionMeasurement(robotPose.toPose2d(), getLatestTimestamp());
 
-            Logger.getInstance().recordOutput("Vision/TagPose", tagPose);
-            Logger.getInstance().recordOutput("Vision/CameraPose", cameraPose);
-            Logger.getInstance().recordOutput("Vision/RobotPose", robotPose.toPose2d());
+            if (poseEstimator
+                    .getEstimatedPosition()
+                    .minus(robotPose.toPose2d())
+                    .getTranslation()
+                    .getNorm()
+                    < MAX_POSE_DIFFERENCE_METERS) {
+              poseEstimator.addVisionMeasurement(robotPose.toPose2d(), getLatestTimestamp());
+
+              Logger.getInstance().recordOutput("Vision/TagPose", tagPose);
+              Logger.getInstance().recordOutput("Vision/CameraPose", cameraPose);
+              Logger.getInstance().recordOutput("Vision/RobotPose", robotPose.toPose2d());
+            }
           }
         }
       }
@@ -141,8 +151,8 @@ public class Vision extends SubsystemBase {
 
   public boolean isValidTarget(PhotonTrackedTarget target) {
     return target.getFiducialId() != -1
-        && target.getPoseAmbiguity() != -1
-        && target.getPoseAmbiguity() < VisionConstants.MAXIMUM_AMBIGUITY
-        && layout.getTagPose(target.getFiducialId()).isPresent();
+            && target.getPoseAmbiguity() != -1
+            && target.getPoseAmbiguity() < VisionConstants.MAXIMUM_AMBIGUITY
+            && layout.getTagPose(target.getFiducialId()).isPresent();
   }
 }
