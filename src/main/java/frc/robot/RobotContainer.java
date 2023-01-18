@@ -25,10 +25,7 @@ import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIO;
 import frc.lib.team3061.swerve.SwerveModuleIOSim;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
-import frc.lib.team3061.vision.Vision;
-import frc.lib.team3061.vision.VisionConstants;
-import frc.lib.team3061.vision.VisionIO;
-import frc.lib.team3061.vision.VisionIOSim;
+import frc.lib.team3061.vision.*;
 import frc.robot.Constants.Mode;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
@@ -115,7 +112,7 @@ public class RobotContainer {
 
             drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
             // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
-            // new Vision(new VisionIOPhotonVision(CAMERA_NAME)); // Should have PhotonVision on PI
+            new Vision(new VisionIOLimelight("limelight-front", "limelight-back", "limelight-left")); // Should have PhotonVision on PI
             break;
           }
         case ROBOT_SIMBOT:
