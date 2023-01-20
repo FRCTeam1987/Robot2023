@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.lib.team6328.util.Alert;
 import frc.lib.team6328.util.Alert.AlertType;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -162,6 +163,10 @@ public class Robot extends LoggedRobot {
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
+    if (robotContainer.getDrivetrain().wasAutoCompletedSuccessfully())  {
+      CommandScheduler.getInstance().schedule(new WaitCommand(2));
+    }
+    
   }
 
   /** This method is invoked at the start of the test period. */

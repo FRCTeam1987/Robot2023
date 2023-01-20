@@ -98,6 +98,8 @@ public class Drivetrain extends SubsystemBase {
   private DriveMode driveMode = DriveMode.NORMAL;
   private double characterizationVoltage = 0.0;
 
+  private boolean autoCompletedSuccessfully = false;
+
   /** Constructs a new DrivetrainSubsystem object. */
   public Drivetrain(
           GyroIO gyroIO,
@@ -574,5 +576,13 @@ public class Drivetrain extends SubsystemBase {
     NORMAL,
     X,
     CHARACTERIZATION
+  }
+
+  public boolean wasAutoCompletedSuccessfully() {
+    return autoCompletedSuccessfully;
+  }
+
+  public void setAutoCompletedSuccessfully(boolean value) {
+    autoCompletedSuccessfully = value;
   }
 }
