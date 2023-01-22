@@ -39,8 +39,8 @@ public class BatteryTracker {
      */
     public static String scanBattery(double timeout) {
         System.out.println("[BatteryTracker] Scanning...");
-//        if (Constants.getMode() == Mode.REAL) {
-//            if (supportedRobots.contains(Constants.getRobot())) {
+        if (Constants.getMode() == Mode.REAL) {
+            if (supportedRobots.contains(Constants.getRobot())) {
                 // Only scan on supported robots and in real mode
                 try (SerialPort port = new SerialPort(9600, SerialPort.Port.kUSB)) {
                     port.setTimeout(timeout);
@@ -88,8 +88,9 @@ public class BatteryTracker {
                             "[BatteryTracker] Exception while trying to scan battery");
                     e.printStackTrace();
                 }
-//            }
-//        }
+            }
+        }
+
         SmartDashboard.putString("Battery", name);
         return name;
     }

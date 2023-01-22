@@ -33,13 +33,8 @@ public class Robot extends LoggedRobot {
 
   private Command autonomousCommand;
   private RobotContainer robotContainer;
-
-  private static final String batteryNameFile = "/home/lvuser/battery-name.txt";
   private final Alert logReceiverQueueAlert =
       new Alert("Logging queue exceeded capacity, data will NOT be logged.", AlertType.ERROR);
-  private final Alert sameBatteryAlert =
-          new Alert("The battery has not been changed since the last match.",
-                  AlertType.WARNING);
   /** Create a new Robot. */
   public Robot() {
     super(Constants.LOOP_PERIOD_SECS);
@@ -122,32 +117,6 @@ public class Robot extends LoggedRobot {
 
     // Invoke the factory method to create the RobotContainer singleton.
     robotContainer = RobotContainer.getInstance();
-
-    if (Constants.getMode() == Constants.Mode.REAL
-            && !BatteryTracker.getName().equals(BatteryTracker.defaultName)) {
-      File file = new File(batteryNameFile);
-      if (file.exists()) {
-        // Read previous battery name
-        String previousBatteryName = "";
-        try {
-          previousBatteryName =
-                  Files.readString(Paths.get(batteryNameFile));
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
-
-
-        if (previousBatteryName.equals(BatteryTracker.getName())) {
-          // Same battery, set alert
-          sameBatteryAlert.set(true);
-          //robotContainer.setSameBatteryAlert(true);
-        } else {
-          // New battery, delete file
-          file.delete();
-        }
-      }
-    }
-
 
   }
 
