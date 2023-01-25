@@ -27,7 +27,7 @@ public class VisionIOLimelight implements VisionIO {
         return Collections.max(limelights, this::compareMaxInt);
     }
     public Pose3d getBestBotPose() {
-        return Collections.max(limelights, this::compareMaxInt).getBotPose();
+        return getIdealLimelight().getBotPose();
     }
     //This is for debugging. Remove for production.
     public String getBestBotPoseStr() {
