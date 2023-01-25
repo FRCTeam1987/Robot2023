@@ -29,6 +29,8 @@ import frc.lib.team3061.gyro.GyroIOInputsAutoLogged;
 import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.util.RobotOdometry;
 import frc.lib.team6328.util.TunableNumber;
+import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -65,6 +67,10 @@ public class Drivetrain extends SubsystemBase {
   // some of this code is from the SDS example code
 
   private Translation2d centerGravity;
+
+  private SwerveDriveKinematics KINEMATICS;
+  private double TRACKWIDTH_METERS;
+  private double WHEELBASE_METERS;
 
   private final SwerveModulePosition[] swerveModulePositions =
           new SwerveModulePosition[] {
@@ -104,7 +110,10 @@ public class Drivetrain extends SubsystemBase {
           SwerveModule flModule,
           SwerveModule frModule,
           SwerveModule blModule,
-          SwerveModule brModule) {
+          SwerveModule brModule,
+          SwerveDriveKinematics sdk,
+          double trackwidthMeters,
+          double wheelbaseMeters) {
     this.gyroIO = gyroIO;
     this.swerveModules[0] = flModule;
     this.swerveModules[1] = frModule;
@@ -124,6 +133,10 @@ public class Drivetrain extends SubsystemBase {
     this.chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
     this.poseEstimator = RobotOdometry.getInstance().getPoseEstimator();
+
+    this.KINEMATICS = sdk;
+    this.WHEELBASE_METERS = wheelbaseMeters;
+    this.TRACKWIDTH_METERS = trackwidthMeters;
 
     ShuffleboardTab tabMain = Shuffleboard.getTab("MAIN");
     tabMain.addNumber("Gyroscope Angle", () -> getRotation().getDegrees());
@@ -249,9 +262,9 @@ public class Drivetrain extends SubsystemBase {
    * <p>If the drive mode is CHARACTERIZATION, the robot will ignore the specified velocities and
    * run the characterization routine.
    *
-   * @param translationXSupplier the desired velocity in the x direction (m/s)
-   * @param translationYSupplier the desired velocity in the y direction (m/s)
-   * @param rotationSupplier the desired rotational velcoity (rad/s)
+   * @param xVelocity the desired velocity in the x direction (m/s)
+   * @param yVelocity the desired velocity in the y direction (m/s)
+   * @param rotationalVelocity the desired rotational velcoity (rad/s)
    */
   public void drive(double xVelocity, double yVelocity, double rotationalVelocity) {
 
@@ -274,7 +287,7 @@ public class Drivetrain extends SubsystemBase {
                 .recordOutput("Drivetrain/chassisSpeedVo", chassisSpeeds.omegaRadiansPerSecond);
 
         SwerveModuleState[] swerveModuleStates =
-                KINEMATICS.toSwerveModuleStates(chassisSpeeds, centerGravity);
+        KINEMATICS.toSwerveModuleStates(chassisSpeeds, centerGravity);
         SwerveDriveKinematics.desaturateWheelSpeeds(
                 swerveModuleStates, MAX_VELOCITY_METERS_PER_SECOND);
 

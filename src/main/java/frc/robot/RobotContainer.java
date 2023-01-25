@@ -116,7 +116,7 @@ public class RobotContainer {
                           3,
                           MAX_VELOCITY_METERS_PER_SECOND);
 
-          drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
+          drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule, KINEMATICS_COMP, TRACKWIDTH_METERS_COMP, WHEELBASE_METERS_COMP);
           // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
           // new Vision(new VisionIOPhotonVision(CAMERA_NAME)); // Should have PhotonVision on PI
           break;
@@ -129,10 +129,10 @@ public class RobotContainer {
                 new SwerveModule(
                     new SwerveModuleIOTalonFX(
                         0,
-                        FRONT_LEFT_MODULE_DRIVE_MOTOR,
-                        FRONT_LEFT_MODULE_STEER_MOTOR,
-                        FRONT_LEFT_MODULE_STEER_ENCODER,
-                        FRONT_LEFT_MODULE_STEER_OFFSET),
+                        FRONT_LEFT_MODULE_DRIVE_MOTOR_TEST,
+                        FRONT_LEFT_MODULE_STEER_MOTOR_TEST,
+                        FRONT_LEFT_MODULE_STEER_ENCODER_TEST,
+                        FRONT_LEFT_MODULE_STEER_OFFSET_TEST),
                     0,
                     MAX_VELOCITY_METERS_PER_SECOND);
 
@@ -140,10 +140,10 @@ public class RobotContainer {
                 new SwerveModule(
                     new SwerveModuleIOTalonFX(
                         1,
-                        FRONT_RIGHT_MODULE_DRIVE_MOTOR,
-                        FRONT_RIGHT_MODULE_STEER_MOTOR,
-                        FRONT_RIGHT_MODULE_STEER_ENCODER,
-                        FRONT_RIGHT_MODULE_STEER_OFFSET),
+                        FRONT_RIGHT_MODULE_DRIVE_MOTOR_TEST,
+                        FRONT_RIGHT_MODULE_STEER_MOTOR_TEST,
+                        FRONT_RIGHT_MODULE_STEER_ENCODER_TEST,
+                        FRONT_RIGHT_MODULE_STEER_OFFSET_TEST),
                     1,
                     MAX_VELOCITY_METERS_PER_SECOND);
 
@@ -151,10 +151,10 @@ public class RobotContainer {
                 new SwerveModule(
                     new SwerveModuleIOTalonFX(
                         2,
-                        BACK_LEFT_MODULE_DRIVE_MOTOR,
-                        BACK_LEFT_MODULE_STEER_MOTOR,
-                        BACK_LEFT_MODULE_STEER_ENCODER,
-                        BACK_LEFT_MODULE_STEER_OFFSET),
+                        BACK_LEFT_MODULE_DRIVE_MOTOR_TEST,
+                        BACK_LEFT_MODULE_STEER_MOTOR_TEST,
+                        BACK_LEFT_MODULE_STEER_ENCODER_TEST,
+                        BACK_LEFT_MODULE_STEER_OFFSET_TEST),
                     2,
                     MAX_VELOCITY_METERS_PER_SECOND);
 
@@ -162,14 +162,14 @@ public class RobotContainer {
                 new SwerveModule(
                     new SwerveModuleIOTalonFX(
                         3,
-                        BACK_RIGHT_MODULE_DRIVE_MOTOR,
-                        BACK_RIGHT_MODULE_STEER_MOTOR,
-                        BACK_RIGHT_MODULE_STEER_ENCODER,
-                        BACK_RIGHT_MODULE_STEER_OFFSET),
+                        BACK_RIGHT_MODULE_DRIVE_MOTOR_TEST,
+                        BACK_RIGHT_MODULE_STEER_MOTOR_TEST,
+                        BACK_RIGHT_MODULE_STEER_ENCODER_TEST,
+                        BACK_RIGHT_MODULE_STEER_OFFSET_TEST),
                     3,
                     MAX_VELOCITY_METERS_PER_SECOND);
 
-            drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
+            drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule, KINEMATICS_TEST, TRACKWIDTH_METERS_TEST, WHEELBASE_METERS_TEST);
             // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
             // new Vision(new VisionIOPhotonVision(CAMERA_NAME)); // Should have PhotonVision on PI
             break;
@@ -187,7 +187,7 @@ public class RobotContainer {
 
             SwerveModule brModule =
                 new SwerveModule(new SwerveModuleIOSim(), 3, MAX_VELOCITY_METERS_PER_SECOND);
-            drivetrain = new Drivetrain(new GyroIO() {}, flModule, frModule, blModule, brModule);
+            drivetrain = new Drivetrain(new GyroIO() {}, flModule, frModule, blModule, brModule, KINEMATICS_COMP, TRACKWIDTH_METERS_COMP, WHEELBASE_METERS_COMP);
             new Pneumatics(new PneumaticsIO() {});
             AprilTagFieldLayout layout;
             try {
@@ -215,7 +215,7 @@ public class RobotContainer {
 
       SwerveModule brModule =
           new SwerveModule(new SwerveModuleIO() {}, 3, MAX_VELOCITY_METERS_PER_SECOND);
-      drivetrain = new Drivetrain(new GyroIO() {}, flModule, frModule, blModule, brModule);
+      drivetrain = new Drivetrain(new GyroIO() {}, flModule, frModule, blModule, brModule, KINEMATICS_COMP, TRACKWIDTH_METERS_COMP, WHEELBASE_METERS_COMP);
       new Pneumatics(new PneumaticsIO() {});
       new Vision(new VisionIO() {});
     }

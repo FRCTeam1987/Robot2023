@@ -38,7 +38,7 @@ public class FollowPath extends PPSwerveControllerCommand {
     super(
         trajectory,
         subsystem::getPose,
-        KINEMATICS,
+        KINEMATICS_CURRENT,
         subsystem.getAutoXController(),
         subsystem.getAutoYController(),
         subsystem.getAutoThetaController(),

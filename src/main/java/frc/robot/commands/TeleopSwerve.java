@@ -60,7 +60,7 @@ public class TeleopSwerve extends CommandBase {
     double xVelocity = xPercentage * DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND;
     double yVelocity = yPercentage * DrivetrainConstants.MAX_VELOCITY_METERS_PER_SECOND;
     double rotationalVelocity =
-        rotationPercentage * DrivetrainConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+        rotationPercentage * DrivetrainConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND_CURRENT;
 
     Logger.getInstance().recordOutput("ActiveCommands/TeleopSwerve", true);
     Logger.getInstance().recordOutput("TeleopSwerve/xVelocity", xVelocity);

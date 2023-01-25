@@ -3,15 +3,19 @@ package frc.lib.team3061.util;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.DrivetrainConstants;
+
+import static frc.robot.subsystems.drivetrain.DrivetrainConstants.*;
 
 /**
  * Singleton class for SwerveDrivePoseEstimator that allows it to be shared by subsystems
  * (drivetrain and vision)
  */
 public class RobotOdometry {
-  private static final RobotOdometry robotOdometry = new RobotOdometry();
+  private static final RobotOdometry robotOdometry = new RobotOdometry(KINEMATICS_CURRENT);
   private SwerveDrivePoseEstimator estimator;
   private SwerveModulePosition[] defaultPositions =
       new SwerveModulePosition[] {
@@ -21,10 +25,10 @@ public class RobotOdometry {
         new SwerveModulePosition()
       };
 
-  private RobotOdometry() {
+  private RobotOdometry(SwerveDriveKinematics sdk) {
     estimator =
         new SwerveDrivePoseEstimator(
-            DrivetrainConstants.KINEMATICS, new Rotation2d(), defaultPositions, new Pose2d());
+            sdk, new Rotation2d(), defaultPositions, new Pose2d());
   }
 
   public static RobotOdometry getInstance() {
