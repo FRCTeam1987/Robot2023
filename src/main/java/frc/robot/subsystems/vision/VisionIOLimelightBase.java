@@ -1,4 +1,4 @@
-package frc.lib.team3061.vision;
+package frc.robot.subsystems.vision;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,11 +28,11 @@ public class VisionIOLimelightBase {
                 case "limelight-fr":
                     limelightNameFormatted = "frontRight";
                     break;
-                case "limelight-rl":
-                    limelightNameFormatted = "rearLeft";
+                case "limelight-bl":
+                    limelightNameFormatted = "backLeft";
                     break;
-                case "limelight-rr":
-                    limelightNameFormatted = "rearRight";
+                case "limelight-br":
+                    limelightNameFormatted = "backRight";
                     break;
             }
             String limelightNameShort = limelightName.replace("limelight-", "");

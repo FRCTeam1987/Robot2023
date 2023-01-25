@@ -1,13 +1,13 @@
-package frc.lib.team3061.vision;
+package frc.robot.subsystems.vision;
 
-import static frc.lib.team3061.vision.VisionConstants.*;
+import static frc.robot.subsystems.vision.VisionConstants.*;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.team3061.util.RobotOdometry;
-import frc.lib.team3061.vision.VisionIO.VisionIOInputs;
+import frc.robot.subsystems.vision.VisionIO.VisionIOInputs;
 
 import org.littletonrobotics.junction.Logger;
 
