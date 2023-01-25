@@ -13,6 +13,7 @@ import com.pathplanner.lib.commands.FollowPathWithEvents;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -37,6 +38,8 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import frc.robot.util.BatteryTracker;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -168,6 +171,7 @@ public class RobotContainer {
     updateOI();
 
     configureAutoCommands();
+    configureSmartDashboard();
   }
 
   /**
@@ -207,6 +211,9 @@ public class RobotContainer {
     return robotContainer;
   }
 
+  private void configureSmartDashboard() {
+      SmartDashboard.putData("Scan Battery", new InstantCommand(() -> BatteryTracker.scanBattery(10.0)));
+  }
   /** Use this method to define your button->command mappings. */
   private void configureButtonBindings() {
     // field-relative toggle

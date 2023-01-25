@@ -4,10 +4,13 @@
 
 package frc.robot;
 
+import edu.wpi.first.hal.SerialPortJNI;
+import edu.wpi.first.hal.util.UncleanStatusException;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.lib.team6328.util.Alert;
 import frc.lib.team6328.util.Alert.AlertType;
+import frc.robot.util.BatteryTracker;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -15,6 +18,12 @@ import org.littletonrobotics.junction.inputs.LoggedPowerDistribution;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * This class models the entire Robot. It extends from LoggedRobot instead of TimedRobot as required
@@ -24,10 +33,8 @@ public class Robot extends LoggedRobot {
 
   private Command autonomousCommand;
   private RobotContainer robotContainer;
-
   private final Alert logReceiverQueueAlert =
       new Alert("Logging queue exceeded capacity, data will NOT be logged.", AlertType.ERROR);
-
   /** Create a new Robot. */
   public Robot() {
     super(Constants.LOOP_PERIOD_SECS);
@@ -47,6 +54,7 @@ public class Robot extends LoggedRobot {
 
     // Set a metadata value
     logger.recordMetadata("RuntimeType", getRuntimeType().toString());
+    logger.recordMetadata("BatteryName", BatteryTracker.scanBattery(1.0));
     logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
     logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
     logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
@@ -63,7 +71,6 @@ public class Robot extends LoggedRobot {
         logger.recordMetadata(GIT_DIRTY, "Unknown");
         break;
     }
-
     switch (Constants.getMode()) {
       case REAL:
         logger.addDataReceiver(new WPILOGWriter("/media/sda1"));
@@ -99,17 +106,18 @@ public class Robot extends LoggedRobot {
 
     // Alternative logging of scheduled commands
     CommandScheduler.getInstance()
-        .onCommandInitialize(
-            command -> Logger.getInstance().recordOutput("Command initialized", command.getName()));
+            .onCommandInitialize(
+                    command -> Logger.getInstance().recordOutput("Command initialized", command.getName()));
     CommandScheduler.getInstance()
-        .onCommandInterrupt(
-            command -> Logger.getInstance().recordOutput("Command interrupted", command.getName()));
+            .onCommandInterrupt(
+                    command -> Logger.getInstance().recordOutput("Command interrupted", command.getName()));
     CommandScheduler.getInstance()
-        .onCommandFinish(
-            command -> Logger.getInstance().recordOutput("Command finished", command.getName()));
+            .onCommandFinish(
+                    command -> Logger.getInstance().recordOutput("Command finished", command.getName()));
 
     // Invoke the factory method to create the RobotContainer singleton.
     robotContainer = RobotContainer.getInstance();
+
   }
 
   /**
