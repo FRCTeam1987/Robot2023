@@ -23,16 +23,16 @@ public class VisionIOLimelightBase {
             this.limelightName = limelightName;
             switch(limelightName) {
                 case "limelight-fl":
-                     limelightNameFormatted = "limelightFrontLeft";
+                     limelightNameFormatted = "frontLeft";
                      break;
                 case "limelight-fr":
-                    limelightNameFormatted = "limelightFrontRight";
+                    limelightNameFormatted = "frontRight";
                     break;
                 case "limelight-rl":
-                    limelightNameFormatted = "limelightRearLeft";
+                    limelightNameFormatted = "rearLeft";
                     break;
                 case "limelight-rr":
-                    limelightNameFormatted = "limelightRearRight";
+                    limelightNameFormatted = "rearRight";
                     break;
             }
             String limelightNameShort = limelightName.replace("limelight-", "");
@@ -45,19 +45,21 @@ public class VisionIOLimelightBase {
             LIMELIGHT_TAB.addBoolean(limelightNameShort + " Target Visible", this::canSeeTarget).withPosition(column++, VisionIOLimelight.row);
             LIMELIGHT_TAB.addNumber(limelightNameShort + " Targets Seen", this::getSeenTags).withPosition(column++, VisionIOLimelight.row);
             LIMELIGHT_TAB.addString(limelightNameShort + " pose", this::getBotPoseStr).withPosition(column++, VisionIOLimelight.row);
-            InstantCommand ledsOnCommand = new InstantCommand(this::turnOnLEDs);
-            ledsOnCommand.runsWhenDisabled();
-            LIMELIGHT_TAB.add(limelightNameShort + " LEDs ON", ledsOnCommand).withPosition(column++, VisionIOLimelight.row);
-            InstantCommand ledsOffCommand = new InstantCommand(this::turnOffLEDs);
-            ledsOffCommand.runsWhenDisabled();
-            LIMELIGHT_TAB.add(limelightNameShort + " LEDs OFF", ledsOffCommand).withPosition(column++, VisionIOLimelight.row);
+            LIMELIGHT_TAB.add(
+                limelightNameShort + " LEDs ON",
+                new InstantCommand(this::turnOnLEDs).ignoringDisable(true)
+            ).withPosition(column++, VisionIOLimelight.row);
+            LIMELIGHT_TAB.add(
+                limelightNameShort + " LEDs OFF",
+                new InstantCommand(this::turnOffLEDs).ignoringDisable(true)
+            ).withPosition(column++, VisionIOLimelight.row);
             VisionIOLimelight.row++;
     }
     public double getYAxis() {
         return inst.getTable(limelightName).getEntry("ty").getDouble(0);
     }
     public JsonNode getJsonNode() {
-        try { return new ObjectMapper().readTree(getRawJson()); } catch (Exception ignored) { }
+        try { return new ObjectMapper().readTree(getRawJson()); } catch (Exception ignored) { /*This exception is to catch null JSONs, which happens a fair amount. Maybe something to ask Limelight devs. */ }
         return null;
     }
     public String getRawJson() {
@@ -67,7 +69,8 @@ public class VisionIOLimelightBase {
         try {
             double[] pose = inst.getTable(limelightName).getEntry("botpose").getDoubleArray(new double[]{0,0,0,0,0,0});
             return new Pose3d(new Translation3d(pose[0], pose[1], pose[2]), new Rotation3d(pose[3], pose[4], pose[5]));
-        } catch (Exception e) {
+        } catch (Exception ignored) {
+            //This throws an exception when the bot doesn't have a pose. Just ignore it and move on, accepting that we currently don't have a pose.
             return null;
         }
     }

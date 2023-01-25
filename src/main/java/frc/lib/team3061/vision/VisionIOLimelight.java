@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class VisionIOLimelight implements VisionIO {
@@ -23,21 +24,19 @@ public class VisionIOLimelight implements VisionIO {
         }
         LIMELIGHT_TAB.addString("Best Bot Pose: ", this::getBestBotPoseStr);
     }
-    public VisionIOLimelightBase getIdealLimelight() {
-        return Collections.max(limelights, this::compareMaxInt);
+    public VisionIOLimelightBase getBestLimelight() {
+        return limelights.stream().max(Comparator.comparing(VisionIOLimelightBase::getSeenTags)).get();
     }
     public Pose3d getBestBotPose() {
-        return getIdealLimelight().getBotPose();
+        return getBestLimelight().getBotPose();
     }
-    //This is for debugging. Remove for production.
     public String getBestBotPoseStr() {
-        return getBestBotPose().toString();
+        try {
+            return getBestBotPose().toString();
+        } catch (Exception ignored) {
+            return "No best bot pose";
+        }
     }
-
-    private int compareMaxInt(VisionIOLimelightBase a, VisionIOLimelightBase b) {
-        return a.getSeenTags() - a.getSeenTags();
-    }
-
 
     @Override
     public synchronized void updateInputs(VisionIO.VisionIOInputs inputs) {

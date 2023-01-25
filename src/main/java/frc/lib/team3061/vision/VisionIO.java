@@ -5,42 +5,42 @@ import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public interface VisionIO {
   public static class VisionIOInputs implements LoggableInputs {
-    public static String limelightFrontLeftJson = "", limelightFrontRightJson = "", limelightRearLeftJson = "", limelightRearRightJson = "";
-    public static long limelightFrontLeftVisibleTags = 0L, limelightFrontRightVisibleTags = 0L, limelightRearLeftVisibleTags = 0L, limelightRearRightVisibleTags = 0L;
-    public static long limelightFrontLeftFrameMillis = 0L, limelightFrontRightFrameMillis = 0L, limelightRearLeftFrameMillis = 0L, limelightRearRightFrameMillis = 0L;
+    public static String frontLeftJson = "", frontRightJson = "", rearLeftJson = "", rearRightJson = "";
+    public static long frontLeftVisibleTags = 0L, frontRightVisibleTags = 0L, rearLeftVisibleTags = 0L, rearRightVisibleTags = 0L;
+    public static long frontLeftFrameMillis = 0L, frontRightFrameMillis = 0L, rearLeftFrameMillis = 0L, rearRightFrameMillis = 0L;
 
     public void toLog(LogTable table) {
-      table.put("limelightFrontLeftJson", limelightFrontLeftJson);
-      table.put("limelightFrontRightJson", limelightFrontRightJson);
-      table.put("limelightRearLeftJson", limelightRearLeftJson);
-      table.put("limelightRearRightJson", limelightRearRightJson);
+      table.put("frontLeftJson", frontLeftJson);
+      table.put("frontRightJson", frontRightJson);
+      table.put("rearLeftJson", rearLeftJson);
+      table.put("rearRightJson", rearRightJson);
 
-      table.put("limelightFrontLeftVisibleTags", limelightFrontLeftVisibleTags);
-      table.put("limelightFrontRightVisibleTags", limelightFrontRightVisibleTags);
-      table.put("limelightRearLeftVisibleTags", limelightRearLeftVisibleTags);
-      table.put("limelightRearRightVisibleTags", limelightRearRightVisibleTags);
+      table.put("frontLeftVisibleTags", frontLeftVisibleTags);
+      table.put("frontRightVisibleTags", frontRightVisibleTags);
+      table.put("rearLeftVisibleTags", rearLeftVisibleTags);
+      table.put("rearRightVisibleTags", rearRightVisibleTags);
 
-      table.put("limelightFrontLeftFrameMillis", limelightFrontLeftFrameMillis);
-      table.put("limelightFrontRightFrameMillis", limelightFrontRightFrameMillis);
-      table.put("limelightRearLeftFrameMillis", limelightRearLeftFrameMillis);
-      table.put("limelightRearRightFrameMillis", limelightRearRightFrameMillis);
+      table.put("frontLeftFrameMillis", frontLeftFrameMillis);
+      table.put("frontRightFrameMillis", frontRightFrameMillis);
+      table.put("rearLeftFrameMillis", rearLeftFrameMillis);
+      table.put("rearRightFrameMillis", rearRightFrameMillis);
     }
 
     public void fromLog(LogTable table) {
-      limelightFrontLeftJson = table.getString("limelightFrontLeftJson", null);
-      limelightFrontRightJson = table.getString("limelightFrontRightJson", null);
-      limelightRearLeftJson = table.getString("limelightRearLeftJson", null);
-      limelightRearRightJson = table.getString("limelightRearRightJson", null);
+      frontLeftJson = table.getString("frontLeftJson", null);
+      frontRightJson = table.getString("frontRightJson", null);
+      rearLeftJson = table.getString("rearLeftJson", null);
+      rearRightJson = table.getString("rearRightJson", null);
 
-      limelightFrontLeftVisibleTags = table.getInteger("limelightFrontLeftVisibleTags", 0L);
-      limelightFrontRightVisibleTags = table.getInteger("limelightFrontRightVisibleTags", 0L);
-      limelightRearLeftVisibleTags = table.getInteger("limelightRearLeftVisibleTags", 0L);
-      limelightRearRightVisibleTags = table.getInteger("limelightRearRightVisibleTags", 0L);
+      frontLeftVisibleTags = table.getInteger("frontLeftVisibleTags", 0L);
+      frontRightVisibleTags = table.getInteger("frontRightVisibleTags", 0L);
+      rearLeftVisibleTags = table.getInteger("rearLeftVisibleTags", 0L);
+      rearRightVisibleTags = table.getInteger("rearRightVisibleTags", 0L);
 
-      limelightFrontLeftFrameMillis = table.getInteger("limelightFrontLeftFrameMillis", 0L);
-      limelightFrontRightFrameMillis = table.getInteger("limelightFrontRightFrameMillis", 0L);
-      limelightRearLeftFrameMillis = table.getInteger("limelightRearLeftFrameMillis", 0L);
-      limelightRearRightFrameMillis = table.getInteger("limelightRearRightFrameMillis", 0L);
+      frontLeftFrameMillis = table.getInteger("frontLeftFrameMillis", 0L);
+      frontRightFrameMillis = table.getInteger("frontRightFrameMillis", 0L);
+      rearLeftFrameMillis = table.getInteger("rearLeftFrameMillis", 0L);
+      rearRightFrameMillis = table.getInteger("rearRightFrameMillis", 0L);
     }
 
   }
