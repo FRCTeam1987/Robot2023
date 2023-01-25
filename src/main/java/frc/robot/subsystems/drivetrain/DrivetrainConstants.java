@@ -15,7 +15,6 @@ public final class DrivetrainConstants {
     throw new IllegalStateException(CONSTRUCTOR_EXCEPTION);
   }
 
-  // FIXME: update all steer offsets
   public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 9;
   public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 8;
   public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 10;
@@ -35,8 +34,27 @@ public final class DrivetrainConstants {
   public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 5;
   public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 1;
   public static final double BACK_RIGHT_MODULE_STEER_OFFSET = 256.816;
+  // FIXME: update all steer offsets
+  public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR_COMP = 1;
+  public static final int FRONT_LEFT_MODULE_STEER_MOTOR_COMP = 2;
+  public static final int FRONT_LEFT_MODULE_STEER_ENCODER_COMP = 3;
+  public static final double FRONT_LEFT_MODULE_STEER_OFFSET_COMP = 0;
 
-  public static final int PIGEON_ID = 18;
+  public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR_COMP = 4;
+  public static final int FRONT_RIGHT_MODULE_STEER_MOTOR_COMP = 5;
+  public static final int FRONT_RIGHT_MODULE_STEER_ENCODER_COMP = 6;
+  public static final double FRONT_RIGHT_MODULE_STEER_OFFSET_COMP = 0;
+
+  public static final int BACK_LEFT_MODULE_DRIVE_MOTOR_COMP = 7;
+  public static final int BACK_LEFT_MODULE_STEER_MOTOR_COMP = 8;
+  public static final int BACK_LEFT_MODULE_STEER_ENCODER_COMP = 9;
+  public static final double BACK_LEFT_MODULE_STEER_OFFSET_COMP = 0;
+
+  public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR_COMP = 10;
+  public static final int BACK_RIGHT_MODULE_STEER_MOTOR_COMP = 11;
+  public static final int BACK_RIGHT_MODULE_STEER_ENCODER_COMP = 12;
+  public static final double BACK_RIGHT_MODULE_STEER_OFFSET_COMP = 0;
+
 
   // FIXME: update robot dimensions
 
@@ -46,6 +64,8 @@ public final class DrivetrainConstants {
    * <p>Should be measured from center to center.
    */
   public static final double TRACKWIDTH_METERS = Units.inchesToMeters(23.75); // 22.5 inches
+  //TODO: FIXME for comp robot when determined
+  public static final double TRACKWIDTH_METERS_COMP = Units.inchesToMeters(23.75); // 22.5 inches
 
   /**
    * The front-to-back distance between the drivetrain wheels.
@@ -53,6 +73,7 @@ public final class DrivetrainConstants {
    * <p>Should be measured from center to center.
    */
   public static final double WHEELBASE_METERS = TRACKWIDTH_METERS; // 23.5 inches
+  public static final double WHEELBASE_METERS_COMP = TRACKWIDTH_METERS_COMP; // 23.5 inches
 
   public static final double ROBOT_WIDTH_WITH_BUMPERS =
       Units.inchesToMeters(29 + (0.75 + 2.5) * 2); // meters

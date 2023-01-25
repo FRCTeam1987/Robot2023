@@ -68,6 +68,59 @@ public class RobotContainer {
     // create real, simulated, or replay subsystems based on the mode and robot specified
     if (Constants.getMode() != Mode.REPLAY) {
       switch (Constants.getRobot()) {
+        case ROBOT_2023_COMP:
+        {
+          GyroIO gyro = new GyroIONavx();
+
+          SwerveModule flModule =
+                  new SwerveModule(
+                          new SwerveModuleIOTalonFX(
+                                  0,
+                                  FRONT_LEFT_MODULE_DRIVE_MOTOR_COMP,
+                                  FRONT_LEFT_MODULE_STEER_MOTOR_COMP,
+                                  FRONT_LEFT_MODULE_STEER_ENCODER_COMP,
+                                  FRONT_LEFT_MODULE_STEER_OFFSET_COMP),
+                          0,
+                          MAX_VELOCITY_METERS_PER_SECOND);
+
+          SwerveModule frModule =
+                  new SwerveModule(
+                          new SwerveModuleIOTalonFX(
+                                  1,
+                                  FRONT_RIGHT_MODULE_DRIVE_MOTOR_COMP,
+                                  FRONT_RIGHT_MODULE_STEER_MOTOR_COMP,
+                                  FRONT_RIGHT_MODULE_STEER_ENCODER_COMP,
+                                  FRONT_RIGHT_MODULE_STEER_OFFSET_COMP),
+                          1,
+                          MAX_VELOCITY_METERS_PER_SECOND);
+
+          SwerveModule blModule =
+                  new SwerveModule(
+                          new SwerveModuleIOTalonFX(
+                                  2,
+                                  BACK_LEFT_MODULE_DRIVE_MOTOR_COMP,
+                                  BACK_LEFT_MODULE_STEER_MOTOR_COMP,
+                                  BACK_LEFT_MODULE_STEER_ENCODER_COMP,
+                                  BACK_LEFT_MODULE_STEER_OFFSET_COMP),
+                          2,
+                          MAX_VELOCITY_METERS_PER_SECOND);
+
+          SwerveModule brModule =
+                  new SwerveModule(
+                          new SwerveModuleIOTalonFX(
+                                  3,
+                                  BACK_RIGHT_MODULE_DRIVE_MOTOR_COMP,
+                                  BACK_RIGHT_MODULE_STEER_MOTOR_COMP,
+                                  BACK_RIGHT_MODULE_STEER_ENCODER_COMP,
+                                  BACK_RIGHT_MODULE_STEER_OFFSET_COMP),
+                          3,
+                          MAX_VELOCITY_METERS_PER_SECOND);
+
+          drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
+          // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
+          // new Vision(new VisionIOPhotonVision(CAMERA_NAME)); // Should have PhotonVision on PI
+          break;
+        }
         case ROBOT_2023_TEST:
           {
             GyroIO gyro = new GyroIONavx();
@@ -144,7 +197,6 @@ public class RobotContainer {
             }
             new Vision(
                 new VisionIOSim(layout, drivetrain::getPose, VisionConstants.ROBOT_TO_CAMERA));
-
             break;
           }
         default:
