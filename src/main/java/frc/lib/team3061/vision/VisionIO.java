@@ -1,47 +1,49 @@
 package frc.lib.team3061.vision;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
-import org.photonvision.common.dataflow.structures.Packet;
-import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
 
 public interface VisionIO {
   public static class VisionIOInputs implements LoggableInputs {
-    PhotonPipelineResult lastResult = new PhotonPipelineResult(0, new ArrayList<>());
-    double lastTimestamp = 0.0;
-    boolean hasNewResult = false;
+    public static String limelightFrontLeftJson = "", limelightFrontRightJson = "", limelightRearLeftJson = "", limelightRearRightJson = "";
+    public static long limelightFrontLeftVisibleTags = 0L, limelightFrontRightVisibleTags = 0L, limelightRearLeftVisibleTags = 0L, limelightRearRightVisibleTags = 0L;
+    public static long limelightFrontLeftFrameMillis = 0L, limelightFrontRightFrameMillis = 0L, limelightRearLeftFrameMillis = 0L, limelightRearRightFrameMillis = 0L;
 
     public void toLog(LogTable table) {
-      byte[] photonPacketBytes = new byte[lastResult.getPacketSize()];
-      lastResult.populatePacket(new Packet(photonPacketBytes));
-      table.put("photonPacketBytes", photonPacketBytes);
+      table.put("limelightFrontLeftJson", limelightFrontLeftJson);
+      table.put("limelightFrontRightJson", limelightFrontRightJson);
+      table.put("limelightRearLeftJson", limelightRearLeftJson);
+      table.put("limelightRearRightJson", limelightRearRightJson);
 
-      table.put("lastTimestamp", lastTimestamp);
-      table.put("hasNewResult", hasNewResult);
+      table.put("limelightFrontLeftVisibleTags", limelightFrontLeftVisibleTags);
+      table.put("limelightFrontRightVisibleTags", limelightFrontRightVisibleTags);
+      table.put("limelightRearLeftVisibleTags", limelightRearLeftVisibleTags);
+      table.put("limelightRearRightVisibleTags", limelightRearRightVisibleTags);
 
-      // log targets in a human-readable way
-      List<PhotonTrackedTarget> targets = lastResult.getTargets();
-      String[] stringifiedTargets = new String[targets.size()];
-
-      for (int i = 0; i < targets.size(); i++) {
-        stringifiedTargets[i] = targets.get(i).toString();
-      }
-      table.put("stringifiedTargets", stringifiedTargets);
+      table.put("limelightFrontLeftFrameMillis", limelightFrontLeftFrameMillis);
+      table.put("limelightFrontRightFrameMillis", limelightFrontRightFrameMillis);
+      table.put("limelightRearLeftFrameMillis", limelightRearLeftFrameMillis);
+      table.put("limelightRearRightFrameMillis", limelightRearRightFrameMillis);
     }
 
     public void fromLog(LogTable table) {
-      byte[] photonPacketBytes = table.getRaw("photonPacketBytes", new byte[0]);
-      lastResult = new PhotonPipelineResult();
-      lastResult.createFromPacket(new Packet(photonPacketBytes));
+      limelightFrontLeftJson = table.getString("limelightFrontLeftJson", null);
+      limelightFrontRightJson = table.getString("limelightFrontRightJson", null);
+      limelightRearLeftJson = table.getString("limelightRearLeftJson", null);
+      limelightRearRightJson = table.getString("limelightRearRightJson", null);
 
-      lastTimestamp = table.getDouble("lastTimestamp", 0.0);
-      hasNewResult = table.getBoolean("hasNewResult", false);
+      limelightFrontLeftVisibleTags = table.getInteger("limelightFrontLeftVisibleTags", 0L);
+      limelightFrontRightVisibleTags = table.getInteger("limelightFrontRightVisibleTags", 0L);
+      limelightRearLeftVisibleTags = table.getInteger("limelightRearLeftVisibleTags", 0L);
+      limelightRearRightVisibleTags = table.getInteger("limelightRearRightVisibleTags", 0L);
+
+      limelightFrontLeftFrameMillis = table.getInteger("limelightFrontLeftFrameMillis", 0L);
+      limelightFrontRightFrameMillis = table.getInteger("limelightFrontRightFrameMillis", 0L);
+      limelightRearLeftFrameMillis = table.getInteger("limelightRearLeftFrameMillis", 0L);
+      limelightRearRightFrameMillis = table.getInteger("limelightRearRightFrameMillis", 0L);
     }
-  }
 
-  /** Updates the set of loggable inputs. */
-  public default void updateInputs(VisionIOInputs inputs) {}
+  }
+    public default void updateInputs(VisionIOInputs inputs) {
+    }
 }

@@ -112,7 +112,7 @@ public class RobotContainer {
 
             drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
             // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
-            new Vision(new VisionIOLimelight("limelight-front", "limelight-back", "limelight-left")); // Should have PhotonVision on PI
+            new Vision(new VisionIOLimelight("limelight-fl", "limelight-fr", "limelight-rl", "limelight-rr")); // Should have PhotonVision on PI
             break;
           }
         case ROBOT_SIMBOT:
