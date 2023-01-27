@@ -1,6 +1,7 @@
 package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
@@ -46,7 +47,7 @@ public class VisionIOLimelight implements VisionIO {
                 inputs.getClass().getField(name + "FrameMillis").setLong(name + "FrameMillis", limelight.getFrameMillis());
                 inputs.getClass().getField(name + "Json").set(name + "Json", limelight.getRawJson());
             } catch (IllegalAccessException | NoSuchFieldException e) {
-                throw new RuntimeException(e);
+                DriverStation.reportError("WARNING! Reflection broke in VisionIO.", true);
             }
 
         }
