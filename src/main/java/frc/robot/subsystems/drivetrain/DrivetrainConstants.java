@@ -6,7 +6,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.team3061.swerve.SwerveModuleConstants;
 import frc.robot.Constants;
-
 import java.util.HashMap;
 
 public final class DrivetrainConstants {
@@ -57,7 +56,6 @@ public final class DrivetrainConstants {
   public static final int BACK_RIGHT_MODULE_STEER_ENCODER_COMP = 12;
   public static final double BACK_RIGHT_MODULE_STEER_OFFSET_COMP = 0;
 
-
   // FIXME: update robot dimensions
 
   /**
@@ -66,7 +64,7 @@ public final class DrivetrainConstants {
    * <p>Should be measured from center to center.
    */
   public static final double TRACKWIDTH_METERS_TEST = Units.inchesToMeters(23.75); // 22.5 inches
-  //TODO: FIXME for comp robot when determined
+  // TODO: FIXME for comp robot when determined
   public static final double TRACKWIDTH_METERS_COMP = Units.inchesToMeters(23.75); // 22.5 inches
 
   /**
@@ -75,6 +73,7 @@ public final class DrivetrainConstants {
    * <p>Should be measured from center to center.
    */
   public static final double WHEELBASE_METERS_TEST = TRACKWIDTH_METERS_TEST; // 23.5 inches
+
   public static final double WHEELBASE_METERS_COMP = TRACKWIDTH_METERS_COMP; // 23.5 inches
 
   public static final double ROBOT_WIDTH_WITH_BUMPERS =
@@ -96,16 +95,19 @@ public final class DrivetrainConstants {
           // Back right
           new Translation2d(-WHEELBASE_METERS_COMP / 2.0, -TRACKWIDTH_METERS_COMP / 2.0));
   public static final SwerveDriveKinematics KINEMATICS_TEST =
-          new SwerveDriveKinematics(
-                  // Front left
-                  new Translation2d(WHEELBASE_METERS_TEST / 2.0, TRACKWIDTH_METERS_TEST / 2.0),
-                  // Front right
-                  new Translation2d(WHEELBASE_METERS_TEST / 2.0, -TRACKWIDTH_METERS_TEST / 2.0),
-                  // Back left
-                  new Translation2d(-WHEELBASE_METERS_TEST / 2.0, TRACKWIDTH_METERS_TEST / 2.0),
-                  // Back right
-                  new Translation2d(-WHEELBASE_METERS_TEST / 2.0, -TRACKWIDTH_METERS_TEST / 2.0));
-  public static final SwerveDriveKinematics KINEMATICS_CURRENT = Constants.getRobot() == Constants.RobotType.ROBOT_2023_COMP ? KINEMATICS_COMP : KINEMATICS_TEST;
+      new SwerveDriveKinematics(
+          // Front left
+          new Translation2d(WHEELBASE_METERS_TEST / 2.0, TRACKWIDTH_METERS_TEST / 2.0),
+          // Front right
+          new Translation2d(WHEELBASE_METERS_TEST / 2.0, -TRACKWIDTH_METERS_TEST / 2.0),
+          // Back left
+          new Translation2d(-WHEELBASE_METERS_TEST / 2.0, TRACKWIDTH_METERS_TEST / 2.0),
+          // Back right
+          new Translation2d(-WHEELBASE_METERS_TEST / 2.0, -TRACKWIDTH_METERS_TEST / 2.0));
+  public static final SwerveDriveKinematics KINEMATICS_CURRENT =
+      Constants.getRobot() == Constants.RobotType.ROBOT_2023_COMP
+          ? KINEMATICS_COMP
+          : KINEMATICS_TEST;
   /**
    * The formula for calculating the theoretical maximum velocity is: <Motor free speed RPM> / 60 *
    * <Drive reduction> * <Wheel diameter meters> * pi By default this value is setup for a Mk3
@@ -131,10 +133,16 @@ public final class DrivetrainConstants {
    * <p>This is a measure of how fast the robot can rotate in place.
    */
   public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND_TEST =
-      MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(TRACKWIDTH_METERS_TEST / 2.0, WHEELBASE_METERS_TEST / 2.0);
+      MAX_VELOCITY_METERS_PER_SECOND
+          / Math.hypot(TRACKWIDTH_METERS_TEST / 2.0, WHEELBASE_METERS_TEST / 2.0);
+
   public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND_COMP =
-          MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(TRACKWIDTH_METERS_COMP / 2.0, WHEELBASE_METERS_COMP / 2.0);
-  public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND_CURRENT = Constants.getRobot() == Constants.RobotType.ROBOT_2023_COMP ? MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND_COMP : MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND_TEST;
+      MAX_VELOCITY_METERS_PER_SECOND
+          / Math.hypot(TRACKWIDTH_METERS_COMP / 2.0, WHEELBASE_METERS_COMP / 2.0);
+  public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND_CURRENT =
+      Constants.getRobot() == Constants.RobotType.ROBOT_2023_COMP
+          ? MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND_COMP
+          : MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND_TEST;
   public static final double MAX_COAST_VELOCITY_METERS_PER_SECOND = 0.05;
 
   public static final int TIMEOUT_MS = 30;
