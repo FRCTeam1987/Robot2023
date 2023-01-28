@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.hal.SerialPortJNI;
-import edu.wpi.first.hal.util.UncleanStatusException;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.lib.team6328.util.Alert;
@@ -18,12 +16,6 @@ import org.littletonrobotics.junction.inputs.LoggedPowerDistribution;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 /**
  * This class models the entire Robot. It extends from LoggedRobot instead of TimedRobot as required
@@ -106,18 +98,17 @@ public class Robot extends LoggedRobot {
 
     // Alternative logging of scheduled commands
     CommandScheduler.getInstance()
-            .onCommandInitialize(
-                    command -> Logger.getInstance().recordOutput("Command initialized", command.getName()));
+        .onCommandInitialize(
+            command -> Logger.getInstance().recordOutput("Command initialized", command.getName()));
     CommandScheduler.getInstance()
-            .onCommandInterrupt(
-                    command -> Logger.getInstance().recordOutput("Command interrupted", command.getName()));
+        .onCommandInterrupt(
+            command -> Logger.getInstance().recordOutput("Command interrupted", command.getName()));
     CommandScheduler.getInstance()
-            .onCommandFinish(
-                    command -> Logger.getInstance().recordOutput("Command finished", command.getName()));
+        .onCommandFinish(
+            command -> Logger.getInstance().recordOutput("Command finished", command.getName()));
 
     // Invoke the factory method to create the RobotContainer singleton.
     robotContainer = RobotContainer.getInstance();
-
   }
 
   /**

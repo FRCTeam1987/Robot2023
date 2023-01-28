@@ -10,16 +10,15 @@ import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
+import java.util.EnumSet;
+import java.util.function.Supplier;
 import org.photonvision.PhotonCamera;
 import org.photonvision.SimVisionSystem;
 import org.photonvision.SimVisionTarget;
 import org.photonvision.targeting.PhotonPipelineResult;
 
-import java.util.EnumSet;
-import java.util.function.Supplier;
-
 public class VisionIOSim implements VisionIO {
-  //TODO: Make all of this work. None of it is functional as of now.
+  // TODO: Make all of this work. None of it is functional as of now.
   private static final String CAMERA_NAME = "simCamera";
   private static final double DIAGONAL_FOV = 70; // FOV in degrees
   private static final int IMG_WIDTH = 1280; // image width in px

@@ -5,9 +5,18 @@ import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public interface VisionIO {
   public static class VisionIOInputs implements LoggableInputs {
-    public static String frontLeftJson = "", frontRightJson = "", backLeftJson = "", backRightJson = "";
-    public static long frontLeftVisibleTags = 0L, frontRightVisibleTags = 0L, backLeftVisibleTags = 0L, backRightVisibleTags = 0L;
-    public static long frontLeftFrameMillis = 0L, frontRightFrameMillis = 0L, backLeftFrameMillis = 0L, backRightFrameMillis = 0L;
+    public static String frontLeftJson = "",
+        frontRightJson = "",
+        backLeftJson = "",
+        backRightJson = "";
+    public static long frontLeftVisibleTags = 0L,
+        frontRightVisibleTags = 0L,
+        backLeftVisibleTags = 0L,
+        backRightVisibleTags = 0L;
+    public static long frontLeftFrameMillis = 0L,
+        frontRightFrameMillis = 0L,
+        backLeftFrameMillis = 0L,
+        backRightFrameMillis = 0L;
 
     public void toLog(LogTable table) {
       table.put("frontLeftJson", frontLeftJson);
@@ -42,8 +51,7 @@ public interface VisionIO {
       backLeftFrameMillis = table.getInteger("backLeftFrameMillis", 0L);
       backRightFrameMillis = table.getInteger("backRightFrameMillis", 0L);
     }
-
   }
-    public default void updateInputs(VisionIOInputs inputs) {
-    }
+
+  public default void updateInputs(VisionIOInputs inputs) {}
 }
