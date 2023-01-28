@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import static frc.robot.Constants.*;
 import static frc.robot.subsystems.drivetrain.DrivetrainConstants.*;
 
 import com.pathplanner.lib.PathPlanner;
@@ -26,10 +25,6 @@ import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIO;
 import frc.lib.team3061.swerve.SwerveModuleIOSim;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
-import frc.lib.team3061.vision.Vision;
-import frc.lib.team3061.vision.VisionConstants;
-import frc.lib.team3061.vision.VisionIO;
-import frc.lib.team3061.vision.VisionIOSim;
 import frc.robot.Constants.Mode;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
@@ -42,6 +37,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import frc.robot.subsystems.vision.*;
 import frc.robot.util.BatteryTracker;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -118,7 +114,7 @@ public class RobotContainer {
 
             drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
             // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
-            // new Vision(new VisionIOPhotonVision(CAMERA_NAME)); // Should have PhotonVision on PI
+            new Vision(new VisionIOLimelight("limelight-fl", "limelight-fr", "limelight-bl", "limelight-br")); // Should have PhotonVision on PI
             break;
           }
         case ROBOT_SIMBOT:
@@ -220,6 +216,7 @@ public class RobotContainer {
   /** Use this method to define your button->command mappings. */
   private void configureButtonBindings() {
     // field-relative toggle
+
     oi.getFieldRelativeButton()
         .toggleOnTrue(
             Commands.either(
