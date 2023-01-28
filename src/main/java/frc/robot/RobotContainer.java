@@ -26,10 +26,6 @@ import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIO;
 import frc.lib.team3061.swerve.SwerveModuleIOSim;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
-import frc.lib.team3061.vision.Vision;
-import frc.lib.team3061.vision.VisionConstants;
-import frc.lib.team3061.vision.VisionIO;
-import frc.lib.team3061.vision.VisionIOSim;
 import frc.robot.Constants.Mode;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
@@ -215,14 +211,8 @@ public class RobotContainer {
                     TRACKWIDTH_METERS_COMP,
                     WHEELBASE_METERS_COMP);
             new Pneumatics(new PneumaticsIO() {});
-            AprilTagFieldLayout layout;
-            try {
-              layout = new AprilTagFieldLayout(VisionConstants.APRILTAG_FIELD_LAYOUT_PATH);
-            } catch (IOException e) {
-              layout = new AprilTagFieldLayout(new ArrayList<>(), 16.4592, 8.2296);
-            }
-            new Vision(
-                new VisionIOSim(layout, drivetrain::getPose, VisionConstants.ROBOT_TO_CAMERA));
+            //new Vision(
+            //    new VisionIOSim(layout, drivetrain::getPose, VisionConstants.ROBOT_TO_CAMERA));
             break;
           }
         default:
@@ -252,7 +242,7 @@ public class RobotContainer {
               TRACKWIDTH_METERS_COMP,
               WHEELBASE_METERS_COMP);
       new Pneumatics(new PneumaticsIO() {});
-      new Vision(new VisionIO() {});
+      //new Vision(new VisionIO() {});
     }
 
     // disable all telemetry in the LiveWindow to reduce the processing during each iteration
