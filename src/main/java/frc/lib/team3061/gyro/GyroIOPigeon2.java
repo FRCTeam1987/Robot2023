@@ -6,7 +6,6 @@ package frc.lib.team3061.gyro;
 
 import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.sensors.Pigeon2;
-
 import frc.lib.team3061.RobotConfig;
 
 public class GyroIOPigeon2 implements GyroIO {

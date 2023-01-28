@@ -7,7 +7,6 @@ package frc.robot;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.FollowPathWithEvents;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -27,21 +26,16 @@ import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
 import frc.robot.Constants.Mode;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
-import frc.robot.configs.DefaultRobotConfig;
-import frc.robot.configs.MK4IRobotConfig;
-import frc.robot.configs.SierraRobotConfig;
 import frc.robot.commands.FollowPath;
 import frc.robot.commands.TeleopSwerve;
+import frc.robot.configs.DefaultRobotConfig;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
 import frc.robot.subsystems.drivetrain.Drivetrain;
-import java.io.IOException;
-import java.util.ArrayList;
+import frc.robot.util.BatteryTracker;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import frc.robot.util.BatteryTracker;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -142,7 +136,8 @@ public class RobotContainer {
 
             drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
             // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
-            // new Vision(new VisionIOLimelight("limelight-fl", "limelight-fr", "limelight-bl", "limelight-br")); // Should have PhotonVision on PI
+            // new Vision(new VisionIOLimelight("limelight-fl", "limelight-fr", "limelight-bl",
+            // "limelight-br")); // Should have PhotonVision on PI
             break;
           }
         case ROBOT_SIMBOT:
@@ -168,9 +163,9 @@ public class RobotContainer {
             // }
             // new Vision(
             //     new VisionIOSim(
-                    // layout,
-                    // drivetrain::getPose,
-                    // RobotConfig.getInstance().getRobotToCameraTransform()));
+            // layout,
+            // drivetrain::getPose,
+            // RobotConfig.getInstance().getRobotToCameraTransform()));
 
             break;
           }
@@ -242,7 +237,8 @@ public class RobotContainer {
   }
 
   private void configureSmartDashboard() {
-      SmartDashboard.putData("Scan Battery", new InstantCommand(() -> BatteryTracker.scanBattery(10.0)));
+    SmartDashboard.putData(
+        "Scan Battery", new InstantCommand(() -> BatteryTracker.scanBattery(10.0)));
   }
   /** Use this method to define your button->command mappings. */
   private void configureButtonBindings() {
@@ -271,9 +267,7 @@ public class RobotContainer {
     // build auto path commands
     List<PathPlannerTrajectory> auto1Paths =
         PathPlanner.loadPathGroup(
-            "testPaths1",
-            config.getAutoMaxSpeed(),
-            config.getAutoMaxAcceleration());
+            "testPaths1", config.getAutoMaxSpeed(), config.getAutoMaxAcceleration());
     Command autoTest =
         Commands.sequence(
             new FollowPathWithEvents(

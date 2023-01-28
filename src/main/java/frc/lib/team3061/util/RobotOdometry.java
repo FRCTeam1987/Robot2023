@@ -24,10 +24,10 @@ public class RobotOdometry {
   private RobotOdometry() {
     estimator =
         new SwerveDrivePoseEstimator(
-          RobotConfig.getInstance().getSwerveDriveKinematics(),
-          new Rotation2d(),
-          defaultPositions,
-          new Pose2d());
+            RobotConfig.getInstance().getSwerveDriveKinematics(),
+            new Rotation2d(),
+            defaultPositions,
+            new Pose2d());
   }
 
   public static RobotOdometry getInstance() {

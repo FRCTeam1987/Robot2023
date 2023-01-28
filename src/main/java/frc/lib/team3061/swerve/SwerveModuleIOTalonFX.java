@@ -123,7 +123,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
             ANGLE_CONTINUOUS_CURRENT_LIMIT,
             ANGLE_PEAK_CURRENT_LIMIT,
             ANGLE_PEAK_CURRENT_DURATION);
-            angleMotorConfig.INVERTED = angleMotorInverted;
+    angleMotorConfig.INVERTED = angleMotorInverted;
     angleMotorConfig.NEUTRAL_MODE = ANGLE_NEUTRAL_MODE;
     angleMotorConfig.SLOT0_KP = turnKp.get();
     angleMotorConfig.SLOT0_KI = turnKi.get();
@@ -138,7 +138,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     mAngleMotor = TalonFXFactory.createTalon(angleMotorID, canBusName, angleMotorConfig);
 
     double absolutePosition =
-    Conversions.degreesToFalcon(getCanCoder().getDegrees() - angleOffsetDeg, angleGearRatio);
+        Conversions.degreesToFalcon(getCanCoder().getDegrees() - angleOffsetDeg, angleGearRatio);
     mAngleMotor.setSelectedSensorPosition(absolutePosition);
   }
 
@@ -186,22 +186,22 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
   @Override
   public void updateInputs(SwerveModuleIOInputs inputs) {
     inputs.drivePositionDeg =
-    Conversions.falconToDegrees(mDriveMotor.getSelectedSensorPosition(), driveGearRatio);
+        Conversions.falconToDegrees(mDriveMotor.getSelectedSensorPosition(), driveGearRatio);
     inputs.driveDistanceMeters =
         Conversions.falconToMeters(
-          mDriveMotor.getSelectedSensorPosition(), wheelCircumference, driveGearRatio);
+            mDriveMotor.getSelectedSensorPosition(), wheelCircumference, driveGearRatio);
     inputs.driveVelocityMetersPerSec =
         Conversions.falconToMPS(
-          mDriveMotor.getSelectedSensorVelocity(), wheelCircumference, driveGearRatio);
+            mDriveMotor.getSelectedSensorVelocity(), wheelCircumference, driveGearRatio);
     inputs.driveAppliedPercentage = mDriveMotor.getMotorOutputPercent();
     inputs.driveCurrentAmps = new double[] {mDriveMotor.getStatorCurrent()};
     inputs.driveTempCelsius = new double[] {mDriveMotor.getTemperature()};
 
     inputs.angleAbsolutePositionDeg = angleEncoder.getAbsolutePosition();
     inputs.anglePositionDeg =
-          Conversions.falconToDegrees(mAngleMotor.getSelectedSensorPosition(), angleGearRatio);
+        Conversions.falconToDegrees(mAngleMotor.getSelectedSensorPosition(), angleGearRatio);
     inputs.angleVelocityRevPerMin =
-          Conversions.falconToRPM(mAngleMotor.getSelectedSensorVelocity(), angleGearRatio);
+        Conversions.falconToRPM(mAngleMotor.getSelectedSensorVelocity(), angleGearRatio);
     inputs.angleAppliedPercentage = mAngleMotor.getMotorOutputPercent();
     inputs.angleCurrentAmps = new double[] {mAngleMotor.getStatorCurrent()};
     inputs.angleTempCelsius = new double[] {mAngleMotor.getTemperature()};

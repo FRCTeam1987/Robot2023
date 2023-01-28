@@ -40,24 +40,24 @@ public class Drivetrain extends SubsystemBase {
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
 
   private final TunableNumber autoDriveKp =
-          new TunableNumber("AutoDrive/DriveKp", RobotConfig.getInstance().getAutoDriveKP());
+      new TunableNumber("AutoDrive/DriveKp", RobotConfig.getInstance().getAutoDriveKP());
   private final TunableNumber autoDriveKi =
-          new TunableNumber("AutoDrive/DriveKi", RobotConfig.getInstance().getAutoDriveKI());
+      new TunableNumber("AutoDrive/DriveKi", RobotConfig.getInstance().getAutoDriveKI());
   private final TunableNumber autoDriveKd =
-          new TunableNumber("AutoDrive/DriveKd", RobotConfig.getInstance().getAutoDriveKD());
+      new TunableNumber("AutoDrive/DriveKd", RobotConfig.getInstance().getAutoDriveKD());
   private final TunableNumber autoTurnKp =
-          new TunableNumber("AutoDrive/TurnKp", RobotConfig.getInstance().getAutoTurnKP());
+      new TunableNumber("AutoDrive/TurnKp", RobotConfig.getInstance().getAutoTurnKP());
   private final TunableNumber autoTurnKi =
-          new TunableNumber("AutoDrive/TurnKi", RobotConfig.getInstance().getAutoTurnKI());
+      new TunableNumber("AutoDrive/TurnKi", RobotConfig.getInstance().getAutoTurnKI());
   private final TunableNumber autoTurnKd =
-          new TunableNumber("AutoDrive/TurnKd", RobotConfig.getInstance().getAutoTurnKD());
+      new TunableNumber("AutoDrive/TurnKd", RobotConfig.getInstance().getAutoTurnKD());
 
   private final PIDController autoXController =
-          new PIDController(autoDriveKp.get(), autoDriveKi.get(), autoDriveKd.get());
+      new PIDController(autoDriveKp.get(), autoDriveKi.get(), autoDriveKd.get());
   private final PIDController autoYController =
-          new PIDController(autoDriveKp.get(), autoDriveKi.get(), autoDriveKd.get());
+      new PIDController(autoDriveKp.get(), autoDriveKi.get(), autoDriveKd.get());
   private final PIDController autoThetaController =
-          new PIDController(autoTurnKp.get(), autoTurnKi.get(), autoTurnKd.get());
+      new PIDController(autoTurnKp.get(), autoTurnKi.get(), autoTurnKd.get());
 
   private final double trackwidthMeters = RobotConfig.getInstance().getTrackwidth();
   private final double wheelbaseMeters = RobotConfig.getInstance().getWheelbase();
@@ -71,19 +71,19 @@ public class Drivetrain extends SubsystemBase {
   private Translation2d centerGravity;
 
   private final SwerveModulePosition[] swerveModulePositions =
-          new SwerveModulePosition[] {
-                  new SwerveModulePosition(),
-                  new SwerveModulePosition(),
-                  new SwerveModulePosition(),
-                  new SwerveModulePosition()
-          };
+      new SwerveModulePosition[] {
+        new SwerveModulePosition(),
+        new SwerveModulePosition(),
+        new SwerveModulePosition(),
+        new SwerveModulePosition()
+      };
   private final SwerveModulePosition[] prevSwerveModulePositions =
-          new SwerveModulePosition[] {
-                  new SwerveModulePosition(),
-                  new SwerveModulePosition(),
-                  new SwerveModulePosition(),
-                  new SwerveModulePosition()
-          };
+      new SwerveModulePosition[] {
+        new SwerveModulePosition(),
+        new SwerveModulePosition(),
+        new SwerveModulePosition(),
+        new SwerveModulePosition()
+      };
   private Pose2d estimatedPoseWithoutGyro = new Pose2d();
 
   private boolean isFieldRelative;
@@ -104,11 +104,11 @@ public class Drivetrain extends SubsystemBase {
 
   /** Constructs a new DrivetrainSubsystem object. */
   public Drivetrain(
-          GyroIO gyroIO,
-          SwerveModule flModule,
-          SwerveModule frModule,
-          SwerveModule blModule,
-          SwerveModule brModule) {
+      GyroIO gyroIO,
+      SwerveModule flModule,
+      SwerveModule frModule,
+      SwerveModule blModule,
+      SwerveModule brModule) {
     this.gyroIO = gyroIO;
     this.swerveModules[0] = flModule;
     this.swerveModules[1] = frModule;
@@ -142,7 +142,7 @@ public class Drivetrain extends SubsystemBase {
       tab.addNumber("Pose Est X", () -> poseEstimator.getEstimatedPosition().getX());
       tab.addNumber("Pose Est Y", () -> poseEstimator.getEstimatedPosition().getY());
       tab.addNumber(
-              "Pose Est Rot", () -> poseEstimator.getEstimatedPosition().getRotation().getDegrees());
+          "Pose Est Rot", () -> poseEstimator.getEstimatedPosition().getRotation().getDegrees());
       tab.addNumber("CoG X", () -> this.centerGravity.getX());
       tab.addNumber("CoG Y", () -> this.centerGravity.getY());
     }
@@ -197,10 +197,10 @@ public class Drivetrain extends SubsystemBase {
     } else {
       this.gyroOffset = 0;
       this.estimatedPoseWithoutGyro =
-              new Pose2d(
-                      estimatedPoseWithoutGyro.getX(),
-                      estimatedPoseWithoutGyro.getY(),
-                      Rotation2d.fromDegrees(expectedYaw));
+          new Pose2d(
+              estimatedPoseWithoutGyro.getX(),
+              estimatedPoseWithoutGyro.getY(),
+              Rotation2d.fromDegrees(expectedYaw));
     }
   }
 
@@ -231,11 +231,11 @@ public class Drivetrain extends SubsystemBase {
     }
 
     estimatedPoseWithoutGyro =
-            new Pose2d(state.poseMeters.getTranslation(), state.holonomicRotation);
+        new Pose2d(state.poseMeters.getTranslation(), state.holonomicRotation);
     poseEstimator.resetPosition(
-            this.getRotation(),
-            swerveModulePositions,
-            new Pose2d(state.poseMeters.getTranslation(), state.holonomicRotation));
+        this.getRotation(),
+        swerveModulePositions,
+        new Pose2d(state.poseMeters.getTranslation(), state.holonomicRotation));
   }
 
   /**
@@ -264,28 +264,28 @@ public class Drivetrain extends SubsystemBase {
       case NORMAL:
         if (isFieldRelative) {
           chassisSpeeds =
-                  ChassisSpeeds.fromFieldRelativeSpeeds(
-                          xVelocity, yVelocity, rotationalVelocity, getRotation());
+              ChassisSpeeds.fromFieldRelativeSpeeds(
+                  xVelocity, yVelocity, rotationalVelocity, getRotation());
 
         } else {
           chassisSpeeds = new ChassisSpeeds(xVelocity, yVelocity, rotationalVelocity);
         }
 
         Logger.getInstance()
-                .recordOutput("Drivetrain/chassisSpeedVx", chassisSpeeds.vxMetersPerSecond);
+            .recordOutput("Drivetrain/chassisSpeedVx", chassisSpeeds.vxMetersPerSecond);
         Logger.getInstance()
-                .recordOutput("Drivetrain/chassisSpeedVy", chassisSpeeds.vyMetersPerSecond);
+            .recordOutput("Drivetrain/chassisSpeedVy", chassisSpeeds.vyMetersPerSecond);
         Logger.getInstance()
-                .recordOutput("Drivetrain/chassisSpeedVo", chassisSpeeds.omegaRadiansPerSecond);
+            .recordOutput("Drivetrain/chassisSpeedVo", chassisSpeeds.omegaRadiansPerSecond);
 
         SwerveModuleState[] swerveModuleStates =
-                kinematics.toSwerveModuleStates(chassisSpeeds, centerGravity);
+            kinematics.toSwerveModuleStates(chassisSpeeds, centerGravity);
         SwerveDriveKinematics.desaturateWheelSpeeds(
-                swerveModuleStates, RobotConfig.getInstance().getRobotMaxVelocity());
+            swerveModuleStates, RobotConfig.getInstance().getRobotMaxVelocity());
 
         for (SwerveModule swerveModule : swerveModules) {
           swerveModule.setDesiredState(
-                  swerveModuleStates[swerveModule.getModuleNumber()], isOpenLoop, false);
+              swerveModuleStates[swerveModule.getModuleNumber()], isOpenLoop, false);
         }
         break;
 
@@ -347,8 +347,8 @@ public class Drivetrain extends SubsystemBase {
         SwerveModulePosition previous = prevSwerveModulePositions[index];
 
         moduleDeltas[index] =
-                new SwerveModulePosition(
-                        current.distanceMeters - previous.distanceMeters, current.angle);
+            new SwerveModulePosition(
+                current.distanceMeters - previous.distanceMeters, current.angle);
         previous.distanceMeters = current.distanceMeters;
       }
 
@@ -358,7 +358,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     poseEstimator.updateWithTime(
-            Timer.getFPGATimestamp(), this.getRotation(), swerveModulePositions);
+        Timer.getFPGATimestamp(), this.getRotation(), swerveModulePositions);
 
     // update the brake mode based on the robot's velocity and state (enabled/disabled)
     updateBrakeMode();
