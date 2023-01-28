@@ -22,13 +22,7 @@ import frc.lib.team6328.util.Alert.AlertType;
  */
 public final class Constants {
 
-  public static final double LOOP_PERIOD_SECS = 0.02;
-
   public static final boolean TUNING_MODE = false;
-
-  // FIXME: an empty string uses the default CAN bus; specify the name of the CANivore as
-  // appropriate
-  public static final String CAN_BUS_NAME = "";
 
   // FIXME: If Limelight is used, specify the pipeline for detecting AprilTags
   public static final int LIMELIGHT_PIPELINE = 1;
@@ -43,7 +37,7 @@ public final class Constants {
     if (RobotBase.isReal()) {
       if (ROBOT == RobotType.ROBOT_SIMBOT) { // Invalid robot selected
         invalidRobotAlert.set(true);
-        return RobotType.ROBOT_2023_TEST;
+        return RobotType.ROBOT_DEFAULT;
       } else {
         return ROBOT;
       }
@@ -56,9 +50,8 @@ public final class Constants {
   public static Mode getMode() {
     switch (getRobot()) {
       case ROBOT_2023_TEST:
-        return RobotBase.isReal() ? Mode.REAL : Mode.REPLAY;
-
       case ROBOT_2022_PRESEASON:
+      case ROBOT_DEFAULT:
         return RobotBase.isReal() ? Mode.REAL : Mode.REPLAY;
 
       case ROBOT_SIMBOT:
@@ -73,6 +66,7 @@ public final class Constants {
   public enum RobotType {
     ROBOT_2023_TEST,
     ROBOT_2022_PRESEASON,
+    ROBOT_DEFAULT,
     ROBOT_SIMBOT
   }
 
@@ -81,4 +75,6 @@ public final class Constants {
     REPLAY,
     SIM
   }
+
+  public static final double LOOP_PERIOD_SECS = 0.02;
 }
