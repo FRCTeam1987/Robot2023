@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.*;
 import static frc.robot.subsystems.drivetrain.DrivetrainConstants.*;
 
 import com.pathplanner.lib.PathPlanner;
@@ -25,6 +26,10 @@ import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIO;
 import frc.lib.team3061.swerve.SwerveModuleIOSim;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
+import frc.lib.team3061.vision.Vision;
+import frc.lib.team3061.vision.VisionConstants;
+import frc.lib.team3061.vision.VisionIO;
+import frc.lib.team3061.vision.VisionIOSim;
 import frc.robot.Constants.Mode;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
@@ -33,12 +38,10 @@ import frc.robot.commands.TeleopSwerve;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
 import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.util.BatteryTracker;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import frc.robot.subsystems.vision.*;
-import frc.robot.util.BatteryTracker;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -65,58 +68,67 @@ public class RobotContainer {
     if (Constants.getMode() != Mode.REPLAY) {
       switch (Constants.getRobot()) {
         case ROBOT_2023_COMP:
-        {
-          GyroIO gyro = new GyroIONavx();
+          {
+            GyroIO gyro = new GyroIONavx();
 
-          SwerveModule flModule =
-                  new SwerveModule(
-                          new SwerveModuleIOTalonFX(
-                                  0,
-                                  FRONT_LEFT_MODULE_DRIVE_MOTOR_COMP,
-                                  FRONT_LEFT_MODULE_STEER_MOTOR_COMP,
-                                  FRONT_LEFT_MODULE_STEER_ENCODER_COMP,
-                                  FRONT_LEFT_MODULE_STEER_OFFSET_COMP),
-                          0,
-                          MAX_VELOCITY_METERS_PER_SECOND);
+            SwerveModule flModule =
+                new SwerveModule(
+                    new SwerveModuleIOTalonFX(
+                        0,
+                        FRONT_LEFT_MODULE_DRIVE_MOTOR_COMP,
+                        FRONT_LEFT_MODULE_STEER_MOTOR_COMP,
+                        FRONT_LEFT_MODULE_STEER_ENCODER_COMP,
+                        FRONT_LEFT_MODULE_STEER_OFFSET_COMP),
+                    0,
+                    MAX_VELOCITY_METERS_PER_SECOND);
 
-          SwerveModule frModule =
-                  new SwerveModule(
-                          new SwerveModuleIOTalonFX(
-                                  1,
-                                  FRONT_RIGHT_MODULE_DRIVE_MOTOR_COMP,
-                                  FRONT_RIGHT_MODULE_STEER_MOTOR_COMP,
-                                  FRONT_RIGHT_MODULE_STEER_ENCODER_COMP,
-                                  FRONT_RIGHT_MODULE_STEER_OFFSET_COMP),
-                          1,
-                          MAX_VELOCITY_METERS_PER_SECOND);
+            SwerveModule frModule =
+                new SwerveModule(
+                    new SwerveModuleIOTalonFX(
+                        1,
+                        FRONT_RIGHT_MODULE_DRIVE_MOTOR_COMP,
+                        FRONT_RIGHT_MODULE_STEER_MOTOR_COMP,
+                        FRONT_RIGHT_MODULE_STEER_ENCODER_COMP,
+                        FRONT_RIGHT_MODULE_STEER_OFFSET_COMP),
+                    1,
+                    MAX_VELOCITY_METERS_PER_SECOND);
 
-          SwerveModule blModule =
-                  new SwerveModule(
-                          new SwerveModuleIOTalonFX(
-                                  2,
-                                  BACK_LEFT_MODULE_DRIVE_MOTOR_COMP,
-                                  BACK_LEFT_MODULE_STEER_MOTOR_COMP,
-                                  BACK_LEFT_MODULE_STEER_ENCODER_COMP,
-                                  BACK_LEFT_MODULE_STEER_OFFSET_COMP),
-                          2,
-                          MAX_VELOCITY_METERS_PER_SECOND);
+            SwerveModule blModule =
+                new SwerveModule(
+                    new SwerveModuleIOTalonFX(
+                        2,
+                        BACK_LEFT_MODULE_DRIVE_MOTOR_COMP,
+                        BACK_LEFT_MODULE_STEER_MOTOR_COMP,
+                        BACK_LEFT_MODULE_STEER_ENCODER_COMP,
+                        BACK_LEFT_MODULE_STEER_OFFSET_COMP),
+                    2,
+                    MAX_VELOCITY_METERS_PER_SECOND);
 
-          SwerveModule brModule =
-                  new SwerveModule(
-                          new SwerveModuleIOTalonFX(
-                                  3,
-                                  BACK_RIGHT_MODULE_DRIVE_MOTOR_COMP,
-                                  BACK_RIGHT_MODULE_STEER_MOTOR_COMP,
-                                  BACK_RIGHT_MODULE_STEER_ENCODER_COMP,
-                                  BACK_RIGHT_MODULE_STEER_OFFSET_COMP),
-                          3,
-                          MAX_VELOCITY_METERS_PER_SECOND);
+            SwerveModule brModule =
+                new SwerveModule(
+                    new SwerveModuleIOTalonFX(
+                        3,
+                        BACK_RIGHT_MODULE_DRIVE_MOTOR_COMP,
+                        BACK_RIGHT_MODULE_STEER_MOTOR_COMP,
+                        BACK_RIGHT_MODULE_STEER_ENCODER_COMP,
+                        BACK_RIGHT_MODULE_STEER_OFFSET_COMP),
+                    3,
+                    MAX_VELOCITY_METERS_PER_SECOND);
 
-          drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule, KINEMATICS_COMP, TRACKWIDTH_METERS_COMP, WHEELBASE_METERS_COMP);
-          // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
-          // new Vision(new VisionIOPhotonVision(CAMERA_NAME)); // Should have PhotonVision on PI
-          break;
-        }
+            drivetrain =
+                new Drivetrain(
+                    gyro,
+                    flModule,
+                    frModule,
+                    blModule,
+                    brModule,
+                    KINEMATICS_COMP,
+                    TRACKWIDTH_METERS_COMP,
+                    WHEELBASE_METERS_COMP);
+            // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
+            // new Vision(new VisionIOPhotonVision(CAMERA_NAME)); // Should have PhotonVision on PI
+            break;
+          }
         case ROBOT_2023_TEST:
           {
             GyroIO gyro = new GyroIONavx();
@@ -165,9 +177,18 @@ public class RobotContainer {
                     3,
                     MAX_VELOCITY_METERS_PER_SECOND);
 
-            drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule, KINEMATICS_TEST, TRACKWIDTH_METERS_TEST, WHEELBASE_METERS_TEST);
+            drivetrain =
+                new Drivetrain(
+                    gyro,
+                    flModule,
+                    frModule,
+                    blModule,
+                    brModule,
+                    KINEMATICS_TEST,
+                    TRACKWIDTH_METERS_TEST,
+                    WHEELBASE_METERS_TEST);
             // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
-            new Vision(new VisionIOLimelight("limelight-fl", "limelight-fr", "limelight-bl", "limelight-br")); // Should have PhotonVision on PI
+            // new Vision(new VisionIOPhotonVision(CAMERA_NAME)); // Should have PhotonVision on PI
             break;
           }
         case ROBOT_SIMBOT:
@@ -183,7 +204,16 @@ public class RobotContainer {
 
             SwerveModule brModule =
                 new SwerveModule(new SwerveModuleIOSim(), 3, MAX_VELOCITY_METERS_PER_SECOND);
-            drivetrain = new Drivetrain(new GyroIO() {}, flModule, frModule, blModule, brModule, KINEMATICS_COMP, TRACKWIDTH_METERS_COMP, WHEELBASE_METERS_COMP);
+            drivetrain =
+                new Drivetrain(
+                    new GyroIO() {},
+                    flModule,
+                    frModule,
+                    blModule,
+                    brModule,
+                    KINEMATICS_COMP,
+                    TRACKWIDTH_METERS_COMP,
+                    WHEELBASE_METERS_COMP);
             new Pneumatics(new PneumaticsIO() {});
             AprilTagFieldLayout layout;
             try {
@@ -211,7 +241,16 @@ public class RobotContainer {
 
       SwerveModule brModule =
           new SwerveModule(new SwerveModuleIO() {}, 3, MAX_VELOCITY_METERS_PER_SECOND);
-      drivetrain = new Drivetrain(new GyroIO() {}, flModule, frModule, blModule, brModule, KINEMATICS_COMP, TRACKWIDTH_METERS_COMP, WHEELBASE_METERS_COMP);
+      drivetrain =
+          new Drivetrain(
+              new GyroIO() {},
+              flModule,
+              frModule,
+              blModule,
+              brModule,
+              KINEMATICS_COMP,
+              TRACKWIDTH_METERS_COMP,
+              WHEELBASE_METERS_COMP);
       new Pneumatics(new PneumaticsIO() {});
       new Vision(new VisionIO() {});
     }
@@ -263,12 +302,12 @@ public class RobotContainer {
   }
 
   private void configureSmartDashboard() {
-      SmartDashboard.putData("Scan Battery", new InstantCommand(() -> BatteryTracker.scanBattery(10.0)));
+    SmartDashboard.putData(
+        "Scan Battery", new InstantCommand(() -> BatteryTracker.scanBattery(10.0)));
   }
   /** Use this method to define your button->command mappings. */
   private void configureButtonBindings() {
     // field-relative toggle
-
     oi.getFieldRelativeButton()
         .toggleOnTrue(
             Commands.either(
@@ -300,20 +339,13 @@ public class RobotContainer {
             new FollowPathWithEvents(
                 new FollowPath(auto1Paths.get(0), drivetrain, true),
                 auto1Paths.get(0).getMarkers(),
-                AUTO_EVENT_MAP),
-            Commands.runOnce(drivetrain::enableXstance, drivetrain),
-            Commands.waitSeconds(5.0),
-            Commands.runOnce(drivetrain::disableXstance, drivetrain),
-            new FollowPathWithEvents(
-                new FollowPath(auto1Paths.get(1), drivetrain, false),
-                auto1Paths.get(1).getMarkers(),
                 AUTO_EVENT_MAP));
 
     // add commands to the auto chooser
-    autoChooser.addDefaultOption("Do Nothing", new InstantCommand());
+    autoChooser.addDefaultOption("Test Path", autoTest);
 
     // demonstration of PathPlanner path group with event markers
-    autoChooser.addOption("Test Path", autoTest);
+    autoChooser.addOption("Do Nothing", new InstantCommand());
 
     // "auto" command for tuning the drive velocity PID
     autoChooser.addOption(
