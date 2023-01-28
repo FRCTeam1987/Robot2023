@@ -7,4 +7,7 @@
 ### Name of contributor (if using team account)
 <!-- Please enter your name here -->
 
+### Issue these changes are linked to, if applicable
+<!-- Please enter issue here -->
+
 After you submit this PR, ask @j0n5m1th or @kenschenke to review it
