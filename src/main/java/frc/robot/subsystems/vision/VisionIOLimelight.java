@@ -15,7 +15,7 @@ public class VisionIOLimelight implements VisionIO {
 
   private static VisionIOLimelight instance;
   public static int row = 0;
-  List<VisionIOLimelightBase> limelights = new ArrayList<>();
+  static List<VisionIOLimelightBase> limelights = new ArrayList<>();
   public static final ShuffleboardTab LIMELIGHT_TAB = Shuffleboard.getTab("Limelights");
 
   public VisionIOLimelight(String... limelights) {
@@ -23,42 +23,18 @@ public class VisionIOLimelight implements VisionIO {
     for (String name : limelights) {
       this.limelights.add(new VisionIOLimelightBase(name));
     }
-    LIMELIGHT_TAB.addString("Best Bot Pose: ", this::getBestBotPoseStr);
-  }
-
-  public VisionIOLimelightBase getBestLimelight() {
-    return limelights.stream().max(Comparator.comparing(VisionIOLimelightBase::getSeenTags)).get();
-  }
-
-  public Pose3d getBestBotPose() {
-    return getBestLimelight().getBotPose();
-  }
-
-  public String getBestBotPoseStr() {
-    try {
-      return getBestBotPose().toString();
-    } catch (Exception ignored) {
-      return "No best bot pose";
-    }
   }
 
   @Override
   public synchronized void updateInputs(VisionIOInputs inputs) {
-    for (VisionIOLimelightBase limelight : limelights) {
-      String name = limelight.limelightNameFormatted;
-      try {
-        inputs
-            .getClass()
-            .getField(name + "VisibleTags")
-            .setLong(name + "VisibleTags", limelight.getSeenTags());
-        inputs
-            .getClass()
-            .getField(name + "FrameMillis")
-            .setLong(name + "FrameMillis", limelight.getFrameMillis());
-        inputs.getClass().getField(name + "Json").set(name + "Json", limelight.getRawJson());
-      } catch (IllegalAccessException | NoSuchFieldException e) {
-        DriverStation.reportError("WARNING! Reflection broke in VisionIO.", true);
-      }
+    int size = limelights.size();
+    inputs.json = new String[size];
+    inputs.frameTimes = new long[size];
+    inputs.canSeeTag = new double[size];
+    for (int i = 0; i < size; i++) {
+      inputs.json[i] = limelights.get(i).getRawJson();
+      inputs.frameTimes[i] = limelights.get(i).getFrameMillis();
+      inputs.canSeeTag[i] = limelights.get(i).canSeeTarget();
     }
   }
 }
