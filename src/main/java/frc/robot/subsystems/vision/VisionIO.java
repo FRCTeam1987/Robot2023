@@ -11,6 +11,7 @@ public interface VisionIO {
 
     public void toLog(LogTable table) {
       //table.put("json", json);
+
       table.put("frameTimes", frameTimes);
       table.put("canSeeTag", canSeeTag);
     }

@@ -25,7 +25,7 @@ public class Vision extends SubsystemBase {
 
     visionIO.updateInputs(io);
     Logger.getInstance().processInputs("Vision", io);
-
+    
     VisionIOLimelightBase limelight = VisionIOLimelight.getInstance().getBestLimelight();
     Pose2d pose = limelight.getBotPose().toPose2d();
       if (pose != null) {
