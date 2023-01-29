@@ -42,7 +42,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import frc.robot.util.LedMatrix;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -241,9 +240,6 @@ public class RobotContainer {
   }
 
   private void configureSmartDashboard() {
-    SmartDashboard.putData("Cone", new InstantCommand(() -> LedMatrix.getInstance().setToDesign(LedMatrix.cone)));
-    SmartDashboard.putData("Cube", new InstantCommand(() -> LedMatrix.getInstance().setToDesign(LedMatrix.cube)));
-    SmartDashboard.putData("Off", new InstantCommand(() -> LedMatrix.getInstance().setEntireRGB(new Color(0, 0, 0))));
     SmartDashboard.putData(
         "Scan Battery", new InstantCommand(() -> BatteryTracker.scanBattery(10.0)));
   }
