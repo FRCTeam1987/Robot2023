@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.lib.team3061.RobotConfig;
 import frc.lib.team3061.gyro.GyroIO;
 import frc.lib.team3061.gyro.GyroIONavx;
@@ -26,12 +28,14 @@ import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
 import frc.robot.Constants.Mode;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
+import frc.robot.commands.rollerclaw.PlaceGamePiece;
 import frc.robot.commands.FollowPath;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.configs.CompRobotConfig;
 import frc.robot.configs.TestRobotConfig;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
+import frc.robot.subsystems.RollerClaw;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOLimelight;
@@ -55,6 +59,7 @@ public class RobotContainer {
 
   private RobotConfig config;
   private Drivetrain drivetrain;
+  private RollerClaw rollerClaw;
 
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to ensure accurate logging
   private final LoggedDashboardChooser<Command> autoChooser =
@@ -141,6 +146,12 @@ public class RobotContainer {
             drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
             // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
              new Vision(new VisionIOLimelight("limelight-fr", "limelight-bl"));
+             rollerClaw = new RollerClaw();
+             new SequentialCommandGroup(
+              new InstantCommand(() -> rollerClaw.runRollerOut(), rollerClaw),
+              new WaitCommand(.5),
+              new InstantCommand(() -> rollerClaw.stopRoller(), rollerClaw)
+            );
             break;
           }
         case ROBOT_SIMBOT:

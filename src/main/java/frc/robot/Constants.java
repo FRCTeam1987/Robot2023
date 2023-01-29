@@ -25,6 +25,8 @@ public final class Constants {
 
   public static final boolean TUNING_MODE = false;
 
+  public static final int ROLLER_CLAW_MOTOR_CAN_ID = 1;
+
   // FIXME: If Limelight is used, specify the pipeline for detecting AprilTags
   public static final int LIMELIGHT_PIPELINE = 1;
 
