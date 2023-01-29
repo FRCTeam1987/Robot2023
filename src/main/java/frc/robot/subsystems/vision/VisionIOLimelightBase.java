@@ -8,15 +8,17 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.*;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+
+import java.sql.Driver;
 
 public class VisionIOLimelightBase {
   private final NetworkTable inst;
   public static final ShuffleboardTab LIMELIGHT_TAB = Shuffleboard.getTab("Limelights");
   public final String limelightName;
   private StringSubscriber jsonSubscriber;
-  private DoubleArraySubscriber botPoseSubscriber;
   private DoubleSubscriber targetSubscriber;
   private DoubleSubscriber latencySubscriber;
   public VisionIOLimelightBase(String limelightName) {
@@ -34,19 +36,18 @@ public class VisionIOLimelightBase {
         .addString(limelightNameShort + " pose", this::getBotPoseStr)
         .withPosition(column++, VisionIOLimelight.row);
     VisionIOLimelight.row++;
-    jsonSubscriber = inst.getStringTopic("json").subscribe("[]");
-    botPoseSubscriber = inst.getDoubleArrayTopic("botpose").subscribe(new double[]{});
+    //jsonSubscriber = inst.getStringTopic("json").subscribe("[]");
     targetSubscriber = inst.getDoubleTopic("tv").subscribe(0.0);
     latencySubscriber = inst.getDoubleTopic("tl").subscribe(-1.0);
   }
 
-  public String getRawJson() {
+  /*public String getRawJson() {
     return jsonSubscriber.get();
-  }
+  }*/
 
   public Pose3d getBotPose() {
     try {
-      double[] pose = botPoseSubscriber.get();
+      double[] pose = inst.getEntry("botpose_wpiblue").getDoubleArray(new double[]{});
       return new Pose3d(
           new Translation3d(pose[0], pose[1], pose[2]), new Rotation3d(pose[3], pose[4], pose[5]));
     } catch (Exception ignored) {
