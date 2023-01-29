@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -26,6 +27,10 @@ public class VisionIOLimelight implements VisionIO {
         DriverStation.reportError("WARNING! '" + name + "' is not a valid/plugged in limelight!", false);
       }
     }
+  }
+
+  public VisionIOLimelightBase getBestLimelight() {
+    return limelights.stream().max(Comparator.comparing(VisionIOLimelightBase::getVisibleTagCount)).get();
   }
 
   @Override

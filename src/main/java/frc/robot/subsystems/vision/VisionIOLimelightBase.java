@@ -13,6 +13,9 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 import java.sql.Driver;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 public class VisionIOLimelightBase {
   private final NetworkTable inst;
@@ -33,10 +36,10 @@ public class VisionIOLimelightBase {
         .addDouble(limelightNameShort + " Target Visible", this::canSeeTarget)
         .withPosition(column++, VisionIOLimelight.row);
     LIMELIGHT_TAB
-        .addString(limelightNameShort + " pose", this::getBotPoseStr)
-        .withPosition(column++, VisionIOLimelight.row);
+            .addNumber(limelightNameShort + " count", this::getVisibleTagCount)
+            .withPosition(column++, VisionIOLimelight.row);
     VisionIOLimelight.row++;
-    //jsonSubscriber = inst.getStringTopic("json").subscribe("[]");
+    jsonSubscriber = inst.getStringTopic("json").subscribe("[]");
     targetSubscriber = inst.getDoubleTopic("tv").subscribe(0.0);
     latencySubscriber = inst.getDoubleTopic("tl").subscribe(-1.0);
   }
@@ -44,6 +47,10 @@ public class VisionIOLimelightBase {
   /*public String getRawJson() {
     return jsonSubscriber.get();
   }*/
+
+  public int getVisibleTagCount() {
+    return (int) jsonSubscriber.get().codePoints().filter(ch -> ch == 'm').count();
+  }
 
   public Pose3d getBotPose() {
     try {
@@ -54,14 +61,6 @@ public class VisionIOLimelightBase {
       // This throws an exception when the bot doesn't have a pose. Just ignore it and move on,
       // accepting that we currently don't have a pose.
       return null;
-    }
-  }
-
-  public String getBotPoseStr() {
-    try {
-      return getBotPose().toString();
-    } catch (Exception e) {
-      return "No pose detected";
     }
   }
 
