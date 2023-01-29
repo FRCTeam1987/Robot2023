@@ -9,6 +9,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RuntimeType;
 import frc.lib.team6328.util.Alert;
 import frc.lib.team6328.util.Alert.AlertType;
 
@@ -27,7 +28,7 @@ public final class Constants {
   // FIXME: If Limelight is used, specify the pipeline for detecting AprilTags
   public static final int LIMELIGHT_PIPELINE = 1;
 
-  private static final RobotType ROBOT = RobotType.ROBOT_SIMBOT;
+  private static final RobotType ROBOT = RobotBase.getRuntimeType().equals(RuntimeType.kRoboRIO) ? RobotType.ROBOT_2023_TEST : RobotType.ROBOT_2023_COMP;
 
   private static final Alert invalidRobotAlert =
       new Alert("Invalid robot selected, using competition robot as default.", AlertType.ERROR);
@@ -50,7 +51,7 @@ public final class Constants {
   public static Mode getMode() {
     switch (getRobot()) {
       case ROBOT_2023_TEST:
-      case ROBOT_2022_PRESEASON:
+      case ROBOT_2023_COMP:
       case ROBOT_DEFAULT:
         return RobotBase.isReal() ? Mode.REAL : Mode.REPLAY;
 
@@ -65,7 +66,7 @@ public final class Constants {
   // FIXME: update for various robots
   public enum RobotType {
     ROBOT_2023_TEST,
-    ROBOT_2022_PRESEASON,
+    ROBOT_2023_COMP,
     ROBOT_DEFAULT,
     ROBOT_SIMBOT
   }
