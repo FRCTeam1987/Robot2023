@@ -33,7 +33,6 @@ public class CompRobotConfig extends RobotConfig {
   public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 1;
   public static final double BACK_RIGHT_MODULE_STEER_OFFSET = 256.816;
 
-
   private static final int GYRO_ID = 18;
 
   // FIXME: update robot dimensions
@@ -95,6 +94,13 @@ public class CompRobotConfig extends RobotConfig {
   private static final double AUTO_TURN_P_CONTROLLER = 10.0;
   private static final double AUTO_TURN_I_CONTROLLER = 0.0;
   private static final double AUTO_TURN_D_CONTROLLER = 0.0;
+
+  private static final int CLAW_MOTOR_ID = 9; // FIXME: replace with correct id value
+
+  @Override
+  public int getClawMotorID() {
+    return CLAW_MOTOR_ID;
+  }
 
   @Override
   public double getSwerveAngleKP() {

@@ -24,24 +24,24 @@ import frc.lib.team3061.swerve.SwerveModuleIO;
 import frc.lib.team3061.swerve.SwerveModuleIOSim;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
 import frc.robot.Constants.Mode;
+import frc.robot.commands.CollectGamePiece;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
 import frc.robot.commands.FollowPath;
+import frc.robot.commands.StopClawRollers;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.configs.CompRobotConfig;
 import frc.robot.configs.TestRobotConfig;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
+import frc.robot.subsystems.claw.Claw;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.BatteryTracker;
-
-import java.awt.Color;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -55,6 +55,7 @@ public class RobotContainer {
 
   private RobotConfig config;
   private Drivetrain drivetrain;
+  private Claw claw;
 
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to ensure accurate logging
   private final LoggedDashboardChooser<Command> autoChooser =
@@ -78,13 +79,13 @@ public class RobotContainer {
         case ROBOT_2023_COMP:
         case ROBOT_DEFAULT:
           {
-             if (Constants.getRobot() == Constants.RobotType.ROBOT_2023_TEST) {
-               config = new TestRobotConfig();
-             } else if (Constants.getRobot() == Constants.RobotType.ROBOT_2023_COMP) {
-               config = new CompRobotConfig();
-             } else {
-               config = new TestRobotConfig();
-             }
+            if (Constants.getRobot() == Constants.RobotType.ROBOT_2023_TEST) {
+              config = new TestRobotConfig();
+            } else if (Constants.getRobot() == Constants.RobotType.ROBOT_2023_COMP) {
+              config = new CompRobotConfig();
+            } else {
+              config = new TestRobotConfig();
+            }
             config = new TestRobotConfig();
 
             GyroIO gyro = new GyroIONavx();
@@ -140,7 +141,7 @@ public class RobotContainer {
 
             drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
             // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
-             new Vision(new VisionIOLimelight("limelight-fr", "limelight-bl"));
+            new Vision(new VisionIOLimelight("limelight-fr", "limelight-bl"));
             break;
           }
         case ROBOT_SIMBOT:
@@ -239,7 +240,13 @@ public class RobotContainer {
     return robotContainer;
   }
 
+  public RobotConfig getConfig() {
+    return config;
+  }
+
   private void configureSmartDashboard() {
+    SmartDashboard.putData("Stop Claw", new StopClawRollers());
+    SmartDashboard.putData("Run Claw", new CollectGamePiece(claw));
     SmartDashboard.putData(
         "Scan Battery", new InstantCommand(() -> BatteryTracker.scanBattery(10.0)));
   }
