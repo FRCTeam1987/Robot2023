@@ -58,7 +58,7 @@ public class RobotContainer {
       new LoggedDashboardChooser<>("Auto Routine");
 
   // RobotContainer singleton
-  private static RobotContainer robotContainer = new RobotContainer();
+  private static final RobotContainer robotContainer = new RobotContainer();
   private final Map<String, Command> autoEventMap = new HashMap<>();
 
   /** Create the container for the robot. Contains subsystems, OI devices, and commands. */

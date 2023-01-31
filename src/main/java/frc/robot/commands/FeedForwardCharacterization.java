@@ -149,10 +149,10 @@ public class FeedForwardCharacterization extends CommandBase {
               1);
 
       System.out.println("FF Characterization Results (" + name + "):");
-      System.out.println("\tCount=" + Integer.toString(velocityData.size()) + "");
-      System.out.println(String.format("\tR2=%.5f", regression.R2()));
-      System.out.println(String.format("\tkS=%.5f", regression.beta(0)));
-      System.out.println(String.format("\tkV=%.5f", regression.beta(1)));
+      System.out.println("\tCount=" + velocityData.size() + "");
+      System.out.printf("\tR2=%.5f%n", regression.R2());
+      System.out.printf("\tkS=%.5f%n", regression.beta(0));
+      System.out.printf("\tkV=%.5f%n", regression.beta(1));
     }
   }
 }

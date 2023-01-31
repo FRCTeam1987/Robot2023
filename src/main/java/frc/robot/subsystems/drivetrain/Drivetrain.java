@@ -253,9 +253,10 @@ public class Drivetrain extends SubsystemBase {
    * <p>If the drive mode is CHARACTERIZATION, the robot will ignore the specified velocities and
    * run the characterization routine.
    *
-   * @param translationXSupplier the desired velocity in the x direction (m/s)
-   * @param translationYSupplier the desired velocity in the y direction (m/s)
-   * @param rotationSupplier the desired rotational velcoity (rad/s)
+   * @param xVelocity the desired velocity in the x direction (m/s)
+   * @param yVelocity the desired velocity in the y direction (m/s)
+   * @param rotationalVelocity the desired rotational velcoity (rad/s)
+   * @param isOpenLoop open loop
    */
   public void drive(
       double xVelocity, double yVelocity, double rotationalVelocity, boolean isOpenLoop) {
