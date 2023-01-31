@@ -36,62 +36,60 @@ public class BatteryTracker {
    */
   public static String scanBattery(double timeout) {
     System.out.println("[BatteryTracker] Scanning...");
-    if (Constants.getMode() == Mode.REAL) {
-      if (supportedRobots.contains(Constants.getRobot())) {
-        // Only scan on supported robots and in real mode
-        try (SerialPort port = new SerialPort(9600, SerialPort.Port.kUSB)) {
-          port.setTimeout(timeout);
-          port.setWriteBufferSize(scanCommand.length);
-          port.setReadBufferSize(fullResponseLength);
+    if (Constants.getMode() == Mode.REAL && supportedRobots.contains(Constants.getRobot())) {
+      // Only scan on supported robots and in real mode
+      try (SerialPort port = new SerialPort(9600, SerialPort.Port.kUSB)) {
+        port.setTimeout(timeout);
+        port.setWriteBufferSize(scanCommand.length);
+        port.setReadBufferSize(fullResponseLength);
 
-          port.write(scanCommand, scanCommand.length);
-          byte[] response = port.read(fullResponseLength);
+        port.write(scanCommand, scanCommand.length);
+        byte[] response = port.read(fullResponseLength);
 
-          // Ensure response is correct length
-          if (response.length != fullResponseLength) {
-            System.out.println(
-                "[BatteryTracker] Expected "
-                    + fullResponseLength
-                    + " bytes from scanner, got "
-                    + response.length);
+        // Ensure response is correct length
+        if (response.length != fullResponseLength) {
+          System.out.println(
+              "[BatteryTracker] Expected "
+                  + fullResponseLength
+                  + " bytes from scanner, got "
+                  + response.length);
+          return name;
+        }
+
+        // Ensure response starts with prefix
+        for (int i = 0; i < responsePrefix.length; i++) {
+          if (response[i] != responsePrefix[i]) {
+            System.out.println("[BatteryTracker] Invalid prefix from scanner.  Got data:");
+            System.out.println("[BatteryTracker] " + Arrays.toString(response));
             return name;
           }
-
-          // Ensure response starts with prefix
-          for (int i = 0; i < responsePrefix.length; i++) {
-            if (response[i] != responsePrefix[i]) {
-              System.out.println("[BatteryTracker] Invalid prefix from scanner.  Got data:");
-              System.out.println("[BatteryTracker] " + Arrays.toString(response));
-              return name;
-            }
-          }
-
-          // Ensure response ends with suffix
-          if (response[response.length - 1] != endMark) {
-            System.out.println(
-                "[BatteryTracker] Invalid suffix from scanner.  Got "
-                    + response[response.length - 1]);
-          }
-
-          // Read name from data
-          byte[] batteryNameBytes = new byte[nameLength];
-          System.arraycopy(response, responsePrefix.length, batteryNameBytes, 0, nameLength);
-          name = new String(batteryNameBytes);
-          System.out.println("[BatteryTracker] Scanned battery " + name);
-
-        } catch (Exception e) {
-          System.out.println("[BatteryTracker] Exception while trying to scan battery");
-          e.printStackTrace();
         }
+
+        // Ensure response ends with suffix
+        if (response[response.length - 1] != endMark) {
+          System.out.println(
+              "[BatteryTracker] Invalid suffix from scanner.  Got "
+                  + response[response.length - 1]);
+        }
+
+        // Read name from data
+        byte[] batteryNameBytes = new byte[nameLength];
+        System.arraycopy(response, responsePrefix.length, batteryNameBytes, 0, nameLength);
+        name = new String(batteryNameBytes);
+
+        if (!name.matches("BAT-\\d{4}-\\d{3}"))
+          System.out.println(
+              "[BatteryTracker] Invalid battery name from scanner. Got "
+                  + name);
+
+        System.out.println("[BatteryTracker] Scanned battery " + name);
+      } catch (Exception e) {
+        System.out.println("[BatteryTracker] Exception while trying to scan battery");
+        e.printStackTrace();
       }
     }
 
     SmartDashboard.putString("Battery", name);
-    return name;
-  }
-
-  /** Returns the name of the last scanned battery. */
-  public static String getName() {
     return name;
   }
 }
