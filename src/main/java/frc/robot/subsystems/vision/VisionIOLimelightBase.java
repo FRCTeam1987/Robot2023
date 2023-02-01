@@ -18,18 +18,18 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 public class VisionIOLimelightBase {
-  private final NetworkTable inst;
   public static final ShuffleboardTab LIMELIGHT_TAB = Shuffleboard.getTab("Limelights");
   public final String limelightName;
-  private StringSubscriber jsonSubscriber;
-  private DoubleSubscriber targetSubscriber;
-  private DoubleSubscriber latencySubscriber;
+  private final DoubleArraySubscriber botPoseSubscriber;
+  private final StringSubscriber jsonSubscriber;
+  private final DoubleSubscriber targetSubscriber;
+  private final DoubleSubscriber latencySubscriber;
   public VisionIOLimelightBase(String limelightName) {
     int column = 0;
     this.limelightName = limelightName;
 
     String limelightNameShort = limelightName.replace("limelight-", "");
-    inst = NetworkTableInstance.getDefault().getTable(limelightName);
+    NetworkTable inst = NetworkTableInstance.getDefault().getTable(limelightName);
     // inst.getTable(limelightName).getEntry("ledMode").setNumber(1);
     inst.getEntry("pipeline").setNumber(LIMELIGHT_PIPELINE);
     LIMELIGHT_TAB
@@ -39,22 +39,28 @@ public class VisionIOLimelightBase {
             .addNumber(limelightNameShort + " count", this::getVisibleTagCount)
             .withPosition(column++, VisionIOLimelight.row);
     VisionIOLimelight.row++;
+    botPoseSubscriber = inst.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[]{});
     jsonSubscriber = inst.getStringTopic("json").subscribe("[]");
     targetSubscriber = inst.getDoubleTopic("tv").subscribe(0.0);
     latencySubscriber = inst.getDoubleTopic("tl").subscribe(-1.0);
   }
 
-  /*public String getRawJson() {
+  public String getRawJson() {
     return jsonSubscriber.get();
-  }*/
+  }
 
+  /**
+   * This is cheeky and may break in the future.
+   * Each fiducial object in the json array contains one instance of the letter "m".
+   * We parse through the entire json string and grab the count of the letter m.
+   */
   public int getVisibleTagCount() {
     return (int) jsonSubscriber.get().codePoints().filter(ch -> ch == 'm').count();
   }
 
   public Pose3d getBotPose() {
     try {
-      double[] pose = inst.getEntry("botpose_wpiblue").getDoubleArray(new double[]{});
+      double[] pose = botPoseSubscriber.get();
       return new Pose3d(
           new Translation3d(pose[0], pose[1], pose[2]), new Rotation3d(pose[3], pose[4], pose[5]));
     } catch (Exception ignored) {
