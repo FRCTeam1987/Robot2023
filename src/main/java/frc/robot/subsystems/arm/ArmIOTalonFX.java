@@ -21,7 +21,6 @@ public class ArmIOTalonFX {
     static double heightOffset = 12.0;
 
     public ArmIOTalonFX(int telescopingMotorID, int leaderMotorID, int followerMotorID, int rotationCANCoderID) {
-
         rotationLeader = new TalonFX(leaderMotorID);
         rotationFollower = new TalonFX(followerMotorID);
         rotationFollower.follow(rotationLeader);
