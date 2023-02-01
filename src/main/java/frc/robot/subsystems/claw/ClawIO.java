@@ -9,7 +9,9 @@ public interface ClawIO {
   }
 
   /** Updates the set of loggable inputs. */
-  public default void updateInputs(ClawIOInputs inputs) {}
+  public default void updateInputs(ClawIOInputs inputs) {
+    
+  }
 
   /** Sets speed of roller motor */
   public default void setRollerSpeed(double speed) {}

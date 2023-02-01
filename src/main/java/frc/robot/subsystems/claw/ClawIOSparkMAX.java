@@ -1,24 +1,20 @@
 package frc.robot.subsystems.claw;
 
 import com.revrobotics.CANSparkMax;
+
+import frc.lib.team3061.RobotConfig;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 
 public class ClawIOSparkMAX implements ClawIO {
 
-  private final CANSparkMax rollerMotor;
+  private CANSparkMax rollerMotor;
 
   public ClawIOSparkMAX() {
-    switch (Constants.getRobot()) {
-      case ROBOT_2023_COMP:
         rollerMotor =
-            new CANSparkMax(
-                RobotContainer.getInstance().getConfig().getClawMotorID(),
-                CANSparkMax.MotorType.kBrushless);
-        break;
-      default:
-        throw new RuntimeException("Invalid robot for ClawIOSparkMAX!");
-    }
+          new CANSparkMax(
+            RobotConfig.getInstance().getClawMotorID(),
+            CANSparkMax.MotorType.kBrushless);
   }
 
   @Override

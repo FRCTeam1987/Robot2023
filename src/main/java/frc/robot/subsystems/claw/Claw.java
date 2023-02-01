@@ -3,7 +3,11 @@ package frc.robot.subsystems.claw;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.CollectGamePiece;
+import frc.robot.commands.StopClawRollers;
+
 import org.littletonrobotics.junction.Logger;
 
 public class Claw extends SubsystemBase {
@@ -14,8 +18,6 @@ public class Claw extends SubsystemBase {
   // private final CANSparkMax rollerMotor =
   // new CANSparkMax(Constants.ClawMotorID, CANSparkMax.MotorType.kBrushless);
 
-  private final PIDController rollerPID =
-      new PIDController(0.1, 0.01, 0.05); // magic numbers based off of google results
   private final double currentThreshold = 10.0; // amps
 
   ShuffleboardTab tab = Shuffleboard.getTab("ClawTab");
@@ -23,6 +25,8 @@ public class Claw extends SubsystemBase {
   /** Creates a new Claw. */
   public Claw(ClawIO io) {
     this.io = io;
+    // SmartDashboard.putData("Stop Claw", new StopClawRollers(this));
+    // SmartDashboard.putData("Run Claw", new CollectGamePiece(this));
   }
 
   public double getCurrent() {
@@ -42,7 +46,7 @@ public class Claw extends SubsystemBase {
   }
 
   public void collectGamePiece() {
-    io.setRollerSpeed(rollerPID.calculate(getCurrent()));
+    io.setRollerSpeed(0.5);
   }
 
   public void periodic() {

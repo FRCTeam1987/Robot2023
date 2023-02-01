@@ -24,7 +24,7 @@ public class Vision extends SubsystemBase {
   @Override
   public void periodic() {
 
-    visionIO.updateInputs(io);
+    /*visionIO.updateInputs(io);
     Logger.getInstance().processInputs("Vision", io);
 
     for (VisionIOLimelightBase limelight : VisionIOLimelight.limelights) {
@@ -35,5 +35,6 @@ public class Vision extends SubsystemBase {
         Logger.getInstance().recordOutput("Vision/RobotPose", pose.toPose2d());
       }
     }
-  }
+  }*/
+}
 }

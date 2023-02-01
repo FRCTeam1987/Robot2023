@@ -35,6 +35,8 @@ import frc.robot.configs.TestRobotConfig;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
 import frc.robot.subsystems.claw.Claw;
+import frc.robot.subsystems.claw.ClawIO;
+import frc.robot.subsystems.claw.ClawIOSparkMAX;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOLimelight;
@@ -56,6 +58,7 @@ public class RobotContainer {
   private RobotConfig config;
   private Drivetrain drivetrain;
   private Claw claw;
+
 
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to ensure accurate logging
   private final LoggedDashboardChooser<Command> autoChooser =
@@ -141,7 +144,9 @@ public class RobotContainer {
 
             drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
             // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
-            new Vision(new VisionIOLimelight("limelight-fr", "limelight-bl"));
+            // new Vision(new VisionIOLimelight("limelight-fr", "limelight-bl"));
+            claw = new Claw(new ClawIOSparkMAX());
+            // new ClawIOSparkMAX();
             break;
           }
         case ROBOT_SIMBOT:
@@ -240,13 +245,9 @@ public class RobotContainer {
     return robotContainer;
   }
 
-  public RobotConfig getConfig() {
-    return config;
-  }
 
   private void configureSmartDashboard() {
-    SmartDashboard.putData("Stop Claw", new StopClawRollers());
-    SmartDashboard.putData("Run Claw", new CollectGamePiece(claw));
+
     SmartDashboard.putData(
         "Scan Battery", new InstantCommand(() -> BatteryTracker.scanBattery(10.0)));
   }

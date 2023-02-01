@@ -13,13 +13,13 @@ import frc.robot.subsystems.claw.Claw;
 public class StopClawRollers extends InstantCommand {
   private Claw claw;
 
-  public void StopRollers(Claw claw) {
+  public StopClawRollers(Claw claw) {
     this.claw = claw;
     addRequirements(claw);
   }
 
   @Override
-  public void initialize() {
+  public void execute() {
     claw.stopRollers();
   }
 }

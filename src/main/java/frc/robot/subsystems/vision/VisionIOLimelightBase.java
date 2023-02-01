@@ -2,8 +2,6 @@ package frc.robot.subsystems.vision;
 
 import static frc.robot.Constants.LIMELIGHT_PIPELINE;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -19,6 +17,7 @@ public class VisionIOLimelightBase {
   private DoubleArraySubscriber botPoseSubscriber;
   private DoubleSubscriber targetSubscriber;
   private DoubleSubscriber latencySubscriber;
+
   public VisionIOLimelightBase(String limelightName) {
     int column = 0;
     this.limelightName = limelightName;
@@ -35,7 +34,7 @@ public class VisionIOLimelightBase {
         .withPosition(column++, VisionIOLimelight.row);
     VisionIOLimelight.row++;
     jsonSubscriber = inst.getStringTopic("json").subscribe("[]");
-    botPoseSubscriber = inst.getDoubleArrayTopic("botpose").subscribe(new double[]{});
+    botPoseSubscriber = inst.getDoubleArrayTopic("botpose").subscribe(new double[] {});
     targetSubscriber = inst.getDoubleTopic("tv").subscribe(0.0);
     latencySubscriber = inst.getDoubleTopic("tl").subscribe(-1.0);
   }
