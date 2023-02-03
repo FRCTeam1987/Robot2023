@@ -1,13 +1,6 @@
 package frc.robot.subsystems.claw;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.CollectGamePiece;
-import frc.robot.commands.StopClawRollers;
-
 import org.littletonrobotics.junction.Logger;
 
 public class Claw extends SubsystemBase {
@@ -20,7 +13,7 @@ public class Claw extends SubsystemBase {
 
   private final double currentThreshold = 10.0; // amps
 
-  ShuffleboardTab tab = Shuffleboard.getTab("ClawTab");
+  // ShuffleboardTab tab = Shuffleboard.getTab("ClawTab");
 
   /** Creates a new Claw. */
   public Claw(ClawIO io) {
@@ -30,11 +23,7 @@ public class Claw extends SubsystemBase {
   }
 
   public double getCurrent() {
-    if (inputs.currentAmps.length > 0) {
-      return inputs.currentAmps[0];
-    } else {
-      return 0.0;
-    }
+    return inputs.currentAmps;
   }
 
   public boolean hasGamePiece() {
@@ -47,6 +36,10 @@ public class Claw extends SubsystemBase {
 
   public void collectGamePiece() {
     io.setRollerSpeed(0.5);
+  }
+
+  public void setRollerSpeed(double speed) { // speed -1.0 - 1.0
+    io.setRollerSpeed(speed);
   }
 
   public void periodic() {
