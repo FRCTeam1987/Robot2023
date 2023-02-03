@@ -4,32 +4,20 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.subsystems.claw.Claw;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class CollectGamePiece extends InstantCommand {
-  private final Claw claw;
+public class CollectGamePiece extends SequentialCommandGroup {
+  private static final double collectPercent = 0.5;
+  private static final double collectedCurrent = 10;
 
   public CollectGamePiece(Claw claw) {
-    this.claw = claw;
-    addRequirements(claw);
-  }
-
-  @Override
-  public void execute() {
-    claw.collectGamePiece();
-  }
-
-  @Override
-  public boolean isFinished() {
-    return claw.hasGamePiece();
-  }
-
-  @Override
-  public void end(boolean interrupted) {
-    claw.stopRollers();
+    addCommands(
+        new StartEndCommand(() -> claw.setRollerSpeed(collectPercent), claw::stopRollers, claw)
+            .until(() -> claw.getCurrent() > collectedCurrent));
   }
 }
