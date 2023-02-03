@@ -19,7 +19,7 @@ public class StopClawRollers extends InstantCommand {
   }
 
   @Override
-  public void execute() {
+  public void initialize() {
     claw.stopRollers();
   }
 }
