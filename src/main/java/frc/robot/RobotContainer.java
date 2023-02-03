@@ -24,9 +24,11 @@ import frc.lib.team3061.swerve.SwerveModuleIO;
 import frc.lib.team3061.swerve.SwerveModuleIOSim;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
 import frc.robot.Constants.Mode;
+import frc.robot.commands.CollectGamePiece;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
 import frc.robot.commands.FollowPath;
+import frc.robot.commands.StopClawRollers;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.configs.CompRobotConfig;
 import frc.robot.configs.TestRobotConfig;
@@ -240,8 +242,8 @@ public class RobotContainer {
   }
 
   private void configureSmartDashboard() {
-    // SmartDashboard.putData("Stop Claw", new StopClawRollers(claw));
-    // SmartDashboard.putData("Run Claw", new CollectGamePiece(claw));
+    SmartDashboard.putData("Stop Claw", new StopClawRollers(claw));
+    SmartDashboard.putData("Run Claw", new CollectGamePiece(claw));
     SmartDashboard.putData(
         "Scan Battery", new InstantCommand(() -> BatteryTracker.scanBattery(10.0)));
   }
