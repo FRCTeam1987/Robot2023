@@ -27,11 +27,12 @@ public class ClawIOSparkMAX implements ClawIO {
   @Override
   public void updateInputs(ClawIOInputs inputs) {
     double amps = 0.0;
-    double motorSpeed = 0;
+    double speedPercent = 0.0;
+    double volts = 0.0;
 
     try {
       amps = rollerMotor.getOutputCurrent();
-      motorSpeed = rollerMotor.getEncoder().getVelocity();
+      speedPercent = rollerMotor.getEncoder().getVelocity();
     } catch (Exception e) {
       new Alert(e.getMessage(), AlertType.WARNING);
       System.out.print(e.getMessage());
@@ -43,10 +44,10 @@ public class ClawIOSparkMAX implements ClawIO {
     } else {
       inputs.currentAmps = 0.0;
     }
-    if (motorSpeed > 0) {
-      inputs.motorSpeed = motorSpeed;
+    if (speedPercent > 0) {
+      inputs.speedPercent = speedPercent;
     } else {
-      inputs.motorSpeed = 0.0;
+      inputs.speedPercent = 0.0;
     }
   }
 

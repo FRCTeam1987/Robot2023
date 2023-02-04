@@ -6,7 +6,7 @@ public interface ClawIO {
   @AutoLog
   public static class ClawIOInputs {
     public double currentAmps = 0.0;
-    public double motorSpeed = 0.0;
+    public double speedPercent = 0.0;
   }
 
   /** Updates the set of loggable inputs. */

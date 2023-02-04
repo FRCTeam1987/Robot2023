@@ -42,8 +42,8 @@ public class Claw extends SubsystemBase {
     io.setRollerSpeed(speed);
   }
 
-  public double getMotorSpeed() {
-    return inputs.motorSpeed;
+  public double getSpeedPercent() {
+    return inputs.speedPercent;
   }
 
   public void periodic() {
