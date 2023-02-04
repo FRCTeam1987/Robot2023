@@ -1,10 +1,7 @@
 package frc.robot.subsystems.claw;
 
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVLibError;
-
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.lib.team3061.RobotConfig;
 import frc.lib.team6328.util.Alert;
 import frc.lib.team6328.util.Alert.AlertType;
@@ -30,20 +27,27 @@ public class ClawIOSparkMAX implements ClawIO {
   @Override
   public void updateInputs(ClawIOInputs inputs) {
     double amps = 0.0;
+    double motorSpeed = 0;
+
     try {
       amps = rollerMotor.getOutputCurrent();
+      motorSpeed = rollerMotor.getEncoder().getVelocity();
     } catch (Exception e) {
       new Alert(e.getMessage(), AlertType.WARNING);
       System.out.print(e.getMessage());
       System.out.print("error here");
-
     }
+
     if (amps > 0) {
       inputs.currentAmps = amps;
     } else {
       inputs.currentAmps = 0.0;
     }
-    
+    if (motorSpeed > 0) {
+      inputs.motorSpeed = motorSpeed;
+    } else {
+      inputs.motorSpeed = 0.0;
+    }
   }
 
   public void setRollerSpeed(double speed) {

@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.subsystems.claw.Claw;
@@ -18,13 +17,16 @@ public class CollectGamePiece extends SequentialCommandGroup {
 
   public CollectGamePiece(Claw claw) {
     addCommands(
-        new StartEndCommand(() -> {
-          claw.setRollerSpeed(collectPercent);
-          System.out.print("start");
-        }, () -> {
-          claw.stopRollers();
-          System.out.print("End");
-        }, claw)
+        new StartEndCommand(
+                () -> {
+                  claw.setRollerSpeed(collectPercent);
+                  System.out.print("start");
+                },
+                () -> {
+                  claw.stopRollers();
+                  System.out.print("End");
+                },
+                claw)
             .until(() -> claw.getCurrent() > collectedCurrent));
   }
 }

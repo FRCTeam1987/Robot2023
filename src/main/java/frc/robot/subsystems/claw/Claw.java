@@ -42,6 +42,10 @@ public class Claw extends SubsystemBase {
     io.setRollerSpeed(speed);
   }
 
+  public double getMotorSpeed() {
+    return inputs.motorSpeed;
+  }
+
   public void periodic() {
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Claw", inputs);

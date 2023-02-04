@@ -31,12 +31,13 @@ import frc.robot.commands.FollowPath;
 import frc.robot.commands.StopClawRollers;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.configs.CompRobotConfig;
-import frc.robot.configs.TestRobotConfig;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
 import frc.robot.subsystems.claw.Claw;
 import frc.robot.subsystems.claw.ClawIOSparkMAX;
 import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.BatteryTracker;
 import java.util.HashMap;
 import java.util.List;
@@ -78,14 +79,8 @@ public class RobotContainer {
         case ROBOT_2023_COMP:
         case ROBOT_DEFAULT:
           {
-            if (Constants.getRobot() == Constants.RobotType.ROBOT_2023_TEST) {
-              config = new TestRobotConfig();
-            } else if (Constants.getRobot() == Constants.RobotType.ROBOT_2023_COMP) {
-              config = new CompRobotConfig();
-            } else {
-              config = new TestRobotConfig();
-            }
-            config = new TestRobotConfig();
+            config = new CompRobotConfig();
+            // config = new TestRobotConfig();
 
             GyroIO gyro = new GyroIONavx();
 
@@ -140,7 +135,7 @@ public class RobotContainer {
 
             drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
             // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
-            // new Vision(new VisionIOLimelight("limelight-fr", "limelight-bl"));
+            new Vision(new VisionIOLimelight("limelight-fr", "limelight-bl"));
             claw = new Claw(new ClawIOSparkMAX());
             // new ClawIOSparkMAX();
             break;
