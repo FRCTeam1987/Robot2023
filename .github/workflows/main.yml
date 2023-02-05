@@ -39,4 +39,4 @@ jobs:
 
     # Runs a Spotless command to check for code lint
     - name: Lint robot code
-      run: ./gradlew spotlessCheck
+      run: ./gradlew :spotlessCheck
