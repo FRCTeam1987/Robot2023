@@ -1,12 +1,9 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.claw.Claw;
-
-import java.util.concurrent.atomic.AtomicLong;
 
 public class EjectGamePiece extends SequentialCommandGroup {
 
@@ -14,15 +11,13 @@ public class EjectGamePiece extends SequentialCommandGroup {
         addCommands(
                 new StartEndCommand(
                         () -> {
-                            claw.setRollerSpeed(SmartDashboard.getNumber("ejectSpeed", -1.0));
-                            System.out.println("start");
+                            claw.setRollerSpeed(-1.);
                         },
                         () -> {
-                            new WaitCommand(4.5);
+                            new WaitCommand(3.5);
                             claw.stopRollers();
-                            System.out.println("End");
                         },
                         claw)
-                        .until(() -> (claw.getCurrent() < SmartDashboard.getNumber("ejectAmps", 15))));
+                        .until(() -> (claw.getCurrent() < 15)));
     }
 }
