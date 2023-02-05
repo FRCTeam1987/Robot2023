@@ -13,24 +13,24 @@ import frc.lib.team3061.swerve.SwerveModuleConstants.SwerveType;
 public class CompRobotConfig extends RobotConfig {
 
   // FIXME: update all CAN IDs and steer offsets
-  public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 9;
-  public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 8;
-  public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 10;
+  public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 22;
+  public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 23;
+  public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 21;
   public static final double FRONT_LEFT_MODULE_STEER_OFFSET = 10.811;
 
   public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 12;
-  public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 11;
-  public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 7;
+  public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 13;
+  public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 11;
   public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = 189.756;
 
-  public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 3;
-  public static final int BACK_LEFT_MODULE_STEER_MOTOR = 2;
-  public static final int BACK_LEFT_MODULE_STEER_ENCODER = 4;
+  public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 32;
+  public static final int BACK_LEFT_MODULE_STEER_MOTOR = 33;
+  public static final int BACK_LEFT_MODULE_STEER_ENCODER = 31;
   public static final double BACK_LEFT_MODULE_STEER_OFFSET = 137.197;
 
-  public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 6;
-  public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 5;
-  public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 1;
+  public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 42;
+  public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 43;
+  public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 41;
   public static final double BACK_RIGHT_MODULE_STEER_OFFSET = 256.816;
 
   private static final int GYRO_ID = 18;
@@ -95,7 +95,7 @@ public class CompRobotConfig extends RobotConfig {
   private static final double AUTO_TURN_I_CONTROLLER = 0.0;
   private static final double AUTO_TURN_D_CONTROLLER = 0.0;
 
-  private static final int CLAW_MOTOR_ID = 13; // FIXME: replace with correct id value
+  private static final int CLAW_MOTOR_ID = 14; // FIXME: replace with correct id value
 
   @Override
   public int getClawMotorID() {

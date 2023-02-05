@@ -3,12 +3,10 @@ package frc.robot.subsystems.vision;
 import static frc.robot.subsystems.vision.VisionConstants.*;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.team3061.util.RobotOdometry;
 import frc.robot.subsystems.vision.VisionIO.VisionIOInputs;
-import org.littletonrobotics.junction.Logger;
 
 public class Vision extends SubsystemBase {
   private VisionIO visionIO;
@@ -25,16 +23,16 @@ public class Vision extends SubsystemBase {
   public void periodic() {
 
     /*visionIO.updateInputs(io);
-    Logger.getInstance().processInputs("Vision", io);
+      Logger.getInstance().processInputs("Vision", io);
 
-    for (VisionIOLimelightBase limelight : VisionIOLimelight.limelights) {
-      Pose3d pose = limelight.getBotPose();
-      if (pose != null) {
-        poseEstimator.addVisionMeasurement(pose.toPose2d(), limelight.getFrameMillis());
+      for (VisionIOLimelightBase limelight : VisionIOLimelight.limelights) {
+        Pose3d pose = limelight.getBotPose();
+        if (pose != null) {
+          poseEstimator.addVisionMeasurement(pose.toPose2d(), limelight.getFrameMillis());
 
-        Logger.getInstance().recordOutput("Vision/RobotPose", pose.toPose2d());
+          Logger.getInstance().recordOutput("Vision/RobotPose", pose.toPose2d());
+        }
       }
-    }
-  }*/
-}
+    }*/
+  }
 }

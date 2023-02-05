@@ -31,6 +31,7 @@ import frc.robot.commands.FollowPath;
 import frc.robot.commands.StopClawRollers;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.configs.CompRobotConfig;
+import frc.robot.configs.TestRobotConfig;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
 import frc.robot.subsystems.claw.Claw;
