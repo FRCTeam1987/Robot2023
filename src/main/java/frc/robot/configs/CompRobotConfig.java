@@ -35,7 +35,7 @@ public class CompRobotConfig extends RobotConfig {
 
   // FIXME: update robot dimensions
   private static final double TRACKWIDTH_METERS = Units.inchesToMeters(18.75); // 22.5 inches
-  private static final double WHEELBASE_METERS = Units.inchesToMeters(21.825); // 23.5 inches
+  private static final double WHEELBASE_METERS = Units.inchesToMeters(21.75); // 23.5 inches
   private static final double ROBOT_WIDTH_WITH_BUMPERS = 0.89; // meters
   private static final double ROBOT_LENGTH_WITH_BUMPERS = 0.91; // meters
 
