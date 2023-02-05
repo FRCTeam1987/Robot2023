@@ -80,13 +80,13 @@ public class RobotContainer {
         case ROBOT_2023_COMP:
         case ROBOT_DEFAULT:
           {
-             if (Constants.getRobot() == Constants.RobotType.ROBOT_2023_TEST) {
-               config = new TestRobotConfig();
-             } else if (Constants.getRobot() == Constants.RobotType.ROBOT_2023_COMP) {
-               config = new CompRobotConfig();
-             } else {
-               config = new TestRobotConfig();
-             }
+            if (Constants.getRobot() == Constants.RobotType.ROBOT_2023_TEST) {
+              config = new TestRobotConfig();
+            } else if (Constants.getRobot() == Constants.RobotType.ROBOT_2023_COMP) {
+              config = new CompRobotConfig();
+            } else {
+              config = new TestRobotConfig();
+            }
 
             GyroIO gyro = new GyroIONavx();
 

@@ -74,7 +74,7 @@ public class CompRobotConfig extends RobotConfig {
 
   // FIXME: update this with the actual transform from the robot to the camera
   private static final Transform3d ROBOT_TO_CAMERA =
-          new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
+      new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
 
   // FIXME: specify the configuration for pneumatics
   private static final int PNEUMATICS_HUB_ID = 20;
@@ -163,40 +163,40 @@ public class CompRobotConfig extends RobotConfig {
   @Override
   public int[] getSwerveDriveMotorCANIDs() {
     return new int[] {
-            FRONT_LEFT_MODULE_DRIVE_MOTOR,
-            FRONT_RIGHT_MODULE_DRIVE_MOTOR,
-            BACK_LEFT_MODULE_DRIVE_MOTOR,
-            BACK_RIGHT_MODULE_DRIVE_MOTOR
+      FRONT_LEFT_MODULE_DRIVE_MOTOR,
+      FRONT_RIGHT_MODULE_DRIVE_MOTOR,
+      BACK_LEFT_MODULE_DRIVE_MOTOR,
+      BACK_RIGHT_MODULE_DRIVE_MOTOR
     };
   }
 
   @Override
   public int[] getSwerveSteerMotorCANIDs() {
     return new int[] {
-            FRONT_LEFT_MODULE_STEER_MOTOR,
-            FRONT_RIGHT_MODULE_STEER_MOTOR,
-            BACK_LEFT_MODULE_STEER_MOTOR,
-            BACK_RIGHT_MODULE_STEER_MOTOR
+      FRONT_LEFT_MODULE_STEER_MOTOR,
+      FRONT_RIGHT_MODULE_STEER_MOTOR,
+      BACK_LEFT_MODULE_STEER_MOTOR,
+      BACK_RIGHT_MODULE_STEER_MOTOR
     };
   }
 
   @Override
   public int[] getSwerveSteerEncoderCANIDs() {
     return new int[] {
-            FRONT_LEFT_MODULE_STEER_ENCODER,
-            FRONT_RIGHT_MODULE_STEER_ENCODER,
-            BACK_LEFT_MODULE_STEER_ENCODER,
-            BACK_RIGHT_MODULE_STEER_ENCODER
+      FRONT_LEFT_MODULE_STEER_ENCODER,
+      FRONT_RIGHT_MODULE_STEER_ENCODER,
+      BACK_LEFT_MODULE_STEER_ENCODER,
+      BACK_RIGHT_MODULE_STEER_ENCODER
     };
   }
 
   @Override
   public double[] getSwerveSteerOffsets() {
     return new double[] {
-            FRONT_LEFT_MODULE_STEER_OFFSET,
-            FRONT_RIGHT_MODULE_STEER_OFFSET,
-            BACK_LEFT_MODULE_STEER_OFFSET,
-            BACK_RIGHT_MODULE_STEER_OFFSET
+      FRONT_LEFT_MODULE_STEER_OFFSET,
+      FRONT_RIGHT_MODULE_STEER_OFFSET,
+      BACK_LEFT_MODULE_STEER_OFFSET,
+      BACK_RIGHT_MODULE_STEER_OFFSET
     };
   }
 
