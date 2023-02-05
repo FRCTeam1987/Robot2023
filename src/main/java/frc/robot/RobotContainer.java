@@ -85,7 +85,6 @@ public class RobotContainer {
              } else {
                config = new TestRobotConfig();
              }
-            config = new TestRobotConfig();
 
             GyroIO gyro = new GyroIONavx();
 
@@ -279,11 +278,7 @@ public class RobotContainer {
                 autoEventMap),
             Commands.runOnce(drivetrain::enableXstance, drivetrain),
             Commands.waitSeconds(5.0),
-            Commands.runOnce(drivetrain::disableXstance, drivetrain),
-            new FollowPathWithEvents(
-                new FollowPath(auto1Paths.get(1), drivetrain, false),
-                auto1Paths.get(1).getMarkers(),
-                autoEventMap));
+            Commands.runOnce(drivetrain::disableXstance, drivetrain));
 
     // add commands to the auto chooser
     autoChooser.addDefaultOption("Do Nothing", new InstantCommand());
