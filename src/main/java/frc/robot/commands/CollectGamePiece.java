@@ -1,32 +1,34 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.claw.Claw;
 
-// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
-// information, see:
-// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class CollectGamePiece extends SequentialCommandGroup {
-  private static final double collectPercent = 0.5;
-  private static final double collectedCurrent = 10;
+import java.util.concurrent.atomic.AtomicLong;
 
-  public CollectGamePiece(Claw claw) {
-    addCommands(
-        new StartEndCommand(
-                () -> {
-                  claw.setRollerSpeed(collectPercent);
-                  System.out.print("start");
-                },
-                () -> {
-                  claw.stopRollers();
-                  System.out.print("End");
-                },
-                claw)
-            .until(() -> claw.getCurrent() > collectedCurrent));
-  }
+
+public class CollectGamePiece extends SequentialCommandGroup {
+    private static final double collectPercent = 0.75;
+    private static final double collectAmps = 35;
+    private static final double secondsToContinueCollecting = 4.0;
+
+    private static final int delayCurrentCheckMillis = 600;
+
+    public CollectGamePiece(Claw claw) {
+        AtomicLong time = new AtomicLong();
+        addCommands(
+                new StartEndCommand(
+                        () -> {
+                            claw.setRollerSpeed(collectPercent);
+                            time.set(System.currentTimeMillis());
+                        },
+                        () -> {
+                            new WaitCommand(secondsToContinueCollecting);
+                            claw.stallRollers();
+                        },
+                        claw)
+                        .until(() -> (claw.getCurrent() > collectAmps && System.currentTimeMillis() > time.get() + delayCurrentCheckMillis)));
+    }
 }

@@ -38,6 +38,10 @@ public class Claw extends SubsystemBase {
     io.setRollerSpeed(0.5);
   }
 
+  public void stallRollers() {
+    io.setRollerSpeed(0.085);
+  }
+  
   public void setRollerSpeed(double speed) { // speed -1.0 - 1.0
     io.setRollerSpeed(speed);
   }
@@ -45,6 +49,8 @@ public class Claw extends SubsystemBase {
   public double getSpeedPercent() {
     return inputs.speedPercent;
   }
+
+  
 
   public void periodic() {
     io.updateInputs(inputs);
