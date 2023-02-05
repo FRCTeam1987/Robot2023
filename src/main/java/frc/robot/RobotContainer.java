@@ -80,8 +80,13 @@ public class RobotContainer {
         case ROBOT_2023_COMP:
         case ROBOT_DEFAULT:
           {
-            config = new CompRobotConfig();
-            // config = new TestRobotConfig();
+             if (Constants.getRobot() == Constants.RobotType.ROBOT_2023_TEST) {
+               config = new TestRobotConfig();
+             } else if (Constants.getRobot() == Constants.RobotType.ROBOT_2023_COMP) {
+               config = new CompRobotConfig();
+             } else {
+               config = new TestRobotConfig();
+             }
 
             GyroIO gyro = new GyroIONavx();
 
@@ -136,7 +141,7 @@ public class RobotContainer {
 
             drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
             // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
-            new Vision(new VisionIOLimelight("limelight-fr", "limelight-bl"));
+            new Vision(new VisionIOLimelight("limelight-fr", "limelight-fl"));
             claw = new Claw(new ClawIOSparkMAX());
             // new ClawIOSparkMAX();
             break;
@@ -279,11 +284,7 @@ public class RobotContainer {
                 autoEventMap),
             Commands.runOnce(drivetrain::enableXstance, drivetrain),
             Commands.waitSeconds(5.0),
-            Commands.runOnce(drivetrain::disableXstance, drivetrain),
-            new FollowPathWithEvents(
-                new FollowPath(auto1Paths.get(1), drivetrain, false),
-                auto1Paths.get(1).getMarkers(),
-                autoEventMap));
+            Commands.runOnce(drivetrain::disableXstance, drivetrain));
 
     // add commands to the auto chooser
     autoChooser.addDefaultOption("Do Nothing", new InstantCommand());
