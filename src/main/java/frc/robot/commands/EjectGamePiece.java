@@ -11,7 +11,7 @@ public class EjectGamePiece extends SequentialCommandGroup {
         addCommands(
                 new StartEndCommand(
                         () -> {
-                            claw.setRollerSpeed(-1.);
+                            claw.setRollerSpeed(-1.0);
                         },
                         () -> {
                             new WaitCommand(3.5);
