@@ -28,7 +28,10 @@ public final class Constants {
   // FIXME: If Limelight is used, specify the pipeline for detecting AprilTags
   public static final int LIMELIGHT_PIPELINE = 1;
 
-  private static final RobotType ROBOT = RobotBase.getRuntimeType().equals(RuntimeType.kRoboRIO) ? RobotType.ROBOT_2023_TEST : RobotType.ROBOT_2023_COMP;
+  private static final RobotType ROBOT =
+      RobotBase.getRuntimeType().equals(RuntimeType.kRoboRIO)
+          ? RobotType.ROBOT_2023_TEST
+          : RobotType.ROBOT_2023_COMP;
 
   private static final Alert invalidRobotAlert =
       new Alert("Invalid robot selected, using competition robot as default.", AlertType.ERROR);

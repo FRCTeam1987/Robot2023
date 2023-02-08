@@ -2,20 +2,12 @@ package frc.robot.subsystems.vision;
 
 import static frc.robot.Constants.LIMELIGHT_PIPELINE;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.*;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-
-import java.sql.Driver;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.stream.Stream;
 
 public class VisionIOLimelightBase {
   public static final ShuffleboardTab LIMELIGHT_TAB = Shuffleboard.getTab("Limelights");
@@ -24,6 +16,7 @@ public class VisionIOLimelightBase {
   private final StringSubscriber jsonSubscriber;
   private final DoubleSubscriber targetSubscriber;
   private final DoubleSubscriber latencySubscriber;
+
   public VisionIOLimelightBase(String limelightName) {
     int column = 0;
     this.limelightName = limelightName;
@@ -36,10 +29,10 @@ public class VisionIOLimelightBase {
         .addDouble(limelightNameShort + " Target Visible", this::canSeeTarget)
         .withPosition(column++, VisionIOLimelight.row);
     LIMELIGHT_TAB
-            .addNumber(limelightNameShort + " count", this::getVisibleTagCount)
-            .withPosition(column++, VisionIOLimelight.row);
+        .addNumber(limelightNameShort + " count", this::getVisibleTagCount)
+        .withPosition(column++, VisionIOLimelight.row);
     VisionIOLimelight.row++;
-    botPoseSubscriber = inst.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[]{});
+    botPoseSubscriber = inst.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
     jsonSubscriber = inst.getStringTopic("json").subscribe("[]");
     targetSubscriber = inst.getDoubleTopic("tv").subscribe(0.0);
     latencySubscriber = inst.getDoubleTopic("tl").subscribe(-1.0);
@@ -50,9 +43,9 @@ public class VisionIOLimelightBase {
   }
 
   /**
-   * This is cheeky and may break in the future.
-   * Each fiducial object in the json array contains one instance of the letter "m".
-   * We parse through the entire json string and grab the count of the letter m.
+   * This is cheeky and may break in the future. Each fiducial object in the json array contains one
+   * instance of the letter "m". We parse through the entire json string and grab the count of the
+   * letter m.
    */
   public int getVisibleTagCount() {
     return (int) jsonSubscriber.get().codePoints().filter(ch -> ch == 'm').count();
