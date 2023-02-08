@@ -25,7 +25,6 @@ import frc.lib.team6328.util.TunableNumber;
  * and a CAN coder.
  */
 public class SwerveModuleIOTalonFX implements SwerveModuleIO {
-
   private final TunableNumber driveKp =
       new TunableNumber("Drive/DriveKp", RobotConfig.getInstance().getSwerveDriveKP());
   private final TunableNumber driveKi =
@@ -38,22 +37,18 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
       new TunableNumber("Drive/TurnKi", RobotConfig.getInstance().getSwerveAngleKI());
   private final TunableNumber turnKd =
       new TunableNumber("Drive/TurnKd", RobotConfig.getInstance().getSwerveAngleKD());
-
   private final double wheelCircumference;
   private final double driveGearRatio;
   private final boolean driveMotorInverted;
   private final double angleGearRatio;
   private final boolean angleMotorInverted;
   private final boolean canCoderInverted;
-
   private final String canBusName = RobotConfig.getInstance().getCANBusName();
-
   private TalonFX mAngleMotor;
   private TalonFX mDriveMotor;
   private CANCoder angleEncoder;
   private SimpleMotorFeedforward feedForward;
   private double angleOffsetDeg;
-
   /**
    * Make a new SwerveModuleIOTalonFX object.
    *
@@ -65,11 +60,8 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
    */
   public SwerveModuleIOTalonFX(
       int moduleNumber, int driveMotorID, int angleMotorID, int canCoderID, double angleOffsetDeg) {
-
     this.angleOffsetDeg = angleOffsetDeg;
-
     if (RobotConfig.getInstance().getSwerveType() == SwerveType.MK4) {
-
       wheelCircumference = MK4_L2_WHEEL_CIRCUMFERENCE;
       driveGearRatio = MK4_L2_DRIVE_GEAR_RATIO;
       driveMotorInverted = MK4_L2_DRIVE_MOTOR_INVERTED;
@@ -77,7 +69,6 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
       angleMotorInverted = MK4_L2_ANGLE_MOTOR_INVERTED;
       canCoderInverted = MK4_L2_CAN_CODER_INVERTED;
     } else { // MK4I
-
       wheelCircumference = MK4I_L2_WHEEL_CIRCUMFERENCE;
       driveGearRatio = MK4I_L2_DRIVE_GEAR_RATIO;
       driveMotorInverted = MK4I_L2_DRIVE_MOTOR_INVERTED;
@@ -85,18 +76,15 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
       angleMotorInverted = MK4I_L2_ANGLE_MOTOR_INVERTED;
       canCoderInverted = MK4I_L2_CAN_CODER_INVERTED;
     }
-
     this.feedForward =
         new SimpleMotorFeedforward(
             RobotConfig.getInstance().getDriveKS() / 12,
             RobotConfig.getInstance().getDriveKV() / 12,
             RobotConfig.getInstance().getDriveKA() / 12);
-
     CANDeviceFinder can = new CANDeviceFinder();
     can.isDevicePresent(CANDeviceType.TALON, driveMotorID, "Mod " + moduleNumber + "Drive");
     can.isDevicePresent(CANDeviceType.TALON, angleMotorID, "Mod " + moduleNumber + "Angle");
     // check for the CANcoder on the CAN bus when supported by CANDeviceFinder
-
     configAngleEncoder(canCoderID);
     configAngleMotor(angleMotorID);
     configDriveMotor(driveMotorID);
@@ -104,9 +92,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
 
   private void configAngleEncoder(int canCoderID) {
     angleEncoder = new CANCoder(canCoderID, canBusName);
-
     angleEncoder.configFactoryDefault();
-
     CANCoderConfiguration config = new CANCoderConfiguration();
     config.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
     config.sensorDirection = canCoderInverted;
@@ -134,12 +120,12 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     angleMotorConfig.ANALOG_TEMP_VBAT_STATUS_FRAME_RATE_MS = 100;
     angleMotorConfig.MOTION_MAGIC_STATUS_FRAME_RATE_MS = 101;
     angleMotorConfig.BASE_PIDF0_STATUS_FRAME_RATE_MS = 102;
-
     mAngleMotor = TalonFXFactory.createTalon(angleMotorID, canBusName, angleMotorConfig);
-
     double absolutePosition =
         Conversions.degreesToFalcon(getCanCoder().getDegrees() - angleOffsetDeg, angleGearRatio);
     mAngleMotor.setSelectedSensorPosition(absolutePosition);
+    mAngleMotor.configVoltageCompSaturation(12); // default 12v voltage compensation for motors
+    mAngleMotor.enableVoltageCompensation(true);
   }
 
   private void configDriveMotor(int driveMotorID) {
@@ -166,6 +152,8 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
 
     mDriveMotor = TalonFXFactory.createTalon(driveMotorID, canBusName, driveMotorConfig);
 
+    mDriveMotor.configVoltageCompSaturation(12); // default 12v voltage compensation for motors
+    mDriveMotor.enableVoltageCompensation(true);
     mDriveMotor.setSelectedSensorPosition(0);
   }
 
@@ -181,7 +169,6 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     }
     return percentage;
   }
-
   /** Updates the set of loggable inputs. */
   @Override
   public void updateInputs(SwerveModuleIOInputs inputs) {
@@ -196,7 +183,6 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     inputs.driveAppliedPercentage = mDriveMotor.getMotorOutputPercent();
     inputs.driveCurrentAmps = new double[] {mDriveMotor.getStatorCurrent()};
     inputs.driveTempCelsius = new double[] {mDriveMotor.getTemperature()};
-
     inputs.angleAbsolutePositionDeg = angleEncoder.getAbsolutePosition();
     inputs.anglePositionDeg =
         Conversions.falconToDegrees(mAngleMotor.getSelectedSensorPosition(), angleGearRatio);
@@ -205,7 +191,6 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     inputs.angleAppliedPercentage = mAngleMotor.getMotorOutputPercent();
     inputs.angleCurrentAmps = new double[] {mAngleMotor.getStatorCurrent()};
     inputs.angleTempCelsius = new double[] {mAngleMotor.getTemperature()};
-
     // update tunables
     if (driveKp.hasChanged()
         || driveKi.hasChanged()
@@ -221,13 +206,11 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
       mAngleMotor.config_kD(SLOT_INDEX, turnKd.get());
     }
   }
-
   /** Run the drive motor at the specified percentage of full power. */
   @Override
   public void setDriveMotorPercentage(double percentage) {
     mDriveMotor.set(ControlMode.PercentOutput, percentage);
   }
-
   /** Run the drive motor at the specified velocity. */
   @Override
   public void setDriveVelocity(double velocity) {
@@ -238,19 +221,16 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
         DemandType.ArbitraryFeedForward,
         calculateFeedforward(velocity));
   }
-
   /** Run the turn motor to the specified angle. */
   @Override
   public void setAnglePosition(double degrees) {
     mAngleMotor.set(ControlMode.Position, Conversions.degreesToFalcon(degrees, angleGearRatio));
   }
-
   /** Enable or disable brake mode on the drive motor. */
   @Override
   public void setDriveBrakeMode(boolean enable) {
     mDriveMotor.setNeutralMode(enable ? NeutralMode.Brake : NeutralMode.Coast);
   }
-
   /** Enable or disable brake mode on the turn motor. */
   @Override
   public void setAngleBrakeMode(boolean enable) {
