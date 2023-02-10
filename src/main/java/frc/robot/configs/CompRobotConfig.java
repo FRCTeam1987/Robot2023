@@ -95,6 +95,14 @@ public class CompRobotConfig extends RobotConfig {
   private static final double AUTO_TURN_P_CONTROLLER = 0.125;
   private static final double AUTO_TURN_I_CONTROLLER = 0.0;
   private static final double AUTO_TURN_D_CONTROLLER = 0.0;
+
+  private static final int CLAW_MOTOR_ID = 14; // FIXME: replace with correct id value
+
+  @Override
+  public int getClawMotorID() {
+    return CLAW_MOTOR_ID;
+  }
+  
   @Override
   public int getArmLeaderMotorID() {
     return ARM_LEADER_MOTOR;
@@ -103,6 +111,7 @@ public class CompRobotConfig extends RobotConfig {
   public int getArmFollowerMotorID() {
     return ARM_FOLLOWER_MOTOR;
   }
+  
   @Override
   public double getSwerveAngleKP() {
     return ANGLE_KP;

@@ -32,6 +32,13 @@ public abstract class RobotConfig {
    */
   public abstract int getArmFollowerMotorID();
   /**
+   * Returns the CAN ID for the robot's claw motor. Must be overridden.
+   *
+   * @return the CAN ID for the robot's claw motor
+   */
+  public abstract int getClawMotorID();
+
+  /**
    * Returns the proportional constant for the PID controller for the angle motor on the swerve
    * module. Defaults to 0.
    *

@@ -59,8 +59,8 @@ public class Pneumatics extends SubsystemBase {
 
   @Override
   public void periodic() {
-    io.updateInputs(inputs);
-    Logger.getInstance().processInputs("Pneumatics", inputs);
+    // io.updateInputs(inputs);
+    // Logger.getInstance().processInputs("Pneumatics", inputs);
 
     calculateAveragePressure();
 

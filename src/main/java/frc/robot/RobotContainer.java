@@ -24,14 +24,18 @@ import frc.lib.team3061.swerve.SwerveModuleIO;
 import frc.lib.team3061.swerve.SwerveModuleIOSim;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
 import frc.robot.Constants.Mode;
+import frc.robot.commands.CollectGamePiece;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
 import frc.robot.commands.FollowPath;
+import frc.robot.commands.StopClawRollers;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.configs.CompRobotConfig;
 import frc.robot.configs.TestRobotConfig;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
+import frc.robot.subsystems.claw.Claw;
+import frc.robot.subsystems.claw.ClawIOSparkMAX;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
@@ -55,6 +59,7 @@ public class RobotContainer {
 
   private RobotConfig config;
   private Drivetrain drivetrain;
+  private Claw claw;
 
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to ensure accurate logging
   private final LoggedDashboardChooser<Command> autoChooser =
@@ -140,6 +145,8 @@ public class RobotContainer {
             drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
             // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
             new Vision(new VisionIOLimelight("limelight-fr", "limelight-fl"));
+            claw = new Claw(new ClawIOSparkMAX());
+            // new ClawIOSparkMAX();
             new Arm(new ArmIOTalonFX(config.getArmLeaderMotorID(), config.getArmFollowerMotorID()));
             break;
           }
@@ -240,6 +247,8 @@ public class RobotContainer {
   }
 
   private void configureSmartDashboard() {
+    SmartDashboard.putData("Stop Claw", new StopClawRollers(claw));
+    SmartDashboard.putData("Run Claw", new CollectGamePiece(claw));
     SmartDashboard.putData(
         "Scan Battery", new InstantCommand(() -> BatteryTracker.scanBattery(10.0)));
   }
