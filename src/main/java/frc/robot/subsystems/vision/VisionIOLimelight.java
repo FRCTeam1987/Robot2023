@@ -1,9 +1,5 @@
 package frc.robot.subsystems.vision;
 
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -16,12 +12,21 @@ public class VisionIOLimelight implements VisionIO {
   private static VisionIOLimelight instance;
   public static int row = 0;
   static List<VisionIOLimelightBase> limelights = new ArrayList<>();
-  public static final ShuffleboardTab LIMELIGHT_TAB = Shuffleboard.getTab("Limelights");
 
-  public VisionIOLimelight(String... limelights) {
+  public VisionIOLimelight(String... limelightsIn) {
     instance = this;
-    for (String name : limelights) {
-      this.limelights.add(new VisionIOLimelightBase(name));
+    for (String name : limelightsIn) {
+      limelights.add(new VisionIOLimelightBase(name));
+    }
+  }
+
+  public VisionIOLimelightBase getBestLimelight() {
+    try {
+      return limelights.stream()
+          .max(Comparator.comparing(VisionIOLimelightBase::getVisibleTagCount))
+          .get();
+    } catch (Exception e) {
+      return limelights.get(0);
     }
   }
 

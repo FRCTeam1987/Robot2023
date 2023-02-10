@@ -3,6 +3,7 @@ package frc.robot.configs;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import frc.lib.team3061.RobotConfig;
 import frc.lib.team3061.swerve.SwerveModuleConstants.SwerveType;
 
@@ -11,55 +12,51 @@ import frc.lib.team3061.swerve.SwerveModuleConstants.SwerveType;
  * these methods, refer to the documentation in the RobotConfig class.
  */
 public class CompRobotConfig extends RobotConfig {
-
-  // FIXME: update all CAN IDs and steer offsets
-  public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 9;
-  public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 8;
-  public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 10;
-  public static final double FRONT_LEFT_MODULE_STEER_OFFSET = 10.811;
+  public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 22;
+  public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 23;
+  public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 21;
+  public static final double FRONT_LEFT_MODULE_STEER_OFFSET = 280.547;
 
   public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 12;
-  public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 11;
-  public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 7;
-  public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = 189.756;
+  public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 13;
+  public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 11;
+  public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = 242.930;
 
-  public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 3;
-  public static final int BACK_LEFT_MODULE_STEER_MOTOR = 2;
-  public static final int BACK_LEFT_MODULE_STEER_ENCODER = 4;
-  public static final double BACK_LEFT_MODULE_STEER_OFFSET = 137.197;
+  public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 32;
+  public static final int BACK_LEFT_MODULE_STEER_MOTOR = 33;
+  public static final int BACK_LEFT_MODULE_STEER_ENCODER = 31;
+  public static final double BACK_LEFT_MODULE_STEER_OFFSET = 10.635;
 
-  public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 6;
-  public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 5;
-  public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 1;
-  public static final double BACK_RIGHT_MODULE_STEER_OFFSET = 256.816;
-
-
+  public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 42;
+  public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 43;
+  public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 41;
+  public static final double BACK_RIGHT_MODULE_STEER_OFFSET = 64.600;
   private static final int GYRO_ID = 18;
 
   // FIXME: update robot dimensions
-  private static final double TRACKWIDTH_METERS = 0.5715; // 22.5 inches
-  private static final double WHEELBASE_METERS = 0.5969; // 23.5 inches
+  private static final double TRACKWIDTH_METERS = Units.inchesToMeters(18.75); // 22.5 inches
+  private static final double WHEELBASE_METERS = Units.inchesToMeters(21.75); // 23.5 inches
   private static final double ROBOT_WIDTH_WITH_BUMPERS = 0.89; // meters
   private static final double ROBOT_LENGTH_WITH_BUMPERS = 0.91; // meters
 
   // FIXME: tune PID values for the angle and drive motors for the swerve modules
 
   /* Angle Motor PID Values */
-  private static final double ANGLE_KP = 0.6;
+  private static final double ANGLE_KP = 0.125;
   private static final double ANGLE_KI = 0.0;
-  private static final double ANGLE_KD = 12.0;
+  private static final double ANGLE_KD = 0.0;
   private static final double ANGLE_KF = 0.0;
 
   /* Drive Motor PID Values */
-  private static final double DRIVE_KP = 0.10;
+  private static final double DRIVE_KP = 0.0;
   private static final double DRIVE_KI = 0.0;
   private static final double DRIVE_KD = 0.0;
   private static final double DRIVE_KF = 0.0;
 
   // FIXME: characterize the drivetrain and update these constants
-  private static final double DRIVE_KS = 0.55493;
-  private static final double DRIVE_KV = 2.3014;
-  private static final double DRIVE_KA = 0.12872;
+  private static final double DRIVE_KS = 0.67900;
+  private static final double DRIVE_KV = 2.02673;
+  private static final double DRIVE_KA = 0.0;
 
   // FIXME: specify the type of swerve module (MK4 and MK4i are supported)
   private static final SwerveType SWERVE_TYPE = SwerveType.MK4I;
@@ -70,7 +67,7 @@ public class CompRobotConfig extends RobotConfig {
 
   // FIXME: specify the name of the CANivore CAN FD bus as appropriate (an empty string uses the
   // default CAN bus)
-  private static final String CAN_BUS_NAME = "";
+  private static final String CAN_BUS_NAME = "canfd";
 
   // FIXME: specify the name of the camera used for detecting AprilTags
   private static final String CAMERA_NAME = "ov9268";
@@ -89,10 +86,10 @@ public class CompRobotConfig extends RobotConfig {
 
   private static final double AUTO_MAX_SPEED_METERS_PER_SECOND = 2.0;
   private static final double AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 2.0;
-  private static final double AUTO_DRIVE_P_CONTROLLER = 6.0;
+  private static final double AUTO_DRIVE_P_CONTROLLER = 0.0;
   private static final double AUTO_DRIVE_I_CONTROLLER = 0.0;
   private static final double AUTO_DRIVE_D_CONTROLLER = 0.0;
-  private static final double AUTO_TURN_P_CONTROLLER = 10.0;
+  private static final double AUTO_TURN_P_CONTROLLER = 0.125;
   private static final double AUTO_TURN_I_CONTROLLER = 0.0;
   private static final double AUTO_TURN_D_CONTROLLER = 0.0;
 
