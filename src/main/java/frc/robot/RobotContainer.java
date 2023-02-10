@@ -36,6 +36,9 @@ import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
 import frc.robot.subsystems.claw.Claw;
 import frc.robot.subsystems.claw.ClawIOSparkMAX;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.ArmIO;
+import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOLimelight;
@@ -144,6 +147,7 @@ public class RobotContainer {
             new Vision(new VisionIOLimelight("limelight-fr", "limelight-fl"));
             claw = new Claw(new ClawIOSparkMAX());
             // new ClawIOSparkMAX();
+            new Arm(new ArmIOTalonFX(config.getArmLeaderMotorID(), config.getArmFollowerMotorID()));
             break;
           }
         case ROBOT_SIMBOT:
