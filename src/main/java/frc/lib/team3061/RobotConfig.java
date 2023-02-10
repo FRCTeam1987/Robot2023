@@ -19,7 +19,18 @@ public abstract class RobotConfig {
   protected RobotConfig() {
     RobotConfig.robotConfig = this;
   }
-
+  /**
+   * Returns the CAN ID for the robot's arm leader motor. Must be overridden.
+   *
+   * @return the CAN ID for the arm leader motor.
+   */
+  public abstract int getArmLeaderMotorID();
+  /**
+   * Returns the CAN ID for the robot's arm follower motor. Must be overridden.
+   *
+   * @return the CAN ID for the arm follower motor.
+   */
+  public abstract int getArmFollowerMotorID();
   /**
    * Returns the proportional constant for the PID controller for the angle motor on the swerve
    * module. Defaults to 0.

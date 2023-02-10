@@ -32,6 +32,9 @@ import frc.robot.configs.CompRobotConfig;
 import frc.robot.configs.TestRobotConfig;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.ArmIO;
+import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOLimelight;
@@ -82,7 +85,6 @@ public class RobotContainer {
             } else {
               config = new TestRobotConfig();
             }
-            config = new TestRobotConfig();
 
             GyroIO gyro = new GyroIONavx();
 
@@ -137,7 +139,8 @@ public class RobotContainer {
 
             drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
             // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
-            new Vision(new VisionIOLimelight("limelight-fr", "limelight-bl"));
+            new Vision(new VisionIOLimelight("limelight-fr", "limelight-fl"));
+            new Arm(new ArmIOTalonFX(config.getArmLeaderMotorID(), config.getArmFollowerMotorID()));
             break;
           }
         case ROBOT_SIMBOT:
@@ -276,11 +279,7 @@ public class RobotContainer {
                 autoEventMap),
             Commands.runOnce(drivetrain::enableXstance, drivetrain),
             Commands.waitSeconds(5.0),
-            Commands.runOnce(drivetrain::disableXstance, drivetrain),
-            new FollowPathWithEvents(
-                new FollowPath(auto1Paths.get(1), drivetrain, false),
-                auto1Paths.get(1).getMarkers(),
-                autoEventMap));
+            Commands.runOnce(drivetrain::disableXstance, drivetrain));
 
     // add commands to the auto chooser
     autoChooser.addDefaultOption("Do Nothing", new InstantCommand());
