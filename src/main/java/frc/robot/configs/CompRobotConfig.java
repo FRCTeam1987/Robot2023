@@ -33,7 +33,6 @@ public class CompRobotConfig extends RobotConfig {
   public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 1;
   public static final double BACK_RIGHT_MODULE_STEER_OFFSET = 256.816;
 
-
   private static final int GYRO_ID = 18;
 
   // FIXME: update robot dimensions

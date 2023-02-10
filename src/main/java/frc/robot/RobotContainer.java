@@ -36,12 +36,9 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.BatteryTracker;
-
-import java.awt.Color;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -78,13 +75,13 @@ public class RobotContainer {
         case ROBOT_2023_COMP:
         case ROBOT_DEFAULT:
           {
-             if (Constants.getRobot() == Constants.RobotType.ROBOT_2023_TEST) {
-               config = new TestRobotConfig();
-             } else if (Constants.getRobot() == Constants.RobotType.ROBOT_2023_COMP) {
-               config = new CompRobotConfig();
-             } else {
-               config = new TestRobotConfig();
-             }
+            if (Constants.getRobot() == Constants.RobotType.ROBOT_2023_TEST) {
+              config = new TestRobotConfig();
+            } else if (Constants.getRobot() == Constants.RobotType.ROBOT_2023_COMP) {
+              config = new CompRobotConfig();
+            } else {
+              config = new TestRobotConfig();
+            }
             config = new TestRobotConfig();
 
             GyroIO gyro = new GyroIONavx();
@@ -140,7 +137,7 @@ public class RobotContainer {
 
             drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
             // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
-             new Vision(new VisionIOLimelight("limelight-fr", "limelight-bl"));
+            new Vision(new VisionIOLimelight("limelight-fr", "limelight-bl"));
             break;
           }
         case ROBOT_SIMBOT:
