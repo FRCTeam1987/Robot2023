@@ -10,7 +10,7 @@ import org.opencv.core.RotatedRect;
 
 import java.util.Arrays;
 
-public class ArmIOTalonFX {
+public class ArmIOTalonFX implements ArmIO {
     private TalonFX rotationLeader;
     private TalonFX rotationFollower;
     private CANCoder rotationEncoder;
@@ -20,13 +20,13 @@ public class ArmIOTalonFX {
 
     static double heightOffset = 12.0;
 
-    public ArmIOTalonFX(int telescopingMotorID, int leaderMotorID, int followerMotorID, int rotationCANCoderID) {
+    public ArmIOTalonFX(int leaderMotorID, int followerMotorID) {
         rotationLeader = new TalonFX(leaderMotorID);
         rotationFollower = new TalonFX(followerMotorID);
         rotationFollower.follow(rotationLeader);
-        rotationEncoder = new CANCoder(rotationCANCoderID);
+        //rotationEncoder = new CANCoder(rotationCANCoderID);
 
-        telescopingMotor = new TalonFX(telescopingMotorID);
+        //telescopingMotor = new TalonFX(telescopingMotorID);
 
 
     }
@@ -50,5 +50,13 @@ public class ArmIOTalonFX {
         if (x>0) return Math.toDegrees(Math.atan((y-heightOffset)/x));
         if (x<0) return 180 + Math.toDegrees(Math.atan((y-heightOffset)/x));
         return 0.0;
+    }
+
+    @Override
+    public synchronized void updateInputs(ArmIOInputs inputs) {
+        double[] amps = new double[2];
+        amps[0] = rotationLeader.getStatorCurrent();
+        amps[1] = rotationFollower.getStatorCurrent();
+        inputs.currentAmps = amps;
     }
 }
