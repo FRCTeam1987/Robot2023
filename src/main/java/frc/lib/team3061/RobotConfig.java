@@ -21,6 +21,12 @@ public abstract class RobotConfig {
   }
 
   /**
+   * Returns the CAN ID for the robot's wrist rotator motor. Must be overridden.
+   *
+   * @return the CAN ID for the wrist rotator motor.
+   */
+  public abstract int getWristRotatorID();
+  /**
    * Returns the proportional constant for the PID controller for the angle motor on the swerve
    * module. Defaults to 0.
    *

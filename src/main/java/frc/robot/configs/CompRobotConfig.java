@@ -12,6 +12,8 @@ import frc.lib.team3061.swerve.SwerveModuleConstants.SwerveType;
  * these methods, refer to the documentation in the RobotConfig class.
  */
 public class CompRobotConfig extends RobotConfig {
+
+  public static final int WRIST_ROTATOR_MOTOR = 5;
   public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 22;
   public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 23;
   public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 21;
@@ -92,6 +94,9 @@ public class CompRobotConfig extends RobotConfig {
   private static final double AUTO_TURN_P_CONTROLLER = 0.125;
   private static final double AUTO_TURN_I_CONTROLLER = 0.0;
   private static final double AUTO_TURN_D_CONTROLLER = 0.0;
+
+  @Override
+  public int getWristRotatorID() { return WRIST_ROTATOR_MOTOR; }
 
   @Override
   public double getSwerveAngleKP() {

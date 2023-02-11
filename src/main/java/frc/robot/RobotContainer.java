@@ -35,6 +35,8 @@ import frc.robot.operator_interface.OperatorInterface;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOLimelight;
+import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.subsystems.wrist.WristIOTalonSRX;
 import frc.robot.util.BatteryTracker;
 import java.util.HashMap;
 import java.util.List;
@@ -136,6 +138,7 @@ public class RobotContainer {
 
             drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
             // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
+            new Wrist(new WristIOTalonSRX(config.getWristRotatorID()));
             new Vision(new VisionIOLimelight("limelight-fr", "limelight-fl"));
             break;
           }
