@@ -5,10 +5,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.CANCoder;
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
-import frc.lib.team254.drivers.TalonFXFactory;
-import frc.lib.team3061.RobotConfig;
-import org.opencv.core.RotatedRect;
 
 import java.util.Arrays;
 
@@ -17,8 +13,8 @@ public class ArmIOTalonFX implements ArmIO {
     private TalonFX rotationFollower;
     private CANCoder rotationEncoder;
     private TalonFX telescopingMotor;
-
     static double heightOffset = 12.0;
+
 
     public ArmIOTalonFX(int leaderMotorID, int followerMotorID, int rotationCANCoderID, int telescopingMotorID, String canBusName) {
         rotationLeader = new TalonFX(leaderMotorID, canBusName);
