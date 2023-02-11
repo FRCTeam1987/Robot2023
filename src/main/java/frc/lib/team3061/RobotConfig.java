@@ -20,6 +20,18 @@ public abstract class RobotConfig {
     RobotConfig.robotConfig = this;
   }
   /**
+   * Returns the CAN ID for the robot's arm telescope motor. Must be overridden.
+   *
+   * @return the CAN ID for the arm telescope motor.
+   */
+  public abstract int getArmTelescopeID();
+  /**
+   * Returns the CAN ID for the robot's arm cancoder. Must be overridden.
+   *
+   * @return the CAN ID for the arm cancoder.
+   */
+  public abstract int getArmCanCoderID();
+  /**
    * Returns the CAN ID for the robot's arm leader motor. Must be overridden.
    *
    * @return the CAN ID for the arm leader motor.

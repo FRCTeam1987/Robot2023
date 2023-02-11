@@ -13,6 +13,8 @@ import frc.lib.team3061.swerve.SwerveModuleConstants.SwerveType;
 public class TestRobotConfig extends RobotConfig {
 
   // FIXME: update all CAN IDs and steer offsets
+  public static final int CLAW_INTAKE_MOTOR = 6;
+  public static final int ARM_CANCODER = 7;
   public static final int ARM_LEADER_MOTOR = 8;
   public static final int ARM_FOLLOWER_MOTOR = 9;
   public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 9;
@@ -96,6 +98,14 @@ public class TestRobotConfig extends RobotConfig {
   private static final double AUTO_TURN_I_CONTROLLER = 0.0;
   private static final double AUTO_TURN_D_CONTROLLER = 0.0;
 
+  @Override
+  public int getArmTelescopeID() {
+    return CLAW_INTAKE_MOTOR;
+  }
+  @Override
+  public int getArmCanCoderID() {
+    return ARM_CANCODER;
+  }
   @Override
   public int getArmLeaderMotorID() {
     return ARM_LEADER_MOTOR;

@@ -140,7 +140,7 @@ public class RobotContainer {
             drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
             // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
             new Vision(new VisionIOLimelight("limelight-fr", "limelight-fl"));
-            new Arm(new ArmIOTalonFX(config.getArmLeaderMotorID(), config.getArmFollowerMotorID()));
+            new Arm(new ArmIOTalonFX(config.getArmLeaderMotorID(), config.getArmFollowerMotorID(), config.getArmCanCoderID(), config.getArmTelescopeID(), config.getCANBusName()));
             break;
           }
         case ROBOT_SIMBOT:

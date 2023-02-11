@@ -1,7 +1,9 @@
 package frc.robot.subsystems.arm;
 
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.CANCoder;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import frc.lib.team254.drivers.TalonFXFactory;
@@ -14,24 +16,17 @@ public class ArmIOTalonFX implements ArmIO {
     private TalonFX rotationLeader;
     private TalonFX rotationFollower;
     private CANCoder rotationEncoder;
-
     private TalonFX telescopingMotor;
-
 
     static double heightOffset = 12.0;
 
-    public ArmIOTalonFX(int leaderMotorID, int followerMotorID) {
-        rotationLeader = new TalonFX(leaderMotorID);
-        rotationFollower = new TalonFX(followerMotorID);
+    public ArmIOTalonFX(int leaderMotorID, int followerMotorID, int rotationCANCoderID, int telescopingMotorID, String canBusName) {
+        rotationLeader = new TalonFX(leaderMotorID, canBusName);
+        rotationFollower = new TalonFX(followerMotorID, canBusName);
         rotationFollower.follow(rotationLeader);
-        //rotationEncoder = new CANCoder(rotationCANCoderID);
-
-        //telescopingMotor = new TalonFX(telescopingMotorID);
-
-
+        rotationEncoder = new CANCoder(rotationCANCoderID, canBusName);
+        telescopingMotor = new TalonFX(telescopingMotorID);
     }
-
-
 
     public static double calculateArmLength(double x, double y) {
         return Math.sqrt(Math.pow(x, 2) + Math.pow((y-heightOffset), 2));
@@ -54,9 +49,8 @@ public class ArmIOTalonFX implements ArmIO {
 
     @Override
     public synchronized void updateInputs(ArmIOInputs inputs) {
-        double[] amps = new double[2];
-        amps[0] = rotationLeader.getStatorCurrent();
-        amps[1] = rotationFollower.getStatorCurrent();
-        inputs.currentAmps = amps;
+        inputs.currentAmps = new double[]{rotationLeader.getStatorCurrent(),rotationFollower.getStatorCurrent(),telescopingMotor.getStatorCurrent()};
+        inputs.currentVolts = new double[]{rotationLeader.getMotorOutputVoltage(),rotationFollower.getMotorOutputVoltage(),telescopingMotor.getMotorOutputVoltage()};
+        inputs.cancoder = rotationEncoder.getAbsolutePosition();
     }
 }
