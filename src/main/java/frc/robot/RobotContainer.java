@@ -24,29 +24,23 @@ import frc.lib.team3061.swerve.SwerveModuleIO;
 import frc.lib.team3061.swerve.SwerveModuleIOSim;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
 import frc.robot.Constants.Mode;
-import frc.robot.commands.CollectGamePiece;
-import frc.robot.commands.FeedForwardCharacterization;
+import frc.robot.commands.*;
 import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
-import frc.robot.commands.FollowPath;
-import frc.robot.commands.StopClawRollers;
-import frc.robot.commands.TeleopSwerve;
 import frc.robot.configs.CompRobotConfig;
 import frc.robot.configs.TestRobotConfig;
 import frc.robot.operator_interface.OISelector;
 import frc.robot.operator_interface.OperatorInterface;
 import frc.robot.subsystems.claw.Claw;
 import frc.robot.subsystems.claw.ClawIOSparkMAX;
-import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.arm.ArmIO;
-import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.BatteryTracker;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -147,7 +141,6 @@ public class RobotContainer {
             new Vision(new VisionIOLimelight("limelight-fr", "limelight-fl"));
             claw = new Claw(new ClawIOSparkMAX());
             // new ClawIOSparkMAX();
-            new Arm(new ArmIOTalonFX(config.getArmLeaderMotorID(), config.getArmFollowerMotorID()));
             break;
           }
         case ROBOT_SIMBOT:
