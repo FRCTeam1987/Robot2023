@@ -2,56 +2,25 @@ package frc.robot.subsystems.claw;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVLibError;
-import frc.lib.team3061.RobotConfig;
 import frc.lib.team6328.util.Alert;
 import frc.lib.team6328.util.Alert.AlertType;
 
 public class ClawIOSparkMAX implements ClawIO {
 
-  private final CANSparkMax rollerMotor;
+  private final CANSparkMax clawRollerMotor;
 
-  public ClawIOSparkMAX() {
-    rollerMotor =
-        new CANSparkMax(
-            RobotConfig.getInstance().getClawMotorID(), CANSparkMax.MotorType.kBrushless);
-    REVLibError restoreError = rollerMotor.restoreFactoryDefaults();
-    if (restoreError != REVLibError.kOk) {
-      new Alert(restoreError.toString(), AlertType.WARNING);
-    }
-    REVLibError flashError = rollerMotor.burnFlash();
-    if (flashError != REVLibError.kOk) {
-      new Alert(flashError.toString(), AlertType.WARNING);
-    }
+  public ClawIOSparkMAX(int clawRollerMotorID) {
+    clawRollerMotor = new CANSparkMax(clawRollerMotorID, CANSparkMax.MotorType.kBrushless);
+    clawRollerMotor.restoreFactoryDefaults();
   }
 
   @Override
   public void updateInputs(ClawIOInputs inputs) {
-    double amps = 0.0;
-    double speedPercent = 0.0;
-    double volts = 0.0;
-
-    try {
-      amps = rollerMotor.getOutputCurrent();
-      speedPercent = rollerMotor.getEncoder().getVelocity();
-    } catch (Exception e) {
-      new Alert(e.getMessage(), AlertType.WARNING);
-      System.out.print(e.getMessage());
-      System.out.print("error here");
-    }
-
-    if (amps > 0) {
-      inputs.currentAmps = amps;
-    } else {
-      inputs.currentAmps = 0.0;
-    }
-    if (speedPercent > 0) {
-      inputs.speedPercent = speedPercent;
-    } else {
-      inputs.speedPercent = 0.0;
-    }
+    inputs.currentAmps = clawRollerMotor.getOutputCurrent();
+    inputs.speedPercent = clawRollerMotor.getEncoder().getVelocity();
   }
 
   public void setRollerSpeed(double speed) {
-    rollerMotor.set(speed);
+    clawRollerMotor.set(speed);
   }
 }

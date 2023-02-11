@@ -139,7 +139,7 @@ public class RobotContainer {
             drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
             // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
             new Vision(new VisionIOLimelight("limelight-fr", "limelight-fl"));
-            claw = new Claw(new ClawIOSparkMAX());
+            claw = new Claw(new ClawIOSparkMAX(config.getClawMotorID()));
             // new ClawIOSparkMAX();
             break;
           }

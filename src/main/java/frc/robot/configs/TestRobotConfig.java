@@ -104,16 +104,6 @@ public class TestRobotConfig extends RobotConfig {
   }
 
   @Override
-  public int getArmLeaderMotorID() {
-    return ARM_LEADER_MOTOR;
-  }
-
-  @Override
-  public int getArmFollowerMotorID() {
-    return ARM_FOLLOWER_MOTOR;
-  }
-
-  @Override
   public double getSwerveAngleKP() {
     return ANGLE_KP;
   }

@@ -12,9 +12,7 @@ import frc.lib.team3061.swerve.SwerveModuleConstants.SwerveType;
  * these methods, refer to the documentation in the RobotConfig class.
  */
 public class CompRobotConfig extends RobotConfig {
-
-  public static final int ARM_LEADER_MOTOR = 8;
-  public static final int ARM_FOLLOWER_MOTOR = 9;
+  private static final int CLAW_MOTOR_ID = 4;
   public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 22;
   public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 23;
   public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 21;
@@ -96,20 +94,9 @@ public class CompRobotConfig extends RobotConfig {
   private static final double AUTO_TURN_I_CONTROLLER = 0.0;
   private static final double AUTO_TURN_D_CONTROLLER = 0.0;
 
-  private static final int CLAW_MOTOR_ID = 14; // FIXME: replace with correct id value
-
   @Override
   public int getClawMotorID() {
     return CLAW_MOTOR_ID;
-  }
-  
-  @Override
-  public int getArmLeaderMotorID() {
-    return ARM_LEADER_MOTOR;
-  }
-  @Override
-  public int getArmFollowerMotorID() {
-    return ARM_FOLLOWER_MOTOR;
   }
   
   @Override
