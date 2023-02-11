@@ -1,4 +1,3 @@
 package frc.robot.subsystems.arm;
 
-public class ArmIOSim {
-}
+public class ArmIOSim {}
