@@ -36,11 +36,10 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.BatteryTracker;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a

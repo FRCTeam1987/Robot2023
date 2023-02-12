@@ -98,7 +98,7 @@ public class CompRobotConfig extends RobotConfig {
   public int getClawMotorID() {
     return CLAW_MOTOR_ID;
   }
-  
+
   @Override
   public double getSwerveAngleKP() {
     return ANGLE_KP;
@@ -198,8 +198,6 @@ public class CompRobotConfig extends RobotConfig {
       BACK_RIGHT_MODULE_STEER_OFFSET
     };
   }
-
-
 
   @Override
   public int getGyroCANID() {

@@ -1,9 +1,6 @@
 package frc.robot.subsystems.claw;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.REVLibError;
-import frc.lib.team6328.util.Alert;
-import frc.lib.team6328.util.Alert.AlertType;
 
 public class ClawIOSparkMAX implements ClawIO {
 
