@@ -96,7 +96,9 @@ public class CompRobotConfig extends RobotConfig {
   private static final double AUTO_TURN_D_CONTROLLER = 0.0;
 
   @Override
-  public int getWristRotatorID() { return WRIST_ROTATOR_MOTOR; }
+  public int getWristRotatorID() {
+    return WRIST_ROTATOR_MOTOR;
+  }
 
   @Override
   public double getSwerveAngleKP() {
