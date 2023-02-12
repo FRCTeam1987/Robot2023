@@ -102,10 +102,12 @@ public class TestRobotConfig extends RobotConfig {
   public int getArmTelescopeID() {
     return CLAW_INTAKE_MOTOR;
   }
+
   @Override
   public int getArmCanCoderID() {
     return ARM_CANCODER;
   }
+
   @Override
   public int getArmLeaderMotorID() {
     return ARM_LEADER_MOTOR;

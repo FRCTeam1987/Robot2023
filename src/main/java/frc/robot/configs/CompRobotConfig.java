@@ -102,18 +102,22 @@ public class CompRobotConfig extends RobotConfig {
   public int getArmTelescopeID() {
     return ARM_TELESCOPE_MOTOR;
   }
+
   @Override
   public int getArmCanCoderID() {
     return ARM_CANCODER;
   }
+
   @Override
   public int getArmLeaderMotorID() {
     return ARM_LEADER_MOTOR;
   }
+
   @Override
   public int getArmFollowerMotorID() {
     return ARM_FOLLOWER_MOTOR;
   }
+
   @Override
   public double getSwerveAngleKP() {
     return ANGLE_KP;
@@ -213,8 +217,6 @@ public class CompRobotConfig extends RobotConfig {
       BACK_RIGHT_MODULE_STEER_OFFSET
     };
   }
-
-
 
   @Override
   public int getGyroCANID() {
