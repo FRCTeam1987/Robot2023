@@ -20,6 +20,12 @@ public abstract class RobotConfig {
     RobotConfig.robotConfig = this;
   }
   /**
+   * Returns the robots height offset for the center of the arm.
+   *
+   * @return the robot height offset for the center of the arm.
+   */
+  public abstract double getRobotArmHeightOffset();
+  /**
    * Returns the CAN ID for the robot's arm telescope motor. Must be overridden.
    *
    * @return the CAN ID for the arm telescope motor.

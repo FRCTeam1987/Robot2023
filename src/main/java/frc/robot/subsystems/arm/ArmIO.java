@@ -7,7 +7,7 @@ public interface ArmIO {
   public static class ArmIOInputs {
     public double[] currentAmps = new double[] {};
     public double[] currentVolts = new double[] {};
-    public double cancoder;
+    public double armAbsoluteAngle;
   }
 
   public default void updateInputs(ArmIOInputs inputs) {}
