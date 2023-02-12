@@ -103,6 +103,7 @@ public class CompRobotConfig extends RobotConfig {
   public double getRobotArmHeightOffset() {
     return ROBOT_ARM_HEIGHT_OFFSET;
   }
+
   @Override
   public int getArmTelescopeID() {
     return ARM_TELESCOPE_MOTOR;
