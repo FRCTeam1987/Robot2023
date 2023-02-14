@@ -105,6 +105,8 @@ public class CompRobotConfig extends RobotConfig {
     return ANGLE_KP;
   }
 
+  
+
   @Override
   public double getSwerveAngleKI() {
     return ANGLE_KI;
