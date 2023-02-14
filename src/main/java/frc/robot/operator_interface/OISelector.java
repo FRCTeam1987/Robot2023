@@ -18,9 +18,9 @@ import frc.lib.team6328.util.Alert.AlertType;
 public class OISelector {
   private static String[] lastJoystickNames = new String[] {null, null, null, null, null, null};
   private static final Alert noOperatorInterfaceWarning =
-      new Alert("No operator controller(s) connected.", AlertType.INFO);
+      new Alert("No operator controller(s) connected.", AlertType.WARNING);
   private static final Alert nonCompetitionOperatorInterfaceWarning =
-      new Alert("Non-competition operator controller connected.", AlertType.INFO);
+      new Alert("Non-competition operator controller connected.", AlertType.WARNING);
 
   private OISelector() {}
 
