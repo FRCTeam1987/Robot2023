@@ -14,6 +14,9 @@ public interface ArmIO {
 
   public default void setSpeedRot(double speed) {}
 
-  public default double getEncoderPosition() {return 0.0; }
+  public default double getEncoderPosition() {
+    return 0.0;
+  }
+
   public default void rotateArmToAngle(double angle) {}
 }

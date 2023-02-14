@@ -26,7 +26,9 @@ public class Arm extends SubsystemBase {
     tab.add("OFF", new InstantCommand(() -> io.setSpeedRot(0.0)));
     tab.addNumber("PositionEncoder", io::getEncoderPosition);
     SmartDashboard.putNumber("angle", 90.0);
-    SmartDashboard.putData("Rotate to selected", new InstantCommand(() -> io.rotateArmToAngle(SmartDashboard.getNumber("angle", 0.0))));
+    SmartDashboard.putData(
+        "Rotate to selected",
+        new InstantCommand(() -> io.rotateArmToAngle(SmartDashboard.getNumber("angle", 0.0))));
   }
 
   public void periodic() {

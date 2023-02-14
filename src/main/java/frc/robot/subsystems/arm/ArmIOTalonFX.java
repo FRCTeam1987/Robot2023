@@ -39,23 +39,21 @@ public class ArmIOTalonFX implements ArmIO {
     rotationFollower = new TalonFX(followerMotorID, canBusName);
     rotationFollower.configFactoryDefault();
     rotationFollower.follow(rotationLeader);
-    
-    
+
     rotationEncoder = new CANCoder(rotationCANCoderID, canBusName);
     rotationEncoder.configFactoryDefault();
-    
-    
+
     telescopingMotor = new TalonFX(telescopingMotorID);
     telescopingMotor.configFactoryDefault();
 
     telescopePotentiometer = new AnalogInput(potAnalogInputID);
-
   }
 
   public double getArmLength() {
     return telescopePotentiometer.getVoltage();
-    //TODO: make this work
+    // TODO: make this work
   }
+
   @Override
   public double getEncoderPosition() {
     return rotationEncoder.getAbsolutePosition() - temporaryArmCancoderOffset;
@@ -64,6 +62,7 @@ public class ArmIOTalonFX implements ArmIO {
   public void extendArmToLength(double length) {
     telescopingMotor.set(TalonFXControlMode.Position, length);
   }
+
   @Override
   public void rotateArmToAngle(double angle) {
     rotationLeader.set(TalonFXControlMode.Position, angle - temporaryArmCancoderOffset);
