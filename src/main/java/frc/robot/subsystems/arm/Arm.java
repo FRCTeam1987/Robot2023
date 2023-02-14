@@ -3,6 +3,8 @@ package frc.robot.subsystems.arm;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.team3061.RobotConfig;
 import frc.lib.team6328.util.Alert;
@@ -20,6 +22,11 @@ public class Arm extends SubsystemBase {
 
   public Arm(ArmIO io) {
     this.io = io;
+    tab.add("ON", new InstantCommand(() -> io.setSpeedRot(1)));
+    tab.add("OFF", new InstantCommand(() -> io.setSpeedRot(0.0)));
+    tab.addNumber("PositionEncoder", io::getEncoderPosition);
+    SmartDashboard.putNumber("angle", 90.0);
+    SmartDashboard.putData("Rotate to selected", new InstantCommand(() -> io.rotateArmToAngle(SmartDashboard.getNumber("angle", 0.0))));
   }
 
   public void periodic() {
