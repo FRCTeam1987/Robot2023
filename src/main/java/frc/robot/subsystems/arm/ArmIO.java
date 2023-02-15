@@ -25,5 +25,4 @@ public interface ArmIO {
   }
 
   public default void rotateArmToAngle(double angle) {}
-
 }
