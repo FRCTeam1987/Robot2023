@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.sensors.CANCoder;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.AnalogInput;
 
 public class ArmIOTalonFX implements ArmIO {
@@ -11,6 +12,7 @@ public class ArmIOTalonFX implements ArmIO {
   private TalonFX rotationFollower;
   private CANCoder rotationEncoder;
   private TalonFX telescopingMotor;
+  private PIDController rotationController;
 
   private AnalogInput telescopePotentiometer;
 
@@ -21,7 +23,6 @@ public class ArmIOTalonFX implements ArmIO {
       int followerMotorID,
       int rotationCANCoderID,
       int telescopingMotorID,
-      int potAnalogInputID,
       String canBusName) {
     rotationLeader = new TalonFX(leaderMotorID, canBusName);
     rotationLeader.configFactoryDefault();
@@ -33,6 +34,7 @@ public class ArmIOTalonFX implements ArmIO {
     config.slot0.kI = 0.0;
     config.slot0.kD = 0.5;
     config.slot0.kF = 0.0;
+    config.feedbackNotContinuous = true;
     config.slot0.allowableClosedloopError = 0;
     rotationLeader.configAllSettings(config);
 
@@ -46,7 +48,11 @@ public class ArmIOTalonFX implements ArmIO {
     telescopingMotor = new TalonFX(telescopingMotorID);
     telescopingMotor.configFactoryDefault();
 
-    telescopePotentiometer = new AnalogInput(potAnalogInputID);
+    // telescopePotentiometer = new AnalogInput(potAnalogInputID);
+
+    rotationController = new PIDController(0.1, 0, 0);
+    rotationController.disableContinuousInput();
+    rotationController.setIntegratorRange(-120, 120);
   }
 
   public double getArmLength() {
@@ -65,7 +71,10 @@ public class ArmIOTalonFX implements ArmIO {
 
   @Override
   public void rotateArmToAngle(double angle) {
-    rotationLeader.set(TalonFXControlMode.Position, angle - temporaryArmCancoderOffset);
+    rotationLeader.set(
+        TalonFXControlMode.PercentOutput,
+        rotationController.calculate(
+            rotationEncoder.getAbsolutePosition() - temporaryArmCancoderOffset, angle));
   }
 
   @Override
