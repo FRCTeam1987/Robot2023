@@ -29,6 +29,7 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putData(
         "Rotate to selected",
         new InstantCommand(() -> io.rotateArmToAngle(SmartDashboard.getNumber("angle", 11.0))));
+
   }
 
   public void periodic() {
