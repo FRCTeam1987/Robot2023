@@ -14,6 +14,10 @@ public class TestRobotConfig extends RobotConfig {
 
   public static final int WRIST_ROTATOR_MOTOR = 5;
   // FIXME: update all CAN IDs and steer offsets
+  public static final int CLAW_INTAKE_MOTOR = 6;
+  public static final int ARM_CANCODER = 7;
+  public static final int ARM_LEADER_MOTOR = 8;
+  public static final int ARM_FOLLOWER_MOTOR = 9;
   public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 9;
   public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 8;
   public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 10;
@@ -96,8 +100,32 @@ public class TestRobotConfig extends RobotConfig {
   private static final double AUTO_TURN_D_CONTROLLER = 0.0;
 
   @Override
+
   public int getWristRotatorID() {
     return WRIST_ROTATOR_MOTOR;
+}
+  public double getRobotArmHeightOffset() {
+    return 0;
+  }
+
+  @Override
+  public int getArmTelescopeID() {
+    return CLAW_INTAKE_MOTOR;
+  }
+
+  @Override
+  public int getArmCanCoderID() {
+    return ARM_CANCODER;
+  }
+
+  @Override
+  public int getArmLeaderMotorID() {
+    return ARM_LEADER_MOTOR;
+  }
+
+  @Override
+  public int getArmFollowerMotorID() {
+    return ARM_FOLLOWER_MOTOR;
   }
 
   @Override

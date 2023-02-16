@@ -11,7 +11,7 @@
           <entry
             name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup/javapoet/1.13.0/d6562d385049f35eb50403fa86bb11cce76b866a/javapoet-1.13.0.jar" />
         </processorPath>
-        <module name="Robot2023.main" />
+        <module name="Robot2023CF.main" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="11" />
