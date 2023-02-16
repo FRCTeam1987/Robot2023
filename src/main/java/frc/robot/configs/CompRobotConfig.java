@@ -104,7 +104,7 @@ public class CompRobotConfig extends RobotConfig {
   public int getClawMotorID() {
     return CLAW_MOTOR_ID;
   }
-  
+
   public double getRobotArmHeightOffset() {
     return ROBOT_ARM_HEIGHT_OFFSET;
   }
