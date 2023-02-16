@@ -100,10 +100,10 @@ public class TestRobotConfig extends RobotConfig {
   private static final double AUTO_TURN_D_CONTROLLER = 0.0;
 
   @Override
-
   public int getWristRotatorID() {
     return WRIST_ROTATOR_MOTOR;
-}
+  }
+
   public double getRobotArmHeightOffset() {
     return 0;
   }

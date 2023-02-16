@@ -13,7 +13,6 @@ import frc.lib.team3061.swerve.SwerveModuleConstants.SwerveType;
  */
 public class CompRobotConfig extends RobotConfig {
 
-
   public static final int WRIST_ROTATOR_MOTOR = 5;
 
   public static final double ROBOT_ARM_HEIGHT_OFFSET = 12.0;
@@ -104,10 +103,10 @@ public class CompRobotConfig extends RobotConfig {
   private static final double AUTO_TURN_D_CONTROLLER = 0.0;
 
   @Override
-
   public int getWristRotatorID() {
     return WRIST_ROTATOR_MOTOR;
-}
+  }
+
   public double getRobotArmHeightOffset() {
     return ROBOT_ARM_HEIGHT_OFFSET;
   }
@@ -130,15 +129,12 @@ public class CompRobotConfig extends RobotConfig {
   @Override
   public int getArmFollowerMotorID() {
     return ARM_FOLLOWER_MOTOR;
-
   }
 
   @Override
   public double getSwerveAngleKP() {
     return ANGLE_KP;
   }
-
-  
 
   @Override
   public double getSwerveAngleKI() {

@@ -1,7 +1,5 @@
 package frc.robot.subsystems.wrist;
 
-import java.nio.channels.WritableByteChannel;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
@@ -11,7 +9,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 public class WristIOTalonSRX implements WristIO {
 
   private final TalonSRX wristMotor;
-  
 
   public WristIOTalonSRX(int wristMotorID) {
     wristMotor = new TalonSRX(wristMotorID);
@@ -19,7 +16,6 @@ public class WristIOTalonSRX implements WristIO {
     wristConfig.feedbackNotContinuous = true;
     wristMotor.configFactoryDefault();
     wristMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
-
   }
 
   @Override
@@ -37,7 +33,6 @@ public class WristIOTalonSRX implements WristIO {
   }
 
   public double getDegree() {
-    return (double) wristMotor.getSensorCollection().getPulseWidthPosition() /  4096.0 * 360.0;
-
+    return (double) wristMotor.getSensorCollection().getPulseWidthPosition() / 4096.0 * 360.0;
   }
 }

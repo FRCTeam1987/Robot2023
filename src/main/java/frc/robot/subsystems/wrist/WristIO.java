@@ -17,5 +17,7 @@ public interface WristIO {
   public default void setPosition(double targetPositionRotations) {}
 
   /** Return wrist degree */
-  public default double getDegree() {return getDegree();}
+  public default double getDegree() {
+    return getDegree();
+  }
 }
