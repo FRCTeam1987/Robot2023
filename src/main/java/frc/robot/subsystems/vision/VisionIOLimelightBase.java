@@ -14,9 +14,6 @@ public class VisionIOLimelightBase {
   public final String limelightName;
   private final DoubleArraySubscriber botPoseSubscriber;
   private final StringSubscriber jsonSubscriber;
-  private final DoubleSubscriber targetSubscriber;
-  private final DoubleSubscriber latencySubscriber;
-
   public VisionIOLimelightBase(String limelightName) {
     int column = 0;
     this.limelightName = limelightName;
@@ -26,16 +23,11 @@ public class VisionIOLimelightBase {
     // inst.getTable(limelightName).getEntry("ledMode").setNumber(1);
     inst.getEntry("pipeline").setNumber(LIMELIGHT_PIPELINE);
     LIMELIGHT_TAB
-        .addDouble(limelightNameShort + " Target Visible", this::canSeeTarget)
-        .withPosition(column++, VisionIOLimelight.row);
-    LIMELIGHT_TAB
         .addNumber(limelightNameShort + " count", this::getVisibleTagCount)
         .withPosition(column++, VisionIOLimelight.row);
     VisionIOLimelight.row++;
     botPoseSubscriber = inst.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
     jsonSubscriber = inst.getStringTopic("json").subscribe("[]");
-    targetSubscriber = inst.getDoubleTopic("tv").subscribe(0.0);
-    latencySubscriber = inst.getDoubleTopic("tl").subscribe(-1.0);
   }
 
   public String getRawJson() {
@@ -51,23 +43,29 @@ public class VisionIOLimelightBase {
     return (int) jsonSubscriber.get().codePoints().filter(ch -> ch == 'm').count();
   }
 
-  public Pose3d getBotPose() {
+  public Pose3dLatency getBotPose() {
     try {
       double[] pose = botPoseSubscriber.get();
-      return new Pose3d(
-          new Translation3d(pose[0], pose[1], pose[2]), new Rotation3d(pose[3], pose[4], pose[5]));
+      return new Pose3dLatency(
+          new Translation3d(pose[0], pose[1], pose[2]), new Rotation3d(pose[3], pose[4], pose[5]), pose[6]);
     } catch (Exception ignored) {
       // This throws an exception when the bot doesn't have a pose. Just ignore it and move on,
       // accepting that we currently don't have a pose.
       return null;
     }
   }
+}
 
-  public long getFrameMillis() {
-    return (long) (System.currentTimeMillis() - latencySubscriber.get());
+class Pose3dLatency {
+  double latency;
+  Pose3d pose;
+  public Pose3dLatency(Translation3d translation3d, Rotation3d rotation3d, double latency) {
+    this.pose = new Pose3d(translation3d, rotation3d);
+    this.latency = latency;
   }
 
-  public double canSeeTarget() {
-    return targetSubscriber.get();
+  public String toString() {
+    return pose.toString() + " L: " + latency;
   }
+
 }
