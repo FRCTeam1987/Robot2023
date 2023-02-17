@@ -3,8 +3,7 @@ package frc.robot.subsystems.vision;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
-public interface
-VisionIO {
+public interface VisionIO {
   public static class VisionIOInputs implements LoggableInputs {
     public String[] json = new String[] {};
 

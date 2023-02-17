@@ -1,7 +1,6 @@
 package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.team3061.util.RobotOdometry;
 import frc.robot.subsystems.vision.VisionIO.VisionIOInputs;

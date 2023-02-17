@@ -14,6 +14,7 @@ public class VisionIOLimelightBase {
   public final String limelightName;
   private final DoubleArraySubscriber botPoseSubscriber;
   private final StringSubscriber jsonSubscriber;
+
   public VisionIOLimelightBase(String limelightName) {
     int column = 0;
     this.limelightName = limelightName;
@@ -47,7 +48,9 @@ public class VisionIOLimelightBase {
     try {
       double[] pose = botPoseSubscriber.get();
       return new Pose3dLatency(
-          new Translation3d(pose[0], pose[1], pose[2]), new Rotation3d(pose[3], pose[4], pose[5]), pose[6]);
+          new Translation3d(pose[0], pose[1], pose[2]),
+          new Rotation3d(pose[3], pose[4], pose[5]),
+          pose[6]);
     } catch (Exception ignored) {
       // This throws an exception when the bot doesn't have a pose. Just ignore it and move on,
       // accepting that we currently don't have a pose.
@@ -59,6 +62,7 @@ public class VisionIOLimelightBase {
 class Pose3dLatency {
   double latency;
   Pose3d pose;
+
   public Pose3dLatency(Translation3d translation3d, Rotation3d rotation3d, double latency) {
     this.pose = new Pose3d(translation3d, rotation3d);
     this.latency = latency;
@@ -67,5 +71,4 @@ class Pose3dLatency {
   public String toString() {
     return pose.toString() + " L: " + latency;
   }
-
 }
