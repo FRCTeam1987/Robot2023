@@ -248,6 +248,7 @@ public class RobotContainer {
     SmartDashboard.putData(
         "Scan Battery", new InstantCommand(() -> BatteryTracker.scanBattery(10.0)));
   }
+  
   /** Use this method to define your button->command mappings. */
   private void configureButtonBindings() {
     // field-relative toggle

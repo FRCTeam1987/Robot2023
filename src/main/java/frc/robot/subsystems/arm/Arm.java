@@ -25,6 +25,8 @@ public class Arm extends SubsystemBase {
     tab.addNumber("Talon Encoder", io::getTalonPosition);
     tab.addNumber("PositionEncoder", io::getEncoderPosition);
     tab.addNumber("PositionEncoderNoOffset", io::getEncoderPositionNoOffset);
+    tab.addNumber("length", io::getArmLength);
+
     SmartDashboard.putNumber("angle", 1.0);
     SmartDashboard.putData(
         "Rotate to selected",

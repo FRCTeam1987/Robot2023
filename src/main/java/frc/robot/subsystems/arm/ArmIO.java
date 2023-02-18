@@ -7,6 +7,7 @@ public interface ArmIO {
   public static class ArmIOInputs {
     public double[] currentAmps = new double[] {};
     public double[] currentVolts = new double[] {};
+    public double[] armLength = new double[] {};
     public double armAbsoluteAngle;
   }
 
@@ -21,6 +22,10 @@ public interface ArmIO {
   }
 
   public default double getTalonPosition() {
+    return 0.0;
+  }
+
+  public default double getArmLength() {
     return 0.0;
   }
 

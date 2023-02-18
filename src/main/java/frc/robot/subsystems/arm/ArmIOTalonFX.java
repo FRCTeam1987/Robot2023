@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderConfiguration;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import frc.lib.team6328.util.Alert;
 
 public class ArmIOTalonFX implements ArmIO {
@@ -13,7 +14,7 @@ public class ArmIOTalonFX implements ArmIO {
   private TalonFX rotationFollower;
   private CANCoder rotationEncoder;
   private TalonFX telescopingMotor;
-  private AnalogInput telescopePotentiometer;
+  private AnalogPotentiometer telescopePotentiometer;
   private Alert armWentBeserkAlert =
       new Alert("Attempted to set arm beyond safe range.", Alert.AlertType.ERROR);
 
@@ -55,7 +56,7 @@ public class ArmIOTalonFX implements ArmIO {
     telescopingMotor = new TalonFX(telescopingMotorID);
     telescopingMotor.configFactoryDefault();
 
-    // telescopePotentiometer = new AnalogInput(potAnalogInputID);
+    telescopePotentiometer = new AnalogPotentiometer(4, 20, 0);
   }
 
   public int convertDegreesToTicks(double deg) {
@@ -67,7 +68,12 @@ public class ArmIOTalonFX implements ArmIO {
   }
 
   public double getArmLength() {
-    return telescopePotentiometer.getVoltage();
+    try {
+      return telescopePotentiometer.get();
+    } catch (Exception e)  {
+      return 9.9;
+    }
+    
     // TODO: make this work
   }
 
@@ -114,5 +120,9 @@ public class ArmIOTalonFX implements ArmIO {
           telescopingMotor.getMotorOutputVoltage()
         };
     inputs.armAbsoluteAngle = getEncoderPosition();
+    inputs.armLength =
+        new double[] {
+          this.getArmLength()
+        };
   }
 }
