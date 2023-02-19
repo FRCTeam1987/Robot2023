@@ -138,7 +138,7 @@ public class RobotContainer {
 
             drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
             // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
-            new Vision(new VisionIOLimelight("limelight-fr", "limelight-fl"));
+            new Vision(new VisionIOLimelight("limelight-fr", "limelight-fl", "limelight-bl", "limelight-br"));
             new Arm(
                 new ArmIOTalonFX(
                     config.getArmLeaderMotorID(),

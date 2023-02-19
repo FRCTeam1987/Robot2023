@@ -22,13 +22,13 @@ public class Arm extends SubsystemBase {
 
   public Arm(ArmIO io) {
     this.io = io;
-    tab.addNumber("Talon Encoder", io::getTalonPosition);
-    tab.addNumber("PositionEncoder", io::getEncoderPosition);
-    tab.addNumber("PositionEncoderNoOffset", io::getEncoderPositionNoOffset);
+    tab.addNumber("angle", io::getArmAngle);
+    tab.addNumber("length", io::getArmLength);
     SmartDashboard.putNumber("angle", 1.0);
     SmartDashboard.putData(
         "Rotate to selected",
-        new InstantCommand(() -> io.rotateArmToAngle(SmartDashboard.getNumber("angle", 11.0))));
+        new InstantCommand(() -> io.setArmAngle(SmartDashboard.getNumber("angle", 11.0))));
+    SmartDashboard.putNumber("pidArm", 0.1);
   }
 
   public void periodic() {
