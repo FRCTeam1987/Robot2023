@@ -7,6 +7,7 @@ package frc.robot;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.FollowPathWithEvents;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -16,9 +17,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.lib.team3061.RobotConfig;
 import frc.lib.team3061.gyro.GyroIO;
-import frc.lib.team3061.gyro.GyroIONavx;
-import frc.lib.team3061.pneumatics.Pneumatics;
-import frc.lib.team3061.pneumatics.PneumaticsIO;
+import frc.lib.team3061.gyro.GyroIOPigeon2;
 import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIO;
 import frc.lib.team3061.swerve.SwerveModuleIOSim;
@@ -35,8 +34,6 @@ import frc.robot.operator_interface.OperatorInterface;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.drivetrain.Drivetrain;
-import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.BatteryTracker;
 import java.util.HashMap;
 import java.util.List;
@@ -78,14 +75,17 @@ public class RobotContainer {
         case ROBOT_DEFAULT:
           {
             if (Constants.getRobot() == Constants.RobotType.ROBOT_2023_TEST) {
+              DriverStation.reportWarning("===== test ===== ", false);
               config = new TestRobotConfig();
             } else if (Constants.getRobot() == Constants.RobotType.ROBOT_2023_COMP) {
+              DriverStation.reportWarning("===== comp ===== ", false);
               config = new CompRobotConfig();
             } else {
+              DriverStation.reportWarning("===== default ===== ", false);
               config = new TestRobotConfig();
             }
 
-            GyroIO gyro = new GyroIONavx();
+            GyroIO gyro = new GyroIOPigeon2(config.getGyroCANID());
 
             int[] driveMotorCANIDs = config.getSwerveDriveMotorCANIDs();
             int[] steerMotorCANDIDs = config.getSwerveSteerMotorCANIDs();
@@ -138,7 +138,7 @@ public class RobotContainer {
 
             drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
             // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
-            new Vision(new VisionIOLimelight("limelight-fr", "limelight-fl"));
+            // new Vision(new VisionIOLimelight("limelight-fr", "limelight-fl"));
             new Arm(
                 new ArmIOTalonFX(
                     config.getArmLeaderMotorID(),
@@ -162,7 +162,7 @@ public class RobotContainer {
             SwerveModule brModule =
                 new SwerveModule(new SwerveModuleIOSim(), 3, config.getRobotMaxVelocity());
             drivetrain = new Drivetrain(new GyroIO() {}, flModule, frModule, blModule, brModule);
-            new Pneumatics(new PneumaticsIO() {});
+            // new Pneumatics(new PneumaticsIO() {});
             // AprilTagFieldLayout layout;
             // try {
             //   layout = new AprilTagFieldLayout(VisionConstants.APRILTAG_FIELD_LAYOUT_PATH);
@@ -194,7 +194,7 @@ public class RobotContainer {
       SwerveModule brModule =
           new SwerveModule(new SwerveModuleIO() {}, 3, config.getRobotMaxVelocity());
       drivetrain = new Drivetrain(new GyroIO() {}, flModule, frModule, blModule, brModule);
-      new Pneumatics(new PneumaticsIO() {});
+      // new Pneumatics(new PneumaticsIO() {});
       // new Vision(new VisionIO() {});
     }
 
@@ -248,7 +248,7 @@ public class RobotContainer {
     SmartDashboard.putData(
         "Scan Battery", new InstantCommand(() -> BatteryTracker.scanBattery(10.0)));
   }
-  
+
   /** Use this method to define your button->command mappings. */
   private void configureButtonBindings() {
     // field-relative toggle
@@ -277,6 +277,12 @@ public class RobotContainer {
     List<PathPlannerTrajectory> auto1Paths =
         PathPlanner.loadPathGroup(
             "testPaths1", config.getAutoMaxSpeed(), config.getAutoMaxAcceleration());
+    List<PathPlannerTrajectory> newPath =
+        PathPlanner.loadPathGroup(
+            "New Path", config.getAutoMaxSpeed(), config.getAutoMaxAcceleration());
+    List<PathPlannerTrajectory> threeAndBalancePath =
+        PathPlanner.loadPathGroup(
+            "3 and balance", config.getAutoMaxSpeed(), config.getAutoMaxAcceleration());
     Command autoTest =
         Commands.sequence(
             new FollowPathWithEvents(
@@ -286,12 +292,32 @@ public class RobotContainer {
             Commands.runOnce(drivetrain::enableXstance, drivetrain),
             Commands.waitSeconds(5.0),
             Commands.runOnce(drivetrain::disableXstance, drivetrain));
+    Command autoTest2 =
+        Commands.sequence(
+            new FollowPathWithEvents(
+                new FollowPath(newPath.get(0), drivetrain, true),
+                newPath.get(0).getMarkers(),
+                autoEventMap),
+            Commands.runOnce(drivetrain::enableXstance, drivetrain),
+            Commands.waitSeconds(5.0),
+            Commands.runOnce(drivetrain::disableXstance, drivetrain));
+    Command auto3AndBalance =
+        Commands.sequence(
+            new FollowPathWithEvents(
+                new FollowPath(threeAndBalancePath.get(0), drivetrain, true),
+                threeAndBalancePath.get(0).getMarkers(),
+                autoEventMap),
+            Commands.runOnce(drivetrain::enableXstance, drivetrain),
+            Commands.waitSeconds(0.5),
+            Commands.runOnce(drivetrain::disableXstance, drivetrain));
 
     // add commands to the auto chooser
     autoChooser.addDefaultOption("Do Nothing", new InstantCommand());
 
     // demonstration of PathPlanner path group with event markers
     autoChooser.addOption("Test Path", autoTest);
+    autoChooser.addOption("New Path", autoTest2);
+    autoChooser.addOption("3-and-Balance", auto3AndBalance);
 
     // "auto" command for tuning the drive velocity PID
     autoChooser.addOption(

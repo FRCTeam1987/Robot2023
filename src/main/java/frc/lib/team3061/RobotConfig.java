@@ -396,7 +396,7 @@ public abstract class RobotConfig {
    * @return the name of CAN FD (CANivore) bus
    */
   public String getCANBusName() {
-    return "";
+    return "canfd";
   }
 
   /**

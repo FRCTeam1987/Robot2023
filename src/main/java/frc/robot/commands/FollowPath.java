@@ -42,6 +42,7 @@ public class FollowPath extends PPSwerveControllerCommand {
         subsystem.getAutoYController(),
         subsystem.getAutoThetaController(),
         subsystem::setSwerveModuleStates,
+        true,
         subsystem);
 
     this.drivetrain = subsystem;

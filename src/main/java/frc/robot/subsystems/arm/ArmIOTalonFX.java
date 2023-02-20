@@ -3,9 +3,9 @@ package frc.robot.subsystems.arm;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
+import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderConfiguration;
-import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import frc.lib.team6328.util.Alert;
 
@@ -18,7 +18,14 @@ public class ArmIOTalonFX implements ArmIO {
   private Alert armWentBeserkAlert =
       new Alert("Attempted to set arm beyond safe range.", Alert.AlertType.ERROR);
 
-  double temporaryArmCancoderOffset = 160;
+  double temporaryArmCancoderOffset = 292.852;
+  double armMinLength = 21;
+  double armMaxLength = 62;
+  double armMinPotLength = 0.2209474243;
+  double armMaxPotLength = 4.549560081;
+  double armConversionConstant =
+      (armMaxLength - armMinLength) / (armMaxPotLength - armMinPotLength);
+  double armMaxAngleAbsolute = 110;
 
   public ArmIOTalonFX(
       int leaderMotorID,
@@ -34,29 +41,37 @@ public class ArmIOTalonFX implements ArmIO {
     rotationEncoder.configAllSettings(canCoderConfiguration);
     rotationEncoder.setPosition(rotationEncoder.getAbsolutePosition() - temporaryArmCancoderOffset);
 
-    TalonFXConfiguration talonFXConfig = new TalonFXConfiguration();
-    talonFXConfig.remoteFilter0.remoteSensorDeviceID = rotationCANCoderID;
-    talonFXConfig.remoteFilter0.remoteSensorSource = RemoteSensorSource.CANCoder;
-    talonFXConfig.primaryPID.selectedFeedbackSensor = FeedbackDevice.RemoteSensor0;
-    talonFXConfig.slot0.kP = 5;
-    talonFXConfig.slot0.kI = 0.0;
-    talonFXConfig.slot0.kD = 0.0;
-    talonFXConfig.slot0.kF = 0.0;
-    talonFXConfig.primaryPID.selectedFeedbackCoefficient = 1.0;
-    talonFXConfig.feedbackNotContinuous = true;
-    talonFXConfig.slot0.allowableClosedloopError = 0;
+    TalonFXConfiguration rotatorConfig = new TalonFXConfiguration();
+    rotatorConfig.remoteFilter0.remoteSensorDeviceID = rotationCANCoderID;
+    rotatorConfig.remoteFilter0.remoteSensorSource = RemoteSensorSource.CANCoder;
+    rotatorConfig.primaryPID.selectedFeedbackSensor = FeedbackDevice.RemoteSensor0;
+    rotatorConfig.slot0.kP = 1.5;
+    rotatorConfig.slot0.kI = 0.0;
+    rotatorConfig.slot0.kD = 0.0;
+    rotatorConfig.slot0.kF = 0.0;
+    rotatorConfig.primaryPID.selectedFeedbackCoefficient = 1.0;
+    rotatorConfig.feedbackNotContinuous = true;
+    rotatorConfig.slot0.allowableClosedloopError = 0;
     rotationLeader = new TalonFX(leaderMotorID, canBusName);
     rotationLeader.configFactoryDefault();
     rotationLeader.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0, 0, 100);
-    rotationLeader.configAllSettings(talonFXConfig);
+    rotationLeader.configAllSettings(rotatorConfig);
+    rotationLeader.setNeutralMode(NeutralMode.Brake);
     rotationFollower = new TalonFX(followerMotorID, canBusName);
     rotationFollower.configFactoryDefault();
     rotationFollower.follow(rotationLeader);
+    rotationFollower.setNeutralMode(NeutralMode.Brake);
+
+    TalonFXConfiguration telescopeConfig = new TalonFXConfiguration();
+    telescopeConfig.slot0.kP = 1;
+    telescopeConfig.slot0.kI = 0.0;
+    telescopeConfig.slot0.kD = 0.0;
+    telescopeConfig.slot0.kF = 0.0;
 
     telescopingMotor = new TalonFX(telescopingMotorID);
     telescopingMotor.configFactoryDefault();
 
-    telescopePotentiometer = new AnalogPotentiometer(4, 20, 0);
+    telescopePotentiometer = new AnalogPotentiometer(4, 40, 0);
   }
 
   public int convertDegreesToTicks(double deg) {
@@ -70,36 +85,27 @@ public class ArmIOTalonFX implements ArmIO {
   public double getArmLength() {
     try {
       return telescopePotentiometer.get();
-    } catch (Exception e)  {
+    } catch (Exception e) {
       return 9.9;
     }
-    
-    // TODO: make this work
   }
 
   @Override
-  public double getEncoderPosition() {
+  public double getArmAngle() {
     return rotationEncoder.getAbsolutePosition() - temporaryArmCancoderOffset;
   }
 
-  @Override
-  public double getEncoderPositionNoOffset() {
-    return rotationEncoder.getAbsolutePosition();
-  }
-
-  @Override
-  public double getTalonPosition() {
-    return rotationLeader.getSelectedSensorPosition();
-  }
-
+  // TODO: make this work
   public void extendArmToLength(double length) {
     telescopingMotor.set(TalonFXControlMode.Position, length);
   }
 
   @Override
-  public void rotateArmToAngle(double angle) {
+  public void setArmToAngle(double angle) {
+    System.out.println("Function Called");
     if (!(Math.abs(angle) > 120)) {
       rotationLeader.set(TalonFXControlMode.Position, convertDegreesToTicks(angle));
+      System.out.println("Angle: " + angle + " Ticks:  " + convertDegreesToTicks(angle));
     } else {
       armWentBeserkAlert.set(true);
     }
@@ -119,10 +125,7 @@ public class ArmIOTalonFX implements ArmIO {
           rotationFollower.getMotorOutputVoltage(),
           telescopingMotor.getMotorOutputVoltage()
         };
-    inputs.armAbsoluteAngle = getEncoderPosition();
-    inputs.armLength =
-        new double[] {
-          this.getArmLength()
-        };
+    inputs.armAbsoluteAngle = getArmAngle();
+    inputs.armLength = new double[] {this.getArmLength()};
   }
 }
