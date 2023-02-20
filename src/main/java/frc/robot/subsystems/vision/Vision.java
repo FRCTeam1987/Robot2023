@@ -25,8 +25,8 @@ public class Vision extends SubsystemBase {
     VisionIOLimelightBase limelight = VisionIOLimelight.getInstance().getBestLimelight();
     Pose3dLatency pose = limelight.getBotPose();
     if (pose != null) {
-      Logger.getInstance().recordOutput("Vision/RobotPose", pose.pose);
-      poseEstimator.addVisionMeasurement(pose.pose.toPose2d(), pose.latency);
+      Logger.getInstance().recordOutput("Vision/RobotPose", pose.getPose());
+      poseEstimator.addVisionMeasurement(pose.getPose().toPose2d(), pose.getLatency());
     }
   }
 }

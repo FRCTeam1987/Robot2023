@@ -60,12 +60,20 @@ public class VisionIOLimelightBase {
 }
 
 class Pose3dLatency {
-  double latency;
-  Pose3d pose;
+  private final double latency;
+  private final Pose3d pose;
 
   public Pose3dLatency(Translation3d translation3d, Rotation3d rotation3d, double latency) {
     this.pose = new Pose3d(translation3d, rotation3d);
     this.latency = latency;
+  }
+
+  public Pose3d getPose() {
+    return this.pose;
+  }
+
+  public double getLatency() {
+    return this.latency;
   }
 
   public String toString() {
