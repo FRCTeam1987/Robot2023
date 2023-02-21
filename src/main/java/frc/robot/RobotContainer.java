@@ -55,6 +55,7 @@ public class RobotContainer {
   private RobotConfig config;
   private Drivetrain drivetrain;
 
+  private Arm arm;
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to ensure accurate logging
   private final LoggedDashboardChooser<Command> autoChooser =
       new LoggedDashboardChooser<>("Auto Routine");
@@ -139,7 +140,7 @@ public class RobotContainer {
             drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
             // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
             new Vision(new VisionIOLimelight("limelight-fr", "limelight-fl", "limelight-bl", "limelight-br"));
-            new Arm(
+            arm = new Arm(
                 new ArmIOTalonFX(
                     config.getArmLeaderMotorID(),
                     config.getArmFollowerMotorID(),
@@ -265,6 +266,7 @@ public class RobotContainer {
     // x-stance
     oi.getXStanceButton().onTrue(Commands.runOnce(drivetrain::enableXstance, drivetrain));
     oi.getXStanceButton().onFalse(Commands.runOnce(drivetrain::disableXstance, drivetrain));
+    oi.getRotateButton().onTrue(new InstantCommand(() -> arm.rotateTheArm()));
   }
 
   /** Use this method to define your commands for autonomous mode. */

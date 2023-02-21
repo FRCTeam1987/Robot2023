@@ -46,7 +46,7 @@ public class ArmIOTalonFX implements ArmIO {
     rotatorConfig.remoteFilter0.remoteSensorDeviceID = rotationCANCoderID;
     rotatorConfig.remoteFilter0.remoteSensorSource = RemoteSensorSource.CANCoder;
     rotatorConfig.primaryPID.selectedFeedbackSensor = FeedbackDevice.RemoteSensor0;
-    rotatorConfig.slot0.kP = 0.5;
+    rotatorConfig.slot0.kP = 2.25;
     rotatorConfig.slot0.kI = 0.0;
     rotatorConfig.slot0.kD = 0.0;
     rotatorConfig.slot0.kF = 0.0;
@@ -59,11 +59,14 @@ public class ArmIOTalonFX implements ArmIO {
     rotationLeader.configAllSettings(rotatorConfig);
     rotationLeader.setNeutralMode(NeutralMode.Brake);
     rotationLeader.configVoltageCompSaturation(8);
+    rotationLeader.enableVoltageCompensation(true);
+    rotationLeader.configClosedloopRamp(0.5);
     rotationFollower = new TalonFX(followerMotorID, canBusName);
     rotationFollower.configFactoryDefault();
     rotationFollower.follow(rotationLeader);
     rotationFollower.setNeutralMode(NeutralMode.Brake);
     rotationFollower.configVoltageCompSaturation(8);
+    rotationLeader.enableVoltageCompensation(true);
 
     TalonFXConfiguration telescopeConfig = new TalonFXConfiguration();
     telescopeConfig.slot0.kP = 1;
@@ -119,7 +122,6 @@ public class ArmIOTalonFX implements ArmIO {
   public void setArmAngle(double angle) {
     if (!(Math.abs(angle) > armMaxAngleAbsolute)) {
       rotationLeader.set(TalonFXControlMode.Position, convertDegreesToTicks(angle));
-      System.out.println(angle + " " + convertDegreesToTicks(angle));
     } else {
       armWentBeserkAlert.set(true);
     }
