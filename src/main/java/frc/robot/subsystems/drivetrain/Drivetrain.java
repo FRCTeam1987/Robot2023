@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.drivetrain;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -20,6 +22,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.team3061.RobotConfig;
@@ -61,8 +64,7 @@ public class Drivetrain extends SubsystemBase {
 
   private final double trackwidthMeters = RobotConfig.getInstance().getTrackwidth();
   private final double wheelbaseMeters = RobotConfig.getInstance().getWheelbase();
-  private final SwerveDriveKinematics kinematics =
-      RobotConfig.getInstance().getSwerveDriveKinematics();
+  private final SwerveDriveKinematics kinematics;
 
   private final SwerveModule[] swerveModules = new SwerveModule[4]; // FL, FR, BL, BR
 
@@ -93,7 +95,7 @@ public class Drivetrain extends SubsystemBase {
   private ChassisSpeeds chassisSpeeds;
 
   private static final String SUBSYSTEM_NAME = "Drivetrain";
-  private static final boolean TESTING = false;
+  private static final boolean TESTING = true;
   private static final boolean DEBUGGING = false;
 
   private final SwerveDrivePoseEstimator poseEstimator;
@@ -108,7 +110,8 @@ public class Drivetrain extends SubsystemBase {
       SwerveModule flModule,
       SwerveModule frModule,
       SwerveModule blModule,
-      SwerveModule brModule) {
+      SwerveModule brModule,
+      RobotConfig config) {
     this.gyroIO = gyroIO;
     this.swerveModules[0] = flModule;
     this.swerveModules[1] = frModule;
@@ -121,13 +124,15 @@ public class Drivetrain extends SubsystemBase {
 
     this.zeroGyroscope();
 
-    this.isFieldRelative = false;
+    this.isFieldRelative = true;
 
     this.gyroOffset = 0;
 
     this.chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
     this.poseEstimator = RobotOdometry.getInstance().getPoseEstimator();
+
+    this.kinematics = config.getSwerveDriveKinematics();
 
     ShuffleboardTab tabMain = Shuffleboard.getTab("MAIN");
     tabMain.addNumber("Gyroscope Angle", () -> getRotation().getDegrees());
@@ -151,6 +156,15 @@ public class Drivetrain extends SubsystemBase {
       ShuffleboardTab tab = Shuffleboard.getTab(SUBSYSTEM_NAME);
       tab.add("Enable XStance", new InstantCommand(this::enableXstance));
       tab.add("Disable XStance", new InstantCommand(this::disableXstance));
+      tab.add(
+          "Toggle Field Relative",
+          new ConditionalCommand(
+              new InstantCommand(() -> disableFieldRelative()),
+              new InstantCommand(() -> enableFieldRelative()),
+              () -> getFieldRelative()
+          )
+      );
+      tab.add("Reset Gyro", new InstantCommand(() -> zeroGyroscope()));
     }
   }
 

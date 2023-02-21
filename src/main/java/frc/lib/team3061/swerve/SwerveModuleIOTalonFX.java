@@ -43,7 +43,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
   private final double angleGearRatio;
   private final boolean angleMotorInverted;
   private final boolean canCoderInverted;
-  private final String canBusName = RobotConfig.getInstance().getCANBusName();
+  private final String canBusName;
   private TalonFX mAngleMotor;
   private TalonFX mDriveMotor;
   private CANCoder angleEncoder;
@@ -59,7 +59,13 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
    * @param angleOffsetDeg the absolute offset of the angle encoder in degrees
    */
   public SwerveModuleIOTalonFX(
-      int moduleNumber, int driveMotorID, int angleMotorID, int canCoderID, double angleOffsetDeg) {
+      int moduleNumber,
+      int driveMotorID,
+      int angleMotorID,
+      int canCoderID,
+      double angleOffsetDeg,
+      String canBusName) {
+    this.canBusName = canBusName;
     this.angleOffsetDeg = angleOffsetDeg;
     if (RobotConfig.getInstance().getSwerveType() == SwerveType.MK4) {
       wheelCircumference = MK4_L2_WHEEL_CIRCUMFERENCE;

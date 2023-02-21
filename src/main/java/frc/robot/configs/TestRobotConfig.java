@@ -3,6 +3,7 @@ package frc.robot.configs;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import frc.lib.team3061.RobotConfig;
 import frc.lib.team3061.swerve.SwerveModuleConstants.SwerveType;
 
@@ -39,10 +40,18 @@ public class TestRobotConfig extends RobotConfig {
   private static final int GYRO_ID = 18;
 
   // FIXME: update robot dimensions
-  private static final double TRACKWIDTH_METERS = 0.5715; // 22.5 inches
-  private static final double WHEELBASE_METERS = 0.5969; // 23.5 inches
-  private static final double ROBOT_WIDTH_WITH_BUMPERS = 0.89; // meters
-  private static final double ROBOT_LENGTH_WITH_BUMPERS = 0.91; // meters
+  private static final double MK4I_WHEEL_OFFSET_INCHES = 2.625;
+  private static final double FRAME_WIDTH_INCHES = 29.0;
+  private static final double TRACKWIDTH_METERS =
+      Units.inchesToMeters(FRAME_WIDTH_INCHES - MK4I_WHEEL_OFFSET_INCHES * 2);
+  private static final double FRAME_LENGTH_INCHES = 29.0;
+  private static final double WHEELBASE_METERS =
+      Units.inchesToMeters(FRAME_LENGTH_INCHES - MK4I_WHEEL_OFFSET_INCHES * 2);
+  private static final double BUMPER_THICKNESS_INCHES = 3.25;
+  private static final double ROBOT_WIDTH_WITH_BUMPERS =
+      Units.inchesToMeters(FRAME_WIDTH_INCHES + BUMPER_THICKNESS_INCHES * 2); // meters
+  private static final double ROBOT_LENGTH_WITH_BUMPERS =
+      Units.inchesToMeters(FRAME_LENGTH_INCHES + BUMPER_THICKNESS_INCHES * 2); // meters
 
   // FIXME: tune PID values for the angle and drive motors for the swerve modules
 

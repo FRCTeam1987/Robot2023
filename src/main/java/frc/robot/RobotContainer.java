@@ -17,8 +17,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.lib.team3061.RobotConfig;
 import frc.lib.team3061.gyro.GyroIO;
 import frc.lib.team3061.gyro.GyroIONavx;
-import frc.lib.team3061.pneumatics.Pneumatics;
-import frc.lib.team3061.pneumatics.PneumaticsIO;
+import frc.lib.team3061.gyro.GyroIOPigeon2;
 import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIO;
 import frc.lib.team3061.swerve.SwerveModuleIOSim;
@@ -74,18 +73,66 @@ public class RobotContainer {
     if (Constants.getMode() != Mode.REPLAY) {
       switch (Constants.getRobot()) {
         case ROBOT_2023_TEST:
+          {
+            config = new TestRobotConfig();
+            GyroIO gyro = new GyroIONavx();
+            int[] driveMotorCANIDs = config.getSwerveDriveMotorCANIDs();
+            int[] steerMotorCANDIDs = config.getSwerveSteerMotorCANIDs();
+            int[] steerEncoderCANDIDs = config.getSwerveSteerEncoderCANIDs();
+            double[] steerOffsets = config.getSwerveSteerOffsets();
+            SwerveModule flModule =
+                new SwerveModule(
+                    new SwerveModuleIOTalonFX(
+                        0,
+                        driveMotorCANIDs[0],
+                        steerMotorCANDIDs[0],
+                        steerEncoderCANDIDs[0],
+                        steerOffsets[0],
+                        config.getCANBusName()),
+                    0,
+                    config.getRobotMaxVelocity());
+            SwerveModule frModule =
+                new SwerveModule(
+                    new SwerveModuleIOTalonFX(
+                        1,
+                        driveMotorCANIDs[1],
+                        steerMotorCANDIDs[1],
+                        steerEncoderCANDIDs[1],
+                        steerOffsets[1],
+                        config.getCANBusName()),
+                    1,
+                    config.getRobotMaxVelocity());
+            SwerveModule blModule =
+                new SwerveModule(
+                    new SwerveModuleIOTalonFX(
+                        2,
+                        driveMotorCANIDs[2],
+                        steerMotorCANDIDs[2],
+                        steerEncoderCANDIDs[2],
+                        steerOffsets[2],
+                        config.getCANBusName()),
+                    2,
+                    config.getRobotMaxVelocity());
+            SwerveModule brModule =
+                new SwerveModule(
+                    new SwerveModuleIOTalonFX(
+                        3,
+                        driveMotorCANIDs[3],
+                        steerMotorCANDIDs[3],
+                        steerEncoderCANDIDs[3],
+                        steerOffsets[3],
+                        config.getCANBusName()),
+                    3,
+                    config.getRobotMaxVelocity());
+            drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule, config);
+            break;
+          }
         case ROBOT_2023_COMP:
         case ROBOT_DEFAULT:
           {
-            if (Constants.getRobot() == Constants.RobotType.ROBOT_2023_TEST) {
-              config = new TestRobotConfig();
-            } else if (Constants.getRobot() == Constants.RobotType.ROBOT_2023_COMP) {
-              config = new CompRobotConfig();
-            } else {
-              config = new TestRobotConfig();
-            }
+            config = new CompRobotConfig();
 
-            GyroIO gyro = new GyroIONavx();
+            GyroIO gyro = new GyroIOPigeon2(0);
 
             int[] driveMotorCANIDs = config.getSwerveDriveMotorCANIDs();
             int[] steerMotorCANDIDs = config.getSwerveSteerMotorCANIDs();
@@ -99,7 +146,8 @@ public class RobotContainer {
                         driveMotorCANIDs[0],
                         steerMotorCANDIDs[0],
                         steerEncoderCANDIDs[0],
-                        steerOffsets[0]),
+                        steerOffsets[0],
+                        "canfd"),
                     0,
                     config.getRobotMaxVelocity());
 
@@ -110,7 +158,8 @@ public class RobotContainer {
                         driveMotorCANIDs[1],
                         steerMotorCANDIDs[1],
                         steerEncoderCANDIDs[1],
-                        steerOffsets[1]),
+                        steerOffsets[1],
+                        "canfd"),
                     1,
                     config.getRobotMaxVelocity());
 
@@ -121,7 +170,8 @@ public class RobotContainer {
                         driveMotorCANIDs[2],
                         steerMotorCANDIDs[2],
                         steerEncoderCANDIDs[2],
-                        steerOffsets[2]),
+                        steerOffsets[2],
+                        "canfd"),
                     2,
                     config.getRobotMaxVelocity());
 
@@ -132,11 +182,12 @@ public class RobotContainer {
                         driveMotorCANIDs[3],
                         steerMotorCANDIDs[3],
                         steerEncoderCANDIDs[3],
-                        steerOffsets[3]),
+                        steerOffsets[3],
+                        "canfd"),
                     3,
                     config.getRobotMaxVelocity());
 
-            drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
+            drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule, config);
             // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
             new Vision(new VisionIOLimelight("limelight-fr", "limelight-fl"));
             new Arm(
@@ -161,8 +212,8 @@ public class RobotContainer {
 
             SwerveModule brModule =
                 new SwerveModule(new SwerveModuleIOSim(), 3, config.getRobotMaxVelocity());
-            drivetrain = new Drivetrain(new GyroIO() {}, flModule, frModule, blModule, brModule);
-            new Pneumatics(new PneumaticsIO() {});
+            drivetrain =
+                new Drivetrain(new GyroIO() {}, flModule, frModule, blModule, brModule, config);
             // AprilTagFieldLayout layout;
             // try {
             //   layout = new AprilTagFieldLayout(VisionConstants.APRILTAG_FIELD_LAYOUT_PATH);
@@ -193,8 +244,7 @@ public class RobotContainer {
 
       SwerveModule brModule =
           new SwerveModule(new SwerveModuleIO() {}, 3, config.getRobotMaxVelocity());
-      drivetrain = new Drivetrain(new GyroIO() {}, flModule, frModule, blModule, brModule);
-      new Pneumatics(new PneumaticsIO() {});
+      drivetrain = new Drivetrain(new GyroIO() {}, flModule, frModule, blModule, brModule, config);
       // new Vision(new VisionIO() {});
     }
 
