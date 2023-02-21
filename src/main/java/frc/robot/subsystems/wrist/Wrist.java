@@ -1,5 +1,7 @@
 package frc.robot.subsystems.wrist;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
@@ -12,10 +14,26 @@ public class Wrist extends SubsystemBase {
   /** Creates a new Wrist. */
   public Wrist(WristIO io) {
     this.io = io;
+    SmartDashboard.putData(
+        "norm",
+        new InstantCommand(
+            () -> {
+              io.setPosition(true);
+            }));
+    SmartDashboard.putData(
+        "invert",
+        new InstantCommand(
+            () -> {
+              io.setPosition(false);
+            }));
   }
 
   public double getCurrent() {
     return inputs.currentAmps;
+  }
+
+  public void setPosition(boolean inverted) {
+    io.setPosition(inverted);
   }
 
   public void periodic() {

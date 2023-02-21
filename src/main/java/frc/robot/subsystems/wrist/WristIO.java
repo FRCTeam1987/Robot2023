@@ -4,20 +4,17 @@ import org.littletonrobotics.junction.AutoLog;
 
 public interface WristIO {
   @AutoLog
-  public static class WristIOInputs {
+  class WristIOInputs {
     public double currentAmps = 0.0;
     public double targetPositionRotations = 0.0;
-    public double getDegree = 0.0;
   }
 
   /** Updates the set of loggable inputs. */
-  public default void updateInputs(WristIOInputs inputs) {}
+  default void updateInputs(WristIOInputs inputs) {}
 
   /** Sets position of wrist */
-  public default void setPosition(double targetPositionRotations) {}
+  void setPosition(boolean inverted);
 
   /** Return wrist degree */
-  public default double getDegree() {
-    return getDegree();
-  }
+  double getDegrees();
 }

@@ -48,10 +48,11 @@ public class ArmIOTalonFX implements ArmIO {
     rotationLeader.configFactoryDefault();
     rotationLeader.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0, 0, 100);
     rotationLeader.configAllSettings(talonFXConfig);
+    rotationLeader.setNeutralMode(NeutralMode.Brake);
     rotationFollower = new TalonFX(followerMotorID, canBusName);
     rotationFollower.configFactoryDefault();
     rotationFollower.follow(rotationLeader);
-
+    rotationFollower.setNeutralMode(NeutralMode.Brake);
     telescopingMotor = new TalonFX(telescopingMotorID);
     telescopingMotor.configFactoryDefault();
 
