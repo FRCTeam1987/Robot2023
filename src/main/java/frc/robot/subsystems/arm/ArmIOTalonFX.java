@@ -19,7 +19,7 @@ public class ArmIOTalonFX implements ArmIO {
   private Alert armWentBeserkAlert =
       new Alert("Attempted to set arm beyond safe range.", Alert.AlertType.ERROR);
 
-  double temporaryArmCancoderOffset = 292.852;
+  double temporaryArmCancoderOffset = 202.939;
   double armMinLength = 21;
   double armMaxLength = 62;
   double armMinPotLength = 0.220947243;
@@ -58,10 +58,12 @@ public class ArmIOTalonFX implements ArmIO {
     rotationLeader.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0, 0, 100);
     rotationLeader.configAllSettings(rotatorConfig);
     rotationLeader.setNeutralMode(NeutralMode.Brake);
+    rotationLeader.configVoltageCompSaturation(8);
     rotationFollower = new TalonFX(followerMotorID, canBusName);
     rotationFollower.configFactoryDefault();
     rotationFollower.follow(rotationLeader);
     rotationFollower.setNeutralMode(NeutralMode.Brake);
+    rotationFollower.configVoltageCompSaturation(8);
 
     TalonFXConfiguration telescopeConfig = new TalonFXConfiguration();
     telescopeConfig.slot0.kP = 1;
@@ -117,6 +119,7 @@ public class ArmIOTalonFX implements ArmIO {
   public void setArmAngle(double angle) {
     if (!(Math.abs(angle) > armMaxAngleAbsolute)) {
       rotationLeader.set(TalonFXControlMode.Position, convertDegreesToTicks(angle));
+      System.out.println(angle + " " + convertDegreesToTicks(angle));
     } else {
       armWentBeserkAlert.set(true);
     }
@@ -124,11 +127,6 @@ public class ArmIOTalonFX implements ArmIO {
 
   @Override
   public synchronized void updateInputs(ArmIOInputs inputs) {
-    SlotConfiguration slot = new SlotConfiguration();
-    slot.kP = SmartDashboard.getNumber("pidArm", 0.1);
-    slot.kI = 0;
-    slot.kD = 0;
-    rotationLeader.configureSlot(slot, 0, 100);
     inputs.currentAmps =
         new double[] {
           rotationLeader.getStatorCurrent(),

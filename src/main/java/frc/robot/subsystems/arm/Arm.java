@@ -24,10 +24,10 @@ public class Arm extends SubsystemBase {
     this.io = io;
     tab.addNumber("angle", io::getArmAngle);
     tab.addNumber("length", io::getArmLength);
-    SmartDashboard.putNumber("angle", 1.0);
+    SmartDashboard.putNumber("anglie", 1.0);
     SmartDashboard.putData(
         "Rotate to selected",
-        new InstantCommand(() -> io.setArmAngle(SmartDashboard.getNumber("angle", 11.0))));
+        new InstantCommand(() -> io.setArmAngle(SmartDashboard.getNumber("anglie", 0.0))));
     SmartDashboard.putNumber("pidArm", 0.1);
   }
 
