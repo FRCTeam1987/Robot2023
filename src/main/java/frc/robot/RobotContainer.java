@@ -58,6 +58,7 @@ public class RobotContainer {
   private Drivetrain drivetrain;
   private Wrist wrist;
 
+  private Arm arm;
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to ensure accurate logging
   private final LoggedDashboardChooser<Command> autoChooser =
       new LoggedDashboardChooser<>("Auto Routine");
@@ -141,15 +142,18 @@ public class RobotContainer {
 
             drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
             // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
-            wrist = new Wrist(new WristIOTalonSRX(config.getWristRotatorID()));
-            new Vision(new VisionIOLimelight("limelight-fr", "limelight-fl"));
-            new Arm(
-                new ArmIOTalonFX(
-                    config.getArmLeaderMotorID(),
-                    config.getArmFollowerMotorID(),
-                    config.getArmCanCoderID(),
-                    config.getArmTelescopeID(),
-                    config.getCANBusName()));
+
+            new Vision(
+                new VisionIOLimelight(
+                    "limelight-fr", "limelight-fl", "limelight-bl", "limelight-br"));
+            arm =
+                new Arm(
+                    new ArmIOTalonFX(
+                        config.getArmLeaderMotorID(),
+                        config.getArmFollowerMotorID(),
+                        config.getArmCanCoderID(),
+                        config.getArmTelescopeID(),
+                        config.getCANBusName()));
             break;
           }
         case ROBOT_SIMBOT:
@@ -281,6 +285,7 @@ public class RobotContainer {
                 () -> {
                   wrist.setPosition(false);
                 }));
+    oi.getRotateButton().onTrue(new InstantCommand(() -> arm.rotateTheArm()));
   }
 
   /** Use this method to define your commands for autonomous mode. */

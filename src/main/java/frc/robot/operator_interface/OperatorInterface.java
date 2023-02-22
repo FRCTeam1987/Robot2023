@@ -42,6 +42,8 @@ public interface OperatorInterface {
   }
 
   public default Trigger getWristNegButton() {
+  
+  public default Trigger getRotateButton() {
     return new Trigger(() -> false);
   }
 }
