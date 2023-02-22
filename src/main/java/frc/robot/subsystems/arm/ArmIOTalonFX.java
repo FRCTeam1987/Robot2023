@@ -1,13 +1,12 @@
 package frc.robot.subsystems.arm;
 
 import com.ctre.phoenix.motorcontrol.*;
-import com.ctre.phoenix.motorcontrol.can.SlotConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderConfiguration;
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.lib.team6328.util.Alert;
 
 public class ArmIOTalonFX implements ArmIO {
@@ -24,9 +23,9 @@ public class ArmIOTalonFX implements ArmIO {
   double armMaxLength = 62;
   double armMinPotLength = 0.220947243;
   double armMaxPotLength = 4.549560081;
-  double armConversionConstant = (armMaxLength - armMinLength) / (armMaxPotLength - armMinPotLength);
+  double armConversionConstant =
+      (armMaxLength - armMinLength) / (armMaxPotLength - armMinPotLength);
   double armMaxAngleAbsolute = 110;
-
 
   public ArmIOTalonFX(
       int leaderMotorID,
@@ -69,7 +68,7 @@ public class ArmIOTalonFX implements ArmIO {
     rotationLeader.enableVoltageCompensation(true);
 
     TalonFXConfiguration telescopeConfig = new TalonFXConfiguration();
-    telescopeConfig.slot0.kP = 1;
+    telescopeConfig.slot0.kP = 0.1;
     telescopeConfig.slot0.kI = 0.0;
     telescopeConfig.slot0.kD = 0.0;
     telescopeConfig.slot0.kF = 0.0;
@@ -79,6 +78,11 @@ public class ArmIOTalonFX implements ArmIO {
     telescopingMotor = new TalonFX(telescopingMotorID);
     telescopingMotor.configFactoryDefault();
     telescopingMotor.configAllSettings(telescopeConfig);
+    /*telescopingMotor.setSelectedSensorPosition(telescopingMotor.getSensorCollection().getIntegratedSensorAbsolutePosition() - 792);
+    telescopingMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 100);
+    telescopingMotor.configSetParameter(ParamEnum.eFeedbackNotContinuous, 32, 32, 32,32)*/
+    Shuffleboard.getTab("ArmTab")
+        .addNumber("ticksLen", telescopingMotor::getSelectedSensorPosition);
 
     telescopePotentiometer = new AnalogInput(3);
   }
@@ -90,14 +94,20 @@ public class ArmIOTalonFX implements ArmIO {
   public double convertTicksToDegrees(double ticks) {
     return 360 * (ticks / 4096);
   }
+
+  public double getArmLengthTicks() {
+    return telescopingMotor.getSelectedSensorPosition() - 792;
+  }
   // 4.549560081 = 60.5
   // 0.220947243 = 21
   // 4.328612838 + 0.220947243 = 39.5 + 21
   // 9.12532638
+  // 89136, 11
+
   @Override
   public double getArmLength() {
-    return ((telescopePotentiometer.getVoltage() - armMinPotLength) * armConversionConstant) + armMinLength;
-    // TODO: make this work
+    return ((telescopePotentiometer.getVoltage() - armMinPotLength) * armConversionConstant)
+        + armMinLength;
   }
 
   @Override
@@ -108,9 +118,10 @@ public class ArmIOTalonFX implements ArmIO {
       armWentBeserkAlert.set(true);
     }
   }
+
   @Override
   public void setArmPower(double pwr) {
-      telescopingMotor.set(TalonFXControlMode.PercentOutput, convertDegreesToTicks(pwr));
+    telescopingMotor.set(TalonFXControlMode.PercentOutput, convertDegreesToTicks(pwr));
   }
 
   @Override

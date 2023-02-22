@@ -4,7 +4,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.team3061.RobotConfig;
 import frc.lib.team6328.util.Alert;
@@ -27,9 +26,11 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putNumber("angle15", 1.0);
     SmartDashboard.putNumber("pidArm", 0.1);
   }
+
   public void rotateTheArm() {
     io.setArmAngle(SmartDashboard.getNumber("angle15", 0.0));
   }
+
   public void periodic() {
     io.updateInputs(inputs);
     Logger.getInstance().processInputs("Arm", inputs);
