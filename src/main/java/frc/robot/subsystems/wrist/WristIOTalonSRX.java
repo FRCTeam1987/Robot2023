@@ -31,6 +31,7 @@ public class WristIOTalonSRX implements WristIO {
     wristMotor.configClosedloopRamp(0.15);
     wristMotor.configContinuousCurrentLimit(17);
     wristMotor.configPeakCurrentLimit(25);
+    wristMotor.setSelectedSensorPosition(Math.abs(wristMotor.getSensorCollection().getPulseWidthPosition() % 4096));
     Shuffleboard.getTab("wrist")
         .add(
             "reset",
