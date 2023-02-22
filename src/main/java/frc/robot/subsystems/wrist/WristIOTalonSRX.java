@@ -33,7 +33,8 @@ public class WristIOTalonSRX implements WristIO {
     wristMotor.configContinuousCurrentLimit(17);
     wristMotor.configPeakCurrentLimit(25);
     wristMotor.setSelectedSensorPosition(
-        Math.abs(wristMotor.getSensorCollection().getPulseWidthPosition() % 4096) - wristMotorOffset);
+        Math.abs(wristMotor.getSensorCollection().getPulseWidthPosition() % 4096)
+            - wristMotorOffset);
     Shuffleboard.getTab("wrist")
         .add(
             "reset",
@@ -55,7 +56,7 @@ public class WristIOTalonSRX implements WristIO {
   public void setPosition(boolean inverted) { // in Ticks
     // wristMotor.set(TalonSRXControlMode.PercentOutput, SmartDashboard.getNumber("speed", 0.09));
     wristMotor.set(TalonSRXControlMode.MotionMagic, inverted ? 0 : 2048);
-    }
+  }
 
   @Override
   public double getDegrees() {
