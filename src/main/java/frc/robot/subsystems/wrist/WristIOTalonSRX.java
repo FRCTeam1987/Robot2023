@@ -6,7 +6,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.lib.team6328.util.TunableNumber;
 
 public class WristIOTalonSRX implements WristIO {
 
@@ -52,8 +51,7 @@ public class WristIOTalonSRX implements WristIO {
   @Override
   public void setPosition(boolean inverted) { // in Ticks
     // wristMotor.set(TalonSRXControlMode.PercentOutput, SmartDashboard.getNumber("speed", 0.09));
-    wristMotor.set(
-        TalonSRXControlMode.MotionMagic, inverted ? 0 : 2048);
+    wristMotor.set(TalonSRXControlMode.MotionMagic, inverted ? 0 : 2048);
   }
 
   @Override
