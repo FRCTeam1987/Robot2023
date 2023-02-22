@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 public class WristIOTalonSRX implements WristIO {
 
   private final WPI_TalonSRX wristMotor;
+  private final int wristMotorOffset = 471;
 
   public WristIOTalonSRX(int wristMotorID) {
     wristMotor = new WPI_TalonSRX(wristMotorID);
@@ -31,7 +32,8 @@ public class WristIOTalonSRX implements WristIO {
     wristMotor.configClosedloopRamp(0.15);
     wristMotor.configContinuousCurrentLimit(17);
     wristMotor.configPeakCurrentLimit(25);
-    wristMotor.setSelectedSensorPosition(Math.abs(wristMotor.getSensorCollection().getPulseWidthPosition() % 4096));
+    wristMotor.setSelectedSensorPosition(
+        Math.abs(wristMotor.getSensorCollection().getPulseWidthPosition() % 4096) - wristMotorOffset);
     Shuffleboard.getTab("wrist")
         .add(
             "reset",
@@ -53,7 +55,7 @@ public class WristIOTalonSRX implements WristIO {
   public void setPosition(boolean inverted) { // in Ticks
     // wristMotor.set(TalonSRXControlMode.PercentOutput, SmartDashboard.getNumber("speed", 0.09));
     wristMotor.set(TalonSRXControlMode.MotionMagic, inverted ? 0 : 2048);
-  }
+    }
 
   @Override
   public double getDegrees() {
