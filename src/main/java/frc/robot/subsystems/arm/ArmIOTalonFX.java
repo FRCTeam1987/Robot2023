@@ -45,6 +45,8 @@ public class ArmIOTalonFX implements ArmIO {
     rotatorConfig.remoteFilter0.remoteSensorDeviceID = rotationCANCoderID;
     rotatorConfig.remoteFilter0.remoteSensorSource = RemoteSensorSource.CANCoder;
     rotatorConfig.primaryPID.selectedFeedbackSensor = FeedbackDevice.RemoteSensor0;
+    rotatorConfig.motionAcceleration = 1000;
+    rotatorConfig.motionCruiseVelocity = 1000;
     rotatorConfig.slot0.kP = 2.25;
     rotatorConfig.slot0.kI = 0.0;
     rotatorConfig.slot0.kD = 0.0;
