@@ -26,7 +26,6 @@ public class Wrist extends SubsystemBase {
             () -> {
               io.setPosition(false);
             }));
-
   }
 
   public double getCurrent() {
