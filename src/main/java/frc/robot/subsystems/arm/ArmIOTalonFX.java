@@ -7,6 +7,8 @@ import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderConfiguration;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.lib.team6328.util.Alert;
 
 public class ArmIOTalonFX implements ArmIO {
@@ -19,12 +21,16 @@ public class ArmIOTalonFX implements ArmIO {
       new Alert("Attempted to set arm beyond safe range.", Alert.AlertType.ERROR);
 
   double temporaryArmCancoderOffset = 202.939;
-  double armMinLength = 21;
-  double armMaxLength = 62;
-  double armMinPotLength = 0.220947243;
-  double armMaxPotLength = 4.549560081;
+  double armMinLength = 0;
+  double armMaxLength = 41;
+  double armMaxTicks = 89174;
+  double armMinTicks = -161;
+  double armMinPotLength = 0.051269526;
+  double armMaxPotLength = 4.44580032;
   double armConversionConstant =
       (armMaxLength - armMinLength) / (armMaxPotLength - armMinPotLength);
+  double armConversionInchToTicks = 
+      (armMaxTicks - armMinTicks) / (armMaxLength - armMinLength);
   double armMaxAngleAbsolute = 110;
 
   public ArmIOTalonFX(
@@ -79,16 +85,37 @@ public class ArmIOTalonFX implements ArmIO {
     telescopeConfig.slot0.allowableClosedloopError = 0;
     telescopingMotor = new TalonFX(telescopingMotorID);
     telescopingMotor.configFactoryDefault();
+    telescopingMotor.setNeutralMode(NeutralMode.Brake);
+    telescopingMotor.configVoltageCompSaturation(4);
+    telescopingMotor.enableVoltageCompensation(true);
+    // telescopingMotor.configSupplyCurrentLimit(25);
+    telescopingMotor.enableVoltageCompensation(true);
+    telescopingMotor.configClosedloopRamp(0.5);
     telescopingMotor.configAllSettings(telescopeConfig);
     /*telescopingMotor.setSelectedSensorPosition(telescopingMotor.getSensorCollection().getIntegratedSensorAbsolutePosition() - 792);
     telescopingMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 100);
     telescopingMotor.configSetParameter(ParamEnum.eFeedbackNotContinuous, 32, 32, 32,32)*/
     Shuffleboard.getTab("ArmTab")
         .addNumber("ticksLen", telescopingMotor::getSelectedSensorPosition);
-
     telescopePotentiometer = new AnalogInput(3);
+    Shuffleboard.getTab("ArmTab")
+        .addNumber("Pot Rotation 2", (() -> telescopePotentiometer.getVoltage()));
+    SmartDashboard.putNumber("Input Length", 31.0);
+    Shuffleboard.getTab("ArmTab")
+        .add(
+            "setArmPosition",
+            new InstantCommand(
+                () -> {
+                  setArmLength(SmartDashboard.getNumber("Input Length", 31));
+                }));
   }
 
+  private int convertInchesToTicks(double inches) {
+    System.out.println(inches);
+    System.out.println((int) (inches * armConversionInchToTicks));
+    return (int) (inches * armConversionInchToTicks);
+  }
+  
   public int convertDegreesToTicks(double deg) {
     return (int) (deg * 4096) / 360;
   }
@@ -115,7 +142,9 @@ public class ArmIOTalonFX implements ArmIO {
   @Override
   public void setArmLength(double lengthInches) {
     if (!(lengthInches > armMaxLength || lengthInches < armMinLength)) {
-      telescopingMotor.set(TalonFXControlMode.Position, convertDegreesToTicks(0.0));
+      System.out.println("Current Position in Ticks: " + telescopingMotor.getSelectedSensorPosition());
+      System.out.println("Length in Inches: " + lengthInches + "| Length in Ticks: " + convertInchesToTicks(lengthInches));
+      telescopingMotor.set(TalonFXControlMode.Position, convertInchesToTicks(lengthInches));
     } else {
       armWentBeserkAlert.set(true);
     }
