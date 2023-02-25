@@ -150,8 +150,8 @@ public class ArmIOTalonFX implements ArmIO {
             .withProperties(Map.of("min", minLengthInches, "max", maxLengthInches))
             .getEntry();
     rotList.add("Rotate Arm", new InstantCommand(() -> setArmAngle(targetAngle.getDouble(0))));
-    rotList.addNumber("Arm Angle", (() -> convertTicksToDegs(getArmAngle())));
-    rotList.addNumber("Rotation Motor Ticks", (() -> getArmAngle()));
+    rotList.addNumber("Arm Angle", (() -> getArmAngle()));
+    rotList.addNumber("Rotation Motor Ticks", (() -> convertDegsToTicks(getArmAngle())));
 
     ShuffleboardLayout extList =
         armTab
