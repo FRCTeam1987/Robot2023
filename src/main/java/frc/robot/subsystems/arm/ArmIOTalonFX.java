@@ -1,140 +1,222 @@
 package frc.robot.subsystems.arm;
 
-import com.ctre.phoenix.motorcontrol.*;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderConfiguration;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.lib.team6328.util.Alert;
+import java.util.Map;
 
 public class ArmIOTalonFX implements ArmIO {
-  private TalonFX rotationLeader;
-  private TalonFX rotationFollower;
-  private CANCoder rotationEncoder;
-  private TalonFX telescopingMotor;
-  private AnalogInput telescopePotentiometer;
+  private TalonFX rotMotorLeader;
+  private TalonFX rotMotorFollower;
+  private CANCoder rotEncoder;
+  private TalonFX extMotor;
+  private AnalogInput extPot;
+
+  final double canCoderOffset = 202.939;
+
+  final double maxRotAngle = 110;
+  final double fullRotDegs = 360.0;
+  final double fullRotTicks = 4096.0;
+  final double minLengthInches = 0.0;
+  final double maxLengthInches = 41.0;
+  final double minMotorTicks = -161.0;
+  final double maxMotorTicks = 89174.0;
+  final double minPotVolts = 0.051269526;
+  final double maxPotVolts = 4.44580032;
+
+  final double conversionFactorDegsToTicks = (fullRotTicks) / (fullRotDegs);
+  final double conversionFactorTicksToDegs = (fullRotDegs) / (fullRotTicks);
+  final double conversionFactorInchesToTicks =
+      (maxMotorTicks - minMotorTicks) / (maxLengthInches - minLengthInches);
+  final double conversionFactorVoltsToInches =
+      (maxLengthInches - minLengthInches) / (maxPotVolts - minPotVolts);
+
   private Alert armWentBeserkAlert =
       new Alert("Attempted to set arm beyond safe range.", Alert.AlertType.ERROR);
 
-  double temporaryArmCancoderOffset = 202.939;
-  double armMinLength = 21;
-  double armMaxLength = 62;
-  double armMinPotLength = 0.220947243;
-  double armMaxPotLength = 4.549560081;
-  double armConversionConstant =
-      (armMaxLength - armMinLength) / (armMaxPotLength - armMinPotLength);
-  double armMaxAngleAbsolute = 110;
+  // A couple abbrievations:
+  //  - rot means rotation
+  //  - ext means extension
+  //  - pot means potentiometer
 
   public ArmIOTalonFX(
-      int leaderMotorID,
-      int followerMotorID,
-      int rotationCANCoderID,
-      int telescopingMotorID,
+      int rotMotorLeaderID,
+      int rotMotorFollowerID,
+      int rotCANCoderID,
+      int extMotorID,
       String canBusName) {
 
-    CANCoderConfiguration canCoderConfiguration = new CANCoderConfiguration();
-    canCoderConfiguration.sensorDirection = false;
-    rotationEncoder = new CANCoder(rotationCANCoderID, canBusName);
-    rotationEncoder.configFactoryDefault();
-    rotationEncoder.configAllSettings(canCoderConfiguration);
-    rotationEncoder.setPosition(rotationEncoder.getAbsolutePosition() - temporaryArmCancoderOffset);
+    rotEncoder = new CANCoder(rotCANCoderID, canBusName);
+    rotEncoder.configFactoryDefault();
+    rotEncoder.configAllSettings(getCanCoderConfig());
+    rotEncoder.setPosition(rotEncoder.getAbsolutePosition() - canCoderOffset);
 
-    TalonFXConfiguration rotatorConfig = new TalonFXConfiguration();
-    rotatorConfig.remoteFilter0.remoteSensorDeviceID = rotationCANCoderID;
-    rotatorConfig.remoteFilter0.remoteSensorSource = RemoteSensorSource.CANCoder;
-    rotatorConfig.primaryPID.selectedFeedbackSensor = FeedbackDevice.RemoteSensor0;
-    rotatorConfig.motionAcceleration = 1000;
-    rotatorConfig.motionCruiseVelocity = 1000;
-    rotatorConfig.slot0.kP = 2.25;
-    rotatorConfig.slot0.kI = 0.0;
-    rotatorConfig.slot0.kD = 0.0;
-    rotatorConfig.slot0.kF = 0.0;
-    rotatorConfig.primaryPID.selectedFeedbackCoefficient = 1.0;
-    rotatorConfig.feedbackNotContinuous = true;
-    rotatorConfig.slot0.allowableClosedloopError = 0;
-    rotationLeader = new TalonFX(leaderMotorID, canBusName);
-    rotationLeader.configFactoryDefault();
-    rotationLeader.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0, 0, 100);
-    rotationLeader.configAllSettings(rotatorConfig);
-    rotationLeader.setNeutralMode(NeutralMode.Brake);
-    rotationLeader.configVoltageCompSaturation(8);
-    rotationLeader.enableVoltageCompensation(true);
-    rotationLeader.configClosedloopRamp(0.5);
-    rotationFollower = new TalonFX(followerMotorID, canBusName);
-    rotationFollower.configFactoryDefault();
-    rotationFollower.follow(rotationLeader);
-    rotationFollower.setNeutralMode(NeutralMode.Brake);
-    rotationFollower.configVoltageCompSaturation(8);
-    rotationLeader.enableVoltageCompensation(true);
+    rotMotorLeader = new TalonFX(rotMotorLeaderID, canBusName);
+    rotMotorLeader.configFactoryDefault();
+    rotMotorLeader.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0, 0, 100);
+    rotMotorLeader.configVoltageCompSaturation(8);
+    rotMotorLeader.configClosedloopRamp(0.5);
+    rotMotorLeader.configAllSettings(getRotMotorConfig(rotCANCoderID));
+    rotMotorLeader.setNeutralMode(NeutralMode.Brake);
+    rotMotorLeader.enableVoltageCompensation(true);
 
-    TalonFXConfiguration telescopeConfig = new TalonFXConfiguration();
-    telescopeConfig.slot0.kP = 0.1;
-    telescopeConfig.slot0.kI = 0.0;
-    telescopeConfig.slot0.kD = 0.0;
-    telescopeConfig.slot0.kF = 0.0;
-    telescopeConfig.primaryPID.selectedFeedbackCoefficient = 1.0;
-    telescopeConfig.feedbackNotContinuous = true;
-    telescopeConfig.slot0.allowableClosedloopError = 0;
-    telescopingMotor = new TalonFX(telescopingMotorID);
-    telescopingMotor.configFactoryDefault();
-    telescopingMotor.configAllSettings(telescopeConfig);
-    /*telescopingMotor.setSelectedSensorPosition(telescopingMotor.getSensorCollection().getIntegratedSensorAbsolutePosition() - 792);
-    telescopingMotor.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 100);
-    telescopingMotor.configSetParameter(ParamEnum.eFeedbackNotContinuous, 32, 32, 32,32)*/
-    Shuffleboard.getTab("ArmTab")
-        .addNumber("ticksLen", telescopingMotor::getSelectedSensorPosition);
+    rotMotorFollower = new TalonFX(rotMotorFollowerID, canBusName);
+    rotMotorFollower.configFactoryDefault();
+    rotMotorFollower.configVoltageCompSaturation(8);
+    rotMotorFollower.follow(rotMotorLeader);
+    rotMotorFollower.setNeutralMode(NeutralMode.Brake);
+    rotMotorLeader.enableVoltageCompensation(true);
 
-    telescopePotentiometer = new AnalogInput(3);
+    extMotor = new TalonFX(extMotorID);
+    extMotor.configFactoryDefault();
+    extMotor.configVoltageCompSaturation(4);
+    extMotor.configClosedloopRamp(0.5);
+    extMotor.configAllSettings(getExtMotorConfig());
+    extMotor.setNeutralMode(NeutralMode.Brake);
+    extMotor.enableVoltageCompensation(true);
+
+    extPot = new AnalogInput(3);
+
+    setShuffleBoardLayout();
   }
 
-  public int convertDegreesToTicks(double deg) {
-    return (int) (deg * 4096) / 360;
+  private CANCoderConfiguration getCanCoderConfig() {
+    CANCoderConfiguration canCoderConfig = new CANCoderConfiguration();
+    canCoderConfig.sensorDirection = false;
+
+    return canCoderConfig;
   }
 
-  public double convertTicksToDegrees(double ticks) {
-    return 360 * (ticks / 4096);
+  private TalonFXConfiguration getRotMotorConfig(int rotCANCoderID) {
+    TalonFXConfiguration rotMotorConfig = new TalonFXConfiguration();
+    rotMotorConfig.remoteFilter0.remoteSensorDeviceID = rotCANCoderID;
+    rotMotorConfig.remoteFilter0.remoteSensorSource = RemoteSensorSource.CANCoder;
+    rotMotorConfig.feedbackNotContinuous = true;
+
+    rotMotorConfig.primaryPID.selectedFeedbackSensor = FeedbackDevice.RemoteSensor0;
+    rotMotorConfig.primaryPID.selectedFeedbackCoefficient = 1.0;
+    rotMotorConfig.motionAcceleration = 1000;
+    rotMotorConfig.motionCruiseVelocity = 1000;
+    rotMotorConfig.slot0.kP = 2.25;
+    rotMotorConfig.slot0.kI = 0.0;
+    rotMotorConfig.slot0.kD = 0.0;
+    rotMotorConfig.slot0.kF = 0.0;
+    rotMotorConfig.slot0.allowableClosedloopError = 0;
+
+    return rotMotorConfig;
   }
 
-  public double getArmLengthTicks() {
-    return telescopingMotor.getSelectedSensorPosition() - 792;
+  private TalonFXConfiguration getExtMotorConfig() {
+    TalonFXConfiguration extConfig = new TalonFXConfiguration();
+    extConfig.feedbackNotContinuous = true;
+
+    extConfig.primaryPID.selectedFeedbackCoefficient = 1.0;
+    extConfig.slot0.kP = 0.1;
+    extConfig.slot0.kI = 0.0;
+    extConfig.slot0.kD = 0.0;
+    extConfig.slot0.kF = 0.0;
+    extConfig.slot0.allowableClosedloopError = 0;
+
+    return extConfig;
   }
-  // 4.549560081 = 60.5
-  // 0.220947243 = 21
-  // 4.328612838 + 0.220947243 = 39.5 + 21
-  // 9.12532638
-  // 89136, 11
+
+  private void setShuffleBoardLayout() {
+    ShuffleboardTab armTab = Shuffleboard.getTab("Arm Tab");
+
+    ShuffleboardLayout rotList =
+        armTab
+            .getLayout("Arm Rotation", BuiltInLayouts.kList)
+            .withSize(2, 4)
+            .withProperties(Map.of("Label position", "HIDDEN"));
+
+    GenericEntry targetAngle =
+        rotList
+            .add("Target Angle", 0)
+            .withWidget(BuiltInWidgets.kNumberSlider)
+            .withProperties(Map.of("min", minLengthInches, "max", maxLengthInches))
+            .getEntry();
+    rotList.add("Rotate Arm", new InstantCommand(() -> setArmAngle(targetAngle.getDouble(0))));
+    rotList.addNumber("Arm Angle", (() -> getArmAngle()));
+    rotList.addNumber("Rotation Motor Ticks", (() -> convertDegsToTicks(getArmAngle())));
+
+    ShuffleboardLayout extList =
+        armTab
+            .getLayout("Arm Extension", BuiltInLayouts.kList)
+            .withSize(2, 4)
+            .withProperties(Map.of("Label position", "HIDDEN"));
+
+    GenericEntry targetLength =
+        extList
+            .add("Target Length", 0)
+            .withWidget(BuiltInWidgets.kNumberSlider)
+            .withProperties(Map.of("min", minLengthInches, "max", maxLengthInches))
+            .getEntry();
+    extList.add("Extend Arm", new InstantCommand(() -> setArmLength(targetLength.getDouble(0))));
+    extList.addNumber("Arm Length Inches", (() -> convertVoltsToInches(extPot.getVoltage())));
+    extList.addNumber("Extension Motor Ticks", (() -> extMotor.getSelectedSensorPosition()));
+    extList.addNumber("Potentiometer Voltage", (() -> extPot.getVoltage()));
+
+    armTab.add(
+        "Coast Extension Motors",
+        new InstantCommand(() -> extMotor.setNeutralMode(NeutralMode.Coast)));
+    armTab.add(
+        "Brake Extension Motors",
+        new InstantCommand(() -> extMotor.setNeutralMode(NeutralMode.Brake)));
+  }
+
+  public int convertDegsToTicks(double degs) {
+    return (int) (degs * conversionFactorDegsToTicks);
+  }
+
+  public double convertTicksToDegs(double ticks) {
+    return (ticks * conversionFactorDegsToTicks);
+  }
+
+  private int convertInchesToTicks(double inches) {
+    return (int) (inches * conversionFactorInchesToTicks);
+  }
+
+  private double convertVoltsToInches(double volts) {
+    return (volts * conversionFactorVoltsToInches);
+  }
 
   @Override
   public double getArmLength() {
-    return ((telescopePotentiometer.getVoltage() - armMinPotLength) * armConversionConstant)
-        + armMinLength;
+    return (convertVoltsToInches(extPot.getVoltage() - minPotVolts));
   }
 
   @Override
-  public void setArmLength(double lengthInches) {
-    if (!(lengthInches > armMaxLength || lengthInches < armMinLength)) {
-      telescopingMotor.set(TalonFXControlMode.Position, convertDegreesToTicks(0.0));
+  public void setArmLength(double inches) {
+    if (minLengthInches < inches && inches < maxLengthInches) {
+      extMotor.set(TalonFXControlMode.Position, convertInchesToTicks(inches));
     } else {
       armWentBeserkAlert.set(true);
     }
   }
 
   @Override
-  public void setArmPower(double pwr) {
-    telescopingMotor.set(TalonFXControlMode.PercentOutput, convertDegreesToTicks(pwr));
-  }
-
-  @Override
   public double getArmAngle() {
-    return rotationEncoder.getAbsolutePosition() - temporaryArmCancoderOffset;
+    return rotEncoder.getPosition();
   }
 
   @Override
   public void setArmAngle(double angle) {
-    if (!(Math.abs(angle) > armMaxAngleAbsolute)) {
-      rotationLeader.set(TalonFXControlMode.Position, convertDegreesToTicks(angle));
+    if (Math.abs(angle) < maxRotAngle) {
+      rotMotorLeader.set(TalonFXControlMode.Position, convertDegsToTicks(angle));
     } else {
       armWentBeserkAlert.set(true);
     }
@@ -144,15 +226,15 @@ public class ArmIOTalonFX implements ArmIO {
   public synchronized void updateInputs(ArmIOInputs inputs) {
     inputs.currentAmps =
         new double[] {
-          rotationLeader.getStatorCurrent(),
-          rotationFollower.getStatorCurrent(),
-          telescopingMotor.getStatorCurrent()
+          rotMotorLeader.getStatorCurrent(),
+          rotMotorFollower.getStatorCurrent(),
+          extMotor.getStatorCurrent()
         };
     inputs.currentVolts =
         new double[] {
-          rotationLeader.getMotorOutputVoltage(),
-          rotationFollower.getMotorOutputVoltage(),
-          telescopingMotor.getMotorOutputVoltage()
+          rotMotorLeader.getMotorOutputVoltage(),
+          rotMotorFollower.getMotorOutputVoltage(),
+          extMotor.getMotorOutputVoltage()
         };
     inputs.armAbsoluteAngle = getArmAngle();
   }
