@@ -58,6 +58,7 @@ public class RobotContainer {
   private Drivetrain drivetrain;
   private Wrist wrist;
 
+  private Vision vision;
   private Arm arm;
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to ensure accurate logging
   private final LoggedDashboardChooser<Command> autoChooser =
@@ -144,9 +145,10 @@ public class RobotContainer {
             // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
 
             wrist = new Wrist(new WristIOTalonSRX(config.getWristRotatorID()));
-            new Vision(
-                new VisionIOLimelight(
-                    "limelight-fr", "limelight-fl", "limelight-bl", "limelight-br"));
+            vision =
+                new Vision(
+                    new VisionIOLimelight(
+                        "limelight-fr", "limelight-fl", "limelight-bl", "limelight-br"));
             arm =
                 new Arm(
                     new ArmIOTalonFX(

@@ -33,9 +33,17 @@ public class VisionIOLimelight implements VisionIO {
   @Override
   public synchronized void updateInputs(VisionIOInputs inputs) {
     int size = limelights.size();
-    inputs.json = new String[size];
-    for (int i = 0; i < size; i++) {
-      inputs.json[i] = limelights.get(i).getRawJson();
+    inputs.botPoseLatency = new double[size * 7];
+    int i2 = 0;
+    for (VisionIOLimelightBase limelight : limelights) {
+      double[] poseLatency = limelight.getBotPose();
+      inputs.botPoseLatency[i2++] = poseLatency[0];
+      inputs.botPoseLatency[i2++] = poseLatency[1];
+      inputs.botPoseLatency[i2++] = poseLatency[2];
+      inputs.botPoseLatency[i2++] = poseLatency[3];
+      inputs.botPoseLatency[i2++] = poseLatency[4];
+      inputs.botPoseLatency[i2++] = poseLatency[5];
+      inputs.botPoseLatency[i2++] = poseLatency[6];
     }
   }
 }
