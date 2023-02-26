@@ -1,6 +1,7 @@
 package frc.robot.subsystems.claw;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 public class ClawIOSparkMAX implements ClawIO {
 
@@ -9,6 +10,7 @@ public class ClawIOSparkMAX implements ClawIO {
   public ClawIOSparkMAX(int clawRollerMotorID) {
     clawRollerMotor = new CANSparkMax(clawRollerMotorID, CANSparkMax.MotorType.kBrushless);
     clawRollerMotor.restoreFactoryDefaults();
+    clawRollerMotor.setIdleMode(IdleMode.kBrake);
   }
 
   @Override

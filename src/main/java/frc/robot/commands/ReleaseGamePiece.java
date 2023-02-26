@@ -1,29 +1,25 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.commands;
 
 import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.claw.Claw;
 import frc.robot.subsystems.claw.Claw.GamePiece;
 
-public class CollectGamePiece extends CommandBase {
+public class ReleaseGamePiece extends CommandBase {
 
   private final Claw CLAW;
   private final GamePiece gamePiece;
-  private final Debouncer DEBOUNCER;
-  private boolean isCollected;
+  private double startTime;
+  private boolean isReleased;
   
-  private static final double COLLECTION_TIME = 0.25;
+  private static final double RELEASE_TIME = 0.25;
   private static final double CLAW_ROLLER_SPEED = 0.75;
   private static final double MAXIMUM_CURRENT = 35;
 
-  public CollectGamePiece(final Claw claw, GamePiece gamePiece) {
+  public ReleaseGamePiece(final Claw claw, GamePiece gamePiece) {
     this.CLAW = claw;
     this.gamePiece = gamePiece;
-    DEBOUNCER = new Debouncer(COLLECTION_TIME);
     addRequirements(this.CLAW);
   }
 
@@ -33,14 +29,14 @@ public class CollectGamePiece extends CommandBase {
 
   @Override
   public void initialize() {
-    isCollected = DEBOUNCER.calculate(stopCondition());
-    if (gamePiece == GamePiece.CONE) CLAW.setRollerSpeed(-CLAW_ROLLER_SPEED);
-    else if (gamePiece == GamePiece.CUBE) CLAW.setRollerSpeed(CLAW_ROLLER_SPEED);
+    startTime = Timer.getFPGATimestamp();
+    if (gamePiece == GamePiece.CONE) CLAW.setRollerSpeed(CLAW_ROLLER_SPEED);
+    else if (gamePiece == GamePiece.CUBE) CLAW.setRollerSpeed(-CLAW_ROLLER_SPEED);
   }
 
   @Override
   public void execute() {
-    isCollected = DEBOUNCER.calculate(stopCondition());
+    if (Timer.getFPGATimestamp() - startTime > 0) isReleased = true;
   }
 
   @Override
@@ -50,6 +46,6 @@ public class CollectGamePiece extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return isCollected;
+    return isReleased;
   }
 }

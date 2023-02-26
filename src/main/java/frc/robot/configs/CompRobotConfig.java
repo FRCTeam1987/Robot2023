@@ -12,7 +12,7 @@ import frc.lib.team3061.swerve.SwerveModuleConstants.SwerveType;
  * these methods, refer to the documentation in the RobotConfig class.
  */
 public class CompRobotConfig extends RobotConfig {
-  private static final int CLAW_MOTOR_ID = 4;
+  private static final int CLAW_MOTOR_ID = 8;
 
   public static final double ROBOT_ARM_HEIGHT_OFFSET = 12.0;
   public static final int ARM_TELESCOPE_MOTOR = 6;

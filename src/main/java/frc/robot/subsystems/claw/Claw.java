@@ -3,6 +3,8 @@ package frc.robot.subsystems.claw;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.CollectGamePiece;
+import frc.robot.commands.CollectGamePiece;
+import frc.robot.commands.DefaultClawRollers;
 import frc.robot.commands.StopClawRollers;
 import org.littletonrobotics.junction.Logger;
 
@@ -10,14 +12,20 @@ public class Claw extends SubsystemBase {
   private final ClawIO io;
   private final ClawIOInputsAutoLogged inputs = new ClawIOInputsAutoLogged();
 
+  public enum GamePiece {CONE, CUBE};
+
   private final double currentThreshold = 10.0; // amps
 
   /** Creates a new Claw. */
   public Claw(ClawIO io) {
     this.io = io;
     SmartDashboard.putData("Stop Claw", new StopClawRollers(this));
-    SmartDashboard.putData("Run Claw", new CollectGamePiece(this));
+    SmartDashboard.putData("Run Claw", new CollectGamePiece(this, GamePiece.CONE));
   }
+
+  public void initDefaultCommand() {
+    setDefaultCommand(new DefaultClawRollers(this, true));
+  } 
 
   public double getCurrent() {
     return inputs.currentAmps;
