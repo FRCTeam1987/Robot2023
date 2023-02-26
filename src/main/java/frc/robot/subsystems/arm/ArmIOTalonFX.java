@@ -1,9 +1,8 @@
 package frc.robot.subsystems.arm;
 
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import static frc.robot.subsystems.arm.ArmConstants.*;
+
+import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.sensors.CANCoder;
@@ -15,86 +14,69 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.lib.team6328.util.Alert;
 import java.util.Map;
 
 public class ArmIOTalonFX implements ArmIO {
-  private TalonFX rotMotorLeader;
-  private TalonFX rotMotorFollower;
-  private CANCoder rotEncoder;
-  private TalonFX extMotor;
-  private AnalogInput extPot;
-
-  final double canCoderOffset = 202.939;
-
-  final double maxRotAngle = 110;
-  final double fullRotDegs = 360.0;
-  final double fullRotTicks = 4096.0;
-  final double minLengthInches = 0.0;
-  final double maxLengthInches = 41.0;
-  final double minMotorTicks = -161.0;
-  final double maxMotorTicks = 89174.0;
-  final double minPotVolts = 0.051269526;
-  final double maxPotVolts = 4.44580032;
-
-  final double conversionFactorDegsToTicks = (fullRotTicks) / (fullRotDegs);
-  final double conversionFactorTicksToDegs = (fullRotDegs) / (fullRotTicks);
-  final double conversionFactorInchesToTicks =
-      (maxMotorTicks - minMotorTicks) / (maxLengthInches - minLengthInches);
-  final double conversionFactorVoltsToInches =
-      (maxLengthInches - minLengthInches) / (maxPotVolts - minPotVolts);
-
-  private Alert armWentBeserkAlert =
-      new Alert("Attempted to set arm beyond safe range.", Alert.AlertType.ERROR);
-
-  // A couple abbrievations:
-  //  - rot means rotation
-  //  - ext means extension
-  //  - pot means potentiometer
+  private final TalonFX ROTATION_LEADER_TALON;
+  private final TalonFX ROTATION_FOLLOWER_TALON;
+  private final CANCoder ROTATION_CANCODER;
+  private final TalonFX EXTENSION_TALON;
+  private final AnalogInput EXTENSION_POTENTIOMETER;
+  private final Alert armOverRotateAlert =
+      new Alert("Attempted to set arm rotation beyond safe range.", Alert.AlertType.ERROR);
+  private final Alert armOverExtendAlert =
+      new Alert("Attempted to set arm length beyond safe range.", Alert.AlertType.ERROR);
 
   public ArmIOTalonFX(
-      int rotMotorLeaderID,
-      int rotMotorFollowerID,
-      int rotCANCoderID,
-      int extMotorID,
-      String canBusName) {
+      final int ROTATION_LEADER_MOTOR_ID,
+      final int ROTATION_FOLLOWER_MOTOR_ID,
+      final int ROTATION_CANCODER_ID,
+      final int EXTENSION_MOTOR_ID,
+      final int ROTATION_ANALOG_POTENTIOMETER_ID,
+      final String CAN_BUS_NAME) {
 
-    rotEncoder = new CANCoder(rotCANCoderID, canBusName);
-    rotEncoder.configFactoryDefault();
-    rotEncoder.configAllSettings(getCanCoderConfig());
-    rotEncoder.setPosition(rotEncoder.getAbsolutePosition() - canCoderOffset);
+    ROTATION_CANCODER = new CANCoder(ROTATION_CANCODER_ID, CAN_BUS_NAME);
+    ROTATION_CANCODER.configFactoryDefault();
+    ROTATION_CANCODER.configAllSettings(getCANCoderConfig());
+    ROTATION_CANCODER.setPosition(ROTATION_CANCODER.getAbsolutePosition() - CANCODER_OFFSET);
 
-    rotMotorLeader = new TalonFX(rotMotorLeaderID, canBusName);
-    rotMotorLeader.configFactoryDefault();
-    rotMotorLeader.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0, 0, 100);
-    rotMotorLeader.configVoltageCompSaturation(8);
-    rotMotorLeader.configClosedloopRamp(0.5);
-    rotMotorLeader.configAllSettings(getRotMotorConfig(rotCANCoderID));
-    rotMotorLeader.setNeutralMode(NeutralMode.Brake);
-    rotMotorLeader.enableVoltageCompensation(true);
+    ROTATION_LEADER_TALON = new TalonFX(ROTATION_LEADER_MOTOR_ID, CAN_BUS_NAME);
+    ROTATION_LEADER_TALON.configFactoryDefault();
+    ROTATION_LEADER_TALON.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0, 0, 100);
+    ROTATION_LEADER_TALON.configVoltageCompSaturation(ROTATION_VOLTAGE_COMPENSATION_SATURATION);
+    ROTATION_LEADER_TALON.configClosedloopRamp(ROTATION_CLOSED_LOOP_RAMP_SECONDS);
+    ROTATION_LEADER_TALON.configAllSettings(getRotMotorConfig(ROTATION_CANCODER_ID));
+    ROTATION_LEADER_TALON.setNeutralMode(NeutralMode.Brake);
+    ROTATION_LEADER_TALON.enableVoltageCompensation(true);
 
-    rotMotorFollower = new TalonFX(rotMotorFollowerID, canBusName);
-    rotMotorFollower.configFactoryDefault();
-    rotMotorFollower.configVoltageCompSaturation(8);
-    rotMotorFollower.follow(rotMotorLeader);
-    rotMotorFollower.setNeutralMode(NeutralMode.Brake);
-    rotMotorLeader.enableVoltageCompensation(true);
+    ROTATION_FOLLOWER_TALON = new TalonFX(ROTATION_FOLLOWER_MOTOR_ID, CAN_BUS_NAME);
+    ROTATION_FOLLOWER_TALON.configFactoryDefault();
+    ROTATION_FOLLOWER_TALON.configVoltageCompSaturation(ROTATION_VOLTAGE_COMPENSATION_SATURATION);
+    ROTATION_FOLLOWER_TALON.follow(ROTATION_LEADER_TALON);
+    ROTATION_FOLLOWER_TALON.setNeutralMode(NeutralMode.Brake);
+    ROTATION_FOLLOWER_TALON.enableVoltageCompensation(true);
 
-    extMotor = new TalonFX(extMotorID);
-    extMotor.configFactoryDefault();
-    extMotor.configVoltageCompSaturation(4);
-    extMotor.configClosedloopRamp(0.5);
-    extMotor.configAllSettings(getExtMotorConfig());
-    extMotor.setNeutralMode(NeutralMode.Brake);
-    extMotor.enableVoltageCompensation(true);
+    EXTENSION_TALON = new TalonFX(EXTENSION_MOTOR_ID);
+    EXTENSION_TALON.configFactoryDefault();
+    EXTENSION_TALON.configVoltageCompSaturation(EXTENSION_VOLTAGE_COMPENSATION_SATURATION);
+    EXTENSION_TALON.configClosedloopRamp(EXTENSION_CLOSED_LOOP_RAMP_SECONDS);
+    EXTENSION_TALON.configAllSettings(getExtMotorConfig());
+    EXTENSION_TALON.setNeutralMode(NeutralMode.Brake);
+    EXTENSION_TALON.enableVoltageCompensation(true);
+    EXTENSION_TALON.configGetStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 25, 25, 150));
 
-    extPot = new AnalogInput(3);
+    EXTENSION_TALON.setSelectedSensorPosition(0.0);
+    // use convertVoltsToInches of the pot
 
-    setShuffleBoardLayout();
+    EXTENSION_POTENTIOMETER = new AnalogInput(ROTATION_ANALOG_POTENTIOMETER_ID);
+
+    setShuffleboardLayout();
   }
 
-  private CANCoderConfiguration getCanCoderConfig() {
+  private CANCoderConfiguration getCANCoderConfig() {
     CANCoderConfiguration canCoderConfig = new CANCoderConfiguration();
     canCoderConfig.sensorDirection = false;
 
@@ -109,13 +91,13 @@ public class ArmIOTalonFX implements ArmIO {
 
     rotMotorConfig.primaryPID.selectedFeedbackSensor = FeedbackDevice.RemoteSensor0;
     rotMotorConfig.primaryPID.selectedFeedbackCoefficient = 1.0;
-    rotMotorConfig.motionAcceleration = 1000;
-    rotMotorConfig.motionCruiseVelocity = 1000;
-    rotMotorConfig.slot0.kP = 2.25;
-    rotMotorConfig.slot0.kI = 0.0;
-    rotMotorConfig.slot0.kD = 0.0;
+    rotMotorConfig.motionAcceleration = ROTATION_MOTION_ACCELERATION;
+    rotMotorConfig.motionCruiseVelocity = ROTATION_CRUISE_VELOCITY;
+    rotMotorConfig.slot0.kP = ROTATION_KP;
+    rotMotorConfig.slot0.kI = ROTATION_KI;
+    rotMotorConfig.slot0.kD = ROTATION_KD;
     rotMotorConfig.slot0.kF = 0.0;
-    rotMotorConfig.slot0.allowableClosedloopError = 0;
+    rotMotorConfig.slot0.allowableClosedloopError = ROTATION_ALLOWABLE_ERROR;
 
     return rotMotorConfig;
   }
@@ -125,100 +107,102 @@ public class ArmIOTalonFX implements ArmIO {
     extConfig.feedbackNotContinuous = true;
 
     extConfig.primaryPID.selectedFeedbackCoefficient = 1.0;
-    extConfig.slot0.kP = 0.1;
-    extConfig.slot0.kI = 0.0;
-    extConfig.slot0.kD = 0.0;
+    extConfig.motionAcceleration = EXTENSION_MOTION_ACCELERATION;
+    extConfig.motionCruiseVelocity = EXTENSION_CRUISE_VELOCITY;
+    extConfig.slot0.kP = EXTENSION_KP;
+    extConfig.slot0.kI = EXTENSION_KI;
+    extConfig.slot0.kD = EXTENSION_KD;
     extConfig.slot0.kF = 0.0;
-    extConfig.slot0.allowableClosedloopError = 0;
+    extConfig.slot0.allowableClosedloopError = EXTENSION_ALLOWABLE_ERROR;
 
     return extConfig;
   }
 
-  private void setShuffleBoardLayout() {
+  private void setShuffleboardLayout() {
     ShuffleboardTab armTab = Shuffleboard.getTab("Arm Tab");
 
     ShuffleboardLayout rotList =
-        armTab
-            .getLayout("Arm Rotation", BuiltInLayouts.kList)
-            .withSize(2, 4)
-            .withProperties(Map.of("Label position", "HIDDEN"));
+        armTab.getLayout("Arm Rotation", BuiltInLayouts.kList).withSize(2, 4);
 
     GenericEntry targetAngle =
         rotList
             .add("Target Angle", 0)
             .withWidget(BuiltInWidgets.kNumberSlider)
-            .withProperties(Map.of("min", minLengthInches, "max", maxLengthInches))
+            .withProperties(Map.of("min", -MAX_ROTATION_ANGLE, "max", MAX_ROTATION_ANGLE))
             .getEntry();
     rotList.add("Rotate Arm", new InstantCommand(() -> setArmAngle(targetAngle.getDouble(0))));
-    rotList.addNumber("Arm Angle", (() -> getArmAngle()));
-    rotList.addNumber("Rotation Motor Ticks", (() -> convertDegsToTicks(getArmAngle())));
+    rotList.addNumber("Arm Angle", this::getArmAngle);
+    rotList.addNumber("Rotation Motor Ticks", (() -> convertDegreesToTicks(getArmAngle())));
 
     ShuffleboardLayout extList =
-        armTab
-            .getLayout("Arm Extension", BuiltInLayouts.kList)
-            .withSize(2, 4)
-            .withProperties(Map.of("Label position", "HIDDEN"));
+        armTab.getLayout("Arm Extension", BuiltInLayouts.kList).withSize(2, 4);
 
     GenericEntry targetLength =
         extList
             .add("Target Length", 0)
-            .withWidget(BuiltInWidgets.kNumberSlider)
-            .withProperties(Map.of("min", minLengthInches, "max", maxLengthInches))
             .getEntry();
     extList.add("Extend Arm", new InstantCommand(() -> setArmLength(targetLength.getDouble(0))));
-    extList.addNumber("Arm Length Inches", (() -> convertVoltsToInches(extPot.getVoltage())));
-    extList.addNumber("Extension Motor Ticks", (() -> extMotor.getSelectedSensorPosition()));
-    extList.addNumber("Potentiometer Voltage", (() -> extPot.getVoltage()));
+    extList.addNumber("Arm Length Inches", this::getArmLength);
+    extList.addNumber("Extension Motor Ticks", EXTENSION_TALON::getSelectedSensorPosition);
+    extList.addNumber("Potentiometer Voltage", EXTENSION_POTENTIOMETER::getVoltage);
 
     armTab.add(
         "Coast Extension Motors",
-        new InstantCommand(() -> extMotor.setNeutralMode(NeutralMode.Coast)));
+        new InstantCommand(() -> EXTENSION_TALON.setNeutralMode(NeutralMode.Coast))
+            .ignoringDisable(true));
     armTab.add(
         "Brake Extension Motors",
-        new InstantCommand(() -> extMotor.setNeutralMode(NeutralMode.Brake)));
+        new InstantCommand(() -> EXTENSION_TALON.setNeutralMode(NeutralMode.Brake))
+            .ignoringDisable(true));
   }
 
-  public int convertDegsToTicks(double degs) {
-    return (int) (degs * conversionFactorDegsToTicks);
+  public int convertDegreesToTicks(double degrees) {
+    return (int) (degrees * CONVERSION_FACTOR_DEGREES_TO_TICKS);
   }
 
-  public double convertTicksToDegs(double ticks) {
-    return (ticks * conversionFactorDegsToTicks);
+  public double convertTicksToDegrees(double ticks) {
+    return (ticks * CONVERSION_FACTOR_DEGREES_TO_TICKS);
   }
 
   private int convertInchesToTicks(double inches) {
-    return (int) (inches * conversionFactorInchesToTicks);
+    System.out.println(inches + " " + inches * CONVERSION_FACTOR_INCHES_TO_TICKS);
+    return (int) (inches * CONVERSION_FACTOR_INCHES_TO_TICKS);
+  }
+
+  private int convertTicksToInches(double inches) {
+    return (int) (inches * CONVERSION_FACTOR_TICKS_TO_INCHES);
   }
 
   private double convertVoltsToInches(double volts) {
-    return (volts * conversionFactorVoltsToInches);
+    return (volts * CONVERSION_FACTOR_VOLTAGE_TO_INCHES);
   }
 
   @Override
   public double getArmLength() {
-    return (convertVoltsToInches(extPot.getVoltage() - minPotVolts));
+    return (convertTicksToInches(
+        EXTENSION_TALON.getSelectedSensorPosition() - MINIMUM_EXTENSION_MOTOR_TICKS));
   }
 
   @Override
   public void setArmLength(double inches) {
-    if (minLengthInches < inches && inches < maxLengthInches) {
-      extMotor.set(TalonFXControlMode.Position, convertInchesToTicks(inches));
+    if (MINIMUM_EXTENSION_LENGTH_INCHES < inches && inches < MAXIMUM_EXTENSION_LENGTH_INCHES) {
+      EXTENSION_TALON.set(TalonFXControlMode.Position, convertInchesToTicks(inches));
     } else {
-      armWentBeserkAlert.set(true);
+      armOverExtendAlert.set(true);
     }
   }
 
   @Override
   public double getArmAngle() {
-    return rotEncoder.getPosition();
+    return ROTATION_CANCODER.getPosition();
   }
 
   @Override
   public void setArmAngle(double angle) {
-    if (Math.abs(angle) < maxRotAngle) {
-      rotMotorLeader.set(TalonFXControlMode.Position, convertDegsToTicks(angle));
+    if (Math.abs(angle) < MAX_ROTATION_ANGLE) {
+      ROTATION_LEADER_TALON.set(TalonFXControlMode.MotionMagic, convertDegreesToTicks(angle));
     } else {
-      armWentBeserkAlert.set(true);
+      armOverRotateAlert.set(true);
     }
   }
 
@@ -226,15 +210,15 @@ public class ArmIOTalonFX implements ArmIO {
   public synchronized void updateInputs(ArmIOInputs inputs) {
     inputs.currentAmps =
         new double[] {
-          rotMotorLeader.getStatorCurrent(),
-          rotMotorFollower.getStatorCurrent(),
-          extMotor.getStatorCurrent()
+          ROTATION_LEADER_TALON.getStatorCurrent(),
+          ROTATION_FOLLOWER_TALON.getStatorCurrent(),
+          EXTENSION_TALON.getStatorCurrent()
         };
     inputs.currentVolts =
         new double[] {
-          rotMotorLeader.getMotorOutputVoltage(),
-          rotMotorFollower.getMotorOutputVoltage(),
-          extMotor.getMotorOutputVoltage()
+          ROTATION_LEADER_TALON.getMotorOutputVoltage(),
+          ROTATION_FOLLOWER_TALON.getMotorOutputVoltage(),
+          EXTENSION_TALON.getMotorOutputVoltage()
         };
     inputs.armAbsoluteAngle = getArmAngle();
   }

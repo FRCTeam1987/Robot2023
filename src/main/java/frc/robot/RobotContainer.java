@@ -156,6 +156,7 @@ public class RobotContainer {
                         config.getArmFollowerMotorID(),
                         config.getArmCanCoderID(),
                         config.getArmTelescopeID(),
+                        config.getArmPotentiometerAnalogId(),
                         config.getCANBusName()));
             break;
           }

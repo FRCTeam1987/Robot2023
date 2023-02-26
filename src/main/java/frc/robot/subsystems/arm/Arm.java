@@ -17,7 +17,7 @@ public class Arm extends SubsystemBase {
   private static final Alert invalidAngle =
       new Alert("Invalid Angle Reached! (Arm Kinematics)", Alert.AlertType.ERROR);
 
-  ShuffleboardTab tab = Shuffleboard.getTab("ArmTab");
+  ShuffleboardTab tab = Shuffleboard.getTab("Arm Tab");
 
   public Arm(ArmIO io) {
     this.io = io;

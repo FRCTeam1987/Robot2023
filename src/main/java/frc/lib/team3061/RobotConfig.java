@@ -50,6 +50,13 @@ public abstract class RobotConfig {
    */
   public abstract int getArmFollowerMotorID();
   /**
+   * Returns the Analog ID for the robot's arm's potentiometer. Must be overridden.
+   *
+   * @return the Analog ID for the robot's arm's potentiometer.
+   */
+  public abstract int getArmPotentiometerAnalogId();
+
+  /**
    * Returns the CAN ID for the robot's wrist rotator motor. Must be overridden.
    *
    * @return the CAN ID for the wrist rotator motor.

@@ -129,6 +129,11 @@ public class TestRobotConfig extends RobotConfig {
   }
 
   @Override
+  public int getArmPotentiometerAnalogId() {
+    return 0;
+  }
+
+  @Override
   public double getSwerveAngleKP() {
     return ANGLE_KP;
   }
