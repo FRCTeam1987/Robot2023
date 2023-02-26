@@ -140,7 +140,6 @@ public class ArmIOTalonFX implements ArmIO {
     GenericEntry targetLength = armTab.add("Target Length", 0).getEntry();
     armTab.add("Extend Arm", new InstantCommand(() -> setArmLength(targetLength.getDouble(0))));
 
-
     extList.addNumber("Arm Length Inches", this::getArmLength);
     extList.addNumber("Extension Motor Ticks", EXTENSION_TALON::getSelectedSensorPosition);
     extList.addNumber("Potentiometer Voltage", EXTENSION_POTENTIOMETER::getVoltage);
