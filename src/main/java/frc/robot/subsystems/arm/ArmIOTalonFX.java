@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.lib.team6328.util.Alert;
 import java.util.Map;
@@ -64,9 +63,10 @@ public class ArmIOTalonFX implements ArmIO {
     EXTENSION_TALON.configVoltageCompSaturation(EXTENSION_VOLTAGE_COMPENSATION_SATURATION);
     EXTENSION_TALON.configClosedloopRamp(EXTENSION_CLOSED_LOOP_RAMP_SECONDS);
     EXTENSION_TALON.configAllSettings(getExtMotorConfig());
-    EXTENSION_TALON.setNeutralMode(NeutralMode.Brake);
     EXTENSION_TALON.enableVoltageCompensation(true);
-    EXTENSION_TALON.configGetStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 25, 25, 150));
+    EXTENSION_TALON.setNeutralMode(NeutralMode.Brake);
+    EXTENSION_TALON.configGetStatorCurrentLimit(
+        new StatorCurrentLimitConfiguration(true, 25, 25, 150));
 
     EXTENSION_TALON.setSelectedSensorPosition(0.0);
     // use convertVoltsToInches of the pot
@@ -137,11 +137,10 @@ public class ArmIOTalonFX implements ArmIO {
     ShuffleboardLayout extList =
         armTab.getLayout("Arm Extension", BuiltInLayouts.kList).withSize(2, 4);
 
-    GenericEntry targetLength =
-        extList
-            .add("Target Length", 0)
-            .getEntry();
-    extList.add("Extend Arm", new InstantCommand(() -> setArmLength(targetLength.getDouble(0))));
+    GenericEntry targetLength = armTab.add("Target Length", 0).getEntry();
+    armTab.add("Extend Arm", new InstantCommand(() -> setArmLength(targetLength.getDouble(0))));
+
+
     extList.addNumber("Arm Length Inches", this::getArmLength);
     extList.addNumber("Extension Motor Ticks", EXTENSION_TALON::getSelectedSensorPosition);
     extList.addNumber("Potentiometer Voltage", EXTENSION_POTENTIOMETER::getVoltage);
@@ -186,7 +185,7 @@ public class ArmIOTalonFX implements ArmIO {
   @Override
   public void setArmLength(double inches) {
     if (MINIMUM_EXTENSION_LENGTH_INCHES < inches && inches < MAXIMUM_EXTENSION_LENGTH_INCHES) {
-      EXTENSION_TALON.set(TalonFXControlMode.Position, convertInchesToTicks(inches));
+      EXTENSION_TALON.set(TalonFXControlMode.MotionMagic, convertInchesToTicks(inches));
     } else {
       armOverExtendAlert.set(true);
     }

@@ -9,12 +9,12 @@ public final class ArmConstants {
   public static final double ROTATION_CRUISE_VELOCITY = 1000;
   public static final double ROTATION_ALLOWABLE_ERROR = 0.0;
 
-  public static final double EXTENSION_KP = 0.05;
+  public static final double EXTENSION_KP = 1.6;
   public static final double EXTENSION_KI = 0.0;
   public static final double EXTENSION_KD = 0.0;
-  public static final double EXTENSION_MOTION_ACCELERATION = 1000;
-  public static final double EXTENSION_CRUISE_VELOCITY = 1000;
-  public static final double EXTENSION_ALLOWABLE_ERROR = 0.0;
+  public static final double EXTENSION_MOTION_ACCELERATION = 15000;
+  public static final double EXTENSION_CRUISE_VELOCITY = 15000;
+  public static final double EXTENSION_ALLOWABLE_ERROR = 500.0;
 
   public static final double CANCODER_OFFSET = 200.918;
   public static final double MAX_ROTATION_ANGLE = 110;
@@ -42,7 +42,7 @@ public final class ArmConstants {
           / (MAXIMUM_POTENTIOMETER_VOLTAGE - MINIMUM_POTENTIOMETER_VOLTAGE);
 
   public static final double ROTATION_VOLTAGE_COMPENSATION_SATURATION = 6;
-  public static final double EXTENSION_VOLTAGE_COMPENSATION_SATURATION = 4;
+  public static final double EXTENSION_VOLTAGE_COMPENSATION_SATURATION = 10;
   public static final double ROTATION_CLOSED_LOOP_RAMP_SECONDS = 0.5;
-  public static final double EXTENSION_CLOSED_LOOP_RAMP_SECONDS = 0.5;
+  public static final double EXTENSION_CLOSED_LOOP_RAMP_SECONDS = 0.25;
 }
