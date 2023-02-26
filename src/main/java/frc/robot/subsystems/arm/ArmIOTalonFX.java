@@ -163,7 +163,6 @@ public class ArmIOTalonFX implements ArmIO {
   }
 
   private int convertInchesToTicks(double inches) {
-    System.out.println(inches + " " + inches * CONVERSION_FACTOR_INCHES_TO_TICKS);
     return (int) (inches * CONVERSION_FACTOR_INCHES_TO_TICKS);
   }
 

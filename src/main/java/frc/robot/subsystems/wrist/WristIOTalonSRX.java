@@ -10,31 +10,26 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 public class WristIOTalonSRX implements WristIO {
 
   private final WPI_TalonSRX wristMotor;
-  private final int wristMotorOffset = 471;
 
   public WristIOTalonSRX(int wristMotorID) {
     wristMotor = new WPI_TalonSRX(wristMotorID);
     TalonSRXConfiguration wristConfig = new TalonSRXConfiguration();
-    wristConfig.motionAcceleration = 1000;
-    wristConfig.motionCruiseVelocity = 1000;
+    wristConfig.motionAcceleration = 750;
+    wristConfig.motionCruiseVelocity = 1250;
     wristConfig.feedbackNotContinuous = true;
-    wristConfig.slot0.kP = 2.5;
+    wristConfig.slot0.kP = 1.0;
     wristConfig.slot0.kD = 0.0;
     wristConfig.slot0.allowableClosedloopError = 0;
     wristMotor.configFactoryDefault();
     wristMotor.configAllSettings(wristConfig);
-    wristMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-    wristMotor.setSelectedSensorPosition(0);
-    wristMotor.setSensorPhase(true);
+    wristMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
     wristMotor.setNeutralMode(NeutralMode.Brake);
-    wristMotor.configVoltageCompSaturation(5);
+    wristMotor.configVoltageCompSaturation(7);
     wristMotor.enableVoltageCompensation(true);
-    wristMotor.configClosedloopRamp(0.15);
+    wristMotor.setInverted(InvertType.InvertMotorOutput);
+    wristMotor.setSensorPhase(true);
     wristMotor.configContinuousCurrentLimit(17);
     wristMotor.configPeakCurrentLimit(25);
-    wristMotor.setSelectedSensorPosition(
-        Math.abs(wristMotor.getSensorCollection().getPulseWidthPosition() % 4096)
-            - wristMotorOffset);
     Shuffleboard.getTab("wrist")
         .add(
             "reset",
@@ -54,13 +49,11 @@ public class WristIOTalonSRX implements WristIO {
 
   @Override
   public void setPosition(boolean inverted) { // in Ticks
-    // wristMotor.set(TalonSRXControlMode.PercentOutput, SmartDashboard.getNumber("speed", 0.09));
-    wristMotor.set(TalonSRXControlMode.MotionMagic, inverted ? 0 : 2048);
+    wristMotor.set(TalonSRXControlMode.MotionMagic, inverted ? 3655 : 1607);
   }
 
   @Override
   public double getDegrees() {
     return (double) wristMotor.getSelectedSensorPosition();
-    //  / 4096.0 * 360.0   /
   }
 }
