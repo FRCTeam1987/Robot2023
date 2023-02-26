@@ -46,7 +46,7 @@ public class Robot extends LoggedRobot {
 
     // Set a metadata value
     logger.recordMetadata("RuntimeType", getRuntimeType().toString());
-    logger.recordMetadata("BatteryName", BatteryTracker.scanBattery(1.0));
+    logger.recordMetadata("BatteryName", BatteryTracker.scanBattery(10.0));
     logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
     logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
     logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);

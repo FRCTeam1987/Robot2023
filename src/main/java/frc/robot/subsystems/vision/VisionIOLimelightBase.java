@@ -44,18 +44,8 @@ public class VisionIOLimelightBase {
     return (int) jsonSubscriber.get().codePoints().filter(ch -> ch == 'm').count();
   }
 
-  public Pose3dLatency getBotPose() {
-    try {
-      double[] pose = botPoseSubscriber.get();
-      return new Pose3dLatency(
-          new Translation3d(pose[0], pose[1], pose[2]),
-          new Rotation3d(pose[3], pose[4], pose[5]),
-          pose[6]);
-    } catch (Exception ignored) {
-      // This throws an exception when the bot doesn't have a pose. Just ignore it and move on,
-      // accepting that we currently don't have a pose.
-      return null;
-    }
+  public double[] getBotPose() {
+    return botPoseSubscriber.get();
   }
 }
 

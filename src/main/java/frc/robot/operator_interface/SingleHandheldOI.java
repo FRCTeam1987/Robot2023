@@ -46,6 +46,16 @@ public class SingleHandheldOI implements OperatorInterface {
   }
 
   @Override
+  public Trigger getWristPosButton() {
+    return new Trigger(controller::getRightBumper);
+  }
+
+  @Override
+  public Trigger getWristNegButton() {
+    return new Trigger(controller::getLeftBumper);
+  }
+
+  @Override
   public Trigger getRotateButton() {
     return new Trigger(controller::getAButton);
   }
