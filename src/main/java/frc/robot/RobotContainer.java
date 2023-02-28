@@ -141,7 +141,6 @@ public class RobotContainer {
             // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
             new Vision(new VisionIOLimelight("limelight-fr", "limelight-fl"));
             claw = new Claw(new ClawIOSparkMAX(config.getClawMotorID()));
-            claw.setDefaultCommand(new DefaultClawRollers(claw, true));
             // new ClawIOSparkMAX();
             new Arm(
                 new ArmIOTalonFX(

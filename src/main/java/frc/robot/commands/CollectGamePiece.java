@@ -12,17 +12,15 @@ import frc.robot.subsystems.claw.Claw.GamePiece;
 public class CollectGamePiece extends CommandBase {
 
   private final Claw CLAW;
-  private final GamePiece gamePiece;
   private final Debouncer DEBOUNCER;
   private boolean isCollected;
-  
+
   private static final double COLLECTION_TIME = 0.25;
   private static final double CLAW_ROLLER_SPEED = 0.75;
   private static final double MAXIMUM_CURRENT = 35;
 
-  public CollectGamePiece(final Claw claw, GamePiece gamePiece) {
+  public CollectGamePiece(final Claw claw) {
     this.CLAW = claw;
-    this.gamePiece = gamePiece;
     DEBOUNCER = new Debouncer(COLLECTION_TIME);
     addRequirements(this.CLAW);
   }
@@ -34,8 +32,11 @@ public class CollectGamePiece extends CommandBase {
   @Override
   public void initialize() {
     isCollected = DEBOUNCER.calculate(stopCondition());
-    if (gamePiece == GamePiece.CONE) CLAW.setRollerSpeed(-CLAW_ROLLER_SPEED);
-    else if (gamePiece == GamePiece.CUBE) CLAW.setRollerSpeed(CLAW_ROLLER_SPEED);
+    if (CLAW.getGamePiece() == GamePiece.CONE) {
+      CLAW.setRollerSpeed(-CLAW_ROLLER_SPEED);
+    } else if (CLAW.getGamePiece() == GamePiece.CUBE) {
+      CLAW.setRollerSpeed(CLAW_ROLLER_SPEED);
+    }
   }
 
   @Override
