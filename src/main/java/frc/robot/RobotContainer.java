@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.team3061.RobotConfig;
 import frc.lib.team3061.gyro.GyroIO;
 import frc.lib.team3061.gyro.GyroIONavx;
@@ -33,6 +34,7 @@ import frc.robot.operator_interface.OperatorInterface;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.claw.Claw;
+import frc.robot.subsystems.claw.Claw.GamePiece;
 import frc.robot.subsystems.claw.ClawIOSparkMAX;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.vision.Vision;
@@ -63,6 +65,8 @@ public class RobotContainer {
   // RobotContainer singleton
   private static RobotContainer robotContainer = new RobotContainer();
   private final Map<String, Command> autoEventMap = new HashMap<>();
+  CommandXboxController driverController =
+      new CommandXboxController(1); // Creates a CommandXboxController on port 1.
 
   /** Create the container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -141,6 +145,7 @@ public class RobotContainer {
             // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
             new Vision(new VisionIOLimelight("limelight-fr", "limelight-fl"));
             claw = new Claw(new ClawIOSparkMAX(config.getClawMotorID()));
+            claw.setDefaultCommand(new DefaultClawRollersSpin(claw));
             // new ClawIOSparkMAX();
             new Arm(
                 new ArmIOTalonFX(
@@ -249,10 +254,12 @@ public class RobotContainer {
 
   private void configureSmartDashboard() {
     SmartDashboard.putData("Stop Claw", new StopClawRollers(claw));
-    SmartDashboard.putData("Run Claw", new CollectGamePiece(claw));
+    SmartDashboard.putData("Run Cone Claw", new CollectGamePiece(claw, GamePiece.CONE));
+    SmartDashboard.putData("Run Cube Claw", new CollectGamePiece(claw, GamePiece.CUBE));
     SmartDashboard.putData(
         "Scan Battery", new InstantCommand(() -> BatteryTracker.scanBattery(10.0)));
   }
+
   /** Use this method to define your button->command mappings. */
   private void configureButtonBindings() {
     // field-relative toggle
@@ -270,6 +277,18 @@ public class RobotContainer {
     // x-stance
     oi.getXStanceButton().onTrue(Commands.runOnce(drivetrain::enableXstance, drivetrain));
     oi.getXStanceButton().onFalse(Commands.runOnce(drivetrain::disableXstance, drivetrain));
+
+    // Creates a new Trigger object for the `Right bumper` button that collects cones
+    driverController.rightBumper().onTrue(new CollectGamePiece(claw, GamePiece.CONE));
+
+    // Creates a new Trigger object for the `left bumper` button that collects cubes
+    driverController.leftBumper().onTrue(new CollectGamePiece(claw, GamePiece.CUBE));
+
+    // Creates a new Trigger object for the `right trigger` button that releases the game piece
+    driverController.rightTrigger().onTrue(new ReleaseGamePiece(claw));
+
+    // Creates a new Trigger object for the `left trigger` buttonthat stops all the rollers
+    driverController.leftTrigger().onTrue(new StopClawRollers(claw));
   }
 
   /** Use this method to define your commands for autonomous mode. */

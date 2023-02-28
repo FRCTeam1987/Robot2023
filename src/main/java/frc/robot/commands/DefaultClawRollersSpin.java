@@ -24,11 +24,15 @@ public class DefaultClawRollersSpin extends CommandBase {
 
   @Override
   public void execute() {
-    if (claw.getGamePiece() == GamePiece.CONE && claw.getSpeedPercent() != 0.0) {
+    GamePiece gamePiece = claw.getGamePiece();
+    double speed = claw.getSpeedPercent();
+    if (gamePiece == GamePiece.CONE && speed != 0.0) {
       claw.setRollerSpeed(0.0);
-    } else if (claw.getGamePiece() == GamePiece.CUBE
-        && claw.getSpeedPercent() < CLAW_ROLLER_SPEED) {
+    } else if (gamePiece == GamePiece.CUBE
+        && speed < CLAW_ROLLER_SPEED) {
       claw.setRollerSpeed(CLAW_ROLLER_SPEED);
+    } else if (gamePiece == GamePiece.NONE && speed != 0.0) {
+      claw.stopRollers();
     }
   }
 

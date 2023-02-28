@@ -17,10 +17,12 @@ public class CollectGamePiece extends CommandBase {
 
   private static final double COLLECTION_TIME = 0.25;
   private static final double CLAW_ROLLER_SPEED = 0.75;
-  private static final double MAXIMUM_CURRENT = 35;
+  private static final double MAXIMUM_CURRENT = 40;
+  private GamePiece piece = GamePiece.CONE;
 
-  public CollectGamePiece(final Claw claw) {
+  public CollectGamePiece(final Claw claw, GamePiece piece) {
     this.CLAW = claw;
+    this.piece = piece;
     DEBOUNCER = new Debouncer(COLLECTION_TIME);
     addRequirements(this.CLAW);
   }
@@ -32,9 +34,9 @@ public class CollectGamePiece extends CommandBase {
   @Override
   public void initialize() {
     isCollected = DEBOUNCER.calculate(stopCondition());
-    if (CLAW.getGamePiece() == GamePiece.CONE) {
+    if (piece == GamePiece.CONE) {
       CLAW.setRollerSpeed(-CLAW_ROLLER_SPEED);
-    } else if (CLAW.getGamePiece() == GamePiece.CUBE) {
+    } else if (piece == GamePiece.CUBE) {
       CLAW.setRollerSpeed(CLAW_ROLLER_SPEED);
     }
   }
@@ -47,6 +49,7 @@ public class CollectGamePiece extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     CLAW.stopRollers();
+    CLAW.setGamePiece(piece);
   }
 
   @Override
