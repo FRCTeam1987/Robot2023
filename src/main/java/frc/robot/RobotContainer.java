@@ -154,7 +154,7 @@ public class RobotContainer {
             vision =
                 new Vision(
                     new VisionIOLimelight(
-                        "limelight-fr", "limelight-fl", "limelight-bl", "limelight-br"));
+                          "limelight-fl", "limelight-bl", "limelight-br")); //"limelight-fr"
             arm =
                 new Arm(
                     new ArmIOTalonFX(
@@ -263,6 +263,13 @@ public class RobotContainer {
   }
 
   private void configureSmartDashboard() {
+    SmartDashboard.putData("Extend Arm to 12 Inches", new ExtendArm(arm, 12));
+    SmartDashboard.putData("Rotate Arm to 45 Degrees", new RotateArm(arm, 45));
+    SmartDashboard.putData("Flip Wrist to true", new FlipWrist(wrist, true));
+    SmartDashboard.putData("Parallel Command", new ParallelCommandTest(arm, wrist, 12, 45, false));
+
+    SmartDashboard.putData("Reset Test Stuff", new ParallelCommandTest(arm, wrist, 3, 0, true));
+
     SmartDashboard.putData("Stop Claw", new StopClawRollers(claw));
     SmartDashboard.putData("Run Cone Claw", new CollectGamePiece(claw, GamePiece.CONE));
     SmartDashboard.putData("Run Cube Claw", new CollectGamePiece(claw, GamePiece.CUBE));
@@ -303,15 +310,15 @@ public class RobotContainer {
         .onTrue(
             new InstantCommand(
                 () -> {
-                  wrist.setPosition(true);
+                  wrist.setRotation(true);
                 }));
     oi.getWristNegButton()
         .onTrue(
             new InstantCommand(
                 () -> {
-                  wrist.setPosition(false);
+                  wrist.setRotation(false);
                 }));
-    oi.getRotateButton().onTrue(new InstantCommand(() -> arm.rotateTheArm()));
+    oi.getRotateButton().onTrue(new InstantCommand(() -> arm.setArmAngle(45)));
   }
 
   /** Use this method to define your commands for autonomous mode. */

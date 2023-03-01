@@ -48,7 +48,7 @@ public class WristIOTalonSRX implements WristIO {
   }
 
   @Override
-  public void setPosition(boolean inverted) { // in Ticks
+  public void setRotation(boolean inverted) { // in Ticks
     wristMotor.set(TalonSRXControlMode.MotionMagic, inverted ? 3655 : 1607);
   }
 

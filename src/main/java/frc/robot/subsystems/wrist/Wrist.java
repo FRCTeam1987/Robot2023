@@ -18,13 +18,13 @@ public class Wrist extends SubsystemBase {
         "norm",
         new InstantCommand(
             () -> {
-              io.setPosition(true);
+              io.setRotation(true);
             }));
     SmartDashboard.putData(
         "invert",
         new InstantCommand(
             () -> {
-              io.setPosition(false);
+              io.setRotation(false);
             }));
   }
 
@@ -32,8 +32,12 @@ public class Wrist extends SubsystemBase {
     return inputs.currentAmps;
   }
 
-  public void setPosition(boolean inverted) {
-    io.setPosition(inverted);
+  public void setRotation(boolean inverted) {
+    io.setRotation(inverted);
+  }
+
+  public double getDegrees() {
+    return io.getDegrees();
   }
 
   public void periodic() {
