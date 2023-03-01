@@ -36,4 +36,16 @@ public interface OperatorInterface {
   public default Trigger getXStanceButton() {
     return new Trigger(() -> false);
   }
+
+  public default Trigger getWristPosButton() {
+    return new Trigger(() -> false);
+  }
+
+  public default Trigger getWristNegButton() {
+    return new Trigger(() -> false);
+  }
+
+  public default Trigger getRotateButton() {
+    return new Trigger(() -> false);
+  }
 }

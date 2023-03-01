@@ -39,6 +39,8 @@ import frc.robot.subsystems.claw.ClawIOSparkMAX;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOLimelight;
+import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.subsystems.wrist.WristIOTalonSRX;
 import frc.robot.util.BatteryTracker;
 import java.util.HashMap;
 import java.util.List;
@@ -56,8 +58,12 @@ public class RobotContainer {
 
   private RobotConfig config;
   private Drivetrain drivetrain;
+  private Wrist wrist;
   private Claw claw;
+ 
 
+  private Vision vision;
+  private Arm arm;
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to ensure accurate logging
   private final LoggedDashboardChooser<Command> autoChooser =
       new LoggedDashboardChooser<>("Auto Routine");
@@ -143,17 +149,22 @@ public class RobotContainer {
 
             drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
             // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
-            new Vision(new VisionIOLimelight("limelight-fr", "limelight-fl"));
+            wrist = new Wrist(new WristIOTalonSRX(config.getWristRotatorID()));
             claw = new Claw(new ClawIOSparkMAX(config.getClawMotorID()));
             claw.setDefaultCommand(new DefaultClawRollersSpin(claw));
-            // new ClawIOSparkMAX();
-            new Arm(
-                new ArmIOTalonFX(
-                    config.getArmLeaderMotorID(),
-                    config.getArmFollowerMotorID(),
-                    config.getArmCanCoderID(),
-                    config.getArmTelescopeID(),
-                    config.getCANBusName()));
+            vision =
+                new Vision(
+                    new VisionIOLimelight(
+                        "limelight-fr", "limelight-fl", "limelight-bl", "limelight-br"));
+            arm =
+                new Arm(
+                    new ArmIOTalonFX(
+                        config.getArmLeaderMotorID(),
+                        config.getArmFollowerMotorID(),
+                        config.getArmCanCoderID(),
+                        config.getArmTelescopeID(),
+                        config.getArmPotentiometerAnalogId(),
+                        config.getCANBusName()));
             break;
           }
         case ROBOT_SIMBOT:
@@ -289,6 +300,19 @@ public class RobotContainer {
 
     // Creates a new Trigger object for the `left trigger` buttonthat stops all the rollers
     driverController.leftTrigger().onTrue(new StopClawRollers(claw));
+    oi.getWristPosButton()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  wrist.setPosition(true);
+                }));
+    oi.getWristNegButton()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  wrist.setPosition(false);
+                }));
+    oi.getRotateButton().onTrue(new InstantCommand(() -> arm.rotateTheArm()));
   }
 
   /** Use this method to define your commands for autonomous mode. */

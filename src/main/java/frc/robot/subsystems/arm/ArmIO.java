@@ -12,17 +12,15 @@ public interface ArmIO {
 
   public default void updateInputs(ArmIOInputs inputs) {}
 
-  public default double getEncoderPosition() {
+  public default double getArmLength() {
     return 0.0;
   }
 
-  public default double getEncoderPositionNoOffset() {
+  public default void setArmLength(double length) {}
+
+  public default double getArmAngle() {
     return 0.0;
   }
 
-  public default double getTalonPosition() {
-    return 0.0;
-  }
-
-  public default void rotateArmToAngle(double angle) {}
+  public default void setArmAngle(double angle) {}
 }
