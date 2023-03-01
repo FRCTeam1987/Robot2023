@@ -18,8 +18,6 @@ public interface ArmIO {
 
   public default void setArmLength(double length) {}
 
-  void setArmPower(double pwr);
-
   public default double getArmAngle() {
     return 0.0;
   }

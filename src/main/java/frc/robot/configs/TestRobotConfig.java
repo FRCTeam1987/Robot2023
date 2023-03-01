@@ -12,6 +12,7 @@ import frc.lib.team3061.swerve.SwerveModuleConstants.SwerveType;
  */
 public class TestRobotConfig extends RobotConfig {
 
+  public static final int WRIST_ROTATOR_MOTOR = 5;
   // FIXME: update all CAN IDs and steer offsets
   public static final int CLAW_INTAKE_MOTOR = 6;
   public static final int ARM_CANCODER = 7;
@@ -98,7 +99,18 @@ public class TestRobotConfig extends RobotConfig {
   private static final double AUTO_TURN_I_CONTROLLER = 0.0;
   private static final double AUTO_TURN_D_CONTROLLER = 0.0;
 
+  private static final int CLAW_MOTOR_ID = 13; // FIXME replace with correct id value
+
   @Override
+  public int getClawMotorID() {
+    return CLAW_MOTOR_ID;
+  }
+
+  @Override
+  public int getWristRotatorID() {
+    return WRIST_ROTATOR_MOTOR;
+  }
+
   public double getRobotArmHeightOffset() {
     return 0;
   }
@@ -121,6 +133,11 @@ public class TestRobotConfig extends RobotConfig {
   @Override
   public int getArmFollowerMotorID() {
     return ARM_FOLLOWER_MOTOR;
+  }
+
+  @Override
+  public int getArmPotentiometerAnalogId() {
+    return 0;
   }
 
   @Override

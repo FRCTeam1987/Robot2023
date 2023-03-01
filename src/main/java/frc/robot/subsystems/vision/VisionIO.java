@@ -5,14 +5,14 @@ import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public interface VisionIO {
   public static class VisionIOInputs implements LoggableInputs {
-    public String[] json = new String[] {};
+    public double[] botPoseLatency = new double[] {};
 
     public void toLog(LogTable table) {
-      table.put("json", json);
+      table.put("poseLatency", botPoseLatency);
     }
 
     public void fromLog(LogTable table) {
-      json = table.getStringArray("json", new String[] {});
+      botPoseLatency = table.getDoubleArray("poseLatency", new double[] {});
     }
   }
 

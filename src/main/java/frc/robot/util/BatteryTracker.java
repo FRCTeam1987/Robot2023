@@ -16,7 +16,7 @@ public class BatteryTracker {
    * EXAMPLE: BAT-2030-052
    * Website: https://qrcoderw.com/batch_qr_generator.php
    */
-  private static final List<RobotType> supportedRobots = List.of(RobotType.ROBOT_2023_TEST);
+  private static final List<RobotType> supportedRobots = List.of(RobotType.ROBOT_2023_COMP);
   public static final String defaultName = "BAT-0000-000";
 
   private static final int nameLength = 12;
@@ -37,7 +37,9 @@ public class BatteryTracker {
   public static String scanBattery(double timeout) {
     System.out.println("[BatteryTracker] Scanning...");
     if (Constants.getMode() == Mode.REAL) {
+      System.out.println("[BatteryTracker] Robot is real");
       if (supportedRobots.contains(Constants.getRobot())) {
+        System.out.println("[BatteryTracker] Robot is supported");
         // Only scan on supported robots and in real mode
         try (SerialPort port = new SerialPort(9600, SerialPort.Port.kUSB)) {
           port.setTimeout(timeout);
@@ -83,7 +85,11 @@ public class BatteryTracker {
           System.out.println("[BatteryTracker] Exception while trying to scan battery");
           e.printStackTrace();
         }
+      } else {
+        System.out.println("[BatteryTracker] Unsupported Robot");
       }
+    } else {
+      System.out.println("[BatteryTracker] Robot is not real!");
     }
 
     SmartDashboard.putString("Battery", name);

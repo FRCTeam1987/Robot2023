@@ -42,6 +42,8 @@ public abstract class RobotConfig {
    *
    * @return the CAN ID for the arm leader motor.
    */
+  public abstract int getClawMotorID();
+
   public abstract int getArmLeaderMotorID();
   /**
    * Returns the CAN ID for the robot's arm follower motor. Must be overridden.
@@ -49,6 +51,19 @@ public abstract class RobotConfig {
    * @return the CAN ID for the arm follower motor.
    */
   public abstract int getArmFollowerMotorID();
+  /**
+   * Returns the Analog ID for the robot's arm's potentiometer. Must be overridden.
+   *
+   * @return the Analog ID for the robot's arm's potentiometer.
+   */
+  public abstract int getArmPotentiometerAnalogId();
+
+  /**
+   * Returns the CAN ID for the robot's wrist rotator motor. Must be overridden.
+   *
+   * @return the CAN ID for the wrist rotator motor.
+   */
+  public abstract int getWristRotatorID();
   /**
    * Returns the proportional constant for the PID controller for the angle motor on the swerve
    * module. Defaults to 0.

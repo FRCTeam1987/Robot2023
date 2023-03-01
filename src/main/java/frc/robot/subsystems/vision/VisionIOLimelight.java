@@ -1,6 +1,5 @@
 package frc.robot.subsystems.vision;
 
-import frc.lib.team6328.util.Alert;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -13,9 +12,6 @@ public class VisionIOLimelight implements VisionIO {
   private static VisionIOLimelight instance;
   public static int row = 0;
   static List<VisionIOLimelightBase> limelights = new ArrayList<>();
-
-  public static final Alert limelightAlert =
-      new Alert("A limelight was disconnected / has bugged out!", Alert.AlertType.ERROR);
 
   public VisionIOLimelight(String... limelightsIn) {
     instance = this;
@@ -36,14 +32,18 @@ public class VisionIOLimelight implements VisionIO {
 
   @Override
   public synchronized void updateInputs(VisionIOInputs inputs) {
-    try {
-      int size = limelights.size();
-      inputs.json = new String[size];
-      for (int i = 0; i < size; i++) {
-        inputs.json[i] = limelights.get(i).getRawJson();
-      }
-    } catch (Exception ignored) {
-      limelightAlert.set(true);
+    int size = limelights.size();
+    inputs.botPoseLatency = new double[size * 7];
+    int i2 = 0;
+    for (VisionIOLimelightBase limelight : limelights) {
+      double[] poseLatency = limelight.getBotPose();
+      inputs.botPoseLatency[i2++] = poseLatency[0];
+      inputs.botPoseLatency[i2++] = poseLatency[1];
+      inputs.botPoseLatency[i2++] = poseLatency[2];
+      inputs.botPoseLatency[i2++] = poseLatency[3];
+      inputs.botPoseLatency[i2++] = poseLatency[4];
+      inputs.botPoseLatency[i2++] = poseLatency[5];
+      inputs.botPoseLatency[i2++] = poseLatency[6];
     }
   }
 }
