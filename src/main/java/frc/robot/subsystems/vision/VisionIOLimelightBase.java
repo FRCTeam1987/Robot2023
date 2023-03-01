@@ -2,9 +2,6 @@ package frc.robot.subsystems.vision;
 
 import static frc.robot.Constants.LIMELIGHT_PIPELINE;
 
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -25,8 +22,7 @@ public class VisionIOLimelightBase {
     inst.getEntry("pipeline").setNumber(LIMELIGHT_PIPELINE);
     LIMELIGHT_TAB
         .addNumber(limelightNameShort + " count", this::getVisibleTagCount)
-        .withPosition(column++, VisionIOLimelight.row);
-    VisionIOLimelight.row++;
+        .withPosition(column++, VisionIOLimelight.row++);
     botPoseSubscriber = inst.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
     jsonSubscriber = inst.getStringTopic("json").subscribe("[]");
   }
@@ -46,27 +42,5 @@ public class VisionIOLimelightBase {
 
   public double[] getBotPose() {
     return botPoseSubscriber.get();
-  }
-}
-
-class Pose3dLatency {
-  private final double latency;
-  private final Pose3d pose;
-
-  public Pose3dLatency(Translation3d translation3d, Rotation3d rotation3d, double latency) {
-    this.pose = new Pose3d(translation3d, rotation3d);
-    this.latency = latency;
-  }
-
-  public Pose3d getPose() {
-    return this.pose;
-  }
-
-  public double getLatency() {
-    return this.latency;
-  }
-
-  public String toString() {
-    return pose.toString() + " L: " + latency;
   }
 }
