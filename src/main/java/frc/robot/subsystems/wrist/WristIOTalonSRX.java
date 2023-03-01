@@ -54,6 +54,6 @@ public class WristIOTalonSRX implements WristIO {
 
   @Override
   public double getDegrees() {
-    return (double) wristMotor.getSelectedSensorPosition();
+    return wristMotor.getSelectedSensorPosition();
   }
 }

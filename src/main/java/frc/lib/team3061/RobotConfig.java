@@ -247,7 +247,7 @@ public abstract class RobotConfig {
   /**
    * Returns the swerve drive kinematics object for the robot. The geometry and coordinate systems
    * can be confusing. Refer to this document for a detailed explanation:
-   * https://docs.google.com/document/d/17dg5cIfqVOlQTTbo2ust4QxTZlUoPNzuBu2oe58Ov84/edit#heading=h.x4ppzp81ed1
+   * <a href="https://docs.google.com/document/d/17dg5cIfqVOlQTTbo2ust4QxTZlUoPNzuBu2oe58Ov84/edit#heading=h.x4ppzp81ed1">...</a>
    *
    * @return the swerve drive kinematics object for the robot
    */

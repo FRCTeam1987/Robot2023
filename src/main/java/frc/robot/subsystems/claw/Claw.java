@@ -16,7 +16,7 @@ public class Claw extends SubsystemBase {
     CONE,
     CUBE,
     NONE
-  };
+  }
 
   private GamePiece gamePiece = GamePiece.CONE;
 
@@ -27,7 +27,7 @@ public class Claw extends SubsystemBase {
     this.io = io;
     SmartDashboard.putData("Stop Claw", new StopClawRollers(this));
     SmartDashboard.putData("Run Claw", new CollectGamePiece(this, gamePiece));
-    SmartDashboard.putData("Switch game piece", new InstantCommand(() -> this.changeGamePiece()));
+    SmartDashboard.putData("Switch game piece", new InstantCommand(this::changeGamePiece));
     SmartDashboard.putData("Run Claw Plain", new InstantCommand(() -> setRollerSpeed(0.25), this));
     SmartDashboard.putData("Eject Game Piece", new EjectGamePiece(this).withTimeout(0.25));
   }

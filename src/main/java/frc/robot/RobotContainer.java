@@ -68,9 +68,9 @@ public class RobotContainer {
       new LoggedDashboardChooser<>("Auto Routine");
 
   // RobotContainer singleton
-  private static RobotContainer robotContainer = new RobotContainer();
+  private static final RobotContainer robotContainer = new RobotContainer();
   private final Map<String, Command> autoEventMap = new HashMap<>();
-  CommandXboxController driverController =
+  final CommandXboxController driverController =
       new CommandXboxController(1); // Creates a CommandXboxController on port 1.
 
   /** Create the container for the robot. Contains subsystems, OI devices, and commands. */
@@ -302,15 +302,11 @@ public class RobotContainer {
     oi.getWristPosButton()
         .onTrue(
             new InstantCommand(
-                () -> {
-                  wrist.setPosition(true);
-                }));
+                () -> wrist.setPosition(true)));
     oi.getWristNegButton()
         .onTrue(
             new InstantCommand(
-                () -> {
-                  wrist.setPosition(false);
-                }));
+                () -> wrist.setPosition(false)));
     oi.getRotateButton().onTrue(new InstantCommand(() -> arm.rotateTheArm()));
   }
 

@@ -35,7 +35,7 @@ public class Conversions {
   }
 
   /**
-   * @param RPM RPM of mechanism
+   * @param rpm RPM of mechanism
    * @param gearRatio Gear Ratio between Falcon and Mechanism (set to 1 for Falcon RPM)
    * @return RPM of Mechanism
    */

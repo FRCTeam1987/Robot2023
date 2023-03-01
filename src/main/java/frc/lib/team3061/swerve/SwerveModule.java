@@ -16,9 +16,9 @@ public class SwerveModule {
   private final SwerveModuleIO io;
   private final SwerveModuleIOInputsAutoLogged inputs = new SwerveModuleIOInputsAutoLogged();
 
-  private int moduleNumber;
+  private final int moduleNumber;
   private double lastAngle;
-  private double maxVelocity;
+  private final double maxVelocity;
 
   private static final String SUBSYSTEM_NAME = "Swerve";
   private static final boolean DEBUGGING = false;

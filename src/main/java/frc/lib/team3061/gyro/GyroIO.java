@@ -23,7 +23,7 @@ import org.littletonrobotics.junction.AutoLog;
  */
 public interface GyroIO {
   @AutoLog
-  public static class GyroIOInputs {
+  class GyroIOInputs {
     public boolean connected = false;
     public double positionDeg = 0.0;
     public double velocityDegPerSec = 0.0;
@@ -34,5 +34,5 @@ public interface GyroIO {
    *
    * @param inputs the inputs to update
    */
-  public default void updateInputs(GyroIOInputs inputs) {}
+  default void updateInputs(GyroIOInputs inputs) {}
 }

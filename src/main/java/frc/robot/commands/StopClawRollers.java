@@ -11,7 +11,7 @@ import frc.robot.subsystems.claw.Claw;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class StopClawRollers extends InstantCommand {
-  private Claw claw;
+  private final Claw claw;
 
   public StopClawRollers(Claw claw) {
     this.claw = claw;

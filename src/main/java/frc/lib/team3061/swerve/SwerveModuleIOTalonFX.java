@@ -47,8 +47,8 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
   private TalonFX mAngleMotor;
   private TalonFX mDriveMotor;
   private CANCoder angleEncoder;
-  private SimpleMotorFeedforward feedForward;
-  private double angleOffsetDeg;
+  private final SimpleMotorFeedforward feedForward;
+  private final double angleOffsetDeg;
   /**
    * Make a new SwerveModuleIOTalonFX object.
    *
@@ -164,10 +164,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
   private double calculateFeedforward(double velocity) {
     double percentage = this.feedForward.calculate(velocity);
     // clamp the voltage to the maximum voltage
-    if (percentage > 1.0) {
-      return 1.0;
-    }
-    return percentage;
+    return Math.min(percentage, 1.0);
   }
   /** Updates the set of loggable inputs. */
   @Override

@@ -10,14 +10,14 @@ import frc.lib.team6328.util.Alert;
 import org.littletonrobotics.junction.Logger;
 
 public class Arm extends SubsystemBase {
-  static double heightOffset = RobotConfig.getInstance().getRobotArmHeightOffset();
+  static final double heightOffset = RobotConfig.getInstance().getRobotArmHeightOffset();
   private final ArmIO io;
   private final ArmIOInputsAutoLogged inputs = new ArmIOInputsAutoLogged();
 
   private static final Alert invalidAngle =
       new Alert("Invalid Angle Reached! (Arm Kinematics)", Alert.AlertType.ERROR);
 
-  ShuffleboardTab tab = Shuffleboard.getTab("Arm Tab");
+  final ShuffleboardTab tab = Shuffleboard.getTab("Arm Tab");
 
   public Arm(ArmIO io) {
     this.io = io;

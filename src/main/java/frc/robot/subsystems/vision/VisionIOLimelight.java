@@ -16,7 +16,7 @@ public class VisionIOLimelight implements VisionIO {
 
   private static VisionIOLimelight instance;
   public static int row = 0;
-  static List<VisionIOLimelightBase> limelights = new ArrayList<>();
+  static final List<VisionIOLimelightBase> limelights = new ArrayList<>();
 
   public VisionIOLimelight(String... limelightsIn) {
     instance = this;

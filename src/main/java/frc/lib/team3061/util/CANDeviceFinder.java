@@ -13,13 +13,13 @@ import java.nio.ByteOrder;
 import java.util.*;
 
 public class CANDeviceFinder {
-  Set<CANDeviceId> deviceSet = new TreeSet<>();
+  final Set<CANDeviceId> deviceSet = new TreeSet<>();
 
   /*
    * this is a map, keyed by CANDeviceType, whose values are sets contained
    * the device numbers for all the present devices of that type.
    */
-  Map<CANDeviceType, Set<Integer>> byDeviceType = new TreeMap<>();
+  final Map<CANDeviceType, Set<Integer>> byDeviceType = new TreeMap<>();
 
   public CANDeviceFinder() {
     super();
@@ -64,7 +64,7 @@ public class CANDeviceFinder {
   abstract class CanFinder {
     int[] ids;
     long[] ts0;
-    Set<Integer> idsPresent = new TreeSet<>();
+    final Set<Integer> idsPresent = new TreeSet<>();
 
     void pass1() {
       ts0 = new long[ids.length];
@@ -109,8 +109,8 @@ public class CANDeviceFinder {
   }
 
   class DeviceFinder extends CanFinder {
-    Set<CANDeviceId> deviceSet;
-    CANDeviceType canDeviceType;
+    final Set<CANDeviceId> deviceSet;
+    final CANDeviceType canDeviceType;
 
     DeviceFinder(
         int devType,
@@ -144,7 +144,7 @@ public class CANDeviceFinder {
   }
 
   class APIFinder extends CanFinder {
-    CANDeviceType canDeviceType;
+    final CANDeviceType canDeviceType;
 
     APIFinder(int devType, int mfg, int deviceId, CANDeviceType canDeviceType) {
       super();
@@ -289,7 +289,7 @@ public class CANDeviceFinder {
   }
 
   /** helper routine to get last received message for a given ID */
-  private ByteBuffer targetID = ByteBuffer.allocateDirect(4);
+  private final ByteBuffer targetID = ByteBuffer.allocateDirect(4);
 
-  private ByteBuffer timeStamp = ByteBuffer.allocateDirect(4);
+  private final ByteBuffer timeStamp = ByteBuffer.allocateDirect(4);
 }

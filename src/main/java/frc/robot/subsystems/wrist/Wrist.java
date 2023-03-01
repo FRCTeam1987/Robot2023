@@ -17,15 +17,11 @@ public class Wrist extends SubsystemBase {
     SmartDashboard.putData(
         "norm",
         new InstantCommand(
-            () -> {
-              io.setPosition(true);
-            }));
+            () -> io.setPosition(true)));
     SmartDashboard.putData(
         "invert",
         new InstantCommand(
-            () -> {
-              io.setPosition(false);
-            }));
+            () -> io.setPosition(false)));
   }
 
   public double getCurrent() {

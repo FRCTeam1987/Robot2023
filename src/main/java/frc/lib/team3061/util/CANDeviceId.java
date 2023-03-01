@@ -18,8 +18,8 @@ public class CANDeviceId implements Comparable<CANDeviceId> {
     SPARK_MAX
   }
 
-  private CANDeviceType deviceType;
-  private int deviceNumber;
+  private final CANDeviceType deviceType;
+  private final int deviceNumber;
 
   public CANDeviceType getDeviceType() {
     return deviceType;
@@ -29,12 +29,12 @@ public class CANDeviceId implements Comparable<CANDeviceId> {
     return deviceNumber;
   }
 
-  private String toString;
+  private final String toString;
 
   public CANDeviceId(CANDeviceType deviceType, int deviceNumber) {
     this.deviceType = deviceType;
     this.deviceNumber = deviceNumber;
-    this.toString = deviceType.toString() + " " + Integer.toString(deviceNumber);
+    this.toString = deviceType.toString() + " " + deviceNumber;
   }
 
   @Override

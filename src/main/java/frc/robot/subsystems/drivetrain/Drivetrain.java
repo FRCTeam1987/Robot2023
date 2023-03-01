@@ -133,7 +133,7 @@ public class Drivetrain extends SubsystemBase {
     tabMain.addNumber("Gyroscope Angle", () -> getRotation().getDegrees());
     tabMain.addBoolean("X-Stance On?", this::isXstance);
     tabMain.addBoolean("Field-Relative Enabled?", () -> this.isFieldRelative);
-    tabMain.add("Reset Gyro", new InstantCommand(() -> this.zeroGyroscope()));
+    tabMain.add("Reset Gyro", new InstantCommand(this::zeroGyroscope));
 
     if (DEBUGGING) {
       ShuffleboardTab tab = Shuffleboard.getTab(SUBSYSTEM_NAME);
@@ -254,9 +254,9 @@ public class Drivetrain extends SubsystemBase {
    * <p>If the drive mode is CHARACTERIZATION, the robot will ignore the specified velocities and
    * run the characterization routine.
    *
-   * @param translationXSupplier the desired velocity in the x direction (m/s)
-   * @param translationYSupplier the desired velocity in the y direction (m/s)
-   * @param rotationSupplier the desired rotational velcoity (rad/s)
+   * @param xVelocity the desired velocity in the x direction (m/s)
+   * @param yVelocity the desired velocity in the y direction (m/s)
+   * @param rotationalVelocity the desired rotational velcoity (rad/s)
    */
   public void drive(
       double xVelocity, double yVelocity, double rotationalVelocity, boolean isOpenLoop) {
