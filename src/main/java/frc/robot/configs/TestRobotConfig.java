@@ -99,6 +99,13 @@ public class TestRobotConfig extends RobotConfig {
   private static final double AUTO_TURN_I_CONTROLLER = 0.0;
   private static final double AUTO_TURN_D_CONTROLLER = 0.0;
 
+  private static final int CLAW_MOTOR_ID = 13; // FIXME replace with correct id value
+
+  @Override
+  public int getClawMotorID() {
+    return CLAW_MOTOR_ID;
+  }
+
   @Override
   public int getWristRotatorID() {
     return WRIST_ROTATOR_MOTOR;

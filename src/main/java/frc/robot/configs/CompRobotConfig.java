@@ -12,6 +12,7 @@ import frc.lib.team3061.swerve.SwerveModuleConstants.SwerveType;
  * these methods, refer to the documentation in the RobotConfig class.
  */
 public class CompRobotConfig extends RobotConfig {
+  private static final int CLAW_MOTOR_ID = 8;
 
   public static final int WRIST_ROTATOR_MOTOR = 8;
   public static final double ROBOT_ARM_HEIGHT_OFFSET = 12.0;
@@ -100,6 +101,10 @@ public class CompRobotConfig extends RobotConfig {
   private static final double AUTO_TURN_P_CONTROLLER = 0.125;
   private static final double AUTO_TURN_I_CONTROLLER = 0.0;
   private static final double AUTO_TURN_D_CONTROLLER = 0.0;
+
+  public int getClawMotorID() {
+    return CLAW_MOTOR_ID;
+  }
 
   @Override
   public int getArmPotentiometerAnalogId() {

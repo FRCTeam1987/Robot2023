@@ -42,6 +42,8 @@ public abstract class RobotConfig {
    *
    * @return the CAN ID for the arm leader motor.
    */
+  public abstract int getClawMotorID();
+
   public abstract int getArmLeaderMotorID();
   /**
    * Returns the CAN ID for the robot's arm follower motor. Must be overridden.
