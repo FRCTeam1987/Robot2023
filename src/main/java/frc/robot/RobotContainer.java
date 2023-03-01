@@ -60,7 +60,6 @@ public class RobotContainer {
   private Drivetrain drivetrain;
   private Wrist wrist;
   private Claw claw;
- 
 
   private Vision vision;
   private Arm arm;
