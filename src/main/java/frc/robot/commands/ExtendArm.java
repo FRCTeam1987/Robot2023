@@ -16,6 +16,7 @@ public class ExtendArm extends CommandBase {
   public ExtendArm(final Arm ARM, final int INCHES) {
     this.ARM = ARM;
     this.INCHES = INCHES;
+    addRequirements(this.ARM);
   }
 
   @Override

@@ -16,6 +16,7 @@ public class FlipWrist extends CommandBase {
   public FlipWrist(final Wrist WRIST, final boolean ROTATION) {
     this.WRIST = WRIST;
     this.ROTATION = ROTATION;
+    addRequirements(this.WRIST);
   }
 
   @Override
@@ -31,7 +32,6 @@ public class FlipWrist extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return (Util.isWithinTolerance(
-        WRIST.getDegrees(), (ROTATION ? 180.0 : 0), 3));
+    return (Util.isWithinTolerance(WRIST.getDegrees(), (ROTATION ? 180.0 : 0), 3));
   }
 }

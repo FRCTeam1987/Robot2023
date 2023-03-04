@@ -9,6 +9,7 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.FollowPathWithEvents;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -154,7 +155,7 @@ public class RobotContainer {
             vision =
                 new Vision(
                     new VisionIOLimelight(
-                          "limelight-fl", "limelight-bl", "limelight-br")); //"limelight-fr"
+                        "limelight-fl", "limelight-bl", "limelight-br")); // "limelight-fr"
             arm =
                 new Arm(
                     new ArmIOTalonFX(
@@ -263,6 +264,11 @@ public class RobotContainer {
   }
 
   private void configureSmartDashboard() {
+    // ShuffleboardTab debugTab = Shuffleboard.getTab("Debug");
+    // debugTab.add("Arm Length (inches)", arm.getArmLength()).withSize(2, 2).withPosition(0, 0);
+    // debugTab.add("Arm Angle (Degrees)", arm.getArmAngle()).withSize(2, 2).withPosition(2, 0);
+    // debugTab.add("Wrist Rotation (Degrees)", wrist.getDegrees()).withSize(2, 2).withPosition(4, 0);
+
     SmartDashboard.putData("Extend Arm to 12 Inches", new ExtendArm(arm, 12));
     SmartDashboard.putData("Rotate Arm to 45 Degrees", new RotateArm(arm, 45));
     SmartDashboard.putData("Flip Wrist to true", new FlipWrist(wrist, true));

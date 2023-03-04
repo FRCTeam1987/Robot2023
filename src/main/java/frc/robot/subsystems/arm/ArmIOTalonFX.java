@@ -67,11 +67,11 @@ public class ArmIOTalonFX implements ArmIO {
     EXTENSION_TALON.setNeutralMode(NeutralMode.Brake);
     EXTENSION_TALON.configGetStatorCurrentLimit(
         new StatorCurrentLimitConfiguration(true, 25, 25, 150));
-
     EXTENSION_TALON.setSelectedSensorPosition(0.0);
-    // use convertVoltsToInches of the pot
 
     EXTENSION_POTENTIOMETER = new AnalogInput(ROTATION_ANALOG_POTENTIOMETER_ID);
+    // EXTENSION_TALON.setSelectedSensorPosition(convertVoltsToInches(EXTENSION_POTENTIOMETER.getVoltage()))
+
 
     setShuffleboardLayout();
   }

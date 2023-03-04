@@ -16,6 +16,7 @@ public class RotateArm extends CommandBase {
   public RotateArm(final Arm ARM, final double ANGLE) {
     this.ARM = ARM;
     this.ANGLE = ANGLE;
+    addRequirements(this.ARM);
   }
 
   @Override
