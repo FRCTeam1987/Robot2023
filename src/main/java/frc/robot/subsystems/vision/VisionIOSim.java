@@ -74,4 +74,9 @@ public class VisionIOSim implements VisionIO {
   public synchronized void updateInputs(VisionIOInputs inputs) {
     this.simVision.processFrame(poseSupplier.get());
   }
+
+  @Override
+  public VisionIOLimelightBase getBestLimelight() {
+    return null;
+  }
 }
