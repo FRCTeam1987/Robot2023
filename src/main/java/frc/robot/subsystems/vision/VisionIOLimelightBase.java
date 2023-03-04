@@ -12,6 +12,7 @@ public class VisionIOLimelightBase {
   private DoubleArraySubscriber botPoseSubscriber;
   private final StringSubscriber jsonSubscriber;
   private final NetworkTable inst;
+
   public VisionIOLimelightBase(String limelightName) {
     int column = 0;
     this.limelightName = limelightName;
@@ -33,10 +34,13 @@ public class VisionIOLimelightBase {
 
   /**
    * Set the Robot's Alliance for Auto Pathing
+   *
    * @param botPoseType True = Blue, False = Red
    */
   public void setAlliance(boolean botPoseType) {
-    botPoseSubscriber = inst.getDoubleArrayTopic(botPoseType ? "botpose_wpiblue" : "botpose_wpired").subscribe(new double[] {});
+    botPoseSubscriber =
+        inst.getDoubleArrayTopic(botPoseType ? "botpose_wpiblue" : "botpose_wpired")
+            .subscribe(new double[] {});
   }
 
   /**
