@@ -9,15 +9,15 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 public class VisionIOLimelightBase {
   public static final ShuffleboardTab LIMELIGHT_TAB = Shuffleboard.getTab("Limelights");
   public final String limelightName;
-  private final DoubleArraySubscriber botPoseSubscriber;
+  private DoubleArraySubscriber botPoseSubscriber;
   private final StringSubscriber jsonSubscriber;
-
+  private final NetworkTable inst;
   public VisionIOLimelightBase(String limelightName) {
     int column = 0;
     this.limelightName = limelightName;
 
     String limelightNameShort = limelightName.replace("limelight-", "");
-    NetworkTable inst = NetworkTableInstance.getDefault().getTable(limelightName);
+    inst = NetworkTableInstance.getDefault().getTable(limelightName);
     // inst.getTable(limelightName).getEntry("ledMode").setNumber(1);
     inst.getEntry("pipeline").setNumber(LIMELIGHT_PIPELINE);
     LIMELIGHT_TAB
@@ -29,6 +29,14 @@ public class VisionIOLimelightBase {
 
   public String getRawJson() {
     return jsonSubscriber.get();
+  }
+
+  /**
+   * Set the Robot's Alliance for Auto Pathing
+   * @param botPoseType True = Blue, False = Red
+   */
+  public void setAlliance(boolean botPoseType) {
+    botPoseSubscriber = inst.getDoubleArrayTopic(botPoseType ? "botpose_wpiblue" : "botpose_wpired").subscribe(new double[] {});
   }
 
   /**

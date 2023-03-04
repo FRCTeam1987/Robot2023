@@ -1,5 +1,6 @@
 package frc.robot.subsystems.vision;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.lib.team6328.util.Alert;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -10,21 +11,16 @@ public class VisionIOLimelight implements VisionIO {
   public static final Alert limelightAlert =
       new Alert("A limelight was disconnected / has bugged out!", Alert.AlertType.ERROR);
 
-  public static VisionIOLimelight getInstance() {
-    return instance;
-  }
-
-  private static VisionIOLimelight instance;
   public static int row = 0;
   static List<VisionIOLimelightBase> limelights = new ArrayList<>();
 
   public VisionIOLimelight(String... limelightsIn) {
-    instance = this;
     for (String name : limelightsIn) {
       limelights.add(new VisionIOLimelightBase(name));
     }
   }
 
+  @Override
   public VisionIOLimelightBase getBestLimelight() {
     try {
       return limelights.stream()
@@ -32,6 +28,13 @@ public class VisionIOLimelight implements VisionIO {
           .get();
     } catch (Exception e) {
       return limelights.get(0);
+    }
+  }
+
+  @Override
+  public void updateAlliance() {
+    for (VisionIOLimelightBase limelight : limelights) {
+      limelight.setAlliance(DriverStation.getAlliance() == DriverStation.Alliance.Blue);
     }
   }
 

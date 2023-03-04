@@ -21,13 +21,17 @@ public class Vision extends SubsystemBase {
     this.poseEstimator = RobotOdometry.getInstance().getPoseEstimator();
   }
 
+  public void updateAlliance() {
+    visionIO.updateAlliance();
+  }
+
   @Override
   public void periodic() {
 
     visionIO.updateInputs(io);
     Logger.getInstance().processInputs("Vision", io);
 
-    VisionIOLimelightBase limelight = VisionIOLimelight.getInstance().getBestLimelight();
+    VisionIOLimelightBase limelight = visionIO.getBestLimelight();
     try {
       double[] pose = limelight.getBotPose();
       Pose3d pose3d =

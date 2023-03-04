@@ -225,6 +225,9 @@ public class RobotContainer {
     configureSmartDashboard();
   }
 
+  public void updateAlliance() {
+    vision.updateAlliance();
+  }
   /**
    * This method scans for any changes to the connected joystick. If anything changed, it creates
    * new OI objects and binds all of the buttons to commands.

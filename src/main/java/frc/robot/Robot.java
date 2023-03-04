@@ -143,7 +143,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
     autonomousCommand = robotContainer.getAutonomousCommand();
-
+    robotContainer.updateAlliance();
     // schedule the autonomous command
     if (autonomousCommand != null) {
       autonomousCommand.schedule();
@@ -161,6 +161,7 @@ public class Robot extends LoggedRobot {
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
+    robotContainer.updateAlliance();
   }
 
   /** This method is invoked at the start of the test period. */
