@@ -26,9 +26,10 @@ public class Claw extends SubsystemBase {
   public Claw(ClawIO io) {
     this.io = io;
     SmartDashboard.putData("Stop Claw", new StopClawRollers(this));
-    SmartDashboard.putData("Run Claw", new CollectGamePiece(this, gamePiece));
+    SmartDashboard.putData("Collect Cube", new CollectGamePiece(this, GamePiece.CUBE));
+    SmartDashboard.putData("Collect Cone", new CollectGamePiece(this, GamePiece.CONE));
     SmartDashboard.putData("Switch game piece", new InstantCommand(() -> this.changeGamePiece()));
-    SmartDashboard.putData("Run Claw Plain", new InstantCommand(() -> setRollerSpeed(0.25), this));
+    SmartDashboard.putData("Run Claw Plain", new InstantCommand(() -> setRollerSpeed(0.75), this));
     SmartDashboard.putData("Eject Game Piece", new EjectGamePiece(this).withTimeout(0.25));
   }
 

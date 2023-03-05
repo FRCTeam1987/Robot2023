@@ -267,18 +267,21 @@ public class RobotContainer {
     // ShuffleboardTab debugTab = Shuffleboard.getTab("Debug");
     // debugTab.add("Arm Length (inches)", arm.getArmLength()).withSize(2, 2).withPosition(0, 0);
     // debugTab.add("Arm Angle (Degrees)", arm.getArmAngle()).withSize(2, 2).withPosition(2, 0);
-    // debugTab.add("Wrist Rotation (Degrees)", wrist.getDegrees()).withSize(2, 2).withPosition(4, 0);
+    // debugTab.add("Wrist Rotation (Degrees)", wrist.getDegrees()).withSize(2, 2).withPosition(4,
+    // 0);
+    ShuffleboardTab armTab = Shuffleboard.getTab("Arm Tab");
 
     SmartDashboard.putData("Extend Arm to 12 Inches", new ExtendArm(arm, 12));
     SmartDashboard.putData("Rotate Arm to 45 Degrees", new RotateArm(arm, 45));
     SmartDashboard.putData("Flip Wrist to true", new FlipWrist(wrist, true));
-    SmartDashboard.putData("Parallel Command", new ParallelCommandTest(arm, wrist, 12, 45, false));
+    
+    armTab.add("Sequantial command to poistion", new SequentialCommandTest(arm, wrist, 12, 45, 3289));
+    armTab.add("Sequantial command to -45 pos", new SequentialCommandTest(arm, wrist, 12, -45, 3289));
 
-    SmartDashboard.putData("Reset Test Stuff", new ParallelCommandTest(arm, wrist, 3, 0, true));
+    armTab.add("Reset Test Stuff", new GoHome(arm, wrist));
 
     SmartDashboard.putData("Stop Claw", new StopClawRollers(claw));
-    SmartDashboard.putData("Run Cone Claw", new CollectGamePiece(claw, GamePiece.CONE));
-    SmartDashboard.putData("Run Cube Claw", new CollectGamePiece(claw, GamePiece.CUBE));
+    
     SmartDashboard.putData(
         "Scan Battery", new InstantCommand(() -> BatteryTracker.scanBattery(10.0)));
   }

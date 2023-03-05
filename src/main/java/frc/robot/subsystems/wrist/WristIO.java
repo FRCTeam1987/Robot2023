@@ -15,6 +15,10 @@ public interface WristIO {
   /** Sets position of wrist */
   void setRotation(boolean inverted);
 
+  void setPosition(final int ticks);
+
+  int getPosition();
+
   /** Return wrist degree */
   double getDegrees();
 }

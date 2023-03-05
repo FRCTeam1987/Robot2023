@@ -7,6 +7,8 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderConfiguration;
+
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
@@ -40,7 +42,7 @@ public class ArmIOTalonFX implements ArmIO {
     ROTATION_CANCODER = new CANCoder(ROTATION_CANCODER_ID, CAN_BUS_NAME);
     ROTATION_CANCODER.configFactoryDefault();
     ROTATION_CANCODER.configAllSettings(getCANCoderConfig());
-    ROTATION_CANCODER.setPosition(ROTATION_CANCODER.getAbsolutePosition() - CANCODER_OFFSET);
+    ROTATION_CANCODER.setPosition(ROTATION_CANCODER.getAbsolutePosition() + CANCODER_OFFSET);
 
     ROTATION_LEADER_TALON = new TalonFX(ROTATION_LEADER_MOTOR_ID, CAN_BUS_NAME);
     ROTATION_LEADER_TALON.configFactoryDefault();
@@ -72,6 +74,9 @@ public class ArmIOTalonFX implements ArmIO {
     EXTENSION_POTENTIOMETER = new AnalogInput(ROTATION_ANALOG_POTENTIOMETER_ID);
     // EXTENSION_TALON.setSelectedSensorPosition(convertVoltsToInches(EXTENSION_POTENTIOMETER.getVoltage()))
 
+    ArmFeedforward ff = new ArmFeedforward(0, 0.38, 2.23);
+    ff.calculate(EXTENSION_MOTOR_ID, ROTATION_ANALOG_POTENTIOMETER_ID);
+    // ROTATION_LEADER_TALON.configNominalOutputForward(ROTATION_ANALOG_POTENTIOMETER_ID)
 
     setShuffleboardLayout();
   }
@@ -134,6 +139,12 @@ public class ArmIOTalonFX implements ArmIO {
     rotList.addNumber("Arm Angle", this::getArmAngle);
     rotList.addNumber("Rotation Motor Ticks", (() -> convertDegreesToTicks(getArmAngle())));
 
+    armTab.addNumber("Rotation voltage", () -> {return ROTATION_LEADER_TALON.getMotorOutputVoltage();});
+    armTab.addNumber("Rotation current", () -> {return ROTATION_LEADER_TALON.getSupplyCurrent();});
+    armTab.addNumber("Rotation error", () -> {return ROTATION_LEADER_TALON.getClosedLoopError();});
+    armTab.addNumber("Potentiometer Voltage", EXTENSION_POTENTIOMETER::getVoltage);
+    armTab.addNumber("SensorSelectedVelocity", (() -> getSelectedSensorVelocity()));
+
     ShuffleboardLayout extList =
         armTab.getLayout("Arm Extension", BuiltInLayouts.kList).withSize(2, 4);
 
@@ -144,14 +155,8 @@ public class ArmIOTalonFX implements ArmIO {
     extList.addNumber("Extension Motor Ticks", EXTENSION_TALON::getSelectedSensorPosition);
     extList.addNumber("Potentiometer Voltage", EXTENSION_POTENTIOMETER::getVoltage);
 
-    armTab.add(
-        "Coast Extension Motors",
-        new InstantCommand(() -> EXTENSION_TALON.setNeutralMode(NeutralMode.Coast))
-            .ignoringDisable(true));
-    armTab.add(
-        "Brake Extension Motors",
-        new InstantCommand(() -> EXTENSION_TALON.setNeutralMode(NeutralMode.Brake))
-            .ignoringDisable(true));
+    armTab.add("Coast Arm", new InstantCommand(() -> {coastArm();}).ignoringDisable(true));
+    armTab.add("Brake Arm", new InstantCommand(() -> {BrakeArm();}).ignoringDisable(true));
   }
 
   public int convertDegreesToTicks(double degrees) {
@@ -160,6 +165,18 @@ public class ArmIOTalonFX implements ArmIO {
 
   public double convertTicksToDegrees(double ticks) {
     return (ticks * CONVERSION_FACTOR_DEGREES_TO_TICKS);
+  }
+
+  public void coastArm() {
+    EXTENSION_TALON.setNeutralMode(NeutralMode.Coast);
+    ROTATION_LEADER_TALON.setNeutralMode(NeutralMode.Coast);
+    ROTATION_FOLLOWER_TALON.setNeutralMode(NeutralMode.Coast);
+  }
+
+  public void BrakeArm() {
+    EXTENSION_TALON.setNeutralMode(NeutralMode.Brake);
+    ROTATION_LEADER_TALON.setNeutralMode(NeutralMode.Brake);
+    ROTATION_FOLLOWER_TALON.setNeutralMode(NeutralMode.Brake);
   }
 
   private int convertInchesToTicks(double inches) {
@@ -197,10 +214,14 @@ public class ArmIOTalonFX implements ArmIO {
   @Override
   public void setArmAngle(double angle) {
     if (Math.abs(angle) < MAX_ROTATION_ANGLE) {
-      ROTATION_LEADER_TALON.set(TalonFXControlMode.MotionMagic, convertDegreesToTicks(angle));
+      ROTATION_LEADER_TALON.set(TalonFXControlMode.MotionMagic, convertDegreesToTicks(angle), DemandType.ArbitraryFeedForward, ROTATION_KF * Math.cos(Math.toRadians(angle))); //
     } else {
       armOverRotateAlert.set(true);
     }
+  }
+
+  public double getSelectedSensorVelocity() {
+    return ROTATION_CANCODER.getVelocity();
   }
 
   @Override

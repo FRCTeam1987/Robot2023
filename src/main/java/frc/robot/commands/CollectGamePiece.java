@@ -34,11 +34,7 @@ public class CollectGamePiece extends CommandBase {
   @Override
   public void initialize() {
     isCollected = DEBOUNCER.calculate(stopCondition());
-    if (piece == GamePiece.CONE) {
-      CLAW.setRollerSpeed(-CLAW_ROLLER_SPEED);
-    } else if (piece == GamePiece.CUBE) {
-      CLAW.setRollerSpeed(CLAW_ROLLER_SPEED);
-    }
+    CLAW.setRollerSpeed(-CLAW_ROLLER_SPEED);
   }
 
   @Override

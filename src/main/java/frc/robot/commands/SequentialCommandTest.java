@@ -5,18 +5,22 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.wrist.Wrist;
 
-public class ParallelCommandTest extends ParallelCommandGroup {
+public class SequentialCommandTest extends SequentialCommandGroup {
 
-  public ParallelCommandTest(
+  public SequentialCommandTest(
       final Arm ARM,
       final Wrist WRIST,
       final int INCHES,
       final double ANGLE,
-      final boolean ROTATION) {
+      final int ticks) {
     addCommands(
-        new ExtendArm(ARM, INCHES), new RotateArm(ARM, ANGLE), new FlipWrist(WRIST, ROTATION));
+      new RotateArm(ARM, ANGLE),
+      new ExtendArm(ARM, INCHES),
+      new SetWristPosition(ticks, WRIST)
+    );
   }
 }
