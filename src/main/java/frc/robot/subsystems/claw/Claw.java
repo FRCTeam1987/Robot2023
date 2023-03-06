@@ -3,7 +3,6 @@ package frc.robot.subsystems.claw;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.CollectGamePiece;
 import frc.robot.commands.EjectGamePiece;
 import frc.robot.commands.StopClawRollers;
 import org.littletonrobotics.junction.Logger;
@@ -26,9 +25,10 @@ public class Claw extends SubsystemBase {
   public Claw(ClawIO io) {
     this.io = io;
     SmartDashboard.putData("Stop Claw", new StopClawRollers(this));
-    SmartDashboard.putData("Collect Cube", new CollectGamePiece(this, GamePiece.CUBE));
-    SmartDashboard.putData("Collect Cone", new CollectGamePiece(this, GamePiece.CONE));
-    SmartDashboard.putData("Switch game piece", new InstantCommand(() -> this.changeGamePiece()));
+    // SmartDashboard.putData("Collect Cube", new CollectGamePiece(this, GamePiece.CUBE));
+    // SmartDashboard.putData("Collect Cone", new CollectGamePiece(this, GamePiece.CONE));
+    // SmartDashboard.putData("Switch game piece", new InstantCommand(() ->
+    // this.changeGamePiece()));
     SmartDashboard.putData("Run Claw Plain", new InstantCommand(() -> setRollerSpeed(0.75), this));
     SmartDashboard.putData("Eject Game Piece", new EjectGamePiece(this).withTimeout(0.25));
   }

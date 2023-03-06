@@ -7,21 +7,22 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.util.Util;
+import java.util.function.DoubleSupplier;
 
-public class RotateArm extends CommandBase {
+public class RotateArmSupplier extends CommandBase {
 
-  private final Arm ARM;
-  private final double ANGLE;
+  private final Arm arm;
+  private final DoubleSupplier angleSupplier;
 
-  public RotateArm(final Arm ARM, final double ANGLE) {
-    this.ARM = ARM;
-    this.ANGLE = ANGLE;
-    addRequirements(this.ARM);
+  public RotateArmSupplier(final Arm arm, final DoubleSupplier angle) {
+    this.arm = arm;
+    this.angleSupplier = angle;
+    addRequirements(this.arm);
   }
 
   @Override
   public void initialize() {
-    ARM.setArmAngle(ANGLE);
+    arm.setArmAngle(angleSupplier.getAsDouble());
   }
 
   @Override
@@ -31,13 +32,13 @@ public class RotateArm extends CommandBase {
   public void end(boolean interrupted) {
     if (!interrupted) {
       System.out.println("Not interrupted, holding current angle!");
-      ARM.holdCurrentAngle(ANGLE);
+      arm.holdCurrentAngle(angleSupplier.getAsDouble());
       // ARM.stallArm();
     }
   }
 
   @Override
   public boolean isFinished() {
-    return (Util.isWithinTolerance(ARM.getArmAngle(), ANGLE, 0.5));
+    return Util.isWithinTolerance(arm.getArmAngle(), angleSupplier.getAsDouble(), 1);
   }
 }

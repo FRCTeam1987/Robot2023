@@ -8,10 +8,14 @@
 
 package frc.robot;
 
+import java.util.Map;
+
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RuntimeType;
 import frc.lib.team6328.util.Alert;
 import frc.lib.team6328.util.Alert.AlertType;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.claw.Claw.GamePiece;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -81,4 +85,69 @@ public final class Constants {
   }
 
   public static final double LOOP_PERIOD_SECS = 0.02;
+
+  public static class CollectConfig {
+    public final int armLength;
+    public final double armRotation;
+    public final int wristRotation;
+    public final GamePiece gamePiece;
+
+    public CollectConfig(
+        final int length,
+        final double rotation,
+        final int wristRotation,
+        final GamePiece gamePiece) {
+      this.armLength = length;
+      this.armRotation = rotation;
+      this.wristRotation = wristRotation;
+      this.gamePiece = gamePiece;
+    }
+  }
+
+  public static class CollectConfigs {
+    public static final CollectConfig TEST_POS = new CollectConfig(Arm.HOME_EXTENSION, 45, 1692, GamePiece.CUBE);
+    public static final CollectConfig TEST_NEG = new CollectConfig(Arm.HOME_EXTENSION, -45, 1692, GamePiece.CONE);
+    public static final CollectConfig FRONT_CUBE_FLOOR = new CollectConfig(
+      Arm.HOME_EXTENSION,
+      -105.4,
+      1692,
+      GamePiece.CUBE
+    );
+    public static final CollectConfig FRONT_CONE_FLOOR = new CollectConfig(
+      Arm.HOME_EXTENSION,
+      -102.4,
+      1853,
+      GamePiece.CONE
+    );
+    public static final CollectConfig FRONT_CONE_FLOOR_TIPPED = new CollectConfig(
+      Arm.HOME_EXTENSION,
+      -107.3,
+      1806,
+      GamePiece.CONE
+    );
+    public static final CollectConfig FRONT_CONE_FLOOR_TIPPED_LONG = new CollectConfig(
+      22,
+      -101.5,
+      1822,
+      GamePiece.CONE
+    );
+    public static final CollectConfig BACK_CUBE_FLOOR = new CollectConfig(
+      Arm.HOME_EXTENSION,
+      101.7,
+      2329,
+      GamePiece.CUBE
+    );
+    public static final CollectConfig BACK_CONE_FLOOR = new CollectConfig(
+      Arm.HOME_EXTENSION,
+      90.9,
+      2494,
+      GamePiece.CONE
+    );
+    public static final CollectConfig BACK_CONE_FLOOR_TIPPED = new CollectConfig(
+      Arm.HOME_EXTENSION,
+      105.5,
+      2068,
+      GamePiece.CONE
+    );
+  }
 }

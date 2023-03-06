@@ -7,8 +7,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderConfiguration;
-
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
@@ -74,8 +72,8 @@ public class ArmIOTalonFX implements ArmIO {
     EXTENSION_POTENTIOMETER = new AnalogInput(ROTATION_ANALOG_POTENTIOMETER_ID);
     // EXTENSION_TALON.setSelectedSensorPosition(convertVoltsToInches(EXTENSION_POTENTIOMETER.getVoltage()))
 
-    ArmFeedforward ff = new ArmFeedforward(0, 0.38, 2.23);
-    ff.calculate(EXTENSION_MOTOR_ID, ROTATION_ANALOG_POTENTIOMETER_ID);
+    // ArmFeedforward ff = new ArmFeedforward(0, 0.38, 2.23);
+    // ff.calculate(EXTENSION_MOTOR_ID, ROTATION_ANALOG_POTENTIOMETER_ID);
     // ROTATION_LEADER_TALON.configNominalOutputForward(ROTATION_ANALOG_POTENTIOMETER_ID)
 
     setShuffleboardLayout();
@@ -127,7 +125,7 @@ public class ArmIOTalonFX implements ArmIO {
     ShuffleboardTab armTab = Shuffleboard.getTab("Arm Tab");
 
     ShuffleboardLayout rotList =
-        armTab.getLayout("Arm Rotation", BuiltInLayouts.kList).withSize(2, 4);
+        armTab.getLayout("Arm Rotation", BuiltInLayouts.kList).withSize(1, 5);
 
     GenericEntry targetAngle =
         rotList
@@ -135,28 +133,70 @@ public class ArmIOTalonFX implements ArmIO {
             .withWidget(BuiltInWidgets.kNumberSlider)
             .withProperties(Map.of("min", -MAX_ROTATION_ANGLE, "max", MAX_ROTATION_ANGLE))
             .getEntry();
-    rotList.add("Rotate Arm", new InstantCommand(() -> setArmAngle(targetAngle.getDouble(0))));
+    armTab.add("Rotate Arm", new InstantCommand(() -> setArmAngle(targetAngle.getDouble(0))));
     rotList.addNumber("Arm Angle", this::getArmAngle);
     rotList.addNumber("Rotation Motor Ticks", (() -> convertDegreesToTicks(getArmAngle())));
 
-    armTab.addNumber("Rotation voltage", () -> {return ROTATION_LEADER_TALON.getMotorOutputVoltage();});
-    armTab.addNumber("Rotation current", () -> {return ROTATION_LEADER_TALON.getSupplyCurrent();});
-    armTab.addNumber("Rotation error", () -> {return ROTATION_LEADER_TALON.getClosedLoopError();});
-    armTab.addNumber("Potentiometer Voltage", EXTENSION_POTENTIOMETER::getVoltage);
-    armTab.addNumber("SensorSelectedVelocity", (() -> getSelectedSensorVelocity()));
+    rotList.addNumber(
+        "Rotation voltage",
+        () -> {
+          return ROTATION_LEADER_TALON.getMotorOutputVoltage();
+        });
+    rotList.addNumber(
+        "Rotation current",
+        () -> {
+          return ROTATION_LEADER_TALON.getSupplyCurrent();
+        });
+    rotList.addNumber(
+        "Rotation error",
+        () -> {
+          return ROTATION_LEADER_TALON.getClosedLoopError();
+        });
+    armTab.addNumber(
+        "SensorSelectedVelocity",
+        () -> {
+          return ROTATION_LEADER_TALON.getSelectedSensorVelocity();
+        });
 
     ShuffleboardLayout extList =
-        armTab.getLayout("Arm Extension", BuiltInLayouts.kList).withSize(2, 4);
+        armTab.getLayout("Arm Extension", BuiltInLayouts.kList).withSize(1, 4);
 
-    GenericEntry targetLength = armTab.add("Target Length", 0).getEntry();
-    armTab.add("Extend Arm", new InstantCommand(() -> setArmLength(targetLength.getDouble(0))));
+    GenericEntry targetLength = extList.add("Target Length", 0).getEntry();
 
     extList.addNumber("Arm Length Inches", this::getArmLength);
     extList.addNumber("Extension Motor Ticks", EXTENSION_TALON::getSelectedSensorPosition);
     extList.addNumber("Potentiometer Voltage", EXTENSION_POTENTIOMETER::getVoltage);
 
-    armTab.add("Coast Arm", new InstantCommand(() -> {coastArm();}).ignoringDisable(true));
-    armTab.add("Brake Arm", new InstantCommand(() -> {BrakeArm();}).ignoringDisable(true));
+    armTab.add("Extend Arm", new InstantCommand(() -> setArmLength(targetLength.getDouble(0))));
+
+    armTab.add(
+        "Coast Rotation",
+        new InstantCommand(
+                () -> {
+                  coastArmRotation();
+                })
+            .ignoringDisable(true));
+    armTab.add(
+        "Coast Extention",
+        new InstantCommand(
+                () -> {
+                  coastArmExtention();
+                })
+            .ignoringDisable(true));
+    armTab.add(
+        "Brake Extention",
+        new InstantCommand(
+                () -> {
+                  BrakeArmExtention();
+                })
+            .ignoringDisable(true));
+    armTab.add(
+        "Brake Rotation",
+        new InstantCommand(
+                () -> {
+                  BrakeArmRotation();
+                })
+            .ignoringDisable(true));
   }
 
   public int convertDegreesToTicks(double degrees) {
@@ -167,16 +207,22 @@ public class ArmIOTalonFX implements ArmIO {
     return (ticks * CONVERSION_FACTOR_DEGREES_TO_TICKS);
   }
 
-  public void coastArm() {
-    EXTENSION_TALON.setNeutralMode(NeutralMode.Coast);
+  public void coastArmRotation() {
     ROTATION_LEADER_TALON.setNeutralMode(NeutralMode.Coast);
     ROTATION_FOLLOWER_TALON.setNeutralMode(NeutralMode.Coast);
   }
 
-  public void BrakeArm() {
-    EXTENSION_TALON.setNeutralMode(NeutralMode.Brake);
+  public void coastArmExtention() {
+    EXTENSION_TALON.setNeutralMode(NeutralMode.Coast);
+  }
+
+  public void BrakeArmRotation() {
     ROTATION_LEADER_TALON.setNeutralMode(NeutralMode.Brake);
     ROTATION_FOLLOWER_TALON.setNeutralMode(NeutralMode.Brake);
+  }
+
+  public void BrakeArmExtention() {
+    EXTENSION_TALON.setNeutralMode(NeutralMode.Brake);
   }
 
   private int convertInchesToTicks(double inches) {
@@ -214,14 +260,63 @@ public class ArmIOTalonFX implements ArmIO {
   @Override
   public void setArmAngle(double angle) {
     if (Math.abs(angle) < MAX_ROTATION_ANGLE) {
-      ROTATION_LEADER_TALON.set(TalonFXControlMode.MotionMagic, convertDegreesToTicks(angle), DemandType.ArbitraryFeedForward, ROTATION_KF * Math.cos(Math.toRadians(angle))); //
+      ROTATION_LEADER_TALON.config_kP(0, ROTATION_KP);
+      ROTATION_LEADER_TALON.config_kD(0, ROTATION_KD);
+      ROTATION_LEADER_TALON.set(
+          TalonFXControlMode.MotionMagic,
+          convertDegreesToTicks(angle),
+          DemandType.ArbitraryFeedForward,
+          ROTATION_KF * Math.cos(Math.toRadians(90.0 - angle))); //
     } else {
       armOverRotateAlert.set(true);
     }
   }
 
-  public double getSelectedSensorVelocity() {
-    return ROTATION_CANCODER.getVelocity();
+  @Override
+  public void stallArm() {
+    ROTATION_LEADER_TALON.set(
+        TalonFXControlMode.PercentOutput,
+        (-0.095) * Math.cos(Math.toRadians(90.0 - this.getArmAngle())));
+  }
+
+  @Override
+  public void holdCurrentAngle() {
+    double angle = this.getArmAngle();
+    if (Math.abs(angle) < MAX_ROTATION_ANGLE) {
+      ROTATION_LEADER_TALON.config_kP(0, 3.25);
+      ROTATION_LEADER_TALON.set(
+          TalonFXControlMode.Position,
+          convertDegreesToTicks(angle),
+          DemandType.ArbitraryFeedForward,
+          (-0.095) * Math.cos(Math.toRadians(90.0 - this.getArmAngle())));
+    } else {
+      armOverRotateAlert.set(true);
+    }
+  }
+
+  @Override
+  public void holdCurrentAngle(double desiredPosition) {
+    if (Math.abs(desiredPosition) < MAX_ROTATION_ANGLE) {
+      ROTATION_LEADER_TALON.config_kP(0, 0.1);
+      // ROTATION_LEADER_TALON.config_kP(0, 0.4);
+      // ROTATION_LEADER_TALON.config_kP(0, 3.25);
+      ROTATION_LEADER_TALON.config_kD(0, 0.0);
+      // ROTATION_LEADER_TALON.config_kD(0, 0.003);
+      ROTATION_LEADER_TALON.set(
+          TalonFXControlMode.Position,
+          convertDegreesToTicks(desiredPosition),
+          DemandType.ArbitraryFeedForward,
+          // (-0.05675) * Math.cos(Math.toRadians(90.0 - desiredPosition)));
+          (-0.055) * Math.cos(Math.toRadians(90.0 - desiredPosition)));
+      // (-0.095) * Math.cos(Math.toRadians(90.0 - desiredPosition)));
+    } else {
+      armOverRotateAlert.set(true);
+    }
+  }
+
+  @Override
+  public void setExtensionNominal() { // give the extension motor a break when driving around
+    EXTENSION_TALON.set(TalonFXControlMode.PercentOutput, 0);
   }
 
   @Override

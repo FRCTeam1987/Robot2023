@@ -109,13 +109,33 @@ public class TestRobotConfig extends RobotConfig {
   private static final int ANGLE_BACK_HALF = 2635; // when telescope extended
   private static final int ANGLE_FRONT_HALF = 1924; // when telescope extended
 
-  public int getANGLE_STRAIGHT() {return ANGLE_STRAIGHT;}
-  public int getANGLE_FRONT_MAX() {return ANGLE_FRONT_MAX;}
-  public int getANGLE_FRONT_PERPENDICULAR() {return ANGLE_FRONT_PERPENDICULAR;}
-  public int getANGLE_BACK_PERPENDICULAR() {return ANGLE_BACK_PERPENDICULAR;}
-  public int getANGLE_BACK_MAX() {return ANGLE_BACK_MAX;}
-  public int getANGLE_BACK_HALF() {return ANGLE_BACK_HALF;}
-  public int getANGLE_FRONT_HALF() {return ANGLE_FRONT_HALF;}
+  public int getANGLE_STRAIGHT() {
+    return ANGLE_STRAIGHT;
+  }
+
+  public int getANGLE_FRONT_MAX() {
+    return ANGLE_FRONT_MAX;
+  }
+
+  public int getANGLE_FRONT_PERPENDICULAR() {
+    return ANGLE_FRONT_PERPENDICULAR;
+  }
+
+  public int getANGLE_BACK_PERPENDICULAR() {
+    return ANGLE_BACK_PERPENDICULAR;
+  }
+
+  public int getANGLE_BACK_MAX() {
+    return ANGLE_BACK_MAX;
+  }
+
+  public int getANGLE_BACK_HALF() {
+    return ANGLE_BACK_HALF;
+  }
+
+  public int getANGLE_FRONT_HALF() {
+    return ANGLE_FRONT_HALF;
+  }
 
   @Override
   public int getClawMotorID() {

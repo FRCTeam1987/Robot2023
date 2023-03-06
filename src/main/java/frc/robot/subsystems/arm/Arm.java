@@ -3,13 +3,17 @@ package frc.robot.subsystems.arm;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.team3061.RobotConfig;
 import frc.lib.team6328.util.Alert;
 import org.littletonrobotics.junction.Logger;
 
 public class Arm extends SubsystemBase {
+
+  public static final int HOME_ROTATION = 0;
+  public static final int HOME_EXTENSION = 1;
+
+
   static double heightOffset = RobotConfig.getInstance().getRobotArmHeightOffset();
   private final ArmIO io;
   private final ArmIOInputsAutoLogged inputs = new ArmIOInputsAutoLogged();
@@ -39,6 +43,22 @@ public class Arm extends SubsystemBase {
 
   public double getArmLength() {
     return io.getArmLength();
+  }
+
+  public void holdCurrentAngle() {
+    io.holdCurrentAngle();
+  }
+
+  public void holdCurrentAngle(double desiredPosition) {
+    io.holdCurrentAngle(desiredPosition);
+  }
+
+  public void stallArm() {
+    io.stallArm();
+  }
+
+  public void setExtensionNominal() {
+    io.setExtensionNominal();
   }
 
   public void periodic() {

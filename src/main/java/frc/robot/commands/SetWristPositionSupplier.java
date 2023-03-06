@@ -7,23 +7,23 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.util.Util;
+import java.util.function.IntSupplier;
 
-public class SetWristPosition extends CommandBase {
-  private int position;
-  private final Wrist m_wrist;
+public class SetWristPositionSupplier extends CommandBase {
+  private IntSupplier position;
+  private final Wrist wrist;
   /** Creates a new SetWristPosition. */
-  public SetWristPosition(int position, Wrist wrist) {
-    m_wrist = wrist;
+  public SetWristPositionSupplier(final Wrist wrist, final IntSupplier position) {
+    this.wrist = wrist;
     this.position = position;
-    addRequirements(m_wrist);
-    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(this.wrist);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     // TODO check the telescope length, if the length is below a value change the exceptible range
-    m_wrist.setPosition(position);
+    wrist.setPosition(position.getAsInt());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -37,6 +37,6 @@ public class SetWristPosition extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Util.isWithinTolerance(m_wrist.getPosition(), position, 100);
+    return Util.isWithinTolerance(wrist.getPosition(), position.getAsInt(), 100);
   }
 }

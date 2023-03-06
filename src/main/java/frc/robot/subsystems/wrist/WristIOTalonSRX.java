@@ -1,7 +1,5 @@
 package frc.robot.subsystems.wrist;
 
-import java.nio.channels.WritableByteChannel;
-
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -9,20 +7,18 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.commands.SetWristPosition;
 
 public class WristIOTalonSRX implements WristIO {
 
   public static final ShuffleboardTab tab = Shuffleboard.getTab("wrist");
   public static final int ANGLE_STRAIGHT = 2289;
 
-
   private final WPI_TalonSRX wristMotor;
 
   public WristIOTalonSRX(int wristMotorID) {
     wristMotor = new WPI_TalonSRX(wristMotorID);
     TalonSRXConfiguration wristConfig = new TalonSRXConfiguration();
-    wristConfig.motionAcceleration = 950;
+    wristConfig.motionAcceleration = 600;
     wristConfig.motionCruiseVelocity = 950;
     wristConfig.feedbackNotContinuous = true;
     wristConfig.slot0.kP = 3.75;
@@ -46,8 +42,16 @@ public class WristIOTalonSRX implements WristIO {
               wristMotor.set(TalonSRXControlMode.PercentOutput, 0.0);
               wristMotor.setSelectedSensorPosition(0);
             }));
-    tab.addNumber("Current Position", () -> {return wristMotor.getSelectedSensorPosition();});
-    tab.addNumber("motor voltage", () -> {return wristMotor.getMotorOutputVoltage();});
+    tab.addNumber(
+        "Current Position",
+        () -> {
+          return wristMotor.getSelectedSensorPosition();
+        });
+    tab.addNumber(
+        "motor voltage",
+        () -> {
+          return wristMotor.getMotorOutputVoltage();
+        });
     SmartDashboard.putNumber("speed", 0.0);
   }
 
@@ -62,7 +66,7 @@ public class WristIOTalonSRX implements WristIO {
   }
 
   public int getPosition() {
-    return (int)wristMotor.getSelectedSensorPosition();
+    return (int) wristMotor.getSelectedSensorPosition();
   }
 
   @Override

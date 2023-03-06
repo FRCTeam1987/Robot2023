@@ -23,4 +23,12 @@ public interface ArmIO {
   }
 
   public default void setArmAngle(double angle) {}
+
+  public default void holdCurrentAngle() {}
+
+  public default void holdCurrentAngle(double desiredPosition) {}
+
+  public default void stallArm() {}
+
+  public default void setExtensionNominal() {}
 }

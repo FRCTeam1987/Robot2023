@@ -10,6 +10,7 @@ import com.pathplanner.lib.commands.FollowPathWithEvents;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -25,6 +26,8 @@ import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIO;
 import frc.lib.team3061.swerve.SwerveModuleIOSim;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
+import frc.robot.Constants.CollectConfig;
+import frc.robot.Constants.CollectConfigs;
 import frc.robot.Constants.Mode;
 import frc.robot.commands.*;
 import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
@@ -152,10 +155,11 @@ public class RobotContainer {
             wrist = new Wrist(new WristIOTalonSRX(config.getWristRotatorID()));
             claw = new Claw(new ClawIOSparkMAX(config.getClawMotorID()));
             claw.setDefaultCommand(new DefaultClawRollersSpin(claw));
-            vision =
-                new Vision(
-                    new VisionIOLimelight(
-                        "limelight-fl", "limelight-bl", "limelight-br")); // "limelight-fr"
+            // temp
+            // vision =
+            //     new Vision(
+            //         new VisionIOLimelight(
+            //             "limelight-fl", "limelight-bl", "limelight-br")); // "limelight-fr"
             arm =
                 new Arm(
                     new ArmIOTalonFX(
@@ -274,16 +278,31 @@ public class RobotContainer {
     SmartDashboard.putData("Extend Arm to 12 Inches", new ExtendArm(arm, 12));
     SmartDashboard.putData("Rotate Arm to 45 Degrees", new RotateArm(arm, 45));
     SmartDashboard.putData("Flip Wrist to true", new FlipWrist(wrist, true));
-    
-    armTab.add("Sequantial command to poistion", new SequentialCommandTest(arm, wrist, 12, 45, 3289));
-    armTab.add("Sequantial command to -45 pos", new SequentialCommandTest(arm, wrist, 12, -45, 3289));
 
-    armTab.add("Reset Test Stuff", new GoHome(arm, wrist));
+    armTab.add("Sequantial Command 45 pos", new SequentialCommandTest(arm, wrist, 16, 45, 3289));
+    armTab.add("Sequential Command -45 pos", new SequentialCommandTest(arm, wrist, 16, -45, 3289));
+    // armTab.add("Collect Back Cube", );
+
+    armTab.add("Go Home", new GoHome(arm, wrist));
 
     SmartDashboard.putData("Stop Claw", new StopClawRollers(claw));
-    
+
     SmartDashboard.putData(
         "Scan Battery", new InstantCommand(() -> BatteryTracker.scanBattery(10.0)));
+    
+    SendableChooser<CollectConfig> collectionChooser = new SendableChooser<CollectConfig>();
+    collectionChooser.setDefaultOption("TEST POS", CollectConfigs.TEST_POS);
+    collectionChooser.addOption("TEST NEG", CollectConfigs.TEST_NEG);
+    collectionChooser.addOption("back cube", CollectConfigs.BACK_CUBE_FLOOR);
+    collectionChooser.addOption("back cone", CollectConfigs.BACK_CONE_FLOOR);
+    collectionChooser.addOption("back cone tipped", CollectConfigs.BACK_CONE_FLOOR_TIPPED);
+    collectionChooser.addOption("front cube", CollectConfigs.FRONT_CUBE_FLOOR);
+    collectionChooser.addOption("front cone", CollectConfigs.FRONT_CONE_FLOOR);
+    collectionChooser.addOption("front cone tipped", CollectConfigs.FRONT_CONE_FLOOR_TIPPED);
+    collectionChooser.addOption("front cone tipped long", CollectConfigs.FRONT_CONE_FLOOR_TIPPED_LONG);
+    Shuffleboard.getTab("MAIN").add("Collect Chooser", collectionChooser);
+    Shuffleboard.getTab("MAIN").add("Collect Sequence", new CollectSequence(arm, wrist, claw, () -> collectionChooser.getSelected()));
+    Shuffleboard.getTab("MAIN").add("Eject Game Piece", new EjectGamePiece(claw).withTimeout(0.25));
   }
 
   /** Use this method to define your button->command mappings. */
