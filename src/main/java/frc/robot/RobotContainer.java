@@ -15,7 +15,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.team3061.RobotConfig;
 import frc.lib.team3061.gyro.GyroIO;
@@ -31,6 +34,7 @@ import frc.robot.Constants.CollectConfigs;
 import frc.robot.Constants.Mode;
 import frc.robot.commands.*;
 import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
+import frc.robot.commands.arm.SetArm;
 import frc.robot.configs.CompRobotConfig;
 import frc.robot.configs.TestRobotConfig;
 import frc.robot.operator_interface.OISelector;
@@ -303,6 +307,25 @@ public class RobotContainer {
     Shuffleboard.getTab("MAIN").add("Collect Chooser", collectionChooser);
     Shuffleboard.getTab("MAIN").add("Collect Sequence", new CollectSequence(arm, wrist, claw, () -> collectionChooser.getSelected()));
     Shuffleboard.getTab("MAIN").add("Eject Game Piece", new EjectGamePiece(claw).withTimeout(0.25));
+    Shuffleboard.getTab("MAIN").add("angle 25, length 1", new SetArm(arm, () -> 25, () -> 1));
+    Shuffleboard.getTab("MAIN").add("angle 45, length 1", new SetArm(arm, () -> 45, () -> 1));
+    Shuffleboard.getTab("MAIN").add("angle 65, length 1", new SetArm(arm, () -> 65, () -> 1));
+    Shuffleboard.getTab("MAIN").add("angle 90, length 1", new SetArm(arm, () -> 90, () -> 1));
+    Shuffleboard.getTab("MAIN").add("angle 45, length 10", new SetArm(arm, () -> 45, () -> 10));
+    Shuffleboard.getTab("MAIN").add("angle 45, length 20", new SetArm(arm, () -> 45, () -> 20));
+    Shuffleboard.getTab("MAIN").add("angle 45, length 36", new SetArm(arm, () -> 45, () -> 36));
+    Shuffleboard.getTab("MAIN").add("set home", new SequentialCommandGroup(
+      new ConditionalCommand(
+        new ExtendArmSupplier(arm, () -> 2),
+        new InstantCommand(),
+        () -> arm.getArmLength() > 4
+      ),
+      new ParallelCommandGroup(
+        new RotateArm(arm, Arm.HOME_ROTATION),
+        new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)
+      ),
+      new InstantCommand(() -> arm.setExtensionNominal(), arm)
+    ));
   }
 
   /** Use this method to define your button->command mappings. */

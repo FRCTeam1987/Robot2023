@@ -101,6 +101,7 @@ public class ArmIOTalonFX implements ArmIO {
     rotMotorConfig.slot0.kD = ROTATION_KD;
     rotMotorConfig.slot0.kF = 0.0;
     rotMotorConfig.slot0.allowableClosedloopError = ROTATION_ALLOWABLE_ERROR;
+    rotMotorConfig.neutralDeadband = 0.001;
 
     return rotMotorConfig;
   }
@@ -112,11 +113,13 @@ public class ArmIOTalonFX implements ArmIO {
     extConfig.primaryPID.selectedFeedbackCoefficient = 1.0;
     extConfig.motionAcceleration = EXTENSION_MOTION_ACCELERATION;
     extConfig.motionCruiseVelocity = EXTENSION_CRUISE_VELOCITY;
-    extConfig.slot0.kP = EXTENSION_KP;
+    extConfig.slot0.kP = 0.1;
+    // extConfig.slot0.kP = EXTENSION_KP;
     extConfig.slot0.kI = EXTENSION_KI;
     extConfig.slot0.kD = EXTENSION_KD;
     extConfig.slot0.kF = 0.0;
     extConfig.slot0.allowableClosedloopError = EXTENSION_ALLOWABLE_ERROR;
+    extConfig.neutralDeadband = 0.001;
 
     return extConfig;
   }
@@ -229,8 +232,8 @@ public class ArmIOTalonFX implements ArmIO {
     return (int) (inches * CONVERSION_FACTOR_INCHES_TO_TICKS);
   }
 
-  private int convertTicksToInches(double inches) {
-    return (int) (inches * CONVERSION_FACTOR_TICKS_TO_INCHES);
+  private double convertTicksToInches(double ticks) {
+    return ticks * CONVERSION_FACTOR_TICKS_TO_INCHES;
   }
 
   private double convertVoltsToInches(double volts) {
@@ -239,14 +242,18 @@ public class ArmIOTalonFX implements ArmIO {
 
   @Override
   public double getArmLength() {
-    return (convertTicksToInches(
-        EXTENSION_TALON.getSelectedSensorPosition() - MINIMUM_EXTENSION_MOTOR_TICKS));
+    return convertTicksToInches(EXTENSION_TALON.getSelectedSensorPosition() - MINIMUM_EXTENSION_MOTOR_TICKS);
   }
 
   @Override
   public void setArmLength(double inches) {
     if (MINIMUM_EXTENSION_LENGTH_INCHES < inches && inches < MAXIMUM_EXTENSION_LENGTH_INCHES) {
-      EXTENSION_TALON.set(TalonFXControlMode.MotionMagic, convertInchesToTicks(inches));
+      EXTENSION_TALON.set(
+        TalonFXControlMode.MotionMagic,
+        convertInchesToTicks(inches),
+        DemandType.ArbitraryFeedForward,
+        0.095 * Math.sin(Math.toRadians(90.0 - getArmAngle()))
+      );
     } else {
       armOverExtendAlert.set(true);
     }
@@ -260,13 +267,17 @@ public class ArmIOTalonFX implements ArmIO {
   @Override
   public void setArmAngle(double angle) {
     if (Math.abs(angle) < MAX_ROTATION_ANGLE) {
-      ROTATION_LEADER_TALON.config_kP(0, ROTATION_KP);
-      ROTATION_LEADER_TALON.config_kD(0, ROTATION_KD);
+      // ROTATION_LEADER_TALON.config_kP(0, ROTATION_KP);
+      ROTATION_LEADER_TALON.config_kP(0, 2.75);
+      // ROTATION_LEADER_TALON.config_kP(0, 2.75);
+      // ROTATION_LEADER_TALON.config_kD(0, ROTATION_KD);
+      ROTATION_LEADER_TALON.config_kD(0, 0);
       ROTATION_LEADER_TALON.set(
           TalonFXControlMode.MotionMagic,
           convertDegreesToTicks(angle),
           DemandType.ArbitraryFeedForward,
-          ROTATION_KF * Math.cos(Math.toRadians(90.0 - angle))); //
+          (ArmConstants.rotationArbitraryFeedforwardValues.get(getArmLength())) * Math.cos(Math.toRadians(90.0 - angle))); //
+          // ROTATION_KF * Math.cos(Math.toRadians(90.0 - angle))); //
     } else {
       armOverRotateAlert.set(true);
     }
@@ -276,7 +287,8 @@ public class ArmIOTalonFX implements ArmIO {
   public void stallArm() {
     ROTATION_LEADER_TALON.set(
         TalonFXControlMode.PercentOutput,
-        (-0.095) * Math.cos(Math.toRadians(90.0 - this.getArmAngle())));
+        ArmConstants.rotationArbitraryFeedforwardValues.get(getArmLength()) * Math.cos(Math.toRadians(90.0 - this.getArmAngle())));
+        // (-0.095) * Math.cos(Math.toRadians(90.0 - this.getArmAngle())));
   }
 
   @Override
@@ -317,6 +329,11 @@ public class ArmIOTalonFX implements ArmIO {
   @Override
   public void setExtensionNominal() { // give the extension motor a break when driving around
     EXTENSION_TALON.set(TalonFXControlMode.PercentOutput, 0);
+  }
+
+  public void stop() {
+    EXTENSION_TALON.set(ControlMode.PercentOutput, 0);
+    ROTATION_LEADER_TALON.set(ControlMode.PercentOutput, 0);
   }
 
   @Override

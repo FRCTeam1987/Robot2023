@@ -31,4 +31,6 @@ public interface ArmIO {
   public default void stallArm() {}
 
   public default void setExtensionNominal() {}
+
+  public default void stop() {}
 }

@@ -33,7 +33,7 @@ public class Arm extends SubsystemBase {
     io.setArmAngle(degrees);
   }
 
-  public void setArmLength(int inches) {
+  public void setArmLength(double inches) {
     io.setArmLength(inches);
   }
 
@@ -55,6 +55,10 @@ public class Arm extends SubsystemBase {
 
   public void stallArm() {
     io.stallArm();
+  }
+
+  public void stop() {
+    io.stop();
   }
 
   public void setExtensionNominal() {
