@@ -22,27 +22,23 @@ public class CollectSequence extends SequentialCommandGroup {
 
   /** Creates a new CollectSequence. */
   public CollectSequence(
-    final Arm arm,
-    final Wrist wrist,
-    final Claw claw,
-    final Supplier<CollectConfig> collectConfig) {
+      final Arm arm,
+      final Wrist wrist,
+      final Claw claw,
+      final Supplier<CollectConfig> collectConfig) {
     addCommands(
-      new ParallelCommandGroup(
-        new RotateArmSupplier(arm, () -> collectConfig.get().armRotation),
-        new SetWristPositionSupplier(wrist, () -> collectConfig.get().wristRotation)
-      ),
-      new ExtendArmSupplier(arm, () -> collectConfig.get().armLength),
-      new ConditionalCommand(
-        new CollectGamePiece(claw, GamePiece.CUBE),
-        new CollectGamePiece(claw, GamePiece.CONE),
-        () -> collectConfig.get().gamePiece == GamePiece.CUBE
-      ),
-      new ExtendArm(arm, Arm.HOME_EXTENSION),
-      new ParallelCommandGroup(
-        new RotateArm(arm, Arm.HOME_ROTATION),
-        new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)
-      ),
-      new InstantCommand(() -> arm.setExtensionNominal(), arm)
-    );
+        new ParallelCommandGroup(
+            new RotateArmSupplier(arm, () -> collectConfig.get().armRotation),
+            new SetWristPositionSupplier(wrist, () -> collectConfig.get().wristRotation)),
+        new ExtendArmSupplier(arm, () -> collectConfig.get().armLength),
+        new ConditionalCommand(
+            new CollectGamePiece(claw, GamePiece.CUBE),
+            new CollectGamePiece(claw, GamePiece.CONE),
+            () -> collectConfig.get().gamePiece == GamePiece.CUBE),
+        new ExtendArm(arm, Arm.HOME_EXTENSION),
+        new ParallelCommandGroup(
+            new RotateArm(arm, Arm.HOME_ROTATION),
+            new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
+        new InstantCommand(() -> arm.setExtensionNominal(), arm));
   }
 }

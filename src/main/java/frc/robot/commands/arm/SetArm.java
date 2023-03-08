@@ -4,12 +4,10 @@
 
 package frc.robot.commands.arm;
 
-import java.util.function.DoubleSupplier;
-import java.util.function.IntSupplier;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.util.Util;
+import java.util.function.DoubleSupplier;
 
 public class SetArm extends CommandBase {
 
@@ -18,7 +16,8 @@ public class SetArm extends CommandBase {
   private final DoubleSupplier lengthSupplier;
 
   /** Creates a new SetArm. */
-  public SetArm(final Arm arm, final DoubleSupplier angleSupplier, final DoubleSupplier lengthSupplier) {
+  public SetArm(
+      final Arm arm, final DoubleSupplier angleSupplier, final DoubleSupplier lengthSupplier) {
     this.arm = arm;
     this.angleSupplier = angleSupplier;
     this.lengthSupplier = lengthSupplier;
@@ -36,7 +35,7 @@ public class SetArm extends CommandBase {
   public void execute() {
     final double desiredAngle = angleSupplier.getAsDouble();
     arm.setArmAngle(desiredAngle);
-    if(isAngleOnTarget(5) && !isLengthOnTarget(1)) {
+    if (isAngleOnTarget(5) && !isLengthOnTarget(1)) {
       arm.setArmLength(lengthSupplier.getAsDouble());
     }
   }

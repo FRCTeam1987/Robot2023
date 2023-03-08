@@ -46,7 +46,6 @@ import frc.robot.subsystems.claw.Claw.GamePiece;
 import frc.robot.subsystems.claw.ClawIOSparkMAX;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIOTalonSRX;
 import frc.robot.util.BatteryTracker;
@@ -283,18 +282,21 @@ public class RobotContainer {
     SmartDashboard.putData("Rotate Arm to 45 Degrees", new RotateArm(arm, 45));
     SmartDashboard.putData("Flip Wrist to true", new FlipWrist(wrist, true));
 
-    armTab.add("Sequantial Command 45 pos", new SequentialCommandTest(arm, wrist, 16, 45, 3289));
-    armTab.add("Sequential Command -45 pos", new SequentialCommandTest(arm, wrist, 16, -45, 3289));
+    armTab.add("Seq Command 45 pos", new SequentialCommandTest(arm, wrist, 16, 45, 3289));
+    armTab.add("Seq Command -45 pos", new SequentialCommandTest(arm, wrist, 16, -45, 3289));
+    armTab.add("Par Command 45 pos", new ParallelCommandTest(arm, wrist, 16, 45, 3289));
+    armTab.add("Par Command -45 pos", new ParallelCommandTest(arm, wrist, 16, -45, 3289));
     // armTab.add("Collect Back Cube", );
 
     armTab.add("Go Home", new GoHome(arm, wrist));
+    armTab.add("Go Home Parallel", new GoHomeParallel(arm, wrist));
 
     SmartDashboard.putData("Stop Claw", new StopClawRollers(claw));
 
     SmartDashboard.putData(
         "Scan Battery", new InstantCommand(() -> BatteryTracker.scanBattery(10.0)));
-    
-    SendableChooser<CollectConfig> collectionChooser = new SendableChooser<CollectConfig>();
+
+    SendableChooser<CollectConfig> collectionChooser = new SendableChooser<>();
     collectionChooser.setDefaultOption("TEST POS", CollectConfigs.TEST_POS);
     collectionChooser.addOption("TEST NEG", CollectConfigs.TEST_NEG);
     collectionChooser.addOption("back cube", CollectConfigs.BACK_CUBE_FLOOR);
@@ -303,29 +305,31 @@ public class RobotContainer {
     collectionChooser.addOption("front cube", CollectConfigs.FRONT_CUBE_FLOOR);
     collectionChooser.addOption("front cone", CollectConfigs.FRONT_CONE_FLOOR);
     collectionChooser.addOption("front cone tipped", CollectConfigs.FRONT_CONE_FLOOR_TIPPED);
-    collectionChooser.addOption("front cone tipped long", CollectConfigs.FRONT_CONE_FLOOR_TIPPED_LONG);
-    Shuffleboard.getTab("MAIN").add("Collect Chooser", collectionChooser);
-    Shuffleboard.getTab("MAIN").add("Collect Sequence", new CollectSequence(arm, wrist, claw, () -> collectionChooser.getSelected()));
-    Shuffleboard.getTab("MAIN").add("Eject Game Piece", new EjectGamePiece(claw).withTimeout(0.25));
-    Shuffleboard.getTab("MAIN").add("angle 25, length 1", new SetArm(arm, () -> 25, () -> 1));
-    Shuffleboard.getTab("MAIN").add("angle 45, length 1", new SetArm(arm, () -> 45, () -> 1));
-    Shuffleboard.getTab("MAIN").add("angle 65, length 1", new SetArm(arm, () -> 65, () -> 1));
-    Shuffleboard.getTab("MAIN").add("angle 90, length 1", new SetArm(arm, () -> 90, () -> 1));
-    Shuffleboard.getTab("MAIN").add("angle 45, length 10", new SetArm(arm, () -> 45, () -> 10));
-    Shuffleboard.getTab("MAIN").add("angle 45, length 20", new SetArm(arm, () -> 45, () -> 20));
-    Shuffleboard.getTab("MAIN").add("angle 45, length 36", new SetArm(arm, () -> 45, () -> 36));
-    Shuffleboard.getTab("MAIN").add("set home", new SequentialCommandGroup(
-      new ConditionalCommand(
-        new ExtendArmSupplier(arm, () -> 2),
-        new InstantCommand(),
-        () -> arm.getArmLength() > 4
-      ),
-      new ParallelCommandGroup(
-        new RotateArm(arm, Arm.HOME_ROTATION),
-        new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)
-      ),
-      new InstantCommand(() -> arm.setExtensionNominal(), arm)
-    ));
+    collectionChooser.addOption(
+        "front cone tipped long", CollectConfigs.FRONT_CONE_FLOOR_TIPPED_LONG);
+    ShuffleboardTab MAIN = Shuffleboard.getTab("MAIN");
+    MAIN.add("Collect Chooser", collectionChooser);
+    MAIN.add(
+        "Collect Sequence", new CollectSequence(arm, wrist, claw, collectionChooser::getSelected));
+    MAIN.add("Eject Game Piece", new EjectGamePiece(claw).withTimeout(0.25));
+    MAIN.add("angle 25, length 1", new SetArm(arm, () -> 25, () -> 1));
+    MAIN.add("angle 45, length 1", new SetArm(arm, () -> 45, () -> 1));
+    MAIN.add("angle 65, length 1", new SetArm(arm, () -> 65, () -> 1));
+    MAIN.add("angle 90, length 1", new SetArm(arm, () -> 90, () -> 1));
+    MAIN.add("angle 45, length 10", new SetArm(arm, () -> 45, () -> 10));
+    MAIN.add("angle 45, length 20", new SetArm(arm, () -> 45, () -> 20));
+    MAIN.add("angle 45, length 36", new SetArm(arm, () -> 45, () -> 36));
+    MAIN.add(
+        "set home",
+        new SequentialCommandGroup(
+            new ConditionalCommand(
+                new ExtendArmSupplier(arm, () -> 2),
+                new InstantCommand(),
+                () -> arm.getArmLength() > 4),
+            new ParallelCommandGroup(
+                new RotateArm(arm, Arm.HOME_ROTATION),
+                new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
+            new InstantCommand(() -> arm.setExtensionNominal(), arm)));
   }
 
   /** Use this method to define your button->command mappings. */
