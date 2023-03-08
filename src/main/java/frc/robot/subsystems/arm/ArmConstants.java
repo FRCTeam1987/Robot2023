@@ -49,13 +49,17 @@ public final class ArmConstants {
   public static final double ROTATION_CLOSED_LOOP_RAMP_SECONDS = 0.5;
   public static final double EXTENSION_CLOSED_LOOP_RAMP_SECONDS = 0.25;
 
+  public static final int MAX_VERTICAL_EXTENSION_INCHES = 75;
+  public static final int CLAW_HEIGHT_INCHES = 15;
+  public static final int MAX_HORIZONTAL_EXTENSION_INCHES = 48;
+  public static final double CENTER_TO_EXTENSION = 17.775;
+
   public static final InterpolatingTreeMap<Double, Double> rotationArbitraryFeedforwardValues =
+      new InterpolatingTreeMap<>();
+  public static final InterpolatingTreeMap<Double, Double> extensionArbitraryFeedforwardValues =
       new InterpolatingTreeMap<>();
 
   static {
-    // rotationArbitraryFeedforwardValues.put(0.0, -0.09);
-    // rotationArbitraryFeedforwardValues.put(1.0, -0.10);
-    // rotationArbitraryFeedforwardValues.put(2.0, -0.11);
     rotationArbitraryFeedforwardValues.put(0.0, -0.07);
     rotationArbitraryFeedforwardValues.put(3.0, -0.072);
     rotationArbitraryFeedforwardValues.put(6.0, -0.074);
@@ -67,5 +71,7 @@ public final class ArmConstants {
     rotationArbitraryFeedforwardValues.put(34.0, -0.095);
     rotationArbitraryFeedforwardValues.put(36.5, -0.0975);
     rotationArbitraryFeedforwardValues.put(39.5, -0.1);
+
+    //    extensionArbitraryFeedforwardValues.put();
   }
 }

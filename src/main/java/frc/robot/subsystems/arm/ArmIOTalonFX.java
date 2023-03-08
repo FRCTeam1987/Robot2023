@@ -210,12 +210,13 @@ public class ArmIOTalonFX implements ArmIO {
 
   @Override
   public void setArmLength(double inches) {
-    if (MINIMUM_EXTENSION_LENGTH_INCHES < inches && inches < MAXIMUM_EXTENSION_LENGTH_INCHES) {
+    if (MINIMUM_EXTENSION_LENGTH_INCHES < inches && inches < ((MAX_HORIZONTAL_EXTENSION_INCHES / Math.cos(this.getArmAngle())) - CENTER_TO_EXTENSION) - CLAW_HEIGHT_INCHES) {
       EXTENSION_TALON.set(
           TalonFXControlMode.MotionMagic,
           convertInchesToTicks(inches),
           DemandType.ArbitraryFeedForward,
-          0.095 * Math.sin(Math.toRadians(90.0 - getArmAngle())));
+          (extensionArbitraryFeedforwardValues.get(getArmLength()))
+              * Math.sin(Math.toRadians(90.0 - getArmAngle())));
     } else {
       armOverExtendAlert.set(true);
     }
