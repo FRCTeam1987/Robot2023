@@ -110,25 +110,25 @@ public final class Constants {
     public static final CollectConfig FRONT_CUBE_FLOOR = new CollectConfig(
       Arm.HOME_EXTENSION,
       -105.4,
-      1692,
+      1780,
       GamePiece.CUBE
     );
     public static final CollectConfig FRONT_CONE_FLOOR = new CollectConfig(
       Arm.HOME_EXTENSION,
       -102.4,
-      1853,
+      2072,
       GamePiece.CONE
     );
     public static final CollectConfig FRONT_CONE_FLOOR_TIPPED = new CollectConfig(
       Arm.HOME_EXTENSION,
       -107.3,
-      1806,
+      1906,
       GamePiece.CONE
     );
     public static final CollectConfig FRONT_CONE_FLOOR_TIPPED_LONG = new CollectConfig(
-      22,
-      -101.5,
-      1822,
+      23,
+      -102.4,
+      2130,
       GamePiece.CONE
     );
     public static final CollectConfig BACK_CUBE_FLOOR = new CollectConfig(

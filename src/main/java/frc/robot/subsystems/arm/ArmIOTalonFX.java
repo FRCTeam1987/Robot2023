@@ -274,10 +274,10 @@ public class ArmIOTalonFX implements ArmIO {
       ROTATION_LEADER_TALON.config_kD(0, 0);
       ROTATION_LEADER_TALON.set(
           TalonFXControlMode.MotionMagic,
-          convertDegreesToTicks(angle),
-          DemandType.ArbitraryFeedForward,
-          (ArmConstants.rotationArbitraryFeedforwardValues.get(getArmLength())) * Math.cos(Math.toRadians(90.0 - angle))); //
-          // ROTATION_KF * Math.cos(Math.toRadians(90.0 - angle))); //
+          convertDegreesToTicks(angle));
+          // DemandType.ArbitraryFeedForward,
+          // (ArmConstants.rotationArbitraryFeedforwardValues.get(getArmLength())) * Math.cos(Math.toRadians(90.0 - angle))); //
+          // // ROTATION_KF * Math.cos(Math.toRadians(90.0 - angle))); //
     } else {
       armOverRotateAlert.set(true);
     }

@@ -21,9 +21,10 @@ public class WristIOTalonSRX implements WristIO {
     wristConfig.motionAcceleration = 600;
     wristConfig.motionCruiseVelocity = 950;
     wristConfig.feedbackNotContinuous = true;
-    wristConfig.slot0.kP = 3.75;
+    wristConfig.slot0.kP = 4.0;
     wristConfig.slot0.kD = 0.0;
     wristConfig.slot0.allowableClosedloopError = 0;
+    wristConfig.neutralDeadband = 0.001;
     wristMotor.configFactoryDefault();
     wristMotor.configAllSettings(wristConfig);
     wristMotor.configSelectedFeedbackSensor(FeedbackDevice.PulseWidthEncodedPosition);
@@ -62,7 +63,7 @@ public class WristIOTalonSRX implements WristIO {
   }
 
   public void setPosition(final int ticks) {
-    wristMotor.set(TalonSRXControlMode.MotionMagic, ticks);
+    wristMotor.set(TalonSRXControlMode.MotionMagic, ticks, DemandType.ArbitraryFeedForward, -0.1);
   }
 
   public int getPosition() {

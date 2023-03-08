@@ -11,6 +11,7 @@ public class ClawIOSparkMAX implements ClawIO {
     clawRollerMotor = new CANSparkMax(clawRollerMotorID, CANSparkMax.MotorType.kBrushless);
     clawRollerMotor.restoreFactoryDefaults();
     clawRollerMotor.setIdleMode(IdleMode.kBrake);
+    // TODO ADD CURRENT LIMIT TO PROTECT MOTOR
   }
 
   @Override
