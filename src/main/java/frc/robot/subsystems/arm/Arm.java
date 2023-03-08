@@ -13,6 +13,7 @@ public class Arm extends SubsystemBase {
   public static final int HOME_ROTATION = 0;
   public static final int HOME_EXTENSION = 1;
 
+
   static double heightOffset = RobotConfig.getInstance().getRobotArmHeightOffset();
   private final ArmIO io;
   private final ArmIOInputsAutoLogged inputs = new ArmIOInputsAutoLogged();

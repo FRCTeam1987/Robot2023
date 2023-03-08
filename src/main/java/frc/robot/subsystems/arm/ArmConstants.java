@@ -49,9 +49,7 @@ public final class ArmConstants {
   public static final double ROTATION_CLOSED_LOOP_RAMP_SECONDS = 0.5;
   public static final double EXTENSION_CLOSED_LOOP_RAMP_SECONDS = 0.25;
 
-  public static final InterpolatingTreeMap<Double, Double> rotationArbitraryFeedforwardValues =
-      new InterpolatingTreeMap<>();
-
+  public static final InterpolatingTreeMap<Double, Double> rotationArbitraryFeedforwardValues = new InterpolatingTreeMap<>();
   static {
     // rotationArbitraryFeedforwardValues.put(0.0, -0.09);
     // rotationArbitraryFeedforwardValues.put(1.0, -0.10);
