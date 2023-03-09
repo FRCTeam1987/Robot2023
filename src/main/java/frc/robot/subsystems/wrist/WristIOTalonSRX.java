@@ -29,11 +29,11 @@ public class WristIOTalonSRX implements WristIO {
     wristMotor.configAllSettings(wristConfig);
     wristMotor.configSelectedFeedbackSensor(FeedbackDevice.PulseWidthEncodedPosition);
     wristMotor.setNeutralMode(NeutralMode.Brake);
-    wristMotor.configVoltageCompSaturation(8);
+    wristMotor.configVoltageCompSaturation(6);
     wristMotor.enableVoltageCompensation(true);
     wristMotor.setInverted(InvertType.InvertMotorOutput);
     wristMotor.setSensorPhase(true);
-    wristMotor.configContinuousCurrentLimit(25);
+    wristMotor.configContinuousCurrentLimit(15);
     wristMotor.configPeakCurrentLimit(30);
     setPosition(ANGLE_STRAIGHT);
     tab.add(
