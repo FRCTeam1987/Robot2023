@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.team3061.RobotConfig;
 import frc.lib.team3061.gyro.GyroIO;
 import frc.lib.team3061.gyro.GyroIONavx;
+import frc.lib.team3061.gyro.GyroIOPigeon2;
 import frc.lib.team3061.pneumatics.Pneumatics;
 import frc.lib.team3061.pneumatics.PneumaticsIO;
 import frc.lib.team3061.swerve.SwerveModule;
@@ -103,7 +104,7 @@ public class RobotContainer {
               config = new TestRobotConfig();
             }
 
-            GyroIO gyro = new GyroIONavx();
+            GyroIO gyro = new GyroIOPigeon2(0);
 
             int[] driveMotorCANIDs = config.getSwerveDriveMotorCANIDs();
             int[] steerMotorCANDIDs = config.getSwerveSteerMotorCANIDs();
