@@ -26,9 +26,9 @@ public class TeleopSwerve extends CommandBase {
   private final DoubleSupplier rotationSupplier;
 
   // TODO greyson play with these slew rate values
-  private final SlewRateLimiter translationXSlewRate = new SlewRateLimiter(0.75);
-  private final SlewRateLimiter translationYSlewRate = new SlewRateLimiter(0.75);
-  private final SlewRateLimiter rotationSlewRate = new SlewRateLimiter(0.5);
+  private final SlewRateLimiter translationXSlewRate = new SlewRateLimiter(2.5);
+  private final SlewRateLimiter translationYSlewRate = new SlewRateLimiter(2.5);
+  private final SlewRateLimiter rotationSlewRate = new SlewRateLimiter(2);
 
   public static final double DEADBAND = 0.1;
 
