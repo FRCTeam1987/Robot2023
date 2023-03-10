@@ -59,4 +59,13 @@ public class SingleHandheldOI implements OperatorInterface {
   public Trigger getRotateButton() {
     return new Trigger(controller::getAButton);
   }
+
+  @Override
+  public Trigger getTempCollect() {
+    return new Trigger(controller::getYButton);
+  }
+
+  public Trigger getTempEject() {
+    return new Trigger(controller::getRightBumper);
+  }
 }

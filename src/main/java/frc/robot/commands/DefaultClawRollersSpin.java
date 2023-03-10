@@ -12,7 +12,7 @@ public class DefaultClawRollersSpin extends CommandBase {
 
   private final Claw claw;
 
-  private static final double CLAW_ROLLER_SPEED = -0.1;
+  private static final double CLAW_ROLLER_SPEED = -0.25;
 
   public DefaultClawRollersSpin(Claw claw) {
     this.claw = claw;

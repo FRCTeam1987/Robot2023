@@ -19,10 +19,10 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.team3061.RobotConfig;
 import frc.lib.team3061.gyro.GyroIO;
-import frc.lib.team3061.gyro.GyroIONavx;
 import frc.lib.team3061.gyro.GyroIOPigeon2;
 import frc.lib.team3061.pneumatics.Pneumatics;
 import frc.lib.team3061.pneumatics.PneumaticsIO;
@@ -30,12 +30,14 @@ import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIO;
 import frc.lib.team3061.swerve.SwerveModuleIOSim;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
-import frc.robot.Constants.CollectConfig;
-import frc.robot.Constants.CollectConfigs;
+import frc.robot.Constants.PositionConfig;
+import frc.robot.Constants.PositionConfigs;
 import frc.robot.Constants.Mode;
 import frc.robot.commands.*;
 import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
 import frc.robot.commands.arm.SetArm;
+import frc.robot.commands.auto.AutoPathHelper;
+import frc.robot.commands.auto.Balance;
 import frc.robot.configs.CompRobotConfig;
 import frc.robot.configs.TestRobotConfig;
 import frc.robot.operator_interface.OISelector;
@@ -43,11 +45,9 @@ import frc.robot.operator_interface.OperatorInterface;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.claw.Claw;
-import frc.robot.subsystems.claw.Claw.GamePiece;
 import frc.robot.subsystems.claw.ClawIOSparkMAX;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIOTalonSRX;
 import frc.robot.util.BatteryTracker;
@@ -81,6 +81,7 @@ public class RobotContainer {
   private final Map<String, Command> autoEventMap = new HashMap<>();
   CommandXboxController driverController =
       new CommandXboxController(1); // Creates a CommandXboxController on port 1.
+  CommandXboxController coDriverController = new CommandXboxController(2);
 
   /** Create the container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -294,19 +295,59 @@ public class RobotContainer {
 
     SmartDashboard.putData(
         "Scan Battery", new InstantCommand(() -> BatteryTracker.scanBattery(10.0)));
-    
-    SendableChooser<CollectConfig> collectionChooser = new SendableChooser<CollectConfig>();
-    collectionChooser.setDefaultOption("TEST POS", CollectConfigs.TEST_POS);
-    collectionChooser.addOption("TEST NEG", CollectConfigs.TEST_NEG);
-    collectionChooser.addOption("back cube", CollectConfigs.BACK_CUBE_FLOOR);
-    collectionChooser.addOption("back cone", CollectConfigs.BACK_CONE_FLOOR);
-    collectionChooser.addOption("back cone tipped", CollectConfigs.BACK_CONE_FLOOR_TIPPED);
-    collectionChooser.addOption("front cube", CollectConfigs.FRONT_CUBE_FLOOR);
-    collectionChooser.addOption("front cone", CollectConfigs.FRONT_CONE_FLOOR);
-    collectionChooser.addOption("front cone tipped", CollectConfigs.FRONT_CONE_FLOOR_TIPPED);
-    collectionChooser.addOption("front cone tipped long", CollectConfigs.FRONT_CONE_FLOOR_TIPPED_LONG);
+
+
+
+    SendableChooser<PositionConfig> collectionChooser = new SendableChooser<PositionConfig>();
+    collectionChooser.setDefaultOption("TEST POS", PositionConfigs.TEST_POS);
+    collectionChooser.addOption("TEST NEG", PositionConfigs.TEST_NEG);
+    collectionChooser.addOption("back cube", PositionConfigs.BACK_CUBE_FLOOR);
+    collectionChooser.addOption("back cone", PositionConfigs.BACK_CONE_FLOOR);
+    collectionChooser.addOption("back cone tipped", PositionConfigs.BACK_CONE_FLOOR_TIPPED);
+    collectionChooser.addOption("front cube", PositionConfigs.FRONT_CUBE_FLOOR);
+    collectionChooser.addOption("front cone", PositionConfigs.FRONT_CONE_FLOOR);
+    collectionChooser.addOption("front cone tipped", PositionConfigs.FRONT_CONE_FLOOR_TIPPED);
+    collectionChooser.addOption("BACK_CUBE_FLOOR", PositionConfigs.BACK_CUBE_FLOOR); //score
+    collectionChooser.addOption("BACK_CONE_FLOOR_TIPPED", PositionConfigs.BACK_CONE_FLOOR_TIPPED);
+    collectionChooser.addOption("BACK_CONE_TOP", PositionConfigs.BACK_CONE_TOP);
+    collectionChooser.addOption("BACK_CONE_MEDIUM", PositionConfigs.BACK_CONE_MEDIUM);
+    collectionChooser.addOption("BACK_CUBE_TOP", PositionConfigs.BACK_CUBE_TOP);
+    collectionChooser.addOption("BACK_CUBE_MEDIUM", PositionConfigs.BACK_CUBE_MEDIUM);
+    collectionChooser.addOption("FRONT_CONE_TOP", PositionConfigs.FRONT_CONE_TOP);
+    collectionChooser.addOption("FRONT_CONE_MEDIUM", PositionConfigs.FRONT_CONE_MEDIUM);
+    collectionChooser.addOption("FRONT_CUBE_MEDIUM", PositionConfigs.FRONT_CUBE_MEDIUM);
+    collectionChooser.addOption("FRONT_CUBE_TOP", PositionConfigs.FRONT_CUBE_TOP);
+    collectionChooser.addOption("FRONT_CONE_TOP", PositionConfigs.FRONT_CONE_TOP);
+    collectionChooser.addOption("FRONT_SINGLE_SUBSTATION", PositionConfigs.FRONT_SINGLE_SUBSTATION);
+    collectionChooser.addOption("FRONT_DOUBLE_SUBSTATION", PositionConfigs.FRONT_DOUBLE_SUBSTATION);
+    collectionChooser.addOption(
+        "front cone tipped long", PositionConfigs.FRONT_CONE_FLOOR_TIPPED_LONG);
     Shuffleboard.getTab("MAIN").add("Collect Chooser", collectionChooser);
-    Shuffleboard.getTab("MAIN").add("Collect Sequence", new CollectSequence(arm, wrist, claw, () -> collectionChooser.getSelected()));
+
+    SendableChooser<PositionConfig> ScoreChooser = new SendableChooser<PositionConfig>();
+    ScoreChooser.addOption("BACK_CUBE_FLOOR", PositionConfigs.BACK_CUBE_FLOOR); //score
+    ScoreChooser.addOption("BACK_CONE_FLOOR_TIPPED", PositionConfigs.BACK_CONE_FLOOR_TIPPED);
+    ScoreChooser.addOption("BACK_CONE_TOP", PositionConfigs.BACK_CONE_TOP);
+    ScoreChooser.addOption("BACK_CONE_MEDIUM", PositionConfigs.BACK_CONE_MEDIUM);
+    ScoreChooser.addOption("BACK_CUBE_TOP", PositionConfigs.BACK_CUBE_TOP);
+    ScoreChooser.addOption("BACK_CUBE_MEDIUM", PositionConfigs.BACK_CUBE_MEDIUM);
+    ScoreChooser.addOption("FRONT_CONE_TOP", PositionConfigs.FRONT_CONE_TOP);
+    ScoreChooser.addOption("FRONT_CONE_MEDIUM", PositionConfigs.FRONT_CONE_MEDIUM);
+    ScoreChooser.addOption("FRONT_CUBE_MEDIUM", PositionConfigs.FRONT_CUBE_MEDIUM);
+    ScoreChooser.addOption("FRONT_CUBE_TOP", PositionConfigs.FRONT_CUBE_TOP);
+    ScoreChooser.addOption("FRONT_CONE_TOP", PositionConfigs.FRONT_CONE_TOP);
+    Shuffleboard.getTab("MAIN").add("Score Chooser", ScoreChooser);
+
+    Shuffleboard.getTab("MAIN")
+        .add(
+            "Score Sequence",
+            new ScoreSequence(arm, wrist, claw, () -> ScoreChooser.getSelected()));
+
+
+    Shuffleboard.getTab("MAIN")
+        .add(
+            "Collect Sequence",
+            new CollectSequence(arm, wrist, claw, () -> collectionChooser.getSelected()));
     Shuffleboard.getTab("MAIN").add("Eject Game Piece", new EjectGamePiece(claw).withTimeout(0.25));
     Shuffleboard.getTab("MAIN").add("angle 25, length 1", new SetArm(arm, () -> 25, () -> 1));
     Shuffleboard.getTab("MAIN").add("angle 45, length 1", new SetArm(arm, () -> 45, () -> 1));
@@ -315,18 +356,19 @@ public class RobotContainer {
     Shuffleboard.getTab("MAIN").add("angle 45, length 10", new SetArm(arm, () -> 45, () -> 10));
     Shuffleboard.getTab("MAIN").add("angle 45, length 20", new SetArm(arm, () -> 45, () -> 20));
     Shuffleboard.getTab("MAIN").add("angle 45, length 36", new SetArm(arm, () -> 45, () -> 36));
-    Shuffleboard.getTab("MAIN").add("set home", new SequentialCommandGroup(
-      new ConditionalCommand(
-        new ExtendArmSupplier(arm, () -> 2),
-        new InstantCommand(),
-        () -> arm.getArmLength() > 4
-      ),
-      new ParallelCommandGroup(
-        new RotateArm(arm, Arm.HOME_ROTATION),
-        new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)
-      ),
-      new InstantCommand(() -> arm.setExtensionNominal(), arm)
-    ));
+    Shuffleboard.getTab("MAIN")
+        .add(
+            "set home",
+            new SequentialCommandGroup(
+                new ConditionalCommand(
+                    new ExtendArmSupplier(arm, () -> 2),
+                    new InstantCommand(),
+                    () -> arm.getArmLength() > 4),
+                new ParallelCommandGroup(
+                    new RotateArm(arm, Arm.HOME_ROTATION),
+                    new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
+                new InstantCommand(() -> arm.setExtensionNominal(), arm)));
+    Shuffleboard.getTab("MAIN").add("Balance", new Balance(drivetrain));
   }
 
   /** Use this method to define your button->command mappings. */
@@ -348,29 +390,65 @@ public class RobotContainer {
     oi.getXStanceButton().onFalse(Commands.runOnce(drivetrain::disableXstance, drivetrain));
 
     // Creates a new Trigger object for the `Right bumper` button that collects cones
-    driverController.rightBumper().onTrue(new CollectGamePiece(claw, GamePiece.CONE));
+    // driverController.rightBumper().onTrue(new CollectGamePiece(claw, GamePiece.CONE));
 
     // Creates a new Trigger object for the `left bumper` button that collects cubes
-    driverController.leftBumper().onTrue(new CollectGamePiece(claw, GamePiece.CUBE));
+    // driverController.leftBumper().onTrue(new CollectGamePiece(claw, GamePiece.CUBE));
 
     // Creates a new Trigger object for the `right trigger` button that releases the game piece
-    driverController.rightTrigger().onTrue(new ReleaseGamePiece(claw));
+    // driverController.rightTrigger().onTrue(new ReleaseGamePiece(claw));
 
     // Creates a new Trigger object for the `left trigger` buttonthat stops all the rollers
-    driverController.leftTrigger().onTrue(new StopClawRollers(claw));
-    oi.getWristPosButton()
+    // driverController.leftTrigger().onTrue(new StopClawRollers(claw));
+
+    // driverController
+    //     .y()
+    //     .onTrue(
+    //         new CollectSequence(arm, wrist, claw, () ->
+    // Constants.PositionConfigs.BACK_CUBE_FLOOR));
+    // driverController
+    //     .rightBumper()
+    //     .onTrue(
+    //         new SequentialCommandGroup(
+    //             new ParallelCommandGroup(
+    //                 new SetArm(arm, () -> -45.0, () -> 6.0), new SetWristPosition(1350, wrist)),
+    //             new EjectGamePiece(claw),
+    //             new ParallelCommandGroup(
+    //                 new SetArm(arm, () -> Arm.HOME_ROTATION, () -> Arm.HOME_EXTENSION),
+    //                 new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
+    //             new InstantCommand(() -> arm.setExtensionNominal(), arm)));
+    // driverController.start().onTrue(new ParallelCommandGroup(
+
+    // ));
+
+    // coDriverController.pov(0).onTrue(getAutonomousCommand());
+
+    // oi.getWristPosButton()
+    //     .onTrue(
+    //         new InstantCommand(
+    //             () -> {
+    //               wrist.setRotation(true);
+    //             }));
+    // oi.getWristNegButton()
+    //     .onTrue(
+    //         new InstantCommand(
+    //             () -> {
+    //               wrist.setRotation(false);
+    //             }));
+    // oi.getRotateButton().onTrue(new InstantCommand(() -> arm.setArmAngle(45)));
+    oi.getTempCollect()
         .onTrue(
-            new InstantCommand(
-                () -> {
-                  wrist.setRotation(true);
-                }));
-    oi.getWristNegButton()
+            new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR));
+    oi.getTempEject()
         .onTrue(
-            new InstantCommand(
-                () -> {
-                  wrist.setRotation(false);
-                }));
-    oi.getRotateButton().onTrue(new InstantCommand(() -> arm.setArmAngle(45)));
+            new SequentialCommandGroup(
+                new ParallelCommandGroup(
+                    new SetArm(arm, () -> -45.0, () -> 6.0), new SetWristPosition(1350, wrist)),
+                new EjectGamePiece(claw).withTimeout(0.25),
+                new ParallelCommandGroup(
+                    new SetArm(arm, () -> Arm.HOME_ROTATION, () -> Arm.HOME_EXTENSION),
+                    new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
+                new InstantCommand(() -> arm.setExtensionNominal(), arm)));
   }
 
   /** Use this method to define your commands for autonomous mode. */
@@ -416,6 +494,40 @@ public class RobotContainer {
             new FeedForwardCharacterizationData("drive"),
             drivetrain::runCharacterizationVolts,
             drivetrain::getCharacterizationVelocity));
+
+    final HashMap<String, Command> someEventMap = new HashMap<String, Command>();
+    someEventMap.put("Score Cone", new WaitCommand(2));
+    someEventMap.put(
+        "Collect Cube",
+        new CollectSequence(arm, wrist, claw, () -> PositionConfigs.BACK_CUBE_FLOOR));
+    someEventMap.put(
+        "Score Cube",
+        new SequentialCommandGroup(
+            new ParallelCommandGroup(
+                new SetArm(arm, () -> -45.0, () -> 6.0), new SetWristPosition(1350, wrist)),
+            new EjectGamePiece(claw).withTimeout(0.25),
+            new ParallelCommandGroup(
+                new SetArm(arm, () -> Arm.HOME_ROTATION, () -> Arm.HOME_EXTENSION),
+                new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
+            new InstantCommand(() -> arm.setExtensionNominal(), arm)));
+    // TODO this auto does not fully work reliably
+    autoChooser.addOption(
+        "Some Auto",
+        new SequentialCommandGroup(
+                new ParallelCommandGroup(
+                    new SetArm(
+                        arm,
+                        () -> PositionConfigs.FRONT_CONE_MEDIUM.armRotation,
+                        () -> PositionConfigs.FRONT_CONE_MEDIUM.armLength),
+                    new SetWristPosition(PositionConfigs.FRONT_CONE_MEDIUM.wristRotation, wrist)),
+                new EjectGamePiece(claw).withTimeout(0.25),
+                new ParallelCommandGroup(
+                    new SetArm(arm, () -> Arm.HOME_ROTATION, () -> Arm.HOME_EXTENSION),
+                    new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
+                new InstantCommand(() -> arm.setExtensionNominal(), arm))
+            .andThen(AutoPathHelper.followPath(drivetrain, "Some Auto", someEventMap))
+            .andThen(new Balance(drivetrain))
+            .andThen(() -> drivetrain.setXStance(), drivetrain));
 
     Shuffleboard.getTab("MAIN").add(autoChooser.getSendableChooser());
   }

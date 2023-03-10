@@ -26,6 +26,7 @@ public interface GyroIO {
   public static class GyroIOInputs {
     public boolean connected = false;
     public double positionDeg = 0.0;
+    public double pitchDeg = 0.0;
     public double velocityDegPerSec = 0.0;
   }
 

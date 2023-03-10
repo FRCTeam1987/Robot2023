@@ -8,8 +8,6 @@
 
 package frc.robot;
 
-import java.util.Map;
-
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RuntimeType;
 import frc.lib.team6328.util.Alert;
@@ -86,13 +84,13 @@ public final class Constants {
 
   public static final double LOOP_PERIOD_SECS = 0.02;
 
-  public static class CollectConfig {
+  public static class PositionConfig {
     public final int armLength;
     public final double armRotation;
     public final int wristRotation;
     public final GamePiece gamePiece;
 
-    public CollectConfig(
+    public PositionConfig(
         final int length,
         final double rotation,
         final int wristRotation,
@@ -104,50 +102,46 @@ public final class Constants {
     }
   }
 
-  public static class CollectConfigs {
-    public static final CollectConfig TEST_POS = new CollectConfig(Arm.HOME_EXTENSION, 45, 1692, GamePiece.CUBE);
-    public static final CollectConfig TEST_NEG = new CollectConfig(Arm.HOME_EXTENSION, -45, 1692, GamePiece.CONE);
-    public static final CollectConfig FRONT_CUBE_FLOOR = new CollectConfig(
-      Arm.HOME_EXTENSION,
-      -105.4,
-      1780,
-      GamePiece.CUBE
-    );
-    public static final CollectConfig FRONT_CONE_FLOOR = new CollectConfig(
-      Arm.HOME_EXTENSION,
-      -102.4,
-      2072,
-      GamePiece.CONE
-    );
-    public static final CollectConfig FRONT_CONE_FLOOR_TIPPED = new CollectConfig(
-      Arm.HOME_EXTENSION,
-      -107.3,
-      1906,
-      GamePiece.CONE
-    );
-    public static final CollectConfig FRONT_CONE_FLOOR_TIPPED_LONG = new CollectConfig(
-      23,
-      -102.4,
-      2130,
-      GamePiece.CONE
-    );
-    public static final CollectConfig BACK_CUBE_FLOOR = new CollectConfig(
-      Arm.HOME_EXTENSION,
-      101.7,
-      2329,
-      GamePiece.CUBE
-    );
-    public static final CollectConfig BACK_CONE_FLOOR = new CollectConfig(
-      Arm.HOME_EXTENSION,
-      90.9,
-      2494,
-      GamePiece.CONE
-    );
-    public static final CollectConfig BACK_CONE_FLOOR_TIPPED = new CollectConfig(
-      Arm.HOME_EXTENSION,
-      105.5,
-      2068,
-      GamePiece.CONE
-    );
+  public static class PositionConfigs {
+    public static final PositionConfig TEST_POS =
+        new PositionConfig(Arm.HOME_EXTENSION, 45, 1692, GamePiece.CUBE);
+    public static final PositionConfig TEST_NEG =
+        new PositionConfig(Arm.HOME_EXTENSION, -45, 1692, GamePiece.CONE);
+    public static final PositionConfig FRONT_CUBE_FLOOR =
+        new PositionConfig(Arm.HOME_EXTENSION, -105.4, 1780, GamePiece.CUBE);
+    public static final PositionConfig FRONT_CONE_FLOOR =
+        new PositionConfig(Arm.HOME_EXTENSION, -102.4, 2072, GamePiece.CONE);
+    public static final PositionConfig FRONT_CONE_FLOOR_TIPPED =
+        new PositionConfig(Arm.HOME_EXTENSION, -107.3, 1906, GamePiece.CONE);
+    public static final PositionConfig FRONT_CONE_FLOOR_TIPPED_LONG =
+        new PositionConfig(23, -102.4, 2130, GamePiece.CONE);
+    public static final PositionConfig BACK_CUBE_FLOOR =
+        new PositionConfig(Arm.HOME_EXTENSION, 101.7, 2329, GamePiece.CUBE);
+    public static final PositionConfig BACK_CONE_FLOOR =
+        new PositionConfig(Arm.HOME_EXTENSION, 90.9, 2494, GamePiece.CONE);
+    public static final PositionConfig BACK_CONE_FLOOR_TIPPED =
+        new PositionConfig(Arm.HOME_EXTENSION, 105.5, 2068, GamePiece.CONE);
+    public static final PositionConfig FRONT_CONE_MEDIUM =
+        new PositionConfig(20, -48.5, 870, GamePiece.CONE);
+    public static final PositionConfig FRONT_CONE_TOP =
+        new PositionConfig(35, -50, 1271, GamePiece.CONE);
+    public static final PositionConfig FRONT_CUBE_MEDIUM =
+        new PositionConfig(0, -56, 1690, GamePiece.CUBE);
+    public static final PositionConfig FRONT_CUBE_TOP =
+        new PositionConfig(20, -60, 1960, GamePiece.CUBE);
+    public static final PositionConfig BACK_CONE_TOP =
+        new PositionConfig(35, 49.5, 2800, GamePiece.CONE);
+    public static final PositionConfig BACK_CONE_MEDIUM =
+        new PositionConfig(22, 47.9, 3260, GamePiece.CONE);
+    public static final PositionConfig BACK_CUBE_TOP =
+        new PositionConfig(21, 51, 2360, GamePiece.CUBE);
+    public static final PositionConfig BACK_CUBE_MEDIUM =
+        new PositionConfig(0, 51.5, 2383, GamePiece.CUBE);
+    public static final PositionConfig FRONT_SINGLE_SUBSTATION =
+        new PositionConfig(0, -72, 2330, GamePiece.CUBE);
+    public static final PositionConfig FRONT_DOUBLE_SUBSTATION =
+        new PositionConfig(17, -33, 1270, GamePiece.CONE);
   }
+
+  
 }

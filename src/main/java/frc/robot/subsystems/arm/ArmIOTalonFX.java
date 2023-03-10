@@ -242,18 +242,18 @@ public class ArmIOTalonFX implements ArmIO {
 
   @Override
   public double getArmLength() {
-    return convertTicksToInches(EXTENSION_TALON.getSelectedSensorPosition() - MINIMUM_EXTENSION_MOTOR_TICKS);
+    return convertTicksToInches(
+        EXTENSION_TALON.getSelectedSensorPosition() - MINIMUM_EXTENSION_MOTOR_TICKS);
   }
 
   @Override
   public void setArmLength(double inches) {
     if (MINIMUM_EXTENSION_LENGTH_INCHES < inches && inches < MAXIMUM_EXTENSION_LENGTH_INCHES) {
       EXTENSION_TALON.set(
-        TalonFXControlMode.MotionMagic,
-        convertInchesToTicks(inches),
-        DemandType.ArbitraryFeedForward,
-        0.095 * Math.sin(Math.toRadians(90.0 - getArmAngle()))
-      );
+          TalonFXControlMode.MotionMagic,
+          convertInchesToTicks(inches),
+          DemandType.ArbitraryFeedForward,
+          0.095 * Math.sin(Math.toRadians(90.0 - getArmAngle())));
     } else {
       armOverExtendAlert.set(true);
     }
@@ -272,12 +272,11 @@ public class ArmIOTalonFX implements ArmIO {
       // ROTATION_LEADER_TALON.config_kP(0, 2.75);
       // ROTATION_LEADER_TALON.config_kD(0, ROTATION_KD);
       ROTATION_LEADER_TALON.config_kD(0, 0);
-      ROTATION_LEADER_TALON.set(
-          TalonFXControlMode.MotionMagic,
-          convertDegreesToTicks(angle));
-          // DemandType.ArbitraryFeedForward,
-          // (ArmConstants.rotationArbitraryFeedforwardValues.get(getArmLength())) * Math.cos(Math.toRadians(90.0 - angle))); //
-          // // ROTATION_KF * Math.cos(Math.toRadians(90.0 - angle))); //
+      ROTATION_LEADER_TALON.set(TalonFXControlMode.MotionMagic, convertDegreesToTicks(angle));
+      // DemandType.ArbitraryFeedForward,
+      // (ArmConstants.rotationArbitraryFeedforwardValues.get(getArmLength())) *
+      // Math.cos(Math.toRadians(90.0 - angle))); //
+      // // ROTATION_KF * Math.cos(Math.toRadians(90.0 - angle))); //
     } else {
       armOverRotateAlert.set(true);
     }
@@ -287,8 +286,9 @@ public class ArmIOTalonFX implements ArmIO {
   public void stallArm() {
     ROTATION_LEADER_TALON.set(
         TalonFXControlMode.PercentOutput,
-        ArmConstants.rotationArbitraryFeedforwardValues.get(getArmLength()) * Math.cos(Math.toRadians(90.0 - this.getArmAngle())));
-        // (-0.095) * Math.cos(Math.toRadians(90.0 - this.getArmAngle())));
+        ArmConstants.rotationArbitraryFeedforwardValues.get(getArmLength())
+            * Math.cos(Math.toRadians(90.0 - this.getArmAngle())));
+    // (-0.095) * Math.cos(Math.toRadians(90.0 - this.getArmAngle())));
   }
 
   @Override

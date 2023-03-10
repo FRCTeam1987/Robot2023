@@ -486,9 +486,28 @@ public class Drivetrain extends SubsystemBase {
     this.centerGravity = new Translation2d(x, y);
   }
 
+  public void resetPose(Pose2d pose) {
+
+    setGyroOffset(pose.getRotation().getDegrees());
+
+    for (int i = 0; i < 4; i++) {
+      swerveModulePositions[i] = swerveModules[i].getPosition();
+    }
+
+    estimatedPoseWithoutGyro = new Pose2d(pose.getTranslation(), pose.getRotation());
+    poseEstimator.resetPosition(
+        this.getRotation(),
+        swerveModulePositions,
+        new Pose2d(pose.getTranslation(), pose.getRotation()));
+  }
+
   /** Resets the robot's center of gravity about which it will rotate to the center of the robot. */
   public void resetCenterGrav() {
     setCenterGrav(0.0, 0.0);
+  }
+
+  public SwerveDriveKinematics getKinematics() {
+    return kinematics;
   }
 
   /**
@@ -507,6 +526,10 @@ public class Drivetrain extends SubsystemBase {
    */
   public double getVelocityY() {
     return chassisSpeeds.vyMetersPerSecond;
+  }
+
+  public double getPitch() {
+    return gyroInputs.pitchDeg;
   }
 
   /**

@@ -48,4 +48,12 @@ public interface OperatorInterface {
   public default Trigger getRotateButton() {
     return new Trigger(() -> false);
   }
+
+  public default Trigger getTempCollect() {
+    return new Trigger(() -> false);
+  }
+
+  public default Trigger getTempEject() {
+    return new Trigger(() -> false);
+  }
 }
