@@ -128,7 +128,7 @@ public final class Constants {
     public static final PositionConfig FRONT_CUBE_MEDIUM =
         new PositionConfig(0, -56, 1690, GamePiece.CUBE);
     public static final PositionConfig FRONT_CUBE_TOP =
-        new PositionConfig(20, -60, 1960, GamePiece.CUBE);
+        new PositionConfig(20, -50, 1960, GamePiece.CUBE);
     public static final PositionConfig BACK_CONE_TOP =
         new PositionConfig(35, 49.5, 2800, GamePiece.CONE);
     public static final PositionConfig BACK_CONE_MEDIUM =

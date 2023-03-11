@@ -4,6 +4,9 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.wrist.Wrist;
@@ -16,6 +19,16 @@ public class GoHome extends SequentialCommandGroup {
   public GoHome(final Arm ARM, final Wrist WRIST) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new SetWristPosition(2289, WRIST), new ExtendArm(ARM, 1), new RotateArm(ARM, 0));
+    addCommands(
+      // new SetWristPosition(2289, WRIST), new ExtendArm(ARM, 1), new RotateArm(ARM, 0)
+        new ConditionalCommand(
+            new ExtendArmSupplier(ARM, () -> 2),
+            new InstantCommand(),
+            () -> ARM.getArmLength() > 4),
+        new ParallelCommandGroup(
+            new RotateArm(ARM, Arm.HOME_ROTATION),
+            new SetWristPosition(Wrist.ANGLE_STRAIGHT, WRIST)),
+        new InstantCommand(() -> ARM.setExtensionNominal(), ARM)
+      );
   }
 }
