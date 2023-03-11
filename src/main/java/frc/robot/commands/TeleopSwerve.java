@@ -97,8 +97,8 @@ public class TeleopSwerve extends CommandBase {
    * Squares the specified value, while preserving the sign. This method is used on all joystick
    * inputs. This is useful as a non-linear range is more natural for the driver.
    *
-   * @param value
-   * @return
+   * @param value input value
+   * @return square of the value
    */
   private static double modifyAxis(double value) {
     // Deadband

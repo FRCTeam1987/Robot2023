@@ -16,7 +16,8 @@ import frc.lib.team6328.util.Alert.AlertType;
  * Utility class for selecting the appropriate OI implementations based on the connected joysticks.
  */
 public class OISelector {
-  private static String[] lastJoystickNames = new String[] {null, null, null, null, null, null};
+  private static final String[] lastJoystickNames =
+      new String[] {null, null, null, null, null, null};
   private static final Alert noOperatorInterfaceWarning =
       new Alert("No operator controller(s) connected.", AlertType.WARNING);
   private static final Alert nonCompetitionOperatorInterfaceWarning =

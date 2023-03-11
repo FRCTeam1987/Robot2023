@@ -21,17 +21,17 @@ public class TalonSRXFactory {
   private static final int TIMEOUT_MS = 100;
 
   public static class Configuration {
-    public NeutralMode NEUTRAL_MODE = NeutralMode.Coast;
+    public final NeutralMode NEUTRAL_MODE = NeutralMode.Coast;
     // factory default
-    public double NEUTRAL_DEADBAND = 0.04;
+    public final double NEUTRAL_DEADBAND = 0.04;
 
     public boolean ENABLE_SOFT_LIMIT = false;
-    public boolean ENABLE_LIMIT_SWITCH = false;
-    public int FORWARD_SOFT_LIMIT = 0;
-    public int REVERSE_SOFT_LIMIT = 0;
+    public final boolean ENABLE_LIMIT_SWITCH = false;
+    public final int FORWARD_SOFT_LIMIT = 0;
+    public final int REVERSE_SOFT_LIMIT = 0;
 
-    public boolean INVERTED = false;
-    public boolean SENSOR_PHASE = false;
+    public final boolean INVERTED = false;
+    public final boolean SENSOR_PHASE = false;
 
     public int CONTROL_FRAME_PERIOD_MS = 5;
     public int MOTION_CONTROL_FRAME_PERIOD_MS = 100;
@@ -41,45 +41,45 @@ public class TalonSRXFactory {
     public int ANALOG_TEMP_VBAT_STATUS_FRAME_RATE_MS = 1000;
     public int PULSE_WIDTH_STATUS_FRAME_RATE_MS = 1000;
 
-    public SensorVelocityMeasPeriod VELOCITY_MEASUREMENT_PERIOD =
+    public final SensorVelocityMeasPeriod VELOCITY_MEASUREMENT_PERIOD =
         SensorVelocityMeasPeriod.Period_100Ms;
-    public int VELOCITY_MEASUREMENT_ROLLING_AVERAGE_WINDOW = 64;
+    public final int VELOCITY_MEASUREMENT_ROLLING_AVERAGE_WINDOW = 64;
 
-    public SupplyCurrentLimitConfiguration SUPPLY_CURRENT_LIMIT =
+    public final SupplyCurrentLimitConfiguration SUPPLY_CURRENT_LIMIT =
         new SupplyCurrentLimitConfiguration(false, 0, 40, 0.2);
 
-    public double OPEN_LOOP_RAMP_RATE = 0.0;
-    public double CLOSED_LOOP_RAMP_RATE = 0.0;
+    public final double OPEN_LOOP_RAMP_RATE = 0.0;
+    public final double CLOSED_LOOP_RAMP_RATE = 0.0;
 
-    public double SLOT0_KP = 0.0;
-    public double SLOT0_KI = 0.0;
-    public double SLOT0_KD = 0.0;
-    public double SLOT0_KF = 0.0;
+    public final double SLOT0_KP = 0.0;
+    public final double SLOT0_KI = 0.0;
+    public final double SLOT0_KD = 0.0;
+    public final double SLOT0_KF = 0.0;
   }
 
-  private static final Configuration kDefaultConfiguration = new Configuration();
-  private static final Configuration kFollowerConfiguration = new Configuration();
+  private static final Configuration DEFAULT_CONFIGURATION = new Configuration();
+  private static final Configuration FOLLOWER_CONFIGURATION = new Configuration();
 
   static {
     // This control frame value seems to need to be something reasonable to avoid the Talon's
     // LEDs behaving erratically. Potentially try to increase as much as possible.
-    kFollowerConfiguration.CONTROL_FRAME_PERIOD_MS = 100;
-    kFollowerConfiguration.MOTION_CONTROL_FRAME_PERIOD_MS = 1000;
-    kFollowerConfiguration.GENERAL_STATUS_FRAME_RATE_MS = 1000;
-    kFollowerConfiguration.FEEDBACK_STATUS_FRAME_RATE_MS = 1000;
-    kFollowerConfiguration.QUAD_ENCODER_STATUS_FRAME_RATE_MS = 1000;
-    kFollowerConfiguration.ANALOG_TEMP_VBAT_STATUS_FRAME_RATE_MS = 1000;
-    kFollowerConfiguration.PULSE_WIDTH_STATUS_FRAME_RATE_MS = 1000;
-    kFollowerConfiguration.ENABLE_SOFT_LIMIT = false;
+    FOLLOWER_CONFIGURATION.CONTROL_FRAME_PERIOD_MS = 100;
+    FOLLOWER_CONFIGURATION.MOTION_CONTROL_FRAME_PERIOD_MS = 1000;
+    FOLLOWER_CONFIGURATION.GENERAL_STATUS_FRAME_RATE_MS = 1000;
+    FOLLOWER_CONFIGURATION.FEEDBACK_STATUS_FRAME_RATE_MS = 1000;
+    FOLLOWER_CONFIGURATION.QUAD_ENCODER_STATUS_FRAME_RATE_MS = 1000;
+    FOLLOWER_CONFIGURATION.ANALOG_TEMP_VBAT_STATUS_FRAME_RATE_MS = 1000;
+    FOLLOWER_CONFIGURATION.PULSE_WIDTH_STATUS_FRAME_RATE_MS = 1000;
+    FOLLOWER_CONFIGURATION.ENABLE_SOFT_LIMIT = false;
   }
 
   // create a CANTalon with the default (out of the box) configuration
   public static TalonSRX createDefaultTalon(int id) {
-    return createTalon(id, kDefaultConfiguration);
+    return createTalon(id, DEFAULT_CONFIGURATION);
   }
 
   public static TalonSRX createPermanentFollowerTalon(int id, int leaderID) {
-    final TalonSRX talon = createTalon(id, kFollowerConfiguration);
+    final TalonSRX talon = createTalon(id, FOLLOWER_CONFIGURATION);
     talon.set(ControlMode.Follower, leaderID);
     return talon;
   }

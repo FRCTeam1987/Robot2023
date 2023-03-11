@@ -1,14 +1,14 @@
 // NOTE: This file is available at
 // http://algs4.cs.princeton.edu/14analysis/PolynomialRegression.java.html
 
-/******************************************************************************
+/*
  * Compilation: javac -cp .:jama.jar PolynomialRegression.java Execution: java -cp .:jama.jar
  * PolynomialRegression Dependencies: jama.jar
  *
  * % java -cp .:jama.jar PolynomialRegression 0.01 n^3 + -1.64 n^2 + 168.92 n + -2113.73 (R^2 =
  * 0.997)
  *
- ******************************************************************************/
+ */
 
 package frc.lib.team6328.util;
 
@@ -36,8 +36,8 @@ import Jama.QRDecomposition;
 public class PolynomialRegression implements Comparable<PolynomialRegression> {
   private final String variableName; // name of the predictor variable
   private int degree; // degree of the polynomial regression
-  private Matrix beta; // the polynomial regression coefficients
-  private double sse; // sum of squares due to error
+  private final Matrix beta; // the polynomial regression coefficients
+  private final double sse; // sum of squares due to error
   private double sst; // total sum of squares
 
   /**
@@ -67,8 +67,8 @@ public class PolynomialRegression implements Comparable<PolynomialRegression> {
     this.variableName = variableName;
 
     int n = x.length;
-    QRDecomposition qr = null;
-    Matrix matrixX = null;
+    QRDecomposition qr;
+    Matrix matrixX;
 
     // in case Vandermonde matrix does not have full rank, reduce degree until it
     // does
@@ -178,7 +178,7 @@ public class PolynomialRegression implements Comparable<PolynomialRegression> {
       else s.append(String.format("%.10f %s^%d + ", beta(j), variableName, j));
       j--;
     }
-    s = s.append("  (R^2 = " + String.format("%.3f", R2()) + ")");
+    s.append("  (R^2 = ").append(String.format("%.3f", R2())).append(")");
 
     // replace "+ -2n" with "- 2n"
     return s.toString().replace("+ -", "- ");

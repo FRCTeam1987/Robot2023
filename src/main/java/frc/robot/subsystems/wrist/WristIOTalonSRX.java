@@ -43,16 +43,8 @@ public class WristIOTalonSRX implements WristIO {
               wristMotor.set(TalonSRXControlMode.PercentOutput, 0.0);
               wristMotor.setSelectedSensorPosition(0);
             }));
-    tab.addNumber(
-        "Current Position",
-        () -> {
-          return wristMotor.getSelectedSensorPosition();
-        });
-    tab.addNumber(
-        "motor voltage",
-        () -> {
-          return wristMotor.getMotorOutputVoltage();
-        });
+    tab.addNumber("Current Position", wristMotor::getSelectedSensorPosition);
+    tab.addNumber("motor voltage", wristMotor::getMotorOutputVoltage);
     SmartDashboard.putNumber("speed", 0.0);
   }
 
@@ -77,6 +69,6 @@ public class WristIOTalonSRX implements WristIO {
 
   @Override
   public double getDegrees() {
-    return (double) wristMotor.getSelectedSensorPosition();
+    return wristMotor.getSelectedSensorPosition();
   }
 }

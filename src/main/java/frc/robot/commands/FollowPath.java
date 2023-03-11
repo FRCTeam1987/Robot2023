@@ -18,9 +18,9 @@ import org.littletonrobotics.junction.Logger;
  * <p>At End: stops the drivetrain
  */
 public class FollowPath extends PPSwerveControllerCommand {
-  private Drivetrain drivetrain;
-  private PathPlannerTrajectory trajectory;
-  private boolean initialPath;
+  private final Drivetrain drivetrain;
+  private final PathPlannerTrajectory trajectory;
+  private final boolean initialPath;
 
   /**
    * Constructs a new FollowPath object.

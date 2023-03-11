@@ -10,7 +10,7 @@ import frc.robot.util.Util;
 import java.util.function.IntSupplier;
 
 public class SetWristPositionSupplier extends CommandBase {
-  private IntSupplier position;
+  private final IntSupplier position;
   private final Wrist wrist;
   /** Creates a new SetWristPosition. */
   public SetWristPositionSupplier(final Wrist wrist, final IntSupplier position) {
@@ -22,7 +22,7 @@ public class SetWristPositionSupplier extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // TODO check the telescope length, if the length is below a value change the exceptible range
+    // TODO check the telescope length, if the length is below a value change the acceptable range
     wrist.setPosition(position.getAsInt());
   }
 

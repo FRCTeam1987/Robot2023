@@ -1,11 +1,15 @@
 package frc.robot.subsystems.claw;
 
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.EjectGamePiece;
 import frc.robot.commands.StopClawRollers;
+import java.util.Objects;
 import org.littletonrobotics.junction.Logger;
+
+import static frc.robot.Constants.ADVANTAGE_KIT_ENABLED;
 
 public class Claw extends SubsystemBase {
   private final ClawIO io;
@@ -15,16 +19,18 @@ public class Claw extends SubsystemBase {
     CONE,
     CUBE,
     NONE
-  };
+  }
 
   private GamePiece gamePiece = GamePiece.CONE;
 
+  // TODO: [MARKER] Make this a constant
   private final double currentThreshold = 10.0; // amps
 
   /** Creates a new Claw. */
   public Claw(ClawIO io) {
     this.io = io;
     SmartDashboard.putData("Stop Claw", new StopClawRollers(this));
+    Shuffleboard.getTab("SmartDashboard").addBoolean("is cone", this::isCone);
     // SmartDashboard.putData("Collect Cube", new CollectGamePiece(this, GamePiece.CUBE));
     // SmartDashboard.putData("Collect Cone", new CollectGamePiece(this, GamePiece.CONE));
     // SmartDashboard.putData("Switch game piece", new InstantCommand(() ->
@@ -50,15 +56,10 @@ public class Claw extends SubsystemBase {
   }
 
   public void changeGamePiece() {
-    switch (gamePiece) {
-      case CONE:
-        setCube();
-        break;
-      case CUBE:
-        setCone();
-        break;
-      default:
-        setCube();
+    if (Objects.requireNonNull(gamePiece) == GamePiece.CUBE) {
+      setCone();
+    } else {
+      setCube();
     }
   }
 
@@ -87,8 +88,9 @@ public class Claw extends SubsystemBase {
   }
 
   public void periodic() {
-    io.updateInputs(inputs);
-    Logger.getInstance().processInputs("Claw", inputs);
-    SmartDashboard.putBoolean("is cone", this.isCone());
+    if (ADVANTAGE_KIT_ENABLED) {
+      io.updateInputs(inputs);
+      Logger.getInstance().processInputs("Claw", inputs);
+    }
   }
 }

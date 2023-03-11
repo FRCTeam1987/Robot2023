@@ -9,21 +9,21 @@ import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.util.Util;
 
 public class SetWristPosition extends CommandBase {
-  private int position;
-  private final Wrist m_wrist;
+  private final int position;
+  private final Wrist wrist;
   /** Creates a new SetWristPosition. */
   public SetWristPosition(int position, Wrist wrist) {
-    m_wrist = wrist;
+    this.wrist = wrist;
     this.position = position;
-    addRequirements(m_wrist);
+    addRequirements(this.wrist);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // TODO check the telescope length, if the length is below a value change the exceptible range
-    m_wrist.setPosition(position);
+    // TODO check the telescope length, if the length is below a value change the acceptable range
+    wrist.setPosition(position);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -37,6 +37,6 @@ public class SetWristPosition extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Util.isWithinTolerance(m_wrist.getPosition(), position, 100);
+    return Util.isWithinTolerance(wrist.getPosition(), position, 100);
   }
 }

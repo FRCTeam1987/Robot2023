@@ -140,26 +140,10 @@ public class ArmIOTalonFX implements ArmIO {
     rotList.addNumber("Arm Angle", this::getArmAngle);
     rotList.addNumber("Rotation Motor Ticks", (() -> convertDegreesToTicks(getArmAngle())));
 
-    rotList.addNumber(
-        "Rotation voltage",
-        () -> {
-          return ROTATION_LEADER_TALON.getMotorOutputVoltage();
-        });
-    rotList.addNumber(
-        "Rotation current",
-        () -> {
-          return ROTATION_LEADER_TALON.getSupplyCurrent();
-        });
-    rotList.addNumber(
-        "Rotation error",
-        () -> {
-          return ROTATION_LEADER_TALON.getClosedLoopError();
-        });
-    armTab.addNumber(
-        "SensorSelectedVelocity",
-        () -> {
-          return ROTATION_LEADER_TALON.getSelectedSensorVelocity();
-        });
+    rotList.addNumber("Rotation voltage", ROTATION_LEADER_TALON::getMotorOutputVoltage);
+    rotList.addNumber("Rotation current", ROTATION_LEADER_TALON::getSupplyCurrent);
+    rotList.addNumber("Rotation error", ROTATION_LEADER_TALON::getClosedLoopError);
+    armTab.addNumber("SensorSelectedVelocity", ROTATION_LEADER_TALON::getSelectedSensorVelocity);
 
     ShuffleboardLayout extList =
         armTab.getLayout("Arm Extension", BuiltInLayouts.kList).withSize(1, 4);
@@ -172,34 +156,12 @@ public class ArmIOTalonFX implements ArmIO {
 
     armTab.add("Extend Arm", new InstantCommand(() -> setArmLength(targetLength.getDouble(0))));
 
+    armTab.add("Coast Rotation", new InstantCommand(this::coastArmRotation).ignoringDisable(true));
     armTab.add(
-        "Coast Rotation",
-        new InstantCommand(
-                () -> {
-                  coastArmRotation();
-                })
-            .ignoringDisable(true));
+        "Coast Extension", new InstantCommand(this::coastArmExtension).ignoringDisable(true));
     armTab.add(
-        "Coast Extention",
-        new InstantCommand(
-                () -> {
-                  coastArmExtention();
-                })
-            .ignoringDisable(true));
-    armTab.add(
-        "Brake Extention",
-        new InstantCommand(
-                () -> {
-                  BrakeArmExtention();
-                })
-            .ignoringDisable(true));
-    armTab.add(
-        "Brake Rotation",
-        new InstantCommand(
-                () -> {
-                  BrakeArmRotation();
-                })
-            .ignoringDisable(true));
+        "Brake Extension", new InstantCommand(this::brakeArmExtension).ignoringDisable(true));
+    armTab.add("Brake Rotation", new InstantCommand(this::brakeArmRotation).ignoringDisable(true));
   }
 
   public int convertDegreesToTicks(double degrees) {
@@ -215,16 +177,16 @@ public class ArmIOTalonFX implements ArmIO {
     ROTATION_FOLLOWER_TALON.setNeutralMode(NeutralMode.Coast);
   }
 
-  public void coastArmExtention() {
+  public void coastArmExtension() {
     EXTENSION_TALON.setNeutralMode(NeutralMode.Coast);
   }
 
-  public void BrakeArmRotation() {
+  public void brakeArmRotation() {
     ROTATION_LEADER_TALON.setNeutralMode(NeutralMode.Brake);
     ROTATION_FOLLOWER_TALON.setNeutralMode(NeutralMode.Brake);
   }
 
-  public void BrakeArmExtention() {
+  public void brakeArmExtension() {
     EXTENSION_TALON.setNeutralMode(NeutralMode.Brake);
   }
 

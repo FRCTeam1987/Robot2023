@@ -4,7 +4,7 @@ import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public interface VisionIO {
-  public static class VisionIOInputs implements LoggableInputs {
+  class VisionIOInputs implements LoggableInputs {
     public double[] botPoseLatency = new double[] {};
 
     public void toLog(LogTable table) {
@@ -16,5 +16,5 @@ public interface VisionIO {
     }
   }
 
-  public default void updateInputs(VisionIOInputs inputs) {}
+  default void updateInputs(VisionIOInputs inputs) {}
 }

@@ -5,7 +5,6 @@
 package frc.robot.commands.arm;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.util.Util;
 import java.util.function.DoubleSupplier;
@@ -37,7 +36,7 @@ public class SetArm extends CommandBase {
     final double desiredAngle = angleSupplier.getAsDouble();
     // TODO set arm angle only when more retracted, this assumes it is retracted and it might not be
     arm.setArmAngle(desiredAngle);
-    
+
     if (isAngleOnTarget(5) && !isLengthOnTarget(1)) {
       arm.setArmLength(lengthSupplier.getAsDouble());
       // new SequentialCommandGroup(){
@@ -52,7 +51,6 @@ public class SetArm extends CommandBase {
   public void end(boolean interrupted) {
     if (interrupted) {
       arm.stop();
-      return;
     }
   }
 

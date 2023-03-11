@@ -30,6 +30,8 @@ import frc.lib.team3061.util.RobotOdometry;
 import frc.lib.team6328.util.TunableNumber;
 import org.littletonrobotics.junction.Logger;
 
+import static frc.robot.Constants.ADVANTAGE_KIT_ENABLED;
+
 /**
  * This subsystem models the robot's drivetrain mechanism. It consists of a four MK4 swerve modules,
  * each with two motors and an encoder. It also consists of a Pigeon which is used to measure the
@@ -133,7 +135,7 @@ public class Drivetrain extends SubsystemBase {
     tabMain.addNumber("Gyroscope Angle", () -> getRotation().getDegrees());
     tabMain.addBoolean("X-Stance On?", this::isXstance);
     tabMain.addBoolean("Field-Relative Enabled?", () -> this.isFieldRelative);
-    tabMain.add("Reset Gyro", new InstantCommand(() -> this.zeroGyroscope()));
+    tabMain.add("Reset Gyro", new InstantCommand(this::zeroGyroscope));
 
     if (DEBUGGING) {
       ShuffleboardTab tab = Shuffleboard.getTab(SUBSYSTEM_NAME);
@@ -254,9 +256,9 @@ public class Drivetrain extends SubsystemBase {
    * <p>If the drive mode is CHARACTERIZATION, the robot will ignore the specified velocities and
    * run the characterization routine.
    *
-   * @param translationXSupplier the desired velocity in the x direction (m/s)
-   * @param translationYSupplier the desired velocity in the y direction (m/s)
-   * @param rotationSupplier the desired rotational velcoity (rad/s)
+   * @param xVelocity the desired velocity in the x direction (m/s)
+   * @param yVelocity the desired velocity in the y direction (m/s)
+   * @param rotationalVelocity the desired rotational velocity (rad/s)
    */
   public void drive(
       double xVelocity, double yVelocity, double rotationalVelocity, boolean isOpenLoop) {
@@ -324,8 +326,10 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
 
     // update and log gyro inputs
-    gyroIO.updateInputs(gyroInputs);
-    Logger.getInstance().processInputs("Drive/Gyro", gyroInputs);
+    if (ADVANTAGE_KIT_ENABLED) {
+      gyroIO.updateInputs(gyroInputs);
+      Logger.getInstance().processInputs("Drive/Gyro", gyroInputs);
+    }
 
     // update and log the swerve moudles inputs
     for (SwerveModule swerveModule : swerveModules) {
@@ -465,9 +469,10 @@ public class Drivetrain extends SubsystemBase {
   public void setXStance() {
     chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds, centerGravity);
+    double vPlus = Math.PI / 2 + Math.atan(trackwidthMeters / wheelbaseMeters);
     states[0].angle = new Rotation2d(Math.PI / 2 - Math.atan(trackwidthMeters / wheelbaseMeters));
-    states[1].angle = new Rotation2d(Math.PI / 2 + Math.atan(trackwidthMeters / wheelbaseMeters));
-    states[2].angle = new Rotation2d(Math.PI / 2 + Math.atan(trackwidthMeters / wheelbaseMeters));
+    states[1].angle = new Rotation2d(vPlus);
+    states[2].angle = new Rotation2d(vPlus);
     states[3].angle =
         new Rotation2d(3.0 / 2.0 * Math.PI - Math.atan(trackwidthMeters / wheelbaseMeters));
     for (SwerveModule swerveModule : swerveModules) {

@@ -39,6 +39,6 @@ public class CollectSequence extends SequentialCommandGroup {
         new ParallelCommandGroup(
             new SetArm(arm, () -> Arm.HOME_ROTATION, () -> Arm.HOME_EXTENSION),
             new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
-        new InstantCommand(() -> arm.setExtensionNominal(), arm));
+        new InstantCommand(arm::setExtensionNominal, arm));
   }
 }

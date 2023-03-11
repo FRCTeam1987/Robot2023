@@ -28,8 +28,8 @@ public class VisionIOSim implements VisionIO {
   private double lastTimestamp = 0;
   private PhotonPipelineResult lastResult = new PhotonPipelineResult();
 
-  private Supplier<Pose2d> poseSupplier;
-  private SimVisionSystem simVision;
+  private final Supplier<Pose2d> poseSupplier;
+  private final SimVisionSystem simVision;
 
   public VisionIOSim(
       AprilTagFieldLayout layout, Supplier<Pose2d> poseSupplier, Transform3d robotToCamera) {

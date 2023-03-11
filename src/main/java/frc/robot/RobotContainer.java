@@ -30,9 +30,9 @@ import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIO;
 import frc.lib.team3061.swerve.SwerveModuleIOSim;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
+import frc.robot.Constants.Mode;
 import frc.robot.Constants.PositionConfig;
 import frc.robot.Constants.PositionConfigs;
-import frc.robot.Constants.Mode;
 import frc.robot.commands.*;
 import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
 import frc.robot.commands.arm.SetArm;
@@ -48,6 +48,7 @@ import frc.robot.subsystems.claw.Claw;
 import frc.robot.subsystems.claw.ClawIOSparkMAX;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIOTalonSRX;
 import frc.robot.util.BatteryTracker;
@@ -77,7 +78,7 @@ public class RobotContainer {
       new LoggedDashboardChooser<>("Auto Routine");
 
   // RobotContainer singleton
-  private static RobotContainer robotContainer = new RobotContainer();
+  private static final RobotContainer robotContainer = new RobotContainer();
   private final Map<String, Command> autoEventMap = new HashMap<>();
   CommandXboxController driverController =
       new CommandXboxController(1); // Creates a CommandXboxController on port 1.
@@ -162,10 +163,10 @@ public class RobotContainer {
             claw = new Claw(new ClawIOSparkMAX(config.getClawMotorID()));
             claw.setDefaultCommand(new DefaultClawRollersSpin(claw));
             // temp
-            // vision =
-            //     new Vision(
-            //         new VisionIOLimelight(
-            //             "limelight-fl", "limelight-bl", "limelight-br")); // "limelight-fr"
+             vision =
+                 new Vision(
+                     new VisionIOLimelight(
+                         "limelight-fl", "limelight-bl", "limelight-br")); // "limelight-fr"
             arm =
                 new Arm(
                     new ArmIOTalonFX(
@@ -238,7 +239,7 @@ public class RobotContainer {
 
   /**
    * This method scans for any changes to the connected joystick. If anything changed, it creates
-   * new OI objects and binds all of the buttons to commands.
+   * new OI objects and binds all the buttons to commands.
    */
   public void updateOI() {
     if (!OISelector.didJoysticksChange()) {
@@ -255,8 +256,8 @@ public class RobotContainer {
      * x direction is forward; the positive y direction, left; position rotation, CCW. In the field
      * frame of reference, the origin of the field to the lower left corner (i.e., the corner of the
      * field to the driver's right). Zero degrees is away from the driver and increases in the CCW
-     * direction. This is why the left joystick's y axis specifies the velocity in the x direction
-     * and the left joystick's x axis specifies the velocity in the y direction.
+     * direction. This is why the left joystick's y-axis specifies the velocity in the x direction
+     * and the left joystick's x-axis specifies the velocity in the y direction.
      */
     drivetrain.setDefaultCommand(
         new TeleopSwerve(drivetrain, oi::getTranslateX, oi::getTranslateY, oi::getRotate));
@@ -285,7 +286,7 @@ public class RobotContainer {
     SmartDashboard.putData("Rotate Arm to 45 Degrees", new RotateArm(arm, 45));
     SmartDashboard.putData("Flip Wrist to true", new FlipWrist(wrist, true));
 
-    armTab.add("Sequantial Command 45 pos", new SequentialCommandTest(arm, wrist, 16, 45, 3289));
+    armTab.add("Sequential Command 45 pos", new SequentialCommandTest(arm, wrist, 16, 45, 3289));
     armTab.add("Sequential Command -45 pos", new SequentialCommandTest(arm, wrist, 16, -45, 3289));
     // armTab.add("Collect Back Cube", );
 
@@ -296,9 +297,7 @@ public class RobotContainer {
     SmartDashboard.putData(
         "Scan Battery", new InstantCommand(() -> BatteryTracker.scanBattery(10.0)));
 
-
-
-    SendableChooser<PositionConfig> collectionChooser = new SendableChooser<PositionConfig>();
+    SendableChooser<PositionConfig> collectionChooser = new SendableChooser<>();
     collectionChooser.setDefaultOption("TEST POS", PositionConfigs.TEST_POS);
     collectionChooser.addOption("TEST NEG", PositionConfigs.TEST_NEG);
     collectionChooser.addOption("back cube", PositionConfigs.BACK_CUBE_FLOOR);
@@ -307,7 +306,7 @@ public class RobotContainer {
     collectionChooser.addOption("front cube", PositionConfigs.FRONT_CUBE_FLOOR);
     collectionChooser.addOption("front cone", PositionConfigs.FRONT_CONE_FLOOR);
     collectionChooser.addOption("front cone tipped", PositionConfigs.FRONT_CONE_FLOOR_TIPPED);
-    collectionChooser.addOption("BACK_CUBE_FLOOR", PositionConfigs.BACK_CUBE_FLOOR); //score
+    collectionChooser.addOption("BACK_CUBE_FLOOR", PositionConfigs.BACK_CUBE_FLOOR); // score
     collectionChooser.addOption("BACK_CONE_FLOOR_TIPPED", PositionConfigs.BACK_CONE_FLOOR_TIPPED);
     collectionChooser.addOption("BACK_CONE_TOP", PositionConfigs.BACK_CONE_TOP);
     collectionChooser.addOption("BACK_CONE_MEDIUM", PositionConfigs.BACK_CONE_MEDIUM);
@@ -324,8 +323,8 @@ public class RobotContainer {
         "front cone tipped long", PositionConfigs.FRONT_CONE_FLOOR_TIPPED_LONG);
     Shuffleboard.getTab("MAIN").add("Collect Chooser", collectionChooser);
 
-    SendableChooser<PositionConfig> ScoreChooser = new SendableChooser<PositionConfig>();
-    ScoreChooser.addOption("BACK_CUBE_FLOOR", PositionConfigs.BACK_CUBE_FLOOR); //score
+    SendableChooser<PositionConfig> ScoreChooser = new SendableChooser<>();
+    ScoreChooser.addOption("BACK_CUBE_FLOOR", PositionConfigs.BACK_CUBE_FLOOR); // score
     ScoreChooser.addOption("BACK_CONE_FLOOR_TIPPED", PositionConfigs.BACK_CONE_FLOOR_TIPPED);
     ScoreChooser.addOption("BACK_CONE_TOP", PositionConfigs.BACK_CONE_TOP);
     ScoreChooser.addOption("BACK_CONE_MEDIUM", PositionConfigs.BACK_CONE_MEDIUM);
@@ -339,15 +338,12 @@ public class RobotContainer {
     Shuffleboard.getTab("MAIN").add("Score Chooser", ScoreChooser);
 
     Shuffleboard.getTab("MAIN")
-        .add(
-            "Score Sequence",
-            new ScoreSequence(arm, wrist, claw, () -> ScoreChooser.getSelected()));
-
+        .add("Score Sequence", new ScoreSequence(arm, wrist, claw, ScoreChooser::getSelected));
 
     Shuffleboard.getTab("MAIN")
         .add(
             "Collect Sequence",
-            new CollectSequence(arm, wrist, claw, () -> collectionChooser.getSelected()));
+            new CollectSequence(arm, wrist, claw, collectionChooser::getSelected));
     Shuffleboard.getTab("MAIN").add("Eject Game Piece", new EjectGamePiece(claw).withTimeout(0.25));
     Shuffleboard.getTab("MAIN").add("angle 25, length 1", new SetArm(arm, () -> 25, () -> 1));
     Shuffleboard.getTab("MAIN").add("angle 45, length 1", new SetArm(arm, () -> 45, () -> 1));
@@ -495,7 +491,7 @@ public class RobotContainer {
             drivetrain::runCharacterizationVolts,
             drivetrain::getCharacterizationVelocity));
 
-    final HashMap<String, Command> someEventMap = new HashMap<String, Command>();
+    final HashMap<String, Command> someEventMap = new HashMap<>();
     someEventMap.put("Score Cone", new WaitCommand(2));
     someEventMap.put(
         "Collect Cube",

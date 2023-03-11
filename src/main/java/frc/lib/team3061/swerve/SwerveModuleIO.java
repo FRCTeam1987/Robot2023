@@ -5,7 +5,7 @@ import org.littletonrobotics.junction.AutoLog;
 /** Swerve module hardware abstraction interface. */
 public interface SwerveModuleIO {
   @AutoLog
-  public static class SwerveModuleIOInputs {
+  class SwerveModuleIOInputs {
     double drivePositionDeg = 0.0;
     double driveDistanceMeters = 0.0;
     double driveVelocityMetersPerSec = 0.0;
@@ -22,20 +22,20 @@ public interface SwerveModuleIO {
   }
 
   /** Updates the set of loggable inputs. */
-  public default void updateInputs(SwerveModuleIOInputs inputs) {}
+  default void updateInputs(SwerveModuleIOInputs inputs) {}
 
   /** Run the drive motor at the specified percentage of full power. */
-  public default void setDriveMotorPercentage(double percentage) {}
+  default void setDriveMotorPercentage(double percentage) {}
 
   /** Run the drive motor at the specified velocity. */
-  public default void setDriveVelocity(double velocity) {}
+  default void setDriveVelocity(double velocity) {}
 
   /** Run the turn motor to the specified angle. */
-  public default void setAnglePosition(double degrees) {}
+  default void setAnglePosition(double degrees) {}
 
   /** Enable or disable brake mode on the drive motor. */
-  public default void setDriveBrakeMode(boolean enable) {}
+  default void setDriveBrakeMode(boolean enable) {}
 
   /** Enable or disable brake mode on the turn motor. */
-  public default void setAngleBrakeMode(boolean enable) {}
+  default void setAngleBrakeMode(boolean enable) {}
 }
