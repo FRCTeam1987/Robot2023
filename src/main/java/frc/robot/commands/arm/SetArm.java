@@ -5,8 +5,11 @@
 package frc.robot.commands.arm;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.util.Util;
+
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class SetArm extends CommandBase {
@@ -14,13 +17,15 @@ public class SetArm extends CommandBase {
   private final Arm arm;
   private final DoubleSupplier angleSupplier;
   private final DoubleSupplier lengthSupplier;
+  private final BooleanSupplier isReturning;
 
   /** Creates a new SetArm. */
   public SetArm(
-      final Arm arm, final DoubleSupplier angleSupplier, final DoubleSupplier lengthSupplier) {
+      final Arm arm, final DoubleSupplier angleSupplier, final DoubleSupplier lengthSupplier, final BooleanSupplier isReturning) {
     this.arm = arm;
     this.angleSupplier = angleSupplier;
     this.lengthSupplier = lengthSupplier;
+    this.isReturning = isReturning;
     addRequirements(this.arm);
   }
 
@@ -33,18 +38,42 @@ public class SetArm extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // final double desiredAngle = angleSupplier.getAsDouble();
+    // // TODO set arm angle only when more retracted, this assumes it is retracted and it might not be
+    // arm.setArmAngle(desiredAngle);
+    
+    // if (isAngleOnTarget(5) && !isLengthOnTarget(1)) {
+    //   arm.setArmLength(lengthSupplier.getAsDouble());}
+  
+    final double desiredLength = lengthSupplier.getAsDouble();
     final double desiredAngle = angleSupplier.getAsDouble();
-    // TODO set arm angle only when more retracted, this assumes it is retracted and it might not be
-    arm.setArmAngle(desiredAngle);
+    final boolean returning = isReturning.getAsBoolean();
 
-    if (isAngleOnTarget(5) && !isLengthOnTarget(1)) {
-      arm.setArmLength(lengthSupplier.getAsDouble());
-      // new SequentialCommandGroup(){
-      //   WaitCommand(2.0),
-      //   arm.setArmLength(lengthSupplier.getAsDouble()),
-      //   );
+    if (returning) {
+      arm.setArmLength(desiredLength);
+      new WaitUntilCommand(() -> isLengthOnTarget(15));
+      arm.setArmAngle(angleSupplier.getAsDouble());
+    } else {
+      arm.setArmAngle(desiredAngle);
+      if (isAngleOnTarget(5) && !isLengthOnTarget(1))
+      arm.setArmLength(desiredLength);
     }
+    
   }
+
+  // new ConditionalCommand(
+  //     new SequentialCommandGroup(
+  //       arm.setArmLength(desiredLength),
+  //       arm.setArmAngle(angleSupplier.getAsDouble())
+  //       ),
+  //     new SequentialCommandGroup(
+  //       arm.setArmAngle(desiredLength)),
+  //       arm.setArmLength(lengthSupplier.getAsDouble())
+  //       ), 
+  //     isCollecting
+  //     );
+      
+  
 
   // Called once the command ends or is interrupted.
   @Override

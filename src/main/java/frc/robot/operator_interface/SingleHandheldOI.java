@@ -30,14 +30,14 @@ public class SingleHandheldOI implements OperatorInterface {
     return -controller.getRightX();
   }
 
-  @Override
-  public Trigger getFieldRelativeButton() {
-    return new Trigger(controller::getBButton);
-  }
+  // @Override
+  // public Trigger getFieldRelativeButton() {
+  //   return new Trigger(controller::getXButton);
+  // }
 
   @Override
   public Trigger getResetGyroButton() {
-    return new Trigger(controller::getStartButton);
+    return new Trigger(controller::getBackButton);
   }
 
   @Override
@@ -61,11 +61,24 @@ public class SingleHandheldOI implements OperatorInterface {
   }
 
   @Override
-  public Trigger getTempCollect() {
+  public Trigger getTempCollectCone() {
     return new Trigger(controller::getYButton);
   }
 
-  public Trigger getTempEject() {
+  // public Trigger getTempCollectConeGround() {
+  //   return new Trigger(controller::pov());
+  // }
+    
+    @Override
+  public Trigger getTempCollectCube() {
     return new Trigger(controller::getRightBumper);
+  }
+
+  public Trigger getTempScore() {
+    return new Trigger(controller::getLeftBumper);
+  }
+
+  public Trigger getTempGoHome() {
+    return new Trigger(controller::getStartButton);
   }
 }

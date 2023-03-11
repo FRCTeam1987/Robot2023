@@ -49,11 +49,19 @@ public interface OperatorInterface {
     return new Trigger(() -> false);
   }
 
-  default Trigger getTempCollect() {
+  public default Trigger getTempCollectCone() {
     return new Trigger(() -> false);
   }
 
-  default Trigger getTempEject() {
+  public default Trigger getTempCollectCube() {
+    return new Trigger(() -> false);
+  } 
+  
+  public default Trigger getTempScore() {
+    return new Trigger(() -> false);
+  }
+
+  public default Trigger getTempGoHome() {
     return new Trigger(() -> false);
   }
 }

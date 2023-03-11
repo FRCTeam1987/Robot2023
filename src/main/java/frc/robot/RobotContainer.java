@@ -263,6 +263,9 @@ public class RobotContainer {
         new TeleopSwerve(drivetrain, oi::getTranslateX, oi::getTranslateY, oi::getRotate));
 
     configureButtonBindings();
+
+
+
   }
 
   /**
@@ -345,25 +348,17 @@ public class RobotContainer {
             "Collect Sequence",
             new CollectSequence(arm, wrist, claw, collectionChooser::getSelected));
     Shuffleboard.getTab("MAIN").add("Eject Game Piece", new EjectGamePiece(claw).withTimeout(0.25));
-    Shuffleboard.getTab("MAIN").add("angle 25, length 1", new SetArm(arm, () -> 25, () -> 1));
-    Shuffleboard.getTab("MAIN").add("angle 45, length 1", new SetArm(arm, () -> 45, () -> 1));
-    Shuffleboard.getTab("MAIN").add("angle 65, length 1", new SetArm(arm, () -> 65, () -> 1));
-    Shuffleboard.getTab("MAIN").add("angle 90, length 1", new SetArm(arm, () -> 90, () -> 1));
-    Shuffleboard.getTab("MAIN").add("angle 45, length 10", new SetArm(arm, () -> 45, () -> 10));
-    Shuffleboard.getTab("MAIN").add("angle 45, length 20", new SetArm(arm, () -> 45, () -> 20));
-    Shuffleboard.getTab("MAIN").add("angle 45, length 36", new SetArm(arm, () -> 45, () -> 36));
+    Shuffleboard.getTab("MAIN").add("angle 25, length 1", new SetArm(arm, () -> 25, () -> 1, () -> false));
+    Shuffleboard.getTab("MAIN").add("angle 45, length 1", new SetArm(arm, () -> 45, () -> 1, () -> false));
+    Shuffleboard.getTab("MAIN").add("angle 65, length 1", new SetArm(arm, () -> 65, () -> 1, () -> false));
+    Shuffleboard.getTab("MAIN").add("angle 90, length 1", new SetArm(arm, () -> 90, () -> 1, () -> false));
+    Shuffleboard.getTab("MAIN").add("angle 45, length 10", new SetArm(arm, () -> 45, () -> 10, () -> false));
+    Shuffleboard.getTab("MAIN").add("angle 45, length 20", new SetArm(arm, () -> 45, () -> 20, () -> false));
+    Shuffleboard.getTab("MAIN").add("angle 45, length 36", new SetArm(arm, () -> 45, () -> 36, () -> false));
     Shuffleboard.getTab("MAIN")
         .add(
             "set home",
-            new SequentialCommandGroup(
-                new ConditionalCommand(
-                    new ExtendArmSupplier(arm, () -> 2),
-                    new InstantCommand(),
-                    () -> arm.getArmLength() > 4),
-                new ParallelCommandGroup(
-                    new RotateArm(arm, Arm.HOME_ROTATION),
-                    new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
-                new InstantCommand(() -> arm.setExtensionNominal(), arm)));
+            new GoHome(arm, wrist));
     Shuffleboard.getTab("MAIN").add("Balance", new Balance(drivetrain));
   }
 
@@ -432,19 +427,32 @@ public class RobotContainer {
     //               wrist.setRotation(false);
     //             }));
     // oi.getRotateButton().onTrue(new InstantCommand(() -> arm.setArmAngle(45)));
-    oi.getTempCollect()
+    oi.getTempCollectCube()
         .onTrue(
             new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR));
-    oi.getTempEject()
+    oi.getTempScore()
         .onTrue(
-            new SequentialCommandGroup(
-                new ParallelCommandGroup(
-                    new SetArm(arm, () -> -45.0, () -> 6.0), new SetWristPosition(1350, wrist)),
-                new EjectGamePiece(claw).withTimeout(0.25),
-                new ParallelCommandGroup(
-                    new SetArm(arm, () -> Arm.HOME_ROTATION, () -> Arm.HOME_EXTENSION),
-                    new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
-                new InstantCommand(() -> arm.setExtensionNominal(), arm)));
+          new SequentialCommandGroup(
+            new EjectGamePiece(claw).withTimeout(0.25),
+            new GoHome(arm, wrist)
+            )
+          );
+    oi.getTempGoHome()
+        .onTrue(
+          new GoHome(arm, wrist));
+            // new SequentialCommandGroup(
+            //     new ParallelCommandGroup(
+            //         new SetArm(arm, () -> -45.0, () -> 6.0, () -> false), new SetWristPosition(1350, wrist)),
+            //     new EjectGamePiece(claw).withTimeout(0.25),
+            //     new ParallelCommandGroup(
+            //         new SetArm(arm, () -> Arm.HOME_ROTATION, () -> Arm.HOME_EXTENSION, () -> true),
+            //         new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
+            //     new InstantCommand(() -> arm.setExtensionNominal(), arm)));
+
+    oi.getTempCollectCone()
+        .onTrue(
+            new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CONE_FLOOR));
+        
   }
 
   /** Use this method to define your commands for autonomous mode. */
@@ -500,10 +508,10 @@ public class RobotContainer {
         "Score Cube",
         new SequentialCommandGroup(
             new ParallelCommandGroup(
-                new SetArm(arm, () -> -45.0, () -> 6.0), new SetWristPosition(1350, wrist)),
+                new SetArm(arm, () -> -45.0, () -> 6.0, () -> false), new SetWristPosition(1350, wrist)),
             new EjectGamePiece(claw).withTimeout(0.25),
             new ParallelCommandGroup(
-                new SetArm(arm, () -> Arm.HOME_ROTATION, () -> Arm.HOME_EXTENSION),
+                new SetArm(arm, () -> Arm.HOME_ROTATION, () -> Arm.HOME_EXTENSION, () -> true),
                 new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
             new InstantCommand(() -> arm.setExtensionNominal(), arm)));
     // TODO this auto does not fully work reliably
@@ -514,11 +522,12 @@ public class RobotContainer {
                     new SetArm(
                         arm,
                         () -> PositionConfigs.FRONT_CONE_MEDIUM.armRotation,
-                        () -> PositionConfigs.FRONT_CONE_MEDIUM.armLength),
+                        () -> PositionConfigs.FRONT_CONE_MEDIUM.armLength,
+                        () -> false),
                     new SetWristPosition(PositionConfigs.FRONT_CONE_MEDIUM.wristRotation, wrist)),
                 new EjectGamePiece(claw).withTimeout(0.25),
                 new ParallelCommandGroup(
-                    new SetArm(arm, () -> Arm.HOME_ROTATION, () -> Arm.HOME_EXTENSION),
+                    new SetArm(arm, () -> Arm.HOME_ROTATION, () -> Arm.HOME_EXTENSION, () -> true),
                     new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
                 new InstantCommand(() -> arm.setExtensionNominal(), arm))
             .andThen(AutoPathHelper.followPath(drivetrain, "Some Auto", someEventMap))

@@ -25,13 +25,15 @@ public class ScoreSequence extends SequentialCommandGroup {
       final Claw claw,
       final Supplier<PositionConfig> PositionConfig) {
     addCommands(
-        new SetArm(
-            arm, () -> PositionConfig.get().armRotation, () -> PositionConfig.get().armLength),
-        new SetWristPositionSupplier(wrist, () -> PositionConfig.get().wristRotation),
-        new ReleaseGamePiece(claw),
-        new ParallelCommandGroup(
-            new SetArm(arm, () -> Arm.HOME_ROTATION, () -> Arm.HOME_EXTENSION),
-            new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
-        new InstantCommand(arm::setExtensionNominal, arm));
+            new SetArm(
+                arm, () -> PositionConfig.get().armRotation, () -> PositionConfig.get().armLength, () -> false),
+            new SetWristPositionSupplier(wrist, () -> PositionConfig.get().wristRotation)
+        
+        // new EjectGamePiece(claw).withTimeout(0.5),
+        // new ParallelCommandGroup(
+        //     new SetArm(arm, () -> Arm.HOME_ROTATION, () -> Arm.HOME_EXTENSION, () -> true),
+        //     new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
+        // new InstantCommand(() -> arm.setExtensionNominal(), arm)
+    );
   }
 }

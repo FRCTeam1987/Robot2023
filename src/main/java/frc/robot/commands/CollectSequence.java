@@ -30,14 +30,14 @@ public class CollectSequence extends SequentialCommandGroup {
     addCommands(
         new ParallelCommandGroup(
             new SetArm(
-                arm, () -> PositionConfig.get().armRotation, () -> PositionConfig.get().armLength),
+                arm, () -> PositionConfig.get().armRotation, () -> PositionConfig.get().armLength, () -> false),
             new SetWristPositionSupplier(wrist, () -> PositionConfig.get().wristRotation)),
         new ConditionalCommand(
             new CollectGamePiece(claw, GamePiece.CUBE),
             new CollectGamePiece(claw, GamePiece.CONE),
             () -> PositionConfig.get().gamePiece == GamePiece.CUBE),
         new ParallelCommandGroup(
-            new SetArm(arm, () -> Arm.HOME_ROTATION, () -> Arm.HOME_EXTENSION),
+            new SetArm(arm, () -> Arm.HOME_ROTATION, () -> Arm.HOME_EXTENSION, () -> true),
             new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
         new InstantCommand(arm::setExtensionNominal, arm));
   }
