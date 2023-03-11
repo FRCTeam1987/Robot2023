@@ -20,6 +20,16 @@ public class ClawIOSparkMAX implements ClawIO {
     inputs.speedPercent = clawRollerMotor.getEncoder().getVelocity();
   }
 
+  @Override
+  public double getCurrentAmps() {
+    return clawRollerMotor.getOutputCurrent();
+  }
+
+  @Override
+  public double getSpeedPercent() {
+    return clawRollerMotor.getOutputCurrent();
+  }
+
   public void setRollerSpeed(double speed) {
     clawRollerMotor.set(speed);
   }
