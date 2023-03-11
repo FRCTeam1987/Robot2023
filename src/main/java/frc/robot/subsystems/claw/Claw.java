@@ -1,5 +1,7 @@
 package frc.robot.subsystems.claw;
 
+import static frc.robot.Constants.ADVANTAGE_KIT_ENABLED;
+
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -8,8 +10,6 @@ import frc.robot.commands.EjectGamePiece;
 import frc.robot.commands.StopClawRollers;
 import java.util.Objects;
 import org.littletonrobotics.junction.Logger;
-
-import static frc.robot.Constants.ADVANTAGE_KIT_ENABLED;
 
 public class Claw extends SubsystemBase {
   private final ClawIO io;

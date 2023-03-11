@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.util.Util;
-
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -21,7 +20,10 @@ public class SetArm extends CommandBase {
 
   /** Creates a new SetArm. */
   public SetArm(
-      final Arm arm, final DoubleSupplier angleSupplier, final DoubleSupplier lengthSupplier, final BooleanSupplier isReturning) {
+      final Arm arm,
+      final DoubleSupplier angleSupplier,
+      final DoubleSupplier lengthSupplier,
+      final BooleanSupplier isReturning) {
     this.arm = arm;
     this.angleSupplier = angleSupplier;
     this.lengthSupplier = lengthSupplier;
@@ -39,12 +41,13 @@ public class SetArm extends CommandBase {
   @Override
   public void execute() {
     // final double desiredAngle = angleSupplier.getAsDouble();
-    // // TODO set arm angle only when more retracted, this assumes it is retracted and it might not be
+    // // TODO set arm angle only when more retracted, this assumes it is retracted and it might not
+    // be
     // arm.setArmAngle(desiredAngle);
-    
+
     // if (isAngleOnTarget(5) && !isLengthOnTarget(1)) {
     //   arm.setArmLength(lengthSupplier.getAsDouble());}
-  
+
     final double desiredLength = lengthSupplier.getAsDouble();
     final double desiredAngle = angleSupplier.getAsDouble();
     final boolean returning = isReturning.getAsBoolean();
@@ -55,10 +58,8 @@ public class SetArm extends CommandBase {
       arm.setArmAngle(angleSupplier.getAsDouble());
     } else {
       arm.setArmAngle(desiredAngle);
-      if (isAngleOnTarget(5) && !isLengthOnTarget(1))
-      arm.setArmLength(desiredLength);
+      if (isAngleOnTarget(5) && !isLengthOnTarget(1)) arm.setArmLength(desiredLength);
     }
-    
   }
 
   // new ConditionalCommand(
@@ -69,11 +70,9 @@ public class SetArm extends CommandBase {
   //     new SequentialCommandGroup(
   //       arm.setArmAngle(desiredLength)),
   //       arm.setArmLength(lengthSupplier.getAsDouble())
-  //       ), 
+  //       ),
   //     isCollecting
   //     );
-      
-  
 
   // Called once the command ends or is interrupted.
   @Override

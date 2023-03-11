@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -163,10 +162,10 @@ public class RobotContainer {
             claw = new Claw(new ClawIOSparkMAX(config.getClawMotorID()));
             claw.setDefaultCommand(new DefaultClawRollersSpin(claw));
             // temp
-             vision =
-                 new Vision(
-                     new VisionIOLimelight(
-                         "limelight-fl", "limelight-bl", "limelight-br")); // "limelight-fr"
+            vision =
+                new Vision(
+                    new VisionIOLimelight(
+                        "limelight-fl", "limelight-bl", "limelight-br")); // "limelight-fr"
             arm =
                 new Arm(
                     new ArmIOTalonFX(
@@ -263,9 +262,6 @@ public class RobotContainer {
         new TeleopSwerve(drivetrain, oi::getTranslateX, oi::getTranslateY, oi::getRotate));
 
     configureButtonBindings();
-
-
-
   }
 
   /**
@@ -333,7 +329,6 @@ public class RobotContainer {
     ScoreChooser.addOption("BACK_CONE_MEDIUM", PositionConfigs.BACK_CONE_MEDIUM);
     ScoreChooser.addOption("BACK_CUBE_TOP", PositionConfigs.BACK_CUBE_TOP);
     ScoreChooser.addOption("BACK_CUBE_MEDIUM", PositionConfigs.BACK_CUBE_MEDIUM);
-    ScoreChooser.addOption("FRONT_CONE_TOP", PositionConfigs.FRONT_CONE_TOP);
     ScoreChooser.addOption("FRONT_CONE_MEDIUM", PositionConfigs.FRONT_CONE_MEDIUM);
     ScoreChooser.addOption("FRONT_CUBE_MEDIUM", PositionConfigs.FRONT_CUBE_MEDIUM);
     ScoreChooser.addOption("FRONT_CUBE_TOP", PositionConfigs.FRONT_CUBE_TOP);
@@ -348,17 +343,21 @@ public class RobotContainer {
             "Collect Sequence",
             new CollectSequence(arm, wrist, claw, collectionChooser::getSelected));
     Shuffleboard.getTab("MAIN").add("Eject Game Piece", new EjectGamePiece(claw).withTimeout(0.25));
-    Shuffleboard.getTab("MAIN").add("angle 25, length 1", new SetArm(arm, () -> 25, () -> 1, () -> false));
-    Shuffleboard.getTab("MAIN").add("angle 45, length 1", new SetArm(arm, () -> 45, () -> 1, () -> false));
-    Shuffleboard.getTab("MAIN").add("angle 65, length 1", new SetArm(arm, () -> 65, () -> 1, () -> false));
-    Shuffleboard.getTab("MAIN").add("angle 90, length 1", new SetArm(arm, () -> 90, () -> 1, () -> false));
-    Shuffleboard.getTab("MAIN").add("angle 45, length 10", new SetArm(arm, () -> 45, () -> 10, () -> false));
-    Shuffleboard.getTab("MAIN").add("angle 45, length 20", new SetArm(arm, () -> 45, () -> 20, () -> false));
-    Shuffleboard.getTab("MAIN").add("angle 45, length 36", new SetArm(arm, () -> 45, () -> 36, () -> false));
     Shuffleboard.getTab("MAIN")
-        .add(
-            "set home",
-            new GoHome(arm, wrist));
+        .add("angle 25, length 1", new SetArm(arm, () -> 25, () -> 1, () -> false));
+    Shuffleboard.getTab("MAIN")
+        .add("angle 45, length 1", new SetArm(arm, () -> 45, () -> 1, () -> false));
+    Shuffleboard.getTab("MAIN")
+        .add("angle 65, length 1", new SetArm(arm, () -> 65, () -> 1, () -> false));
+    Shuffleboard.getTab("MAIN")
+        .add("angle 90, length 1", new SetArm(arm, () -> 90, () -> 1, () -> false));
+    Shuffleboard.getTab("MAIN")
+        .add("angle 45, length 10", new SetArm(arm, () -> 45, () -> 10, () -> false));
+    Shuffleboard.getTab("MAIN")
+        .add("angle 45, length 20", new SetArm(arm, () -> 45, () -> 20, () -> false));
+    Shuffleboard.getTab("MAIN")
+        .add("angle 45, length 36", new SetArm(arm, () -> 45, () -> 36, () -> false));
+    Shuffleboard.getTab("MAIN").add("set home", new GoHome(arm, wrist));
     Shuffleboard.getTab("MAIN").add("Balance", new Balance(drivetrain));
   }
 
@@ -432,30 +431,26 @@ public class RobotContainer {
             new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR));
     oi.getTempScore()
         .onTrue(
-          new SequentialCommandGroup(
-            new EjectGamePiece(claw).withTimeout(0.25),
-            new GoHome(arm, wrist)
-            )
-          );
-    oi.getTempGoHome()
-        .onTrue(
-          new GoHome(arm, wrist));
-            // new SequentialCommandGroup(
-            //     new ParallelCommandGroup(
-            //         new SetArm(arm, () -> -45.0, () -> 6.0, () -> false), new SetWristPosition(1350, wrist)),
-            //     new EjectGamePiece(claw).withTimeout(0.25),
-            //     new ParallelCommandGroup(
-            //         new SetArm(arm, () -> Arm.HOME_ROTATION, () -> Arm.HOME_EXTENSION, () -> true),
-            //         new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
-            //     new InstantCommand(() -> arm.setExtensionNominal(), arm)));
+            new SequentialCommandGroup(
+                new EjectGamePiece(claw).withTimeout(0.25), new GoHome(arm, wrist)));
+    oi.getTempGoHome().onTrue(new GoHome(arm, wrist));
+    // new SequentialCommandGroup(
+    //     new ParallelCommandGroup(
+    //         new SetArm(arm, () -> -45.0, () -> 6.0, () -> false), new SetWristPosition(1350,
+    // wrist)),
+    //     new EjectGamePiece(claw).withTimeout(0.25),
+    //     new ParallelCommandGroup(
+    //         new SetArm(arm, () -> Arm.HOME_ROTATION, () -> Arm.HOME_EXTENSION, () -> true),
+    //         new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
+    //     new InstantCommand(() -> arm.setExtensionNominal(), arm)));
 
     oi.getTempCollectCone()
         .onTrue(
             new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CONE_FLOOR));
-    oi.getTempCollectCone()
-          .onTrue(
-            new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CONE_FLOOR_TIPPED));
-        
+    oi.getTempCollectConeGround()
+        .onTrue(
+            new CollectSequence(
+                arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CONE_FLOOR_TIPPED));
   }
 
   /** Use this method to define your commands for autonomous mode. */
@@ -477,11 +472,20 @@ public class RobotContainer {
             Commands.waitSeconds(5.0),
             Commands.runOnce(drivetrain::disableXstance, drivetrain));
 
+    // build auto path commands
+    List<PathPlannerTrajectory> auto3Paths =
+        PathPlanner.loadPathGroup(
+            "3 Piece", config.getAutoMaxSpeed(), config.getAutoMaxAcceleration());
+    Command auto3Piece =
+        Commands.sequence(
+            new FollowPath(auto3Paths.get(0), drivetrain, true));
+
     // add commands to the auto chooser
     autoChooser.addDefaultOption("Do Nothing", new InstantCommand());
 
     // demonstration of PathPlanner path group with event markers
     autoChooser.addOption("Test Path", autoTest);
+    autoChooser.addOption("3 Piece", auto3Piece);
 
     // "auto" command for tuning the drive velocity PID
     autoChooser.addOption(
@@ -511,7 +515,8 @@ public class RobotContainer {
         "Score Cube",
         new SequentialCommandGroup(
             new ParallelCommandGroup(
-                new SetArm(arm, () -> -45.0, () -> 6.0, () -> false), new SetWristPosition(1350, wrist)),
+                new SetArm(arm, () -> -45.0, () -> 6.0, () -> false),
+                new SetWristPosition(1350, wrist)),
             new EjectGamePiece(claw).withTimeout(0.25),
             new ParallelCommandGroup(
                 new SetArm(arm, () -> Arm.HOME_ROTATION, () -> Arm.HOME_EXTENSION, () -> true),
@@ -533,7 +538,9 @@ public class RobotContainer {
                     new SetArm(arm, () -> Arm.HOME_ROTATION, () -> Arm.HOME_EXTENSION, () -> true),
                     new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
                 new InstantCommand(() -> arm.setExtensionNominal(), arm))
-            .andThen(AutoPathHelper.followPath(drivetrain, "Some Auto", someEventMap))
+            .andThen(
+                AutoPathHelper.followPath(
+                    drivetrain, "Some Auto", someEventMap)) // add auto paths here
             .andThen(new Balance(drivetrain))
             .andThen(() -> drivetrain.setXStance(), drivetrain));
 

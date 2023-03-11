@@ -4,8 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.PositionConfig;
 import frc.robot.commands.arm.SetArm;
@@ -23,17 +21,20 @@ public class ScoreSequence extends SequentialCommandGroup {
       final Arm arm,
       final Wrist wrist,
       final Claw claw,
-      final Supplier<PositionConfig> PositionConfig) {
+      final Supplier<PositionConfig> positionConfigSupplier) {
     addCommands(
-            new SetArm(
-                arm, () -> PositionConfig.get().armRotation, () -> PositionConfig.get().armLength, () -> false),
-            new SetWristPositionSupplier(wrist, () -> PositionConfig.get().wristRotation)
-        
+        new SetArm(
+            arm,
+            () -> positionConfigSupplier.get().armRotation,
+            () -> positionConfigSupplier.get().armLength,
+            () -> false),
+        new SetWristPositionSupplier(wrist, () -> positionConfigSupplier.get().wristRotation)
+
         // new EjectGamePiece(claw).withTimeout(0.5),
         // new ParallelCommandGroup(
         //     new SetArm(arm, () -> Arm.HOME_ROTATION, () -> Arm.HOME_EXTENSION, () -> true),
         //     new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
         // new InstantCommand(() -> arm.setExtensionNominal(), arm)
-    );
+        );
   }
 }

@@ -20,7 +20,7 @@ public final class ArmConstants {
   public static final double EXTENSION_ALLOWABLE_ERROR = 500.0;
 
   public static final double CANCODER_OFFSET = -81.475;
-  public static final double MAX_ROTATION_ANGLE = 111;
+  public static final double MAX_ROTATION_ANGLE = 115;
   public static final double FULL_ROTATION_DEGREES = 360.0;
   public static final double FULL_ROTATION_TICKS = 4096.0;
   public static final double MINIMUM_EXTENSION_LENGTH_INCHES = 0.0;

@@ -37,9 +37,9 @@ public interface OperatorInterface {
     return new Trigger(() -> false);
   }
 
-  default Trigger getWristPosButton() {
-    return new Trigger(() -> false);
-  }
+  // default Trigger getWristPosButton() {
+  //   return new Trigger(() -> false);
+  // }
 
   default Trigger getWristNegButton() {
     return new Trigger(() -> false);
@@ -53,14 +53,18 @@ public interface OperatorInterface {
     return new Trigger(() -> false);
   }
 
+  public default Trigger getTempCollectConeGround() {
+    return new Trigger(() -> false);
+  }
+
   public default Trigger getTempCollectCube() {
     return new Trigger(() -> false);
-  } 
+  }
 
   public default Trigger getTempCollectCubGround() {
     return new Trigger(() -> false);
-  } 
-  
+  }
+
   public default Trigger getTempScore() {
     return new Trigger(() -> false);
   }

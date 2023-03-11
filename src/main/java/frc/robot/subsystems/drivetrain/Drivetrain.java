@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.drivetrain;
 
+import static frc.robot.Constants.ADVANTAGE_KIT_ENABLED;
+
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -29,8 +31,6 @@ import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.util.RobotOdometry;
 import frc.lib.team6328.util.TunableNumber;
 import org.littletonrobotics.junction.Logger;
-
-import static frc.robot.Constants.ADVANTAGE_KIT_ENABLED;
 
 /**
  * This subsystem models the robot's drivetrain mechanism. It consists of a four MK4 swerve modules,
@@ -221,7 +221,7 @@ public class Drivetrain extends SubsystemBase {
   public double getPoseX() {
     return poseEstimator.getEstimatedPosition().getX();
   }
-  
+
   public double getPoseY() {
     return poseEstimator.getEstimatedPosition().getY();
   }

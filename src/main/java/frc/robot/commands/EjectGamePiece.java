@@ -25,7 +25,7 @@ public class EjectGamePiece extends CommandBase {
   public void initialize() {
     claw.setRollerSpeed(0);
     GamePiece piece = claw.getGamePiece();
-    claw.setRollerSpeed(-CLAW_ROLLER_SPEED);
+    claw.setRollerSpeed(CLAW_ROLLER_SPEED);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

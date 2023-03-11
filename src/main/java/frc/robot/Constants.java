@@ -25,7 +25,7 @@ import frc.robot.subsystems.claw.Claw.GamePiece;
  */
 public final class Constants {
 
-  public static final boolean ADVANTAGE_KIT_ENABLED = true;
+  public static final boolean ADVANTAGE_KIT_ENABLED = false;
   public static final boolean TUNING_MODE = false;
 
   // FIXME: If Limelight is used, specify the pipeline for detecting AprilTags
@@ -119,13 +119,13 @@ public final class Constants {
     public static final PositionConfig BACK_CUBE_FLOOR =
         new PositionConfig(Arm.HOME_EXTENSION, 101.7, 2329, GamePiece.CUBE);
     public static final PositionConfig BACK_CONE_FLOOR =
-        new PositionConfig(Arm.HOME_EXTENSION, 90.9, 2494, GamePiece.CONE);
+        new PositionConfig(Arm.HOME_EXTENSION, 90.9, 2440, GamePiece.CONE);
     public static final PositionConfig BACK_CONE_FLOOR_TIPPED =
-        new PositionConfig(Arm.HOME_EXTENSION, 105.5, 2068, GamePiece.CONE);
+        new PositionConfig(Arm.HOME_EXTENSION, 113, 1773, GamePiece.CONE);
     public static final PositionConfig FRONT_CONE_MEDIUM =
-        new PositionConfig(20, -48.5, 870, GamePiece.CONE);
+        new PositionConfig(22, -44, 900, GamePiece.CONE);
     public static final PositionConfig FRONT_CONE_TOP =
-        new PositionConfig(35, -50, 1271, GamePiece.CONE);
+        new PositionConfig(34, -47.5, 1400, GamePiece.CONE);
     public static final PositionConfig FRONT_CUBE_MEDIUM =
         new PositionConfig(0, -56, 1690, GamePiece.CUBE);
     public static final PositionConfig FRONT_CUBE_TOP =

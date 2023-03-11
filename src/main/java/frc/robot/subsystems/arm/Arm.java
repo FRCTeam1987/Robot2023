@@ -1,5 +1,7 @@
 package frc.robot.subsystems.arm;
 
+import static frc.robot.Constants.ADVANTAGE_KIT_ENABLED;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -7,8 +9,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.team3061.RobotConfig;
 import frc.lib.team6328.util.Alert;
 import org.littletonrobotics.junction.Logger;
-
-import static frc.robot.Constants.ADVANTAGE_KIT_ENABLED;
 
 public class Arm extends SubsystemBase {
 

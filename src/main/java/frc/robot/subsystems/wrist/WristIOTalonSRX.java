@@ -73,5 +73,7 @@ public class WristIOTalonSRX implements WristIO {
   }
 
   @Override
-  public double getCurrentAmps() { return wristMotor.getStatorCurrent(); }
+  public double getCurrentAmps() {
+    return wristMotor.getStatorCurrent();
+  }
 }

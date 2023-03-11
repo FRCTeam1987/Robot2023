@@ -1,5 +1,7 @@
 package frc.robot.subsystems.wrist;
 
+import static frc.robot.Constants.ADVANTAGE_KIT_ENABLED;
+
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -7,8 +9,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.SetWristPosition;
 import org.littletonrobotics.junction.Logger;
-
-import static frc.robot.Constants.ADVANTAGE_KIT_ENABLED;
 
 public class Wrist extends SubsystemBase {
   private final WristIO io;

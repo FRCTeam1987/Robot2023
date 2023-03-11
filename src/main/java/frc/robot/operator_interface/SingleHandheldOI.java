@@ -45,10 +45,10 @@ public class SingleHandheldOI implements OperatorInterface {
     return new Trigger(controller::getYButton);
   }
 
-  @Override
-  public Trigger getWristPosButton() {
-    return new Trigger(controller::getRightBumper);
-  }
+  // @Override
+  // public Trigger getWristPosButton() {
+  //   return new Trigger(controller::getRightBumper);
+  // }
 
   @Override
   public Trigger getWristNegButton() {
@@ -65,12 +65,12 @@ public class SingleHandheldOI implements OperatorInterface {
     return new Trigger(controller::getYButton);
   }
 
+  @Override
   public Trigger getTempCollectConeGround() {
-    return new Trigger(controller::getXButton
-    );
+    return new Trigger(controller::getXButton);
   }
-    
-    @Override
+
+  @Override
   public Trigger getTempCollectCube() {
     return new Trigger(controller::getRightBumper);
   }
