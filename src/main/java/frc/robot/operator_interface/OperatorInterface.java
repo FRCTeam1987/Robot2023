@@ -56,6 +56,10 @@ public interface OperatorInterface {
   public default Trigger getTempCollectCube() {
     return new Trigger(() -> false);
   } 
+
+  public default Trigger getTempCollectCubGround() {
+    return new Trigger(() -> false);
+  } 
   
   public default Trigger getTempScore() {
     return new Trigger(() -> false);

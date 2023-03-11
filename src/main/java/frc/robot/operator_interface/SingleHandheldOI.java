@@ -65,9 +65,10 @@ public class SingleHandheldOI implements OperatorInterface {
     return new Trigger(controller::getYButton);
   }
 
-  // public Trigger getTempCollectConeGround() {
-  //   return new Trigger(controller::pov());
-  // }
+  public Trigger getTempCollectConeGround() {
+    return new Trigger(controller::getXButton
+    );
+  }
     
     @Override
   public Trigger getTempCollectCube() {

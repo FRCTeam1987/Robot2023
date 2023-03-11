@@ -452,6 +452,9 @@ public class RobotContainer {
     oi.getTempCollectCone()
         .onTrue(
             new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CONE_FLOOR));
+    oi.getTempCollectCone()
+          .onTrue(
+            new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CONE_FLOOR_TIPPED));
         
   }
 
