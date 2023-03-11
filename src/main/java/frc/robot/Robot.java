@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.ADVANTAGE_KIT_ENABLED;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.lib.team6328.util.Alert;
@@ -41,71 +43,74 @@ public class Robot extends LoggedRobot {
 
     // from AdvantageKit Robot Configuration docs
     // (https://github.com/Mechanical-Advantage/AdvantageKit/blob/main/docs/START-LOGGING.md#robot-configuration)
+    if (ADVANTAGE_KIT_ENABLED) {
+      Logger logger = Logger.getInstance();
 
-    Logger logger = Logger.getInstance();
+      // Set a metadata value
+      logger.recordMetadata("RuntimeType", getRuntimeType().toString());
+      logger.recordMetadata("BatteryName", BatteryTracker.scanBattery(10.0));
+      logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
+      logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
+      logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
+      logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
+      logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
+      switch (BuildConstants.DIRTY) {
+        case 0:
+          logger.recordMetadata(GIT_DIRTY, "All changes committed");
+          break;
+        case 1:
+          logger.recordMetadata(GIT_DIRTY, "Uncommitted changes");
+          break;
+        default:
+          logger.recordMetadata(GIT_DIRTY, "Unknown");
+          break;
+      }
+      switch (Constants.getMode()) {
+        case REAL:
+          logger.addDataReceiver(new WPILOGWriter("/media/sda1"));
 
-    // Set a metadata value
-    logger.recordMetadata("RuntimeType", getRuntimeType().toString());
-    logger.recordMetadata("BatteryName", BatteryTracker.scanBattery(10.0));
-    logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
-    logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
-    logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
-    logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
-    logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
-    switch (BuildConstants.DIRTY) {
-      case 0:
-        logger.recordMetadata(GIT_DIRTY, "All changes committed");
-        break;
-      case 1:
-        logger.recordMetadata(GIT_DIRTY, "Uncommitted changes");
-        break;
-      default:
-        logger.recordMetadata(GIT_DIRTY, "Unknown");
-        break;
+          // Provide log data over the network, viewable in Advantage Scope.
+          logger.addDataReceiver(new NT4Publisher());
+
+          LoggedPowerDistribution.getInstance();
+          break;
+
+        case SIM:
+          logger.addDataReceiver(new WPILOGWriter(""));
+          logger.addDataReceiver(new NT4Publisher());
+          break;
+
+        case REPLAY:
+          // Run as fast as possible during replay
+          setUseTiming(false);
+
+          // Prompt the user for a file path on the command line (if not open in AdvantageScope)
+          String path = LogFileUtil.findReplayLog();
+
+          // Read log file for replay
+          logger.setReplaySource(new WPILOGReader(path));
+
+          // Save replay results to a new log with the "_sim" suffix
+          logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(path, "_sim")));
+          break;
+      }
+
+      // Start logging! No more data receivers, replay sources, or metadata values may be added.
+      logger.start();
+
+      // Alternative logging of scheduled commands
+      CommandScheduler.getInstance()
+          .onCommandInitialize(
+              command ->
+                  Logger.getInstance().recordOutput("Command initialized", command.getName()));
+      CommandScheduler.getInstance()
+          .onCommandInterrupt(
+              command ->
+                  Logger.getInstance().recordOutput("Command interrupted", command.getName()));
+      CommandScheduler.getInstance()
+          .onCommandFinish(
+              command -> Logger.getInstance().recordOutput("Command finished", command.getName()));
     }
-    switch (Constants.getMode()) {
-      case REAL:
-        logger.addDataReceiver(new WPILOGWriter("/media/sda1"));
-
-        // Provide log data over the network, viewable in Advantage Scope.
-        logger.addDataReceiver(new NT4Publisher());
-
-        LoggedPowerDistribution.getInstance();
-        break;
-
-      case SIM:
-        logger.addDataReceiver(new WPILOGWriter(""));
-        logger.addDataReceiver(new NT4Publisher());
-        break;
-
-      case REPLAY:
-        // Run as fast as possible during replay
-        setUseTiming(false);
-
-        // Prompt the user for a file path on the command line (if not open in AdvantageScope)
-        String path = LogFileUtil.findReplayLog();
-
-        // Read log file for replay
-        logger.setReplaySource(new WPILOGReader(path));
-
-        // Save replay results to a new log with the "_sim" suffix
-        logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(path, "_sim")));
-        break;
-    }
-
-    // Start logging! No more data receivers, replay sources, or metadata values may be added.
-    logger.start();
-
-    // Alternative logging of scheduled commands
-    CommandScheduler.getInstance()
-        .onCommandInitialize(
-            command -> Logger.getInstance().recordOutput("Command initialized", command.getName()));
-    CommandScheduler.getInstance()
-        .onCommandInterrupt(
-            command -> Logger.getInstance().recordOutput("Command interrupted", command.getName()));
-    CommandScheduler.getInstance()
-        .onCommandFinish(
-            command -> Logger.getInstance().recordOutput("Command finished", command.getName()));
 
     // Invoke the factory method to create the RobotContainer singleton.
     robotContainer = RobotContainer.getInstance();

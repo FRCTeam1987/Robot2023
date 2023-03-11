@@ -25,7 +25,7 @@ public class VisionIOLimelightBase {
     inst.getEntry("pipeline").setNumber(LIMELIGHT_PIPELINE);
     LIMELIGHT_TAB
         .addNumber(limelightNameShort + " count", this::getVisibleTagCount)
-        .withPosition(column++, VisionIOLimelight.row);
+        .withPosition(column, VisionIOLimelight.row);
     VisionIOLimelight.row++;
     botPoseSubscriber = inst.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
     jsonSubscriber = inst.getStringTopic("json").subscribe("[]");
@@ -67,6 +67,6 @@ class Pose3dLatency {
   }
 
   public String toString() {
-    return pose.toString() + " L: " + latency;
+    return pose + " L: " + latency;
   }
 }

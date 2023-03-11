@@ -23,23 +23,23 @@ public class TalonFXFactory {
 
   // These periods don't share any common factors, so they shouldn't run at the same time. 255 is
   // max. (initially from https://github.com/Mechanical-Advantage/RobotCode2022)
-  private static int[] kPrimePeriods =
+  private static final int[] PRIME_PERIODS =
       new int[] {255, 254, 253, 251, 247, 241, 239, 233, 229, 227, 223, 217, 211, 199, 197};
 
   public static class Configuration {
     public NeutralMode NEUTRAL_MODE = NeutralMode.Coast;
 
     // factory default
-    public double NEUTRAL_DEADBAND = 0.04;
+    public final double NEUTRAL_DEADBAND = 0.04;
 
     public boolean ENABLE_SOFT_LIMIT = false;
-    public boolean ENABLE_LIMIT_SWITCH = false;
-    public int FORWARD_SOFT_LIMIT = 0;
-    public int REVERSE_SOFT_LIMIT = 0;
+    public final boolean ENABLE_LIMIT_SWITCH = false;
+    public final int FORWARD_SOFT_LIMIT = 0;
+    public final int REVERSE_SOFT_LIMIT = 0;
 
     public boolean INVERTED = false;
-    public boolean SENSOR_PHASE = false;
-    public SensorInitializationStrategy SENSOR_INITIALIZATION_STRATEGY =
+    public final boolean SENSOR_PHASE = false;
+    public final SensorInitializationStrategy SENSOR_INITIALIZATION_STRATEGY =
         SensorInitializationStrategy.BootToZero;
 
     public int CONTROL_FRAME_PERIOD_MS = 20; // 10
@@ -47,20 +47,20 @@ public class TalonFXFactory {
 
     public int GENERAL_STATUS_FRAME_RATE_MS = 10;
     public int FEEDBACK_STATUS_FRAME_RATE_MS = 49;
-    public int QUAD_ENCODER_STATUS_FRAME_RATE_MS = kPrimePeriods[0];
-    public int ANALOG_TEMP_VBAT_STATUS_FRAME_RATE_MS = kPrimePeriods[1];
-    public int PULSE_WIDTH_STATUS_FRAME_RATE_MS = kPrimePeriods[2];
-    public int MOTION_MAGIC_STATUS_FRAME_RATE_MS = kPrimePeriods[3];
-    public int FEEDBACK_1_STATUS_FRAME_RATE_MS = kPrimePeriods[4];
-    public int BASE_PIDF0_STATUS_FRAME_RATE_MS = kPrimePeriods[5];
-    public int TURN_PIDF1_STATUS_FRAME_RATE_MS = kPrimePeriods[6];
-    public int FEEDBACK_INTEGRATED_STATUS_FRAME_RATE_MS = kPrimePeriods[7];
+    public int QUAD_ENCODER_STATUS_FRAME_RATE_MS = PRIME_PERIODS[0];
+    public int ANALOG_TEMP_VBAT_STATUS_FRAME_RATE_MS = PRIME_PERIODS[1];
+    public int PULSE_WIDTH_STATUS_FRAME_RATE_MS = PRIME_PERIODS[2];
+    public int MOTION_MAGIC_STATUS_FRAME_RATE_MS = PRIME_PERIODS[3];
+    public final int FEEDBACK_1_STATUS_FRAME_RATE_MS = PRIME_PERIODS[4];
+    public int BASE_PIDF0_STATUS_FRAME_RATE_MS = PRIME_PERIODS[5];
+    public final int TURN_PIDF1_STATUS_FRAME_RATE_MS = PRIME_PERIODS[6];
+    public final int FEEDBACK_INTEGRATED_STATUS_FRAME_RATE_MS = PRIME_PERIODS[7];
 
-    public SensorVelocityMeasPeriod VELOCITY_MEASUREMENT_PERIOD =
+    public final SensorVelocityMeasPeriod VELOCITY_MEASUREMENT_PERIOD =
         SensorVelocityMeasPeriod.Period_100Ms;
-    public int VELOCITY_MEASUREMENT_ROLLING_AVERAGE_WINDOW = 64;
+    public final int VELOCITY_MEASUREMENT_ROLLING_AVERAGE_WINDOW = 64;
 
-    public StatorCurrentLimitConfiguration STATOR_CURRENT_LIMIT =
+    public final StatorCurrentLimitConfiguration STATOR_CURRENT_LIMIT =
         new StatorCurrentLimitConfiguration(false, 300, 700, 1);
     public SupplyCurrentLimitConfiguration SUPPLY_CURRENT_LIMIT =
         new SupplyCurrentLimitConfiguration(false, 40, 100, 1);
@@ -74,29 +74,29 @@ public class TalonFXFactory {
     public double SLOT0_KF = 0.0;
   }
 
-  private static final Configuration kDefaultConfiguration = new Configuration();
-  private static final Configuration kFollowerConfiguration = new Configuration();
+  private static final Configuration DEFAULT_CONFIGURATION = new Configuration();
+  private static final Configuration FOLLOWER_CONFIGURATION = new Configuration();
 
   static {
     // This control frame value seems to need to be something reasonable to avoid the Talon's
     // LEDs behaving erratically. Potentially try to increase as much as possible.
-    kFollowerConfiguration.CONTROL_FRAME_PERIOD_MS = 100;
-    kFollowerConfiguration.MOTION_CONTROL_FRAME_PERIOD_MS = 1000;
-    kFollowerConfiguration.GENERAL_STATUS_FRAME_RATE_MS = 1000;
-    kFollowerConfiguration.FEEDBACK_STATUS_FRAME_RATE_MS = 1000;
-    kFollowerConfiguration.QUAD_ENCODER_STATUS_FRAME_RATE_MS = 1000;
-    kFollowerConfiguration.ANALOG_TEMP_VBAT_STATUS_FRAME_RATE_MS = 1000;
-    kFollowerConfiguration.PULSE_WIDTH_STATUS_FRAME_RATE_MS = 1000;
-    kFollowerConfiguration.ENABLE_SOFT_LIMIT = false;
+    FOLLOWER_CONFIGURATION.CONTROL_FRAME_PERIOD_MS = 100;
+    FOLLOWER_CONFIGURATION.MOTION_CONTROL_FRAME_PERIOD_MS = 1000;
+    FOLLOWER_CONFIGURATION.GENERAL_STATUS_FRAME_RATE_MS = 1000;
+    FOLLOWER_CONFIGURATION.FEEDBACK_STATUS_FRAME_RATE_MS = 1000;
+    FOLLOWER_CONFIGURATION.QUAD_ENCODER_STATUS_FRAME_RATE_MS = 1000;
+    FOLLOWER_CONFIGURATION.ANALOG_TEMP_VBAT_STATUS_FRAME_RATE_MS = 1000;
+    FOLLOWER_CONFIGURATION.PULSE_WIDTH_STATUS_FRAME_RATE_MS = 1000;
+    FOLLOWER_CONFIGURATION.ENABLE_SOFT_LIMIT = false;
   }
 
   // create a CANTalon with the default (out of the box) configuration
   public static TalonFX createDefaultTalon(int id, String canBusName) {
-    return createTalon(id, canBusName, kDefaultConfiguration);
+    return createTalon(id, canBusName, DEFAULT_CONFIGURATION);
   }
 
   public static TalonFX createPermanentFollowerTalon(int id, String canBusName, int leaderID) {
-    final TalonFX talon = createTalon(id, canBusName, kFollowerConfiguration);
+    final TalonFX talon = createTalon(id, canBusName, FOLLOWER_CONFIGURATION);
     talon.set(ControlMode.Follower, leaderID);
     return talon;
   }

@@ -80,7 +80,6 @@ public class SetArm extends CommandBase {
   public void end(boolean interrupted) {
     if (interrupted) {
       arm.stop();
-      return;
     }
   }
 

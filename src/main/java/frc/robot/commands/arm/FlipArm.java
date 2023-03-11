@@ -4,11 +4,10 @@
 
 package frc.robot.commands.arm;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.util.Util;
+import java.util.function.DoubleSupplier;
 
 public class FlipArm extends CommandBase {
 
@@ -30,8 +29,7 @@ public class FlipArm extends CommandBase {
   @Override
   public void execute() {
     // TODO set arm angle only when more retracted, this assumes it is retracted and it might not be
-    if (-arm.getArmAngle() < -90 || -arm.getArmAngle() > 90)
-      arm.setArmAngle(arm.getArmAngle());
+    if (-arm.getArmAngle() < -90 || -arm.getArmAngle() > 90) arm.setArmAngle(arm.getArmAngle());
     else {
       arm.setArmAngle(-arm.getArmAngle());
     }
@@ -52,5 +50,4 @@ public class FlipArm extends CommandBase {
   private boolean isAngleOnTarget(final double tolerance) {
     return Util.isWithinTolerance(arm.getArmAngle(), angleSupplier.getAsDouble(), tolerance);
   }
-
 }

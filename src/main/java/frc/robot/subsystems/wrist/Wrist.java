@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.SetWristPosition;
 import org.littletonrobotics.junction.Logger;
 
+import static frc.robot.Constants.ADVANTAGE_KIT_ENABLED;
+
 public class Wrist extends SubsystemBase {
   private final WristIO io;
   private final WristIOInputsAutoLogged inputs = new WristIOInputsAutoLogged();
@@ -26,18 +28,8 @@ public class Wrist extends SubsystemBase {
   /** Creates a new Wrist. */
   public Wrist(WristIO io) {
     this.io = io;
-    SmartDashboard.putData(
-        "norm",
-        new InstantCommand(
-            () -> {
-              io.setRotation(true);
-            }));
-    SmartDashboard.putData(
-        "invert",
-        new InstantCommand(
-            () -> {
-              io.setRotation(false);
-            }));
+    SmartDashboard.putData("norm", new InstantCommand(() -> io.setRotation(true)));
+    SmartDashboard.putData("invert", new InstantCommand(() -> io.setRotation(false)));
 
     tab.add("Set Straight", new SetWristPosition(ANGLE_STRAIGHT, this));
     tab.add("Set Front Perpendicular", new SetWristPosition(ANGLE_FRONT_PERPENDICULAR, this));
@@ -67,7 +59,9 @@ public class Wrist extends SubsystemBase {
   }
 
   public void periodic() {
-    io.updateInputs(inputs);
-    Logger.getInstance().processInputs("Wrist", inputs);
+    if (ADVANTAGE_KIT_ENABLED) {
+      io.updateInputs(inputs);
+      Logger.getInstance().processInputs("Wrist", inputs);
+    }
   }
 }

@@ -4,33 +4,33 @@ import org.littletonrobotics.junction.AutoLog;
 
 public interface ArmIO {
   @AutoLog
-  public static class ArmIOInputs {
+  class ArmIOInputs {
     public double[] currentAmps = new double[] {};
     public double[] currentVolts = new double[] {};
     public double armAbsoluteAngle;
   }
 
-  public default void updateInputs(ArmIOInputs inputs) {}
+  default void updateInputs(ArmIOInputs inputs) {}
 
-  public default double getArmLength() {
+  default double getArmLength() {
     return 0.0;
   }
 
-  public default void setArmLength(double length) {}
+  default void setArmLength(double length) {}
 
-  public default double getArmAngle() {
+  default double getArmAngle() {
     return 0.0;
   }
 
-  public default void setArmAngle(double angle) {}
+  default void setArmAngle(double angle) {}
 
-  public default void holdCurrentAngle() {}
+  default void holdCurrentAngle() {}
 
-  public default void holdCurrentAngle(double desiredPosition) {}
+  default void holdCurrentAngle(double desiredPosition) {}
 
-  public default void stallArm() {}
+  default void stallArm() {}
 
-  public default void setExtensionNominal() {}
+  default void setExtensionNominal() {}
 
-  public default void stop() {}
+  default void stop() {}
 }

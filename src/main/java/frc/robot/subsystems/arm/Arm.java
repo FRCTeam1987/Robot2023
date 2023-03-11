@@ -8,19 +8,21 @@ import frc.lib.team3061.RobotConfig;
 import frc.lib.team6328.util.Alert;
 import org.littletonrobotics.junction.Logger;
 
+import static frc.robot.Constants.ADVANTAGE_KIT_ENABLED;
+
 public class Arm extends SubsystemBase {
 
   public static final int HOME_ROTATION = 0;
   public static final int HOME_EXTENSION = 1;
 
-  static double heightOffset = RobotConfig.getInstance().getRobotArmHeightOffset();
+  static final double heightOffset = RobotConfig.getInstance().getRobotArmHeightOffset();
   private final ArmIO io;
   private final ArmIOInputsAutoLogged inputs = new ArmIOInputsAutoLogged();
 
   private static final Alert invalidAngle =
       new Alert("Invalid Angle Reached! (Arm Kinematics)", Alert.AlertType.ERROR);
 
-  ShuffleboardTab tab = Shuffleboard.getTab("Arm Tab");
+  final ShuffleboardTab tab = Shuffleboard.getTab("Arm Tab");
 
   public Arm(ArmIO io) {
     this.io = io;
@@ -65,8 +67,10 @@ public class Arm extends SubsystemBase {
   }
 
   public void periodic() {
-    io.updateInputs(inputs);
-    Logger.getInstance().processInputs("Arm", inputs);
+    if (ADVANTAGE_KIT_ENABLED) {
+      io.updateInputs(inputs);
+      Logger.getInstance().processInputs("Arm", inputs);
+    }
   }
 
   public static double calculateArmLength(double x, double y) {
@@ -83,8 +87,9 @@ public class Arm extends SubsystemBase {
   public static double calculateArmAngle(double x, double y) {
     if (x == 0 && y > heightOffset) return 90.0;
     if (x == 0 && y < heightOffset) invalidAngle.set(true);
-    if (x > 0) return Math.toDegrees(Math.atan((y - heightOffset) / x));
-    if (x < 0) return 180 + Math.toDegrees(Math.atan((y - heightOffset) / x));
+    double v = Math.toDegrees(Math.atan((y - heightOffset) / x));
+    if (x > 0) return v;
+    if (x < 0) return 180 + v;
     return 0.0;
   }
 }

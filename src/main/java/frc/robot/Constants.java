@@ -25,6 +25,7 @@ import frc.robot.subsystems.claw.Claw.GamePiece;
  */
 public final class Constants {
 
+  public static final boolean ADVANTAGE_KIT_ENABLED = false;
   public static final boolean TUNING_MODE = false;
 
   // FIXME: If Limelight is used, specify the pipeline for detecting AprilTags
@@ -142,6 +143,4 @@ public final class Constants {
     public static final PositionConfig FRONT_DOUBLE_SUBSTATION =
         new PositionConfig(17, -33, 1270, GamePiece.CONE);
   }
-
-  
 }
