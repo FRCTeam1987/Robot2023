@@ -76,11 +76,11 @@ public class Claw extends SubsystemBase {
   }
 
   public double getCurrent() {
-    return inputs.currentAmps;
+    return io.getCurrentAmps();
   }
 
   public double getSpeedPercent() {
-    return inputs.speedPercent;
+    return io.getSpeedPercent();
   }
 
   public boolean hasGamePiece() {

@@ -21,4 +21,6 @@ public interface WristIO {
 
   /** Return wrist degree */
   double getDegrees();
+
+  double getCurrentAmps();
 }

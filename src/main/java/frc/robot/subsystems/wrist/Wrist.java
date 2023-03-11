@@ -39,7 +39,7 @@ public class Wrist extends SubsystemBase {
   }
 
   public double getCurrent() {
-    return inputs.currentAmps;
+    return io.getCurrentAmps();
   }
 
   public void setRotation(boolean inverted) {

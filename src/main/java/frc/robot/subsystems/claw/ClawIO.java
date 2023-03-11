@@ -14,4 +14,8 @@ public interface ClawIO {
 
   /** Sets speed of roller motor */
   default void setRollerSpeed(double speed) {}
+
+  default double getCurrentAmps() { return 0.0; }
+
+  default double getSpeedPercent() { return 0.0; }
 }
