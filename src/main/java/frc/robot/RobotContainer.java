@@ -10,6 +10,8 @@ import static frc.robot.Constants.PositionConfigs.*;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.FollowPathWithEvents;
+
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -17,10 +19,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.team3061.RobotConfig;
 import frc.lib.team3061.gyro.GyroIO;
@@ -31,6 +33,7 @@ import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIO;
 import frc.lib.team3061.swerve.SwerveModuleIOSim;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
+import frc.lib.team6328.util.Alert;
 import frc.robot.Constants.Mode;
 import frc.robot.Constants.PositionConfig;
 import frc.robot.Constants.PositionConfigs;
@@ -42,8 +45,10 @@ import frc.robot.commands.auto.AutoPathHelper;
 import frc.robot.commands.auto.Balance;
 import frc.robot.configs.CompRobotConfig;
 import frc.robot.configs.TestRobotConfig;
-import frc.robot.operator_interface.OISelector;
-import frc.robot.operator_interface.OperatorInterface;
+import frc.robot.operator_interface.CoDriver.CoDriverOISelector;
+import frc.robot.operator_interface.CoDriver.CoDriverOperatorInterface;
+import frc.robot.operator_interface.Driver.DriverOISelector;
+import frc.robot.operator_interface.Driver.DriverOperatorInterface;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.claw.Claw;
@@ -57,7 +62,6 @@ import frc.robot.util.BatteryTracker;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -66,18 +70,26 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  private OperatorInterface oi = new OperatorInterface() {};
+  private DriverOperatorInterface driver = new DriverOperatorInterface() {};
+  private CoDriverOperatorInterface CoDriver = new CoDriverOperatorInterface() {};
 
   private RobotConfig config;
   private Drivetrain drivetrain;
   private Wrist wrist;
   private Claw claw;
 
+  public enum Height {
+    HIGH,
+    MEDIUM,
+    FLOOR,
+    NONE
+  }
+
+  private Height height = Height.FLOOR;
   private Vision vision;
   private Arm arm;
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to ensure accurate logging
-  private final LoggedDashboardChooser<Command> autoChooser =
-      new LoggedDashboardChooser<>("Auto Routine");
+  private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
   // RobotContainer singleton
   private static final RobotContainer robotContainer = new RobotContainer();
@@ -167,7 +179,7 @@ public class RobotContainer {
             // temp
             vision =
                 new Vision(
-                        new VisionIOLimelight(
+                    new VisionIOLimelight(
                         "limelight-fl", "limelight-bl", "limelight-br")); // "limelight-fr"
             arm =
                 new Arm(
@@ -244,12 +256,13 @@ public class RobotContainer {
    * new OI objects and binds all the buttons to commands.
    */
   public void updateOI() {
-    if (!OISelector.didJoysticksChange()) {
+    if (!DriverOISelector.didJoysticksChange()) {
       return;
     }
 
     CommandScheduler.getInstance().getActiveButtonLoop().clear();
-    oi = OISelector.findOperatorInterface();
+    driver = DriverOISelector.findOperatorInterface();
+    CoDriver = CoDriverOISelector.findOperatorInterface();
 
     /*
      * Set up the default command for the drivetrain. The joysticks' values map to percentage of the
@@ -262,7 +275,8 @@ public class RobotContainer {
      * and the left joystick's x-axis specifies the velocity in the y direction.
      */
     drivetrain.setDefaultCommand(
-        new TeleopSwerve(drivetrain, oi::getTranslateX, oi::getTranslateY, oi::getRotate));
+        new TeleopSwerve(
+            drivetrain, driver::getTranslateX, driver::getTranslateY, driver::getRotate));
 
     configureButtonBindings();
   }
@@ -318,6 +332,7 @@ public class RobotContainer {
     collectionChooser.addOption("FRONT_CONE_TOP", FRONT_CONE_TOP);
     collectionChooser.addOption("FRONT_SINGLE_SUBSTATION", FRONT_SINGLE_SUBSTATION);
     collectionChooser.addOption("FRONT_DOUBLE_SUBSTATION", FRONT_DOUBLE_SUBSTATION);
+    collectionChooser.addOption("BACK_DOUBLE_SUBSTATION", BACK_DOUBLE_SUBSTATION);
     collectionChooser.addOption("FRONT_CONE_FLOOR_TIPPED_LONG", FRONT_CONE_FLOOR_TIPPED_LONG);
     TAB_MAIN.add("Collect Chooser", collectionChooser);
 
@@ -353,8 +368,8 @@ public class RobotContainer {
   /** Use this method to define your button->command mappings. */
   private void configureButtonBindings() {
     // field-relative toggle
-
-    oi.getFieldRelativeButton()
+    driver
+        .getFieldRelativeButton()
         .toggleOnTrue(
             Commands.either(
                 Commands.runOnce(drivetrain::disableFieldRelative, drivetrain),
@@ -362,11 +377,11 @@ public class RobotContainer {
                 drivetrain::getFieldRelative));
 
     // reset gyro to 0 degrees
-    oi.getResetGyroButton().onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
+    driver.getResetGyroButton().onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
 
     // x-stance
-    oi.getXStanceButton().onTrue(Commands.runOnce(drivetrain::enableXstance, drivetrain));
-    oi.getXStanceButton().onFalse(Commands.runOnce(drivetrain::disableXstance, drivetrain));
+    driver.getXStanceButton().onTrue(Commands.runOnce(drivetrain::enableXstance, drivetrain));
+    driver.getXStanceButton().onFalse(Commands.runOnce(drivetrain::disableXstance, drivetrain));
 
     // Creates a new Trigger object for the `Right bumper` button that collects cones
     // driverController.rightBumper().onTrue(new CollectGamePiece(claw, GamePiece.CONE));
@@ -415,12 +430,15 @@ public class RobotContainer {
     //               wrist.setRotation(false);
     //             }));
     // oi.getRotateButton().onTrue(new InstantCommand(() -> arm.setArmAngle(45)));
-    oi.getTempCollectCube().onTrue(new CollectSequence(arm, wrist, claw, () -> BACK_CUBE_FLOOR));
-    oi.getTempScore()
+    driver
+        .getTempCollectCube()
+        .onTrue(new CollectSequence(arm, wrist, claw, () -> BACK_CUBE_FLOOR));
+    driver
+        .getTempEject()
         .onTrue(
             new SequentialCommandGroup(
                 new EjectGamePiece(claw).withTimeout(0.25), new GoHome(arm, wrist)));
-    oi.getTempGoHome().onTrue(new GoHome(arm, wrist));
+    driver.getTempGoHome().onTrue(new GoHome(arm, wrist));
     // new SequentialCommandGroup(
     //     new ParallelCommandGroup(
     //         new SetArm(arm, () -> -45.0, () -> 6.0, () -> false), new SetWristPosition(1350,
@@ -431,10 +449,42 @@ public class RobotContainer {
     //         new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
     //     new InstantCommand(() -> arm.setExtensionNominal(), arm)));
 
-    oi.getTempCollectCone()
+    CoDriver.getTempFloorScore().onTrue(new InstantCommand(() -> this.setFloor()));
+    CoDriver.getTempMediumScore().onTrue(new InstantCommand(() -> this.setMedium()));
+    CoDriver.getTempHighScore().onTrue(new InstantCommand(() -> this.setHigh()));
+
+    if (getHeight() == height.FLOOR) {
+      driver
+        .getTempScore()
+        .onTrue(
+            new ConditionalCommand(
+                new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CONE_FLOOR),
+                new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CUBE_FLOOR),
+                () -> claw.isCone()));
+    } else if (getHeight() == height.MEDIUM) {
+      driver
+        .getTempScore()
+        .onTrue(
+            new ConditionalCommand(
+                new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CONE_MEDIUM),
+                new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CUBE_MEDIUM),
+                () -> claw.isCone()));
+    } else { //Defaults to high if not set
+      driver
+        .getTempScore()
+        .onTrue(
+            new ConditionalCommand(
+                new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CONE_TOP),
+                new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CUBE_TOP),
+                () -> claw.isCone()));
+    }
+
+    driver
+        .getTempCollectConeFloor()
         .onTrue(
             new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CONE_FLOOR));
-    oi.getTempCollectConeGround()
+    driver
+        .getTempCollectConeTip()
         .onTrue(
             new CollectSequence(
                 arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CONE_FLOOR_TIPPED));
@@ -466,11 +516,11 @@ public class RobotContainer {
     Command auto3Piece = Commands.sequence(new FollowPath(auto3Paths.get(0), drivetrain, true));
 
     // add commands to the auto chooser
-    autoChooser.addDefaultOption("Do Nothing", new InstantCommand());
+    autoChooser.setDefaultOption("Do Nothing", new InstantCommand());
 
     // demonstration of PathPlanner path group with event markers
     autoChooser.addOption("Test Path", autoTest);
-    //autoChooser.addOption("3 Piece", auto3Piece);
+    // autoChooser.addOption("3 Piece", auto3Piece);
 
     // "auto" command for tuning the drive velocity PID
     autoChooser.addOption(
@@ -492,14 +542,29 @@ public class RobotContainer {
             drivetrain::getCharacterizationVelocity));
 
     final HashMap<String, Command> someEventMap = new HashMap<>();
-    someEventMap.put("Score Cone", new WaitCommand(2));
+    someEventMap.put(
+        "Score Cone",
+        new SequentialCommandGroup(
+            new ParallelCommandGroup(
+                new SetArm(
+                    arm,
+                    () -> PositionConfigs.FRONT_CONE_TOP.armRotation,
+                    () -> PositionConfigs.FRONT_CONE_TOP.armLength,
+                    () -> false),
+                new SetWristPosition(PositionConfigs.FRONT_CONE_TOP.wristRotation, wrist)),
+            new EjectGamePiece(claw).withTimeout(0.25),
+            new GoHome(arm, wrist)));
     someEventMap.put("Collect Cube", new CollectSequence(arm, wrist, claw, () -> BACK_CUBE_FLOOR));
     someEventMap.put(
         "Score Cube",
         new SequentialCommandGroup(
             new ParallelCommandGroup(
-                new SetArm(arm, () -> -45.0, () -> 6.0, () -> false),
-                new SetWristPosition(1350, wrist)),
+                new SetArm(
+                    arm,
+                    () -> PositionConfigs.FRONT_CONE_TOP.armRotation,
+                    () -> PositionConfigs.FRONT_CONE_TOP.armLength,
+                    () -> false),
+                new SetWristPosition(PositionConfigs.FRONT_CONE_TOP.wristRotation, wrist)),
             new EjectGamePiece(claw).withTimeout(0.25),
             new ParallelCommandGroup(
                 new SetArm(arm, () -> Arm.HOME_ROTATION, () -> Arm.HOME_EXTENSION, () -> true),
@@ -507,36 +572,56 @@ public class RobotContainer {
             new InstantCommand(() -> arm.setExtensionNominal(), arm)));
     // TODO this auto does not fully work reliably
     autoChooser.addOption(
-        "Some Auto",
-        new SequentialCommandGroup(
-                new ParallelCommandGroup(
-                    new SetArm(
-                        arm,
-                        () -> PositionConfigs.FRONT_CONE_MEDIUM.armRotation,
-                        () -> PositionConfigs.FRONT_CONE_MEDIUM.armLength,
-                        () -> false),
-                    new SetWristPosition(PositionConfigs.FRONT_CONE_MEDIUM.wristRotation, wrist)),
-                new EjectGamePiece(claw).withTimeout(0.25),
-                new ParallelCommandGroup(
-                    new SetArm(arm, () -> Arm.HOME_ROTATION, () -> Arm.HOME_EXTENSION, () -> true),
-                    new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
-                new InstantCommand(() -> arm.setExtensionNominal(), arm))
-            .andThen(
-                AutoPathHelper.followPath(
-                    drivetrain, "Some Auto", someEventMap)) // add auto paths here
+        "New Auto",
+        AutoPathHelper.followPath(drivetrain, "Some Auto", someEventMap)
             .andThen(new Balance(drivetrain))
             .andThen(() -> drivetrain.setXStance(), drivetrain));
-
-    Shuffleboard.getTab("MAIN").add(autoChooser.getSendableChooser());
+    // autoChooser.addOption(
+    //     "Some Auto",
+    //     new SequentialCommandGroup(
+    //             new ParallelCommandGroup(
+    //                 new SetArm(
+    //                     arm,
+    //                     () -> PositionConfigs.FRONT_CONE_MEDIUM.armRotation,
+    //                     () -> PositionConfigs.FRONT_CONE_MEDIUM.armLength,
+    //                     () -> false),
+    //                 new SetWristPosition(PositionConfigs.FRONT_CONE_MEDIUM.wristRotation,
+    // wrist)),
+    //             new EjectGamePiece(claw).withTimeout(0.25),
+    //             new ParallelCommandGroup(
+    //                 new SetArm(arm, () -> Arm.HOME_ROTATION, () -> Arm.HOME_EXTENSION, () ->
+    // true),
+    //                 new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
+    //             new InstantCommand(() -> arm.setExtensionNominal(), arm))
+    //         .andThen(
+    //             AutoPathHelper.followPath(
+    //                 drivetrain, "Some Auto", someEventMap)) // add auto paths here
+    //         .andThen(new Balance(drivetrain))
+    //         .andThen(() -> drivetrain.setXStance(), drivetrain));
 
     ShuffleboardTab armTab = Shuffleboard.getTab("Arm Tab");
     // armTab.addDouble("desired angle", () -> 0);
     // armTab.addDouble("desired length", () -> 0);
     armTab.add("SA-Home", new SyncedArm(arm, () -> 0.1, () -> 0.1));
-    armTab.add("SA-HighCone", new SyncedArm(arm, () -> PositionConfigs.FRONT_CONE_TOP.armRotation, () -> PositionConfigs.FRONT_CONE_TOP.armLength));
-    armTab.add("SA-MidCone", new SyncedArm(arm, () -> PositionConfigs.FRONT_CONE_MEDIUM.armRotation, () -> PositionConfigs.FRONT_CONE_MEDIUM.armLength));
-    armTab.add("SA-CollectBack", new SyncedArm(arm, () -> PositionConfigs.BACK_CONE_FLOOR.armRotation, () -> PositionConfigs.BACK_CONE_FLOOR.armLength));
-    TAB_MAIN.add(autoChooser.getSendableChooser());
+    armTab.add(
+        "SA-HighCone",
+        new SyncedArm(
+            arm,
+            () -> PositionConfigs.FRONT_CONE_TOP.armRotation,
+            () -> PositionConfigs.FRONT_CONE_TOP.armLength));
+    armTab.add(
+        "SA-MidCone",
+        new SyncedArm(
+            arm,
+            () -> PositionConfigs.FRONT_CONE_MEDIUM.armRotation,
+            () -> PositionConfigs.FRONT_CONE_MEDIUM.armLength));
+    armTab.add(
+        "SA-CollectBack",
+        new SyncedArm(
+            arm,
+            () -> PositionConfigs.BACK_CONE_FLOOR.armRotation,
+            () -> PositionConfigs.BACK_CONE_FLOOR.armLength));
+    TAB_MAIN.add(autoChooser);
   }
 
   /**
@@ -545,6 +630,26 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.get();
+    return autoChooser.getSelected();
+  }
+
+  public void setHigh() {
+    height = height.HIGH;
+  }
+
+  public Height getHeight() {
+    return height;
+  }
+
+  public void setMedium() {
+    height = height.MEDIUM;
+  }
+
+  public void setFloor() {
+    height = height.FLOOR;
+  }
+
+  public void setNone() {
+    height = height.NONE;
   }
 }

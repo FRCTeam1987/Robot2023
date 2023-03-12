@@ -2,19 +2,19 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.operator_interface;
+package frc.robot.operator_interface.Driver;
 
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /** Class for controlling the robot with two Xbox controllers. */
-public class DualJoysticksOI implements OperatorInterface {
+public class DriverDualJoysticksOI implements DriverOperatorInterface {
   private final CommandJoystick translateJoystick;
   private final CommandJoystick rotateJoystick;
   private final Trigger[] translateJoystickButtons;
   private final Trigger[] rotateJoystickButtons;
 
-  public DualJoysticksOI(int translatePort, int rotatePort) {
+  public DriverDualJoysticksOI(int translatePort, int rotatePort) {
     translateJoystick = new CommandJoystick(translatePort);
     rotateJoystick = new CommandJoystick(rotatePort);
 

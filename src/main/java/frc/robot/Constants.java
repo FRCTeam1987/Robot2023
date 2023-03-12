@@ -136,13 +136,13 @@ public final class Constants {
     public static final PositionConfig BACK_CONE_FLOOR_TIPPED =
         new PositionConfig(Arm.HOME_EXTENSION, 108, 1347, GamePiece.CONE);
     public static final PositionConfig FRONT_CONE_MEDIUM =
-        new PositionConfig(15, -43, 489, GamePiece.CONE);
+        new PositionConfig(17, -43, 489, GamePiece.CONE);
     public static final PositionConfig FRONT_CONE_TOP =
-        new PositionConfig(35, -47.5, 481, GamePiece.CONE);
+        new PositionConfig(35, -43, 575, GamePiece.CONE);
     public static final PositionConfig FRONT_CUBE_MEDIUM =
         new PositionConfig(1, -47, 1016, GamePiece.CUBE);
     public static final PositionConfig FRONT_CUBE_TOP =
-        new PositionConfig(20, -50, 1027, GamePiece.CUBE);
+        new PositionConfig(20, -48.5, 1077, GamePiece.CUBE); // wrist 1027, arm angle -50
     public static final PositionConfig BACK_CONE_TOP =
         new PositionConfig(35, 49.5, 2800, GamePiece.CONE);
     public static final PositionConfig BACK_CONE_MEDIUM =
@@ -152,8 +152,13 @@ public final class Constants {
     public static final PositionConfig BACK_CUBE_MEDIUM =
         new PositionConfig(0, 51.5, 2383, GamePiece.CUBE);
     public static final PositionConfig FRONT_SINGLE_SUBSTATION =
-        new PositionConfig(0, -72, 2330, GamePiece.CUBE);
+        new PositionConfig(0, -72, 2330, GamePiece.CONE);
     public static final PositionConfig FRONT_DOUBLE_SUBSTATION =
         new PositionConfig(17, -33, 1270, GamePiece.CONE);
+
+    public static final PositionConfig BACK_SINGLE_SUBSTATION =
+        new PositionConfig(0, 70.5, -1266, GamePiece.CONE);
+    public static final PositionConfig BACK_DOUBLE_SUBSTATION =
+        new PositionConfig(18, 27, 2570, GamePiece.CONE);
   }
 }

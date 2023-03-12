@@ -6,12 +6,12 @@
  * Initially from https://github.com/Mechanical-Advantage/RobotCode2022
  */
 
-package frc.robot.operator_interface;
+package frc.robot.operator_interface.Driver;
 
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /** Interface for all driver and operator controls. */
-public interface OperatorInterface {
+public interface DriverOperatorInterface {
 
   default double getTranslateX() {
     return 0.0;
@@ -37,10 +37,6 @@ public interface OperatorInterface {
     return new Trigger(() -> false);
   }
 
-  // default Trigger getWristPosButton() {
-  //   return new Trigger(() -> false);
-  // }
-
   default Trigger getWristNegButton() {
     return new Trigger(() -> false);
   }
@@ -49,11 +45,11 @@ public interface OperatorInterface {
     return new Trigger(() -> false);
   }
 
-  public default Trigger getTempCollectCone() {
+  public default Trigger getTempCollectConeFloor() {
     return new Trigger(() -> false);
   }
 
-  public default Trigger getTempCollectConeGround() {
+  public default Trigger getTempCollectConeTip() {
     return new Trigger(() -> false);
   }
 
@@ -61,15 +57,20 @@ public interface OperatorInterface {
     return new Trigger(() -> false);
   }
 
-  public default Trigger getTempCollectCubGround() {
+  public default Trigger getTempCollectCubeGround() {
     return new Trigger(() -> false);
   }
 
-  public default Trigger getTempScore() {
+  public default Trigger getTempEject() {
     return new Trigger(() -> false);
   }
 
   public default Trigger getTempGoHome() {
+    return new Trigger(() -> false);
+  }
+
+  // CoDriver
+  public default Trigger getTempScore() {
     return new Trigger(() -> false);
   }
 }

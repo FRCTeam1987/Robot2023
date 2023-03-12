@@ -4,16 +4,13 @@
 
 package frc.robot.commands.arm;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.util.Util;
+import java.util.function.DoubleSupplier;
 
 public class SyncedArm extends CommandBase {
 
@@ -28,7 +25,8 @@ public class SyncedArm extends CommandBase {
   private double lengthRange;
 
   /** Creates a new SyncedArm. */
-  public SyncedArm(final Arm arm, final DoubleSupplier desiredAngle, final DoubleSupplier desiredLength) {
+  public SyncedArm(
+      final Arm arm, final DoubleSupplier desiredAngle, final DoubleSupplier desiredLength) {
     this.arm = arm;
     this.desiredAngle = desiredAngle;
     this.desiredLength = desiredLength;
@@ -57,11 +55,12 @@ public class SyncedArm extends CommandBase {
     //   desiredAngleValue - (Math.sqrt(1-currentAnglePercent) * desiredAngleValue)
     //   : desiredAngleValue - (Math.pow(1-currentAnglePercent, 2) * desiredAngleValue);
     // arm.setArmLength(findLength());
-    
+
     if (Util.isWithinTolerance(arm.getArmAngle(), desiredAngle.getAsDouble(), 1)) {
       SmartDashboard.putNumber("Intermediate Length", desiredLength.getAsDouble());
     } else {
-      SmartDashboard.putNumber("Intermediate Length", MathUtil.clamp(findLength(), 0.0, desiredLength.getAsDouble()));
+      SmartDashboard.putNumber(
+          "Intermediate Length", MathUtil.clamp(findLength(), 0.0, desiredLength.getAsDouble()));
     }
   }
 
@@ -80,7 +79,7 @@ public class SyncedArm extends CommandBase {
   @Override
   public boolean isFinished() {
     return Util.isWithinTolerance(arm.getArmAngle(), desiredAngle.getAsDouble(), 2)
-      && Util.isWithinTolerance(arm.getArmLength(), desiredLength.getAsDouble(), 1);
+        && Util.isWithinTolerance(arm.getArmLength(), desiredLength.getAsDouble(), 1);
   }
 
   private boolean isArmHome() {
@@ -98,11 +97,15 @@ public class SyncedArm extends CommandBase {
 
     final double currentLength = arm.getArmLength();
     final boolean isRetract = currentLength > desiredLength.getAsDouble();
-    return Math.abs((desiredLength.getAsDouble() - currentLength) * (
-      Math.abs(isArmHome() ?
-        desiredAngleValue - (Math.sqrt(1-currentAnglePercent) * desiredAngleValue)
-        : desiredAngleValue - (Math.pow(1-currentAnglePercent, 2) * desiredAngleValue)) / desiredAngleValue)
-    );
+    return Math.abs(
+        (desiredLength.getAsDouble() - currentLength)
+            * (Math.abs(
+                    isArmHome()
+                        ? desiredAngleValue
+                            - (Math.sqrt(1 - currentAnglePercent) * desiredAngleValue)
+                        : desiredAngleValue
+                            - (Math.pow(1 - currentAnglePercent, 2) * desiredAngleValue))
+                / desiredAngleValue));
   }
 
   @Override

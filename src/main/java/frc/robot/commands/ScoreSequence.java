@@ -4,7 +4,7 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants.PositionConfig;
 import frc.robot.commands.arm.SetArm;
 import frc.robot.subsystems.arm.Arm;
@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ScoreSequence extends SequentialCommandGroup {
+public class ScoreSequence extends ParallelCommandGroup {
   /** Creates a new ScoreSequence. */
   public ScoreSequence(
       final Arm arm,

@@ -25,16 +25,10 @@ public class Wrist extends SubsystemBase {
   public Wrist(WristIO io) {
     this.io = io;
     int row = 0;
-    TAB_WRIST
-        .add("Set Normal", new InstantCommand(() -> io.setRotation(true)))
-        .withSize(2, 1);
-    TAB_WRIST
-        .add("Set Invert", new InstantCommand(() -> io.setRotation(false)))
-        .withSize(2, 1);
+    TAB_WRIST.add("Set Normal", new InstantCommand(() -> io.setRotation(true))).withSize(2, 1);
+    TAB_WRIST.add("Set Invert", new InstantCommand(() -> io.setRotation(false))).withSize(2, 1);
 
-    TAB_WRIST
-        .add("Set Straight", new SetWristPosition(ANGLE_STRAIGHT, this))
-        .withSize(2, 1);
+    TAB_WRIST.add("Set Straight", new SetWristPosition(ANGLE_STRAIGHT, this)).withSize(2, 1);
     TAB_WRIST
         .add("Set Front Perpendicular", new SetWristPosition(ANGLE_FRONT_PERPENDICULAR, this))
         .withSize(2, 1);
