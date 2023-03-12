@@ -5,6 +5,7 @@
 package frc.robot.subsystems.drivetrain;
 
 import static frc.robot.Constants.ADVANTAGE_KIT_ENABLED;
+import static frc.robot.Constants.TAB_MAIN;
 
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import edu.wpi.first.math.controller.PIDController;
@@ -131,11 +132,10 @@ public class Drivetrain extends SubsystemBase {
 
     this.poseEstimator = RobotOdometry.getInstance().getPoseEstimator();
 
-    ShuffleboardTab tabMain = Shuffleboard.getTab("MAIN");
-    tabMain.addNumber("Gyroscope Angle", () -> getRotation().getDegrees());
-    tabMain.addBoolean("X-Stance On?", this::isXstance);
-    tabMain.addBoolean("Field-Relative Enabled?", () -> this.isFieldRelative);
-    tabMain.add("Reset Gyro", new InstantCommand(this::zeroGyroscope));
+    TAB_MAIN.addNumber("Gyroscope Angle", () -> getRotation().getDegrees());
+    TAB_MAIN.addBoolean("X-Stance On?", this::isXstance);
+    TAB_MAIN.addBoolean("Field-Relative Enabled?", () -> this.isFieldRelative);
+    TAB_MAIN.add("Reset Gyro", new InstantCommand(this::zeroGyroscope));
 
     if (DEBUGGING) {
       ShuffleboardTab tab = Shuffleboard.getTab(SUBSYSTEM_NAME);

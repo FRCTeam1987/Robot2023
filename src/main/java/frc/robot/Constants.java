@@ -10,6 +10,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RuntimeType;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.lib.team6328.util.Alert;
 import frc.lib.team6328.util.Alert.AlertType;
 import frc.robot.subsystems.arm.Arm;
@@ -31,6 +33,12 @@ public final class Constants {
   // FIXME: If Limelight is used, specify the pipeline for detecting AprilTags
   public static final int LIMELIGHT_PIPELINE = 1;
 
+  public static final ShuffleboardTab TAB_VISION = Shuffleboard.getTab("Vision");
+  public static final ShuffleboardTab TAB_MAIN = Shuffleboard.getTab("Main");
+  public static final ShuffleboardTab TAB_ARM = Shuffleboard.getTab("Arm");
+  public static final ShuffleboardTab TAB_WRIST = Shuffleboard.getTab("Wrist");
+  public static final ShuffleboardTab TAB_CLAW = Shuffleboard.getTab("Claw");
+  public static final ShuffleboardTab TAB_COMMANDS = Shuffleboard.getTab("Commands");
   private static final RobotType ROBOT =
       RobotBase.getRuntimeType().equals(RuntimeType.kRoboRIO)
           ? RobotType.ROBOT_2023_TEST
@@ -49,6 +57,11 @@ public final class Constants {
         return ROBOT;
       }
     } else {
+      if (ROBOT == RobotType.ROBOT_SIMBOT && !ADVANTAGE_KIT_ENABLED) {
+        invalidRobotAlert.set(true);
+      } else {
+        return ROBOT;
+      }
       return ROBOT;
     }
   }
@@ -117,19 +130,19 @@ public final class Constants {
     public static final PositionConfig FRONT_CONE_FLOOR_TIPPED_LONG =
         new PositionConfig(23, -102.4, 2130, GamePiece.CONE);
     public static final PositionConfig BACK_CUBE_FLOOR =
-        new PositionConfig(Arm.HOME_EXTENSION, 101.7, 2329, GamePiece.CUBE);
+        new PositionConfig(Arm.HOME_EXTENSION, 101.7, 1550, GamePiece.CUBE);
     public static final PositionConfig BACK_CONE_FLOOR =
-        new PositionConfig(Arm.HOME_EXTENSION, 90.9, 2440, GamePiece.CONE);
+        new PositionConfig(Arm.HOME_EXTENSION, 90.9, 1755, GamePiece.CONE);
     public static final PositionConfig BACK_CONE_FLOOR_TIPPED =
-        new PositionConfig(Arm.HOME_EXTENSION, 113, 1773, GamePiece.CONE);
+        new PositionConfig(Arm.HOME_EXTENSION, 108, 1347, GamePiece.CONE);
     public static final PositionConfig FRONT_CONE_MEDIUM =
-        new PositionConfig(22, -44, 900, GamePiece.CONE);
+        new PositionConfig(15, -43, 489, GamePiece.CONE);
     public static final PositionConfig FRONT_CONE_TOP =
-        new PositionConfig(34, -47.5, 1400, GamePiece.CONE);
+        new PositionConfig(35, -47.5, 481, GamePiece.CONE);
     public static final PositionConfig FRONT_CUBE_MEDIUM =
-        new PositionConfig(0, -56, 1690, GamePiece.CUBE);
+        new PositionConfig(1, -47, 1016, GamePiece.CUBE);
     public static final PositionConfig FRONT_CUBE_TOP =
-        new PositionConfig(20, -50, 1960, GamePiece.CUBE);
+        new PositionConfig(20, -50, 1027, GamePiece.CUBE);
     public static final PositionConfig BACK_CONE_TOP =
         new PositionConfig(35, 49.5, 2800, GamePiece.CONE);
     public static final PositionConfig BACK_CONE_MEDIUM =
