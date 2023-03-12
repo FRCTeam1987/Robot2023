@@ -5,6 +5,7 @@
 package frc.robot;
 
 import static frc.robot.Constants.*;
+import static frc.robot.Constants.PositionConfigs.*;
 
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -278,12 +279,12 @@ public class RobotContainer {
     // debugTab.add("Arm Angle (Degrees)", arm.getArmAngle()).withSize(2, 2).withPosition(2, 0);
     // debugTab.add("Wrist Rotation (Degrees)", wrist.getDegrees()).withSize(2, 2).withPosition(4,
 
-    TAB_COMMANDS.add("Extend Arm to 12 Inches", new ExtendArm(arm, 12));
-    TAB_COMMANDS.add("Rotate Arm to 45 Degrees", new RotateArm(arm, 45));
+    TAB_COMMANDS.add("Extend to 12in", new ExtendArm(arm, 12));
+    TAB_COMMANDS.add("Rotate to 45deg", new RotateArm(arm, 45));
     TAB_COMMANDS.add("Flip Wrist to true", new FlipWrist(wrist, true));
 
-    TAB_ARM.add("Sequential Command 45 pos", new SequentialCommandTest(arm, wrist, 16, 45, 3289));
-    TAB_ARM.add("Sequential Command -45 pos", new SequentialCommandTest(arm, wrist, 16, -45, 3289));
+    TAB_ARM.add("Seq 45 pos", new SequentialCommandTest(arm, wrist, 16, 45, 3289));
+    TAB_ARM.add("Seq -45 pos", new SequentialCommandTest(arm, wrist, 16, -45, 3289));
     // armTab.add("Collect Back Cube", );
 
     TAB_ARM.add("Go Home", new GoHome(arm, wrist));
@@ -293,33 +294,32 @@ public class RobotContainer {
     TAB_COMMANDS.add("Scan Battery", new InstantCommand(() -> BatteryTracker.scanBattery(10.0)));
 
     SendableChooser<PositionConfig> collectionChooser = new SendableChooser<>();
-    collectionChooser.setDefaultOption("TEST POS", PositionConfigs.TEST_POS);
-    collectionChooser.addOption("TEST NEG", PositionConfigs.TEST_NEG);
-    collectionChooser.addOption("back cube", PositionConfigs.BACK_CUBE_FLOOR);
-    collectionChooser.addOption("back cone", PositionConfigs.BACK_CONE_FLOOR);
-    collectionChooser.addOption("back cone tipped", PositionConfigs.BACK_CONE_FLOOR_TIPPED);
-    collectionChooser.addOption("front cube", PositionConfigs.FRONT_CUBE_FLOOR);
-    collectionChooser.addOption("front cone", PositionConfigs.FRONT_CONE_FLOOR);
-    collectionChooser.addOption("front cone tipped", PositionConfigs.FRONT_CONE_FLOOR_TIPPED);
-    collectionChooser.addOption("BACK_CUBE_FLOOR", PositionConfigs.BACK_CUBE_FLOOR); // score
-    collectionChooser.addOption("BACK_CONE_FLOOR_TIPPED", PositionConfigs.BACK_CONE_FLOOR_TIPPED);
-    collectionChooser.addOption("BACK_CONE_TOP", PositionConfigs.BACK_CONE_TOP);
-    collectionChooser.addOption("BACK_CONE_MEDIUM", PositionConfigs.BACK_CONE_MEDIUM);
-    collectionChooser.addOption("BACK_CUBE_TOP", PositionConfigs.BACK_CUBE_TOP);
-    collectionChooser.addOption("BACK_CUBE_MEDIUM", PositionConfigs.BACK_CUBE_MEDIUM);
-    collectionChooser.addOption("FRONT_CONE_TOP", PositionConfigs.FRONT_CONE_TOP);
-    collectionChooser.addOption("FRONT_CONE_MEDIUM", PositionConfigs.FRONT_CONE_MEDIUM);
-    collectionChooser.addOption("FRONT_CUBE_MEDIUM", PositionConfigs.FRONT_CUBE_MEDIUM);
-    collectionChooser.addOption("FRONT_CUBE_TOP", PositionConfigs.FRONT_CUBE_TOP);
-    collectionChooser.addOption("FRONT_CONE_TOP", PositionConfigs.FRONT_CONE_TOP);
-    collectionChooser.addOption("FRONT_SINGLE_SUBSTATION", PositionConfigs.FRONT_SINGLE_SUBSTATION);
-    collectionChooser.addOption("FRONT_DOUBLE_SUBSTATION", PositionConfigs.FRONT_DOUBLE_SUBSTATION);
-    collectionChooser.addOption(
-        "front cone tipped long", PositionConfigs.FRONT_CONE_FLOOR_TIPPED_LONG);
+    collectionChooser.setDefaultOption("TEST_POS", TEST_POS);
+    collectionChooser.addOption("TEST_NEG", TEST_NEG);
+    collectionChooser.addOption("BACK_CUBE_FLOOR", BACK_CUBE_FLOOR);
+    collectionChooser.addOption("BACK_CONE_FLOOR", BACK_CONE_FLOOR);
+    collectionChooser.addOption("BACK_CONE_FLOOR_TIPPED", BACK_CONE_FLOOR_TIPPED);
+    collectionChooser.addOption("FRONT_CUBE_FLOOR", FRONT_CUBE_FLOOR);
+    collectionChooser.addOption("FRONT_CONE_FLOOR", FRONT_CONE_FLOOR);
+    collectionChooser.addOption("FRONT_CONE_FLOOR_TIPPED", FRONT_CONE_FLOOR_TIPPED);
+    collectionChooser.addOption("BACK_CUBE_FLOOR", BACK_CUBE_FLOOR); // score
+    collectionChooser.addOption("BACK_CONE_FLOOR_TIPPED", BACK_CONE_FLOOR_TIPPED);
+    collectionChooser.addOption("BACK_CONE_TOP", BACK_CONE_TOP);
+    collectionChooser.addOption("BACK_CONE_MEDIUM", BACK_CONE_MEDIUM);
+    collectionChooser.addOption("BACK_CUBE_TOP", BACK_CUBE_TOP);
+    collectionChooser.addOption("BACK_CUBE_MEDIUM", BACK_CUBE_MEDIUM);
+    collectionChooser.addOption("FRONT_CONE_TOP", FRONT_CONE_TOP);
+    collectionChooser.addOption("FRONT_CONE_MEDIUM", FRONT_CONE_MEDIUM);
+    collectionChooser.addOption("FRONT_CUBE_MEDIUM", FRONT_CUBE_MEDIUM);
+    collectionChooser.addOption("FRONT_CUBE_TOP", FRONT_CUBE_TOP);
+    collectionChooser.addOption("FRONT_CONE_TOP", FRONT_CONE_TOP);
+    collectionChooser.addOption("FRONT_SINGLE_SUBSTATION", FRONT_SINGLE_SUBSTATION);
+    collectionChooser.addOption("FRONT_DOUBLE_SUBSTATION", FRONT_DOUBLE_SUBSTATION);
+    collectionChooser.addOption("FRONT_CONE_FLOOR_TIPPED_LONG", FRONT_CONE_FLOOR_TIPPED_LONG);
     TAB_MAIN.add("Collect Chooser", collectionChooser);
 
     SendableChooser<PositionConfig> ScoreChooser = new SendableChooser<>();
-    ScoreChooser.addOption("BACK_CUBE_FLOOR", PositionConfigs.BACK_CUBE_FLOOR); // score
+    ScoreChooser.addOption("BACK_CUBE_FLOOR", BACK_CUBE_FLOOR); // score
     ScoreChooser.addOption("BACK_CONE_FLOOR_TIPPED", PositionConfigs.BACK_CONE_FLOOR_TIPPED);
     ScoreChooser.addOption("BACK_CONE_TOP", PositionConfigs.BACK_CONE_TOP);
     ScoreChooser.addOption("BACK_CONE_MEDIUM", PositionConfigs.BACK_CONE_MEDIUM);
@@ -336,14 +336,14 @@ public class RobotContainer {
     TAB_MAIN.add(
         "Collect Sequence", new CollectSequence(arm, wrist, claw, collectionChooser::getSelected));
     TAB_MAIN.add("Eject Game Piece", new EjectGamePiece(claw).withTimeout(0.25));
-    TAB_MAIN.add("angle 25, length 1", new SetArm(arm, () -> 25, () -> 1, () -> false));
-    TAB_MAIN.add("angle 45, length 1", new SetArm(arm, () -> 45, () -> 1, () -> false));
-    TAB_MAIN.add("angle 65, length 1", new SetArm(arm, () -> 65, () -> 1, () -> false));
-    TAB_MAIN.add("angle 90, length 1", new SetArm(arm, () -> 90, () -> 1, () -> false));
-    TAB_MAIN.add("angle 45, length 10", new SetArm(arm, () -> 45, () -> 10, () -> false));
-    TAB_MAIN.add("angle 45, length 20", new SetArm(arm, () -> 45, () -> 20, () -> false));
-    TAB_MAIN.add("angle 45, length 36", new SetArm(arm, () -> 45, () -> 36, () -> false));
-    TAB_MAIN.add("set home", new GoHome(arm, wrist));
+    TAB_MAIN.add("Angle 25, Length 1", new SetArm(arm, () -> 25, () -> 1, () -> false));
+    TAB_MAIN.add("Angle 45, Length 1", new SetArm(arm, () -> 45, () -> 1, () -> false));
+    TAB_MAIN.add("Angle 65, Length 1", new SetArm(arm, () -> 65, () -> 1, () -> false));
+    TAB_MAIN.add("Angle 90, Length 1", new SetArm(arm, () -> 90, () -> 1, () -> false));
+    TAB_MAIN.add("Angle 45, Length 10", new SetArm(arm, () -> 45, () -> 10, () -> false));
+    TAB_MAIN.add("Angle 45, Length 20", new SetArm(arm, () -> 45, () -> 20, () -> false));
+    TAB_MAIN.add("Angle 45, Length 36", new SetArm(arm, () -> 45, () -> 36, () -> false));
+    TAB_MAIN.add("Set Home", new GoHome(arm, wrist));
     TAB_MAIN.add("Balance", new Balance(drivetrain));
   }
 
@@ -412,9 +412,7 @@ public class RobotContainer {
     //               wrist.setRotation(false);
     //             }));
     // oi.getRotateButton().onTrue(new InstantCommand(() -> arm.setArmAngle(45)));
-    oi.getTempCollectCube()
-        .onTrue(
-            new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR));
+    oi.getTempCollectCube().onTrue(new CollectSequence(arm, wrist, claw, () -> BACK_CUBE_FLOOR));
     oi.getTempScore()
         .onTrue(
             new SequentialCommandGroup(
@@ -492,9 +490,7 @@ public class RobotContainer {
 
     final HashMap<String, Command> someEventMap = new HashMap<>();
     someEventMap.put("Score Cone", new WaitCommand(2));
-    someEventMap.put(
-        "Collect Cube",
-        new CollectSequence(arm, wrist, claw, () -> PositionConfigs.BACK_CUBE_FLOOR));
+    someEventMap.put("Collect Cube", new CollectSequence(arm, wrist, claw, () -> BACK_CUBE_FLOOR));
     someEventMap.put(
         "Score Cube",
         new SequentialCommandGroup(

@@ -11,7 +11,6 @@ public class VisionIOLimelightBase {
   private final StringSubscriber jsonSubscriber;
 
   public VisionIOLimelightBase(String limelightName) {
-    int column = 0;
     this.limelightName = limelightName;
 
     String limelightNameShort = limelightName.replace("limelight-", "");
@@ -20,8 +19,7 @@ public class VisionIOLimelightBase {
     inst.getEntry("pipeline").setNumber(LIMELIGHT_PIPELINE);
     TAB_VISION
         .addNumber(limelightNameShort + " count", this::getVisibleTagCount)
-        .withPosition(column, VisionIOLimelight.row);
-    VisionIOLimelight.row++;
+        .withPosition(0, VisionIOLimelight.row++);
     botPoseSubscriber = inst.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
     jsonSubscriber = inst.getStringTopic("json").subscribe("[]");
   }

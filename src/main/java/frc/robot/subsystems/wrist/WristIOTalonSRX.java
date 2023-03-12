@@ -41,7 +41,7 @@ public class WristIOTalonSRX implements WristIO {
               wristMotor.setSelectedSensorPosition(0);
             }));
     TAB_WRIST.addNumber("Current Position", wristMotor::getSelectedSensorPosition);
-    TAB_WRIST.addNumber("motor voltage", wristMotor::getMotorOutputVoltage);
+    TAB_WRIST.addNumber("Motor Voltage", wristMotor::getMotorOutputVoltage);
   }
 
   @Override
