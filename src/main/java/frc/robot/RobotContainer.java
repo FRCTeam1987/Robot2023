@@ -35,6 +35,7 @@ import frc.robot.Constants.PositionConfigs;
 import frc.robot.commands.*;
 import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
 import frc.robot.commands.arm.SetArm;
+import frc.robot.commands.arm.SyncedArm;
 import frc.robot.commands.auto.AutoPathHelper;
 import frc.robot.commands.auto.Balance;
 import frc.robot.configs.CompRobotConfig;
@@ -545,6 +546,14 @@ public class RobotContainer {
             .andThen(() -> drivetrain.setXStance(), drivetrain));
 
     Shuffleboard.getTab("MAIN").add(autoChooser.getSendableChooser());
+
+    ShuffleboardTab armTab = Shuffleboard.getTab("Arm Tab");
+    // armTab.addDouble("desired angle", () -> 0);
+    // armTab.addDouble("desired length", () -> 0);
+    armTab.add("SA-Home", new SyncedArm(arm, () -> 0.1, () -> 0.1));
+    armTab.add("SA-HighCone", new SyncedArm(arm, () -> PositionConfigs.FRONT_CONE_TOP.armRotation, () -> PositionConfigs.FRONT_CONE_TOP.armLength));
+    armTab.add("SA-MidCone", new SyncedArm(arm, () -> PositionConfigs.FRONT_CONE_MEDIUM.armRotation, () -> PositionConfigs.FRONT_CONE_MEDIUM.armLength));
+    armTab.add("SA-CollectBack", new SyncedArm(arm, () -> PositionConfigs.BACK_CONE_FLOOR.armRotation, () -> PositionConfigs.BACK_CONE_FLOOR.armLength));
   }
 
   /**
