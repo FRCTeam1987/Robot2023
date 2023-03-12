@@ -164,7 +164,7 @@ public class RobotContainer {
             // temp
             vision =
                 new Vision(
-                    new VisionIOLimelight(
+                        new VisionIOLimelight(
                         "limelight-fl", "limelight-bl", "limelight-br")); // "limelight-fr"
             arm =
                 new Arm(
@@ -467,7 +467,7 @@ public class RobotContainer {
 
     // demonstration of PathPlanner path group with event markers
     autoChooser.addOption("Test Path", autoTest);
-    autoChooser.addOption("3 Piece", auto3Piece);
+    //autoChooser.addOption("3 Piece", auto3Piece);
 
     // "auto" command for tuning the drive velocity PID
     autoChooser.addOption(

@@ -130,19 +130,19 @@ public final class Constants {
     public static final PositionConfig FRONT_CONE_FLOOR_TIPPED_LONG =
         new PositionConfig(23, -102.4, 2130, GamePiece.CONE);
     public static final PositionConfig BACK_CUBE_FLOOR =
-        new PositionConfig(Arm.HOME_EXTENSION, 101.7, 2329, GamePiece.CUBE);
+        new PositionConfig(Arm.HOME_EXTENSION, 101.7, 1550, GamePiece.CUBE);
     public static final PositionConfig BACK_CONE_FLOOR =
-        new PositionConfig(Arm.HOME_EXTENSION, 90.9, 2440, GamePiece.CONE);
+        new PositionConfig(Arm.HOME_EXTENSION, 90.9, 1755, GamePiece.CONE);
     public static final PositionConfig BACK_CONE_FLOOR_TIPPED =
-        new PositionConfig(Arm.HOME_EXTENSION, 113, 1773, GamePiece.CONE);
+        new PositionConfig(Arm.HOME_EXTENSION, 108, 1347, GamePiece.CONE);
     public static final PositionConfig FRONT_CONE_MEDIUM =
-        new PositionConfig(22, -44, 900, GamePiece.CONE);
+        new PositionConfig(15, -43, 489, GamePiece.CONE);
     public static final PositionConfig FRONT_CONE_TOP =
-        new PositionConfig(34, -47.5, 1400, GamePiece.CONE);
+        new PositionConfig(35, -47.5, 481, GamePiece.CONE);
     public static final PositionConfig FRONT_CUBE_MEDIUM =
-        new PositionConfig(0, -56, 1690, GamePiece.CUBE);
+        new PositionConfig(1, -47, 1016, GamePiece.CUBE);
     public static final PositionConfig FRONT_CUBE_TOP =
-        new PositionConfig(20, -50, 1960, GamePiece.CUBE);
+        new PositionConfig(20, -50, 1027, GamePiece.CUBE);
     public static final PositionConfig BACK_CONE_TOP =
         new PositionConfig(35, 49.5, 2800, GamePiece.CONE);
     public static final PositionConfig BACK_CONE_MEDIUM =

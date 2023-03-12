@@ -54,8 +54,9 @@ public class SetArm extends CommandBase {
 
     if (returning) {
       arm.setArmLength(desiredLength);
-      new WaitUntilCommand(() -> isLengthOnTarget(15));
-      arm.setArmAngle(angleSupplier.getAsDouble());
+      if (isLengthOnTarget(10)) {
+        arm.setArmAngle(angleSupplier.getAsDouble());
+      }
     } else {
       arm.setArmAngle(desiredAngle);
       if (isAngleOnTarget(5) && !isLengthOnTarget(1)) arm.setArmLength(desiredLength);

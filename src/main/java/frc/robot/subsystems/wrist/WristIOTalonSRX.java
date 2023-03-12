@@ -8,7 +8,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class WristIOTalonSRX implements WristIO {
-  public static final int ANGLE_STRAIGHT = 2289;
+  public static final int ANGLE_STRAIGHT = 1457;
 
   private final WPI_TalonSRX wristMotor;
 
@@ -24,7 +24,7 @@ public class WristIOTalonSRX implements WristIO {
     wristConfig.neutralDeadband = 0.001;
     wristMotor.configFactoryDefault();
     wristMotor.configAllSettings(wristConfig);
-    wristMotor.configSelectedFeedbackSensor(FeedbackDevice.PulseWidthEncodedPosition);
+    wristMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
     wristMotor.setNeutralMode(NeutralMode.Brake);
     wristMotor.configVoltageCompSaturation(6);
     wristMotor.enableVoltageCompensation(true);
@@ -33,6 +33,7 @@ public class WristIOTalonSRX implements WristIO {
     wristMotor.configContinuousCurrentLimit(15);
     wristMotor.configPeakCurrentLimit(30);
     setPosition(ANGLE_STRAIGHT);
+    wristMotor.setSelectedSensorPosition(0);
     TAB_WRIST.add(
         "reset",
         new InstantCommand(

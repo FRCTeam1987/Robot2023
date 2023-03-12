@@ -13,10 +13,10 @@ public class Wrist extends SubsystemBase {
   private final WristIOInputsAutoLogged inputs = new WristIOInputsAutoLogged();
 
   private final double currentThreshold = 10.0; // amps
-  public static final int ANGLE_STRAIGHT = 2109;
+  public static final int ANGLE_STRAIGHT = 1457;
   public static final int ANGLE_FRONT_MAX = 795; // when telescope extended
-  public static final int ANGLE_FRONT_PERPENDICULAR = 1275;
-  public static final int ANGLE_BACK_PERPENDICULAR = 3289;
+  public static final int ANGLE_FRONT_PERPENDICULAR = 447;
+  public static final int ANGLE_BACK_PERPENDICULAR = 2439;
   public static final int ANGLE_BACK_MAX = 3393; // when telescope extended
   public static final int ANGLE_BACK_HALF = 2635; // when telescope extended
   public static final int ANGLE_FRONT_HALF = 1924; // when telescope extended
@@ -27,33 +27,26 @@ public class Wrist extends SubsystemBase {
     int row = 0;
     TAB_WRIST
         .add("Set Normal", new InstantCommand(() -> io.setRotation(true)))
-        .withSize(2, 1)
-        .withPosition(0, row++);
+        .withSize(2, 1);
     TAB_WRIST
         .add("Set Invert", new InstantCommand(() -> io.setRotation(false)))
-        .withSize(2, 1)
-        .withPosition(0, row++);
+        .withSize(2, 1);
 
     TAB_WRIST
         .add("Set Straight", new SetWristPosition(ANGLE_STRAIGHT, this))
-        .withSize(2, 1)
-        .withPosition(0, row++);
+        .withSize(2, 1);
     TAB_WRIST
         .add("Set Front Perpendicular", new SetWristPosition(ANGLE_FRONT_PERPENDICULAR, this))
-        .withSize(2, 1)
-        .withPosition(0, row++);
+        .withSize(2, 1);
     TAB_WRIST
         .add("Set Back Perpendicular", new SetWristPosition(ANGLE_BACK_PERPENDICULAR, this))
-        .withSize(2, 1)
-        .withPosition(0, row++);
+        .withSize(2, 1);
     TAB_WRIST
         .add("Set Back Half Perpendicular", new SetWristPosition(ANGLE_BACK_HALF, this))
-        .withSize(2, 1)
-        .withPosition(0, row++);
+        .withSize(2, 1);
     TAB_WRIST
         .add("Set Front Half Perpendicular", new SetWristPosition(ANGLE_FRONT_HALF, this))
-        .withSize(2, 1)
-        .withPosition(0, row++);
+        .withSize(2, 1);
   }
 
   public double getCurrent() {
