@@ -1,7 +1,8 @@
 package frc.robot.util;
 
+import static frc.robot.Constants.TAB_MAIN;
+
 import edu.wpi.first.wpilibj.SerialPort;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
 import frc.robot.Constants.RobotType;
@@ -92,7 +93,7 @@ public class BatteryTracker {
       System.out.println("[BatteryTracker] Robot is not real!");
     }
 
-    SmartDashboard.putString("Battery", name);
+    TAB_MAIN.addString("Battery", () -> name);
     return name;
   }
 

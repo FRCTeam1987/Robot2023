@@ -1,39 +1,73 @@
 package frc.robot.subsystems.arm;
 
+import static frc.robot.Constants.ADVANTAGE_KIT_ENABLED;
+import static frc.robot.Constants.TAB_ARM;
+
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.team3061.RobotConfig;
 import frc.lib.team6328.util.Alert;
 import org.littletonrobotics.junction.Logger;
 
 public class Arm extends SubsystemBase {
-  static double heightOffset = RobotConfig.getInstance().getRobotArmHeightOffset();
+
+  public static final int HOME_ROTATION = 0;
+  public static final int HOME_EXTENSION = 1;
+
+  static final double heightOffset = RobotConfig.getInstance().getRobotArmHeightOffset();
   private final ArmIO io;
   private final ArmIOInputsAutoLogged inputs = new ArmIOInputsAutoLogged();
 
   private static final Alert invalidAngle =
       new Alert("Invalid Angle Reached! (Arm Kinematics)", Alert.AlertType.ERROR);
 
-  ShuffleboardTab tab = Shuffleboard.getTab("Arm Tab");
-
   public Arm(ArmIO io) {
     this.io = io;
-    tab.addNumber("angle", io::getArmAngle);
-    tab.addNumber("length", io::getArmLength);
-    SmartDashboard.putNumber("angle15", 1.0);
-    SmartDashboard.putNumber("pidArm", 0.1);
+    TAB_ARM.addNumber("Arm Angle", io::getArmAngle);
+    TAB_ARM.addNumber("Arm Length", io::getArmLength);
   }
 
-  public void rotateTheArm() {
-    io.setArmAngle(SmartDashboard.getNumber("angle15", 0.0));
+  public void setArmAngle(double degrees) {
+    io.setArmAngle(degrees);
+  }
+
+  public void setArmLength(double inches) {
+    io.setArmLength(inches);
+  }
+
+  public double getArmAngle() {
+    return io.getArmAngle();
+  }
+
+  public double getArmLength() {
+    return io.getArmLength();
+  }
+
+  public void holdCurrentAngle() {
+    io.holdCurrentAngle();
+  }
+
+  public void holdCurrentAngle(double desiredPosition) {
+    io.holdCurrentAngle(desiredPosition);
+  }
+
+  public void stallArm() {
+    io.stallArm();
+  }
+
+  public void stop() {
+    io.stop();
+  }
+
+  public void setExtensionNominal() {
+    io.setExtensionNominal();
   }
 
   public void periodic() {
-    io.updateInputs(inputs);
-    Logger.getInstance().processInputs("Arm", inputs);
+    if (ADVANTAGE_KIT_ENABLED) {
+      io.updateInputs(inputs);
+      Logger.getInstance().processInputs("Arm", inputs);
+    }
   }
 
   public static double calculateArmLength(double x, double y) {
@@ -50,8 +84,9 @@ public class Arm extends SubsystemBase {
   public static double calculateArmAngle(double x, double y) {
     if (x == 0 && y > heightOffset) return 90.0;
     if (x == 0 && y < heightOffset) invalidAngle.set(true);
-    if (x > 0) return Math.toDegrees(Math.atan((y - heightOffset) / x));
-    if (x < 0) return 180 + Math.toDegrees(Math.atan((y - heightOffset) / x));
+    double v = Math.toDegrees(Math.atan((y - heightOffset) / x));
+    if (x > 0) return v;
+    if (x < 0) return 180 + v;
     return 0.0;
   }
 }

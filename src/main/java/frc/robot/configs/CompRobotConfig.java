@@ -24,22 +24,22 @@ public class CompRobotConfig extends RobotConfig {
   public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 22;
   public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 23;
   public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 21;
-  public static final double FRONT_LEFT_MODULE_STEER_OFFSET = 280.547;
+  public static final double FRONT_LEFT_MODULE_STEER_OFFSET = 280.635;
 
   public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 12;
   public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 13;
   public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 11;
-  public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = 242.930;
+  public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = 243.018;
 
   public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 32;
   public static final int BACK_LEFT_MODULE_STEER_MOTOR = 33;
   public static final int BACK_LEFT_MODULE_STEER_ENCODER = 31;
-  public static final double BACK_LEFT_MODULE_STEER_OFFSET = 10.635;
+  public static final double BACK_LEFT_MODULE_STEER_OFFSET = 9.316;
 
   public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 42;
   public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 43;
   public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 41;
-  public static final double BACK_RIGHT_MODULE_STEER_OFFSET = 64.600;
+  public static final double BACK_RIGHT_MODULE_STEER_OFFSET = 63.633;
   private static final int GYRO_ID = 18;
 
   // FIXME: update robot dimensions
@@ -101,6 +101,42 @@ public class CompRobotConfig extends RobotConfig {
   private static final double AUTO_TURN_P_CONTROLLER = 0.125;
   private static final double AUTO_TURN_I_CONTROLLER = 0.0;
   private static final double AUTO_TURN_D_CONTROLLER = 0.0;
+
+  private static final int ANGLE_STRAIGHT = 2289;
+  private static final int ANGLE_FRONT_MAX = 795; // when telescope extended
+  private static final int ANGLE_FRONT_PERPENDICULAR = 1275;
+  private static final int ANGLE_BACK_PERPENDICULAR = 3289;
+  private static final int ANGLE_BACK_MAX = 3393; // when telescope extended
+  private static final int ANGLE_BACK_HALF = 2635; // when telescope extended
+  private static final int ANGLE_FRONT_HALF = 1924; // when telescope extended
+
+  public int getANGLE_STRAIGHT() {
+    return ANGLE_STRAIGHT;
+  }
+
+  public int getANGLE_FRONT_MAX() {
+    return ANGLE_FRONT_MAX;
+  }
+
+  public int getANGLE_FRONT_PERPENDICULAR() {
+    return ANGLE_FRONT_PERPENDICULAR;
+  }
+
+  public int getANGLE_BACK_PERPENDICULAR() {
+    return ANGLE_BACK_PERPENDICULAR;
+  }
+
+  public int getANGLE_BACK_MAX() {
+    return ANGLE_BACK_MAX;
+  }
+
+  public int getANGLE_BACK_HALF() {
+    return ANGLE_BACK_HALF;
+  }
+
+  public int getANGLE_FRONT_HALF() {
+    return ANGLE_FRONT_HALF;
+  }
 
   public int getClawMotorID() {
     return CLAW_MOTOR_ID;

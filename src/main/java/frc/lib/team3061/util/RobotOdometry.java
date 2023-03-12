@@ -12,8 +12,9 @@ import frc.lib.team3061.RobotConfig;
  */
 public class RobotOdometry {
   private static final RobotOdometry robotOdometry = new RobotOdometry();
-  private SwerveDrivePoseEstimator estimator;
-  private SwerveModulePosition[] defaultPositions =
+  private final SwerveDrivePoseEstimator estimator;
+  // TODO: [MARKER] This can become a local variable in constructor
+  private final SwerveModulePosition[] defaultPositions =
       new SwerveModulePosition[] {
         new SwerveModulePosition(),
         new SwerveModulePosition(),

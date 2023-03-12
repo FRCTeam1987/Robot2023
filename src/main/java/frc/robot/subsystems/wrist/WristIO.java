@@ -13,8 +13,14 @@ public interface WristIO {
   default void updateInputs(WristIOInputs inputs) {}
 
   /** Sets position of wrist */
-  void setPosition(boolean inverted);
+  void setRotation(boolean inverted);
+
+  void setPosition(final int ticks);
+
+  int getPosition();
 
   /** Return wrist degree */
   double getDegrees();
+
+  double getCurrentAmps();
 }

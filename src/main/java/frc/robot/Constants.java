@@ -10,8 +10,12 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RuntimeType;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.lib.team6328.util.Alert;
 import frc.lib.team6328.util.Alert.AlertType;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.claw.Claw.GamePiece;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -23,11 +27,18 @@ import frc.lib.team6328.util.Alert.AlertType;
  */
 public final class Constants {
 
+  public static final boolean ADVANTAGE_KIT_ENABLED = false;
   public static final boolean TUNING_MODE = false;
 
   // FIXME: If Limelight is used, specify the pipeline for detecting AprilTags
   public static final int LIMELIGHT_PIPELINE = 1;
 
+  public static final ShuffleboardTab TAB_VISION = Shuffleboard.getTab("Vision");
+  public static final ShuffleboardTab TAB_MAIN = Shuffleboard.getTab("Main");
+  public static final ShuffleboardTab TAB_ARM = Shuffleboard.getTab("Arm");
+  public static final ShuffleboardTab TAB_WRIST = Shuffleboard.getTab("Wrist");
+  public static final ShuffleboardTab TAB_CLAW = Shuffleboard.getTab("Claw");
+  public static final ShuffleboardTab TAB_COMMANDS = Shuffleboard.getTab("Commands");
   private static final RobotType ROBOT =
       RobotBase.getRuntimeType().equals(RuntimeType.kRoboRIO)
           ? RobotType.ROBOT_2023_TEST
@@ -46,6 +57,11 @@ public final class Constants {
         return ROBOT;
       }
     } else {
+      if (ROBOT == RobotType.ROBOT_SIMBOT && !ADVANTAGE_KIT_ENABLED) {
+        invalidRobotAlert.set(true);
+      } else {
+        return ROBOT;
+      }
       return ROBOT;
     }
   }
@@ -81,4 +97,68 @@ public final class Constants {
   }
 
   public static final double LOOP_PERIOD_SECS = 0.02;
+
+  public static class PositionConfig {
+    public final int armLength;
+    public final double armRotation;
+    public final int wristRotation;
+    public final GamePiece gamePiece;
+
+    public PositionConfig(
+        final int length,
+        final double rotation,
+        final int wristRotation,
+        final GamePiece gamePiece) {
+      this.armLength = length;
+      this.armRotation = rotation;
+      this.wristRotation = wristRotation;
+      this.gamePiece = gamePiece;
+    }
+  }
+
+  public static class PositionConfigs {
+    public static final PositionConfig TEST_POS =
+        new PositionConfig(Arm.HOME_EXTENSION, 45, 1692, GamePiece.CUBE);
+    public static final PositionConfig TEST_NEG =
+        new PositionConfig(Arm.HOME_EXTENSION, -45, 1692, GamePiece.CONE);
+    public static final PositionConfig FRONT_CUBE_FLOOR =
+        new PositionConfig(Arm.HOME_EXTENSION, -105.4, 1780, GamePiece.CUBE);
+    public static final PositionConfig FRONT_CONE_FLOOR =
+        new PositionConfig(Arm.HOME_EXTENSION, -102.4, 2072, GamePiece.CONE);
+    public static final PositionConfig FRONT_CONE_FLOOR_TIPPED =
+        new PositionConfig(Arm.HOME_EXTENSION, -107.3, 1906, GamePiece.CONE);
+    public static final PositionConfig FRONT_CONE_FLOOR_TIPPED_LONG =
+        new PositionConfig(23, -102.4, 2130, GamePiece.CONE);
+    public static final PositionConfig BACK_CUBE_FLOOR =
+        new PositionConfig(Arm.HOME_EXTENSION, 101.7, 1550, GamePiece.CUBE);
+    public static final PositionConfig BACK_CONE_FLOOR =
+        new PositionConfig(Arm.HOME_EXTENSION, 90.9, 1755, GamePiece.CONE);
+    public static final PositionConfig BACK_CONE_FLOOR_TIPPED =
+        new PositionConfig(Arm.HOME_EXTENSION, 108, 1347, GamePiece.CONE);
+    public static final PositionConfig FRONT_CONE_MEDIUM =
+        new PositionConfig(17, -43, 489, GamePiece.CONE);
+    public static final PositionConfig FRONT_CONE_TOP =
+        new PositionConfig(35, -43, 575, GamePiece.CONE);
+    public static final PositionConfig FRONT_CUBE_MEDIUM =
+        new PositionConfig(1, -47, 1016, GamePiece.CUBE);
+    public static final PositionConfig FRONT_CUBE_TOP =
+        new PositionConfig(20, -48.5, 1077, GamePiece.CUBE); // wrist 1027, arm angle -50
+    public static final PositionConfig BACK_CONE_TOP =
+        new PositionConfig(35, 49.5, 2800, GamePiece.CONE);
+    public static final PositionConfig BACK_CONE_MEDIUM =
+        new PositionConfig(22, 47.9, 3260, GamePiece.CONE);
+    public static final PositionConfig BACK_CUBE_TOP =
+        new PositionConfig(21, 51, 2360, GamePiece.CUBE);
+    public static final PositionConfig BACK_CUBE_MEDIUM =
+        new PositionConfig(0, 51.5, 2383, GamePiece.CUBE);
+    public static final PositionConfig FRONT_SINGLE_SUBSTATION =
+        new PositionConfig(0, -72, 2330, GamePiece.CONE);
+    public static final PositionConfig FRONT_DOUBLE_SUBSTATION =
+        new PositionConfig(17, -33, 1270, GamePiece.CONE);
+
+    public static final PositionConfig BACK_SINGLE_SUBSTATION =
+        new PositionConfig(0, 70.5, -1266, GamePiece.CONE);
+    public static final PositionConfig BACK_DOUBLE_SUBSTATION =
+        new PositionConfig(18, 27, 2570, GamePiece.CONE);
+  }
 }

@@ -6,7 +6,7 @@
  * Initially from https://github.com/Mechanical-Advantage/RobotCode2022
  */
 
-package frc.robot.operator_interface;
+package frc.robot.operator_interface.CoDriver;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.lib.team6328.util.Alert;
@@ -15,14 +15,15 @@ import frc.lib.team6328.util.Alert.AlertType;
 /**
  * Utility class for selecting the appropriate OI implementations based on the connected joysticks.
  */
-public class OISelector {
-  private static String[] lastJoystickNames = new String[] {null, null, null, null, null, null};
+public class CoDriverOISelector {
+  private static final String[] lastJoystickNames =
+      new String[] {null, null, null, null, null, null};
   private static final Alert noOperatorInterfaceWarning =
       new Alert("No operator controller(s) connected.", AlertType.WARNING);
   private static final Alert nonCompetitionOperatorInterfaceWarning =
       new Alert("Non-competition operator controller connected.", AlertType.WARNING);
 
-  private OISelector() {}
+  private CoDriverOISelector() {}
 
   /**
    * Returns whether the connected joysticks have changed since the last time this method was
@@ -44,7 +45,7 @@ public class OISelector {
    * Instantiates and returns an appropriate OperatorInterface object based on the connected
    * joysticks.
    */
-  public static OperatorInterface findOperatorInterface() {
+  public static CoDriverOperatorInterface findOperatorInterface() {
     Integer firstPort = null;
     Integer secondPort = null;
     Integer xBoxPort = null;
@@ -65,15 +66,15 @@ public class OISelector {
     if (firstPort != null && secondPort != null) {
       noOperatorInterfaceWarning.set(false);
       nonCompetitionOperatorInterfaceWarning.set(false);
-      return new DualJoysticksOI(firstPort, secondPort);
+      return new CoDriverDualJoysticksOI(firstPort, secondPort);
     } else if (xBoxPort != null) {
       noOperatorInterfaceWarning.set(false);
       nonCompetitionOperatorInterfaceWarning.set(true);
-      return new SingleHandheldOI(xBoxPort);
+      return new CoDriverHandheldOI(xBoxPort);
     } else {
       noOperatorInterfaceWarning.set(true);
       nonCompetitionOperatorInterfaceWarning.set(false);
-      return new OperatorInterface() {};
+      return new CoDriverOperatorInterface() {};
     }
   }
 }

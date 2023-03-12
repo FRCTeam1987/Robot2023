@@ -48,9 +48,9 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
   private static final double SIM_DRIVE_KV = 0.133240;
   private static final double SIM_DRIVE_KA = 0.0;
 
-  private FlywheelSim driveSim =
+  private final FlywheelSim driveSim =
       new FlywheelSim(DCMotor.getFalcon500(1), MK4I_L2_DRIVE_GEAR_RATIO, 0.025);
-  private FlywheelSim turnSim =
+  private final FlywheelSim turnSim =
       new FlywheelSim(DCMotor.getFalcon500(1), MK4I_L2_ANGLE_GEAR_RATIO, 0.004096955);
 
   private double turnRelativePositionRad = 0.0;
@@ -61,11 +61,11 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
   private double driveSetpointMPS = 0.0;
   private double angleSetpointDeg = 0.0;
 
-  private SimpleMotorFeedforward feedForward =
+  private final SimpleMotorFeedforward feedForward =
       new SimpleMotorFeedforward(SIM_DRIVE_KS, SIM_DRIVE_KV, SIM_DRIVE_KA);
-  private PIDController driveController =
+  private final PIDController driveController =
       new PIDController(driveKp.get(), driveKi.get(), driveKd.get());
-  private PIDController turnController =
+  private final PIDController turnController =
       new PIDController(turnKp.get(), turnKi.get(), turnKd.get());
 
   @Override

@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems.drivetrain;
 
+import static frc.robot.Constants.ADVANTAGE_KIT_ENABLED;
+import static frc.robot.Constants.TAB_MAIN;
+
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -121,7 +124,7 @@ public class Drivetrain extends SubsystemBase {
 
     this.zeroGyroscope();
 
-    this.isFieldRelative = false;
+    this.isFieldRelative = true;
 
     this.gyroOffset = 0;
 
@@ -129,11 +132,10 @@ public class Drivetrain extends SubsystemBase {
 
     this.poseEstimator = RobotOdometry.getInstance().getPoseEstimator();
 
-    ShuffleboardTab tabMain = Shuffleboard.getTab("MAIN");
-    tabMain.addNumber("Gyroscope Angle", () -> getRotation().getDegrees());
-    tabMain.addBoolean("X-Stance On?", this::isXstance);
-    tabMain.addBoolean("Field-Relative Enabled?", () -> this.isFieldRelative);
-    tabMain.add("Reset Gyro", new InstantCommand(() -> this.zeroGyroscope()));
+    TAB_MAIN.addNumber("Gyroscope Angle", () -> getRotation().getDegrees());
+    TAB_MAIN.addBoolean("X-Stance On?", this::isXstance);
+    TAB_MAIN.addBoolean("Field-Relative Enabled?", () -> this.isFieldRelative);
+    TAB_MAIN.add("Reset Gyro", new InstantCommand(this::zeroGyroscope));
 
     if (DEBUGGING) {
       ShuffleboardTab tab = Shuffleboard.getTab(SUBSYSTEM_NAME);
@@ -216,6 +218,14 @@ public class Drivetrain extends SubsystemBase {
     return poseEstimator.getEstimatedPosition();
   }
 
+  public double getPoseX() {
+    return poseEstimator.getEstimatedPosition().getX();
+  }
+
+  public double getPoseY() {
+    return poseEstimator.getEstimatedPosition().getY();
+  }
+
   /**
    * Sets the odometry of the robot to the specified PathPlanner state. This method should only be
    * invoked when the rotation of the robot is known (e.g., at the start of an autonomous path). The
@@ -254,9 +264,9 @@ public class Drivetrain extends SubsystemBase {
    * <p>If the drive mode is CHARACTERIZATION, the robot will ignore the specified velocities and
    * run the characterization routine.
    *
-   * @param translationXSupplier the desired velocity in the x direction (m/s)
-   * @param translationYSupplier the desired velocity in the y direction (m/s)
-   * @param rotationSupplier the desired rotational velcoity (rad/s)
+   * @param xVelocity the desired velocity in the x direction (m/s)
+   * @param yVelocity the desired velocity in the y direction (m/s)
+   * @param rotationalVelocity the desired rotational velocity (rad/s)
    */
   public void drive(
       double xVelocity, double yVelocity, double rotationalVelocity, boolean isOpenLoop) {
@@ -324,8 +334,10 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
 
     // update and log gyro inputs
-    gyroIO.updateInputs(gyroInputs);
-    Logger.getInstance().processInputs("Drive/Gyro", gyroInputs);
+    if (ADVANTAGE_KIT_ENABLED) {
+      gyroIO.updateInputs(gyroInputs);
+      Logger.getInstance().processInputs("Drive/Gyro", gyroInputs);
+    }
 
     // update and log the swerve moudles inputs
     for (SwerveModule swerveModule : swerveModules) {
@@ -465,9 +477,10 @@ public class Drivetrain extends SubsystemBase {
   public void setXStance() {
     chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds, centerGravity);
+    double vPlus = Math.PI / 2 + Math.atan(trackwidthMeters / wheelbaseMeters);
     states[0].angle = new Rotation2d(Math.PI / 2 - Math.atan(trackwidthMeters / wheelbaseMeters));
-    states[1].angle = new Rotation2d(Math.PI / 2 + Math.atan(trackwidthMeters / wheelbaseMeters));
-    states[2].angle = new Rotation2d(Math.PI / 2 + Math.atan(trackwidthMeters / wheelbaseMeters));
+    states[1].angle = new Rotation2d(vPlus);
+    states[2].angle = new Rotation2d(vPlus);
     states[3].angle =
         new Rotation2d(3.0 / 2.0 * Math.PI - Math.atan(trackwidthMeters / wheelbaseMeters));
     for (SwerveModule swerveModule : swerveModules) {
@@ -486,9 +499,28 @@ public class Drivetrain extends SubsystemBase {
     this.centerGravity = new Translation2d(x, y);
   }
 
+  public void resetPose(Pose2d pose) {
+
+    setGyroOffset(pose.getRotation().getDegrees());
+
+    for (int i = 0; i < 4; i++) {
+      swerveModulePositions[i] = swerveModules[i].getPosition();
+    }
+
+    estimatedPoseWithoutGyro = new Pose2d(pose.getTranslation(), pose.getRotation());
+    poseEstimator.resetPosition(
+        this.getRotation(),
+        swerveModulePositions,
+        new Pose2d(pose.getTranslation(), pose.getRotation()));
+  }
+
   /** Resets the robot's center of gravity about which it will rotate to the center of the robot. */
   public void resetCenterGrav() {
     setCenterGrav(0.0, 0.0);
+  }
+
+  public SwerveDriveKinematics getKinematics() {
+    return kinematics;
   }
 
   /**
@@ -507,6 +539,10 @@ public class Drivetrain extends SubsystemBase {
    */
   public double getVelocityY() {
     return chassisSpeeds.vyMetersPerSecond;
+  }
+
+  public double getPitch() {
+    return gyroInputs.pitchDeg;
   }
 
   /**

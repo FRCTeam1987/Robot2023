@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.lib.team3061.RobotConfig;
 import frc.robot.subsystems.drivetrain.Drivetrain;
@@ -23,6 +24,11 @@ public class TeleopSwerve extends CommandBase {
   private final DoubleSupplier translationXSupplier;
   private final DoubleSupplier translationYSupplier;
   private final DoubleSupplier rotationSupplier;
+
+  // TODO greyson play with these slew rate values
+  private final SlewRateLimiter translationXSlewRate = new SlewRateLimiter(2.5);
+  private final SlewRateLimiter translationYSlewRate = new SlewRateLimiter(2.5);
+  private final SlewRateLimiter rotationSlewRate = new SlewRateLimiter(2);
 
   public static final double DEADBAND = 0.1;
 
@@ -59,9 +65,12 @@ public class TeleopSwerve extends CommandBase {
 
     // invert the controller input and apply the deadband and squaring to make the robot more
     // responsive to small changes in the controller
-    double xPercentage = modifyAxis(translationXSupplier.getAsDouble());
-    double yPercentage = modifyAxis(translationYSupplier.getAsDouble());
-    double rotationPercentage = modifyAxis(rotationSupplier.getAsDouble());
+    double xPercentage =
+        translationXSlewRate.calculate(modifyAxis(translationXSupplier.getAsDouble()));
+    double yPercentage =
+        translationYSlewRate.calculate(modifyAxis(translationYSupplier.getAsDouble()));
+    double rotationPercentage =
+        rotationSlewRate.calculate(modifyAxis(rotationSupplier.getAsDouble()));
 
     double xVelocity = xPercentage * maxVelocityMetersPerSecond;
     double yVelocity = yPercentage * maxVelocityMetersPerSecond;
@@ -88,8 +97,8 @@ public class TeleopSwerve extends CommandBase {
    * Squares the specified value, while preserving the sign. This method is used on all joystick
    * inputs. This is useful as a non-linear range is more natural for the driver.
    *
-   * @param value
-   * @return
+   * @param value input value
+   * @return square of the value
    */
   private static double modifyAxis(double value) {
     // Deadband

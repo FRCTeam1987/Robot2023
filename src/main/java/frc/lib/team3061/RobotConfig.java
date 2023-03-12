@@ -246,8 +246,8 @@ public abstract class RobotConfig {
 
   /**
    * Returns the swerve drive kinematics object for the robot. The geometry and coordinate systems
-   * can be confusing. Refer to this document for a detailed explanation:
-   * https://docs.google.com/document/d/17dg5cIfqVOlQTTbo2ust4QxTZlUoPNzuBu2oe58Ov84/edit#heading=h.x4ppzp81ed1
+   * can be confusing. Refer to this document for a detailed explanation: <a
+   * href="https://docs.google.com/document/d/17dg5cIfqVOlQTTbo2ust4QxTZlUoPNzuBu2oe58Ov84/edit#heading=h.x4ppzp81ed1">...</a>
    *
    * @return the swerve drive kinematics object for the robot
    */
@@ -301,7 +301,7 @@ public abstract class RobotConfig {
 
   /**
    * The maximum angular velocity of the robot in radians per second. This is a measure of how fast
-   * the robot can rotate in place. By default it is calculated based on the maximum velocity and
+   * the robot can rotate in place. By default, it is calculated based on the maximum velocity and
    * the robot's geometry.
    *
    * @return the maximum angular velocity of the robot in radians per second
@@ -339,7 +339,7 @@ public abstract class RobotConfig {
   public abstract double getAutoMaxAcceleration();
 
   /**
-   * Returns the the proportional constant for the PID controller for translational motion when
+   * Returns the proportional constant for the PID controller for translational motion when
    * following autonomous paths. Defaults to 0.
    *
    * @return the proportional constant for the PID controller for translational motion when

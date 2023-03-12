@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class TunableNumber {
   private static final String TABLE_KEY = "TunableNumbers";
 
-  private String key;
+  private final String key;
   private double defaultValue;
   private double lastHasChangedValue = defaultValue;
 

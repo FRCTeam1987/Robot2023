@@ -8,8 +8,9 @@
 
 package frc.lib.team3061.pneumatics;
 
+import static frc.robot.Constants.TAB_MAIN;
+
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.team6328.util.Alert;
 import frc.lib.team6328.util.Alert.AlertType;
@@ -35,9 +36,9 @@ public class Pneumatics extends SubsystemBase {
   private double compressorMaxPoint = 0.0;
   private double compressorMinPoint = 0.0;
 
-  private Timer noPressureTimer = new Timer();
-  private Timer compressorEnabledTimer = new Timer();
-  private Alert dumpValveAlert =
+  private final Timer noPressureTimer = new Timer();
+  private final Timer compressorEnabledTimer = new Timer();
+  private final Alert dumpValveAlert =
       new Alert("Cannot build pressure. Is the dump value open?", AlertType.WARNING);
 
   /**
@@ -50,7 +51,7 @@ public class Pneumatics extends SubsystemBase {
     noPressureTimer.start();
     compressorEnabledTimer.start();
 
-    Shuffleboard.getTab("MAIN").addNumber("Pressure", this::getPressure);
+    TAB_MAIN.addNumber("Pressure", this::getPressure);
   }
 
   public double getPressure() {
@@ -79,7 +80,7 @@ public class Pneumatics extends SubsystemBase {
 
   private void calculateAveragePressure() {
     // Calculate input pressure for averaging filter
-    double limitedPressure = inputs.highPressurePSI < 0.0 ? 0.0 : inputs.highPressurePSI;
+    double limitedPressure = Math.max(inputs.highPressurePSI, 0.0);
     double processedPressure;
     if (inputs.compressorActive) {
       // When compressor is active, average the most recent min and max points

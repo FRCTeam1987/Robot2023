@@ -21,7 +21,7 @@ import org.littletonrobotics.junction.AutoLog;
  */
 public interface PneumaticsIO {
   @AutoLog
-  public static class PneumaticsIOInputs {
+  class PneumaticsIOInputs {
     double highPressurePSI = 0.0;
     double lowPressurePSI = 0.0;
     boolean compressorActive = false;
@@ -31,7 +31,7 @@ public interface PneumaticsIO {
   }
 
   /** Updates the set of loggable inputs. */
-  public default void updateInputs(PneumaticsIOInputs inputs) {}
+  default void updateInputs(PneumaticsIOInputs inputs) {}
 
   /**
    * Updates the compressor threshold.
@@ -43,5 +43,5 @@ public interface PneumaticsIO {
    * @param useLow if true, use the low pressure thresholds defined in PneumaticsConstants;
    *     otherwise, use the high pressure thresholds
    */
-  public default void useLowClosedLoopThresholds(boolean useLow) {}
+  default void useLowClosedLoopThresholds(boolean useLow) {}
 }

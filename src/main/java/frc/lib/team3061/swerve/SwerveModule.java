@@ -16,9 +16,9 @@ public class SwerveModule {
   private final SwerveModuleIO io;
   private final SwerveModuleIOInputsAutoLogged inputs = new SwerveModuleIOInputsAutoLogged();
 
-  private int moduleNumber;
+  private final int moduleNumber;
   private double lastAngle;
-  private double maxVelocity;
+  private final double maxVelocity;
 
   private static final String SUBSYSTEM_NAME = "Swerve";
   private static final boolean DEBUGGING = false;
@@ -72,7 +72,7 @@ public class SwerveModule {
       io.setDriveVelocity(desiredState.speedMetersPerSecond);
     }
 
-    // Unless the angle is forced (e.g., X-stance), don't rotate the module if speed is less then
+    // Unless the angle is forced (e.g., X-stance), don't rotate the module if speed is less than
     // 1%. This prevents jittering if the controller isn't tuned perfectly. Perhaps more
     // importantly, it allows for smooth repeated movement as the wheel direction doesn't reset
     // during pauses (e.g., multi-segmented auto paths).

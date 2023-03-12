@@ -19,6 +19,7 @@ import frc.lib.team3061.RobotConfig;
 import frc.lib.team3061.util.CANDeviceFinder;
 import frc.lib.team3061.util.CANDeviceId.CANDeviceType;
 import frc.lib.team6328.util.TunableNumber;
+import frc.robot.configs.CompRobotConfig;
 
 /**
  * Implementation of the SwerveModuleIO interface for MK4 Swerve Modules with two Falcon 500 motors
@@ -47,8 +48,8 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
   private TalonFX mAngleMotor;
   private TalonFX mDriveMotor;
   private CANCoder angleEncoder;
-  private SimpleMotorFeedforward feedForward;
-  private double angleOffsetDeg;
+  private final SimpleMotorFeedforward feedForward;
+  private final double angleOffsetDeg;
   /**
    * Make a new SwerveModuleIOTalonFX object.
    *
@@ -78,9 +79,9 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     }
     this.feedForward =
         new SimpleMotorFeedforward(
-            RobotConfig.getInstance().getDriveKS() / 12,
-            RobotConfig.getInstance().getDriveKV() / 12,
-            RobotConfig.getInstance().getDriveKA() / 12);
+            CompRobotConfig.getInstance().getDriveKS() / 12,
+            CompRobotConfig.getInstance().getDriveKV() / 12,
+            CompRobotConfig.getInstance().getDriveKA() / 12);
     CANDeviceFinder can = new CANDeviceFinder();
     can.isDevicePresent(CANDeviceType.TALON, driveMotorID, "Mod " + moduleNumber + "Drive");
     can.isDevicePresent(CANDeviceType.TALON, angleMotorID, "Mod " + moduleNumber + "Angle");
@@ -164,10 +165,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
   private double calculateFeedforward(double velocity) {
     double percentage = this.feedForward.calculate(velocity);
     // clamp the voltage to the maximum voltage
-    if (percentage > 1.0) {
-      return 1.0;
-    }
-    return percentage;
+    return Math.min(percentage, 1.0);
   }
   /** Updates the set of loggable inputs. */
   @Override

@@ -1,44 +1,48 @@
 package frc.robot.subsystems.wrist;
 
+import static frc.robot.Constants.TAB_WRIST;
+
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class WristIOTalonSRX implements WristIO {
+  public static final int ANGLE_STRAIGHT = 1457;
 
   private final WPI_TalonSRX wristMotor;
 
   public WristIOTalonSRX(int wristMotorID) {
     wristMotor = new WPI_TalonSRX(wristMotorID);
     TalonSRXConfiguration wristConfig = new TalonSRXConfiguration();
-    wristConfig.motionAcceleration = 750;
-    wristConfig.motionCruiseVelocity = 1250;
+    wristConfig.motionAcceleration = 600;
+    wristConfig.motionCruiseVelocity = 950;
     wristConfig.feedbackNotContinuous = true;
-    wristConfig.slot0.kP = 1.0;
+    wristConfig.slot0.kP = 4.0;
     wristConfig.slot0.kD = 0.0;
     wristConfig.slot0.allowableClosedloopError = 0;
+    wristConfig.neutralDeadband = 0.001;
     wristMotor.configFactoryDefault();
     wristMotor.configAllSettings(wristConfig);
-    wristMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
+    wristMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
     wristMotor.setNeutralMode(NeutralMode.Brake);
-    wristMotor.configVoltageCompSaturation(7);
+    wristMotor.configVoltageCompSaturation(6);
     wristMotor.enableVoltageCompensation(true);
     wristMotor.setInverted(InvertType.InvertMotorOutput);
     wristMotor.setSensorPhase(true);
-    wristMotor.configContinuousCurrentLimit(17);
-    wristMotor.configPeakCurrentLimit(25);
-    Shuffleboard.getTab("wrist")
-        .add(
-            "reset",
-            new InstantCommand(
-                () -> {
-                  wristMotor.set(TalonSRXControlMode.PercentOutput, 0.0);
-                  wristMotor.setSelectedSensorPosition(0);
-                }));
-    SmartDashboard.putNumber("speed", 0.0);
+    wristMotor.configContinuousCurrentLimit(15);
+    wristMotor.configPeakCurrentLimit(30);
+    // setPosition(ANGLE_STRAIGHT);
+    wristMotor.setSelectedSensorPosition(0);
+    TAB_WRIST.add(
+        "reset",
+        new InstantCommand(
+            () -> {
+              wristMotor.set(TalonSRXControlMode.PercentOutput, 0.0);
+              wristMotor.setSelectedSensorPosition(0);
+            }));
+    TAB_WRIST.addNumber("Current Position", wristMotor::getSelectedSensorPosition);
+    TAB_WRIST.addNumber("Motor Voltage", wristMotor::getMotorOutputVoltage);
   }
 
   @Override
@@ -47,13 +51,26 @@ public class WristIOTalonSRX implements WristIO {
     inputs.targetPositionRotations = wristMotor.getSelectedSensorPosition();
   }
 
+  public void setPosition(final int ticks) {
+    wristMotor.set(TalonSRXControlMode.MotionMagic, ticks, DemandType.ArbitraryFeedForward, -0.1);
+  }
+
+  public int getPosition() {
+    return (int) wristMotor.getSelectedSensorPosition();
+  }
+
   @Override
-  public void setPosition(boolean inverted) { // in Ticks
+  public void setRotation(boolean inverted) { // in Ticks
     wristMotor.set(TalonSRXControlMode.MotionMagic, inverted ? 3655 : 1607);
   }
 
   @Override
   public double getDegrees() {
-    return (double) wristMotor.getSelectedSensorPosition();
+    return wristMotor.getSelectedSensorPosition();
+  }
+
+  @Override
+  public double getCurrentAmps() {
+    return wristMotor.getStatorCurrent();
   }
 }
