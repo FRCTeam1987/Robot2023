@@ -24,22 +24,22 @@ public class CompRobotConfig extends RobotConfig {
   public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 22;
   public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 23;
   public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 21;
-  public static final double FRONT_LEFT_MODULE_STEER_OFFSET = 280.547;
+  public static final double FRONT_LEFT_MODULE_STEER_OFFSET = 280.635;
 
   public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 12;
   public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 13;
   public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 11;
-  public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = 242.930;
+  public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = 243.018;
 
   public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 32;
   public static final int BACK_LEFT_MODULE_STEER_MOTOR = 33;
   public static final int BACK_LEFT_MODULE_STEER_ENCODER = 31;
-  public static final double BACK_LEFT_MODULE_STEER_OFFSET = 10.635;
+  public static final double BACK_LEFT_MODULE_STEER_OFFSET = 9.316;
 
   public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 42;
   public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 43;
   public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 41;
-  public static final double BACK_RIGHT_MODULE_STEER_OFFSET = 64.600;
+  public static final double BACK_RIGHT_MODULE_STEER_OFFSET = 63.633;
   private static final int GYRO_ID = 18;
 
   // FIXME: update robot dimensions

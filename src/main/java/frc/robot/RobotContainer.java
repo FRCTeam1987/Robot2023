@@ -10,8 +10,6 @@ import static frc.robot.Constants.PositionConfigs.*;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.FollowPathWithEvents;
-
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -33,7 +31,6 @@ import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIO;
 import frc.lib.team3061.swerve.SwerveModuleIOSim;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
-import frc.lib.team6328.util.Alert;
 import frc.robot.Constants.Mode;
 import frc.robot.Constants.PositionConfig;
 import frc.robot.Constants.PositionConfigs;
@@ -52,6 +49,7 @@ import frc.robot.operator_interface.Driver.DriverOperatorInterface;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.claw.Claw;
+import frc.robot.subsystems.claw.Claw.GamePiece;
 import frc.robot.subsystems.claw.ClawIOSparkMAX;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.vision.Vision;
@@ -71,12 +69,13 @@ import java.util.Map;
  */
 public class RobotContainer {
   private DriverOperatorInterface driver = new DriverOperatorInterface() {};
-  private CoDriverOperatorInterface CoDriver = new CoDriverOperatorInterface() {};
+  private CoDriverOperatorInterface coDriver = new CoDriverOperatorInterface() {};
 
   private RobotConfig config;
   private Drivetrain drivetrain;
   private Wrist wrist;
   private Claw claw;
+  private Height height = Height.HIGH;
 
   public enum Height {
     HIGH,
@@ -85,7 +84,6 @@ public class RobotContainer {
     NONE
   }
 
-  private Height height = Height.FLOOR;
   private Vision vision;
   private Arm arm;
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to ensure accurate logging
@@ -262,7 +260,7 @@ public class RobotContainer {
 
     CommandScheduler.getInstance().getActiveButtonLoop().clear();
     driver = DriverOISelector.findOperatorInterface();
-    CoDriver = CoDriverOISelector.findOperatorInterface();
+    coDriver = CoDriverOISelector.findOperatorInterface();
 
     /*
      * Set up the default command for the drivetrain. The joysticks' values map to percentage of the
@@ -299,6 +297,7 @@ public class RobotContainer {
     TAB_COMMANDS.add("Extend to 12in", new ExtendArm(arm, 12));
     TAB_COMMANDS.add("Rotate to 45deg", new RotateArm(arm, 45));
     TAB_COMMANDS.add("Flip Wrist to true", new FlipWrist(wrist, true));
+    TAB_COMMANDS.add("Test Score", new SetArmHeight(getHeight(), arm, wrist, claw, this.driverController));
 
     TAB_ARM.add("Seq 45 pos", new SequentialCommandTest(arm, wrist, 16, 45, 3289));
     TAB_ARM.add("Seq -45 pos", new SequentialCommandTest(arm, wrist, 16, -45, 3289));
@@ -450,37 +449,13 @@ public class RobotContainer {
     //         new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
     //     new InstantCommand(() -> arm.setExtensionNominal(), arm)));
 
-    CoDriver.getTempFloorScore().onTrue(new InstantCommand(() -> this.setFloor()));
-    CoDriver.getTempMediumScore().onTrue(new InstantCommand(() -> this.setMedium()));
-    CoDriver.getTempHighScore().onTrue(new InstantCommand(() -> this.setHigh()));
+    coDriver.getTempFloorScore().onTrue(new InstantCommand(() -> System.out.println("Floor")));
+    coDriver.getTempMediumScore().onTrue(new InstantCommand(() -> this.setHeight(Height.MEDIUM)));
+    coDriver.getTempHighScore().onTrue(new InstantCommand(() -> this.setHeight(Height.HIGH)));
 
-    /* //TODO FIX ME FOR SCORE, MAKE STATIC NON-STATIC
-    if (getHeight() == height.FLOOR) {
-      driver
+    driver
         .getTempScore()
-        .onTrue(
-            new ConditionalCommand(
-                new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CONE_FLOOR),
-                new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CUBE_FLOOR),
-                () -> claw.isCone()));
-    } else if (getHeight() == height.MEDIUM) {
-      driver
-        .getTempScore()
-        .onTrue(
-            new ConditionalCommand(
-                new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CONE_MEDIUM),
-                new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CUBE_MEDIUM),
-                () -> claw.isCone()));
-    } else { //Defaults to high if not set
-      driver
-        .getTempScore()
-        .onTrue(
-            new ConditionalCommand(
-                new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CONE_TOP),
-                new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CUBE_TOP),
-                () -> claw.isCone()));
-    }
-    */
+        .onTrue(new SetArmHeight(getHeight(), arm, wrist, claw, this.driverController));
 
     driver
         .getTempCollectConeFloor()
@@ -491,6 +466,22 @@ public class RobotContainer {
         .onTrue(
             new CollectSequence(
                 arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CONE_FLOOR_TIPPED));
+
+    driver
+        .getTempTopScore()
+        .onTrue(
+            new ConditionalCommand(
+                new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CONE_TOP),
+                new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CUBE_TOP),
+                () -> claw.getGamePiece() == GamePiece.CONE));
+
+    driver
+        .getTempMedScore()
+        .onTrue(
+            new ConditionalCommand(
+                new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CONE_MEDIUM),
+                new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CUBE_MEDIUM),
+                () -> claw.getGamePiece() == GamePiece.CONE));
   }
 
   /** Use this method to define your commands for autonomous mode. */
@@ -602,23 +593,22 @@ public class RobotContainer {
     //         .andThen(new Balance(drivetrain))
     //         .andThen(() -> drivetrain.setXStance(), drivetrain));
 
-    ShuffleboardTab armTab = Shuffleboard.getTab("Arm Tab");
     // armTab.addDouble("desired angle", () -> 0);
     // armTab.addDouble("desired length", () -> 0);
-    armTab.add("SA-Home", new SyncedArm(arm, () -> 0.1, () -> 0.1));
-    armTab.add(
+    TAB_ARM.add("SA-Home", new SyncedArm(arm, () -> 0.1, () -> 0.1));
+    TAB_ARM.add(
         "SA-HighCone",
         new SyncedArm(
             arm,
             () -> PositionConfigs.FRONT_CONE_TOP.armRotation,
             () -> PositionConfigs.FRONT_CONE_TOP.armLength));
-    armTab.add(
+            TAB_ARM.add(
         "SA-MidCone",
         new SyncedArm(
             arm,
             () -> PositionConfigs.FRONT_CONE_MEDIUM.armRotation,
             () -> PositionConfigs.FRONT_CONE_MEDIUM.armLength));
-    armTab.add(
+            TAB_ARM.add(
         "SA-CollectBack",
         new SyncedArm(
             arm,
@@ -636,23 +626,11 @@ public class RobotContainer {
     return autoChooser.getSelected();
   }
 
-  public void setHigh() {
-    height = height.HIGH;
+  public void setHeight(Height height) {
+    this.height = height;
   }
 
   public Height getHeight() {
     return height;
-  }
-
-  public void setMedium() {
-    height = height.MEDIUM;
-  }
-
-  public void setFloor() {
-    height = height.FLOOR;
-  }
-
-  public void setNone() {
-    height = height.NONE;
   }
 }

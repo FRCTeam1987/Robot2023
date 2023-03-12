@@ -11,7 +11,6 @@ package frc.robot.operator_interface.CoDriver;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.lib.team6328.util.Alert;
 import frc.lib.team6328.util.Alert.AlertType;
-import frc.robot.operator_interface.Driver.DriverDualJoysticksOI;
 
 /**
  * Utility class for selecting the appropriate OI implementations based on the connected joysticks.

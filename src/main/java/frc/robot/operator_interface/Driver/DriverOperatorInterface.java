@@ -69,7 +69,15 @@ public interface DriverOperatorInterface {
     return new Trigger(() -> false);
   }
 
-  // public default Trigger getTempScore() {
-  //   return new Trigger(() -> false);
-  // }
+  public default Trigger getTempScore() {
+    return new Trigger(() -> false);
+  }
+
+  public default Trigger getTempTopScore() {
+    return new Trigger(() -> false);
+  }
+
+  public default Trigger getTempMedScore() {
+    return new Trigger(() -> false);
+  }
 }

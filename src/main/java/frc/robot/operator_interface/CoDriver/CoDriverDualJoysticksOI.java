@@ -28,6 +28,6 @@ public class CoDriverDualJoysticksOI implements CoDriverOperatorInterface {
       rotateJoystickButtons[i] = rotateJoystick.button(i);
     }
   }
-  
-  //Add Buttons here
+
+  // Add Buttons here
 }
