@@ -11,8 +11,6 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.FollowPathWithEvents;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -297,7 +295,8 @@ public class RobotContainer {
     TAB_COMMANDS.add("Extend to 12in", new ExtendArm(arm, 12));
     TAB_COMMANDS.add("Rotate to 45deg", new RotateArm(arm, 45));
     TAB_COMMANDS.add("Flip Wrist to true", new FlipWrist(wrist, true));
-    TAB_COMMANDS.add("Test Score", new SetArmHeight(getHeight(), arm, wrist, claw, this.driverController));
+    TAB_COMMANDS.add(
+        "Test Score", new SetArmHeight(getHeight(), arm, wrist, claw, this.driverController));
 
     TAB_ARM.add("Seq 45 pos", new SequentialCommandTest(arm, wrist, 16, 45, 3289));
     TAB_ARM.add("Seq -45 pos", new SequentialCommandTest(arm, wrist, 16, -45, 3289));
@@ -602,13 +601,13 @@ public class RobotContainer {
             arm,
             () -> PositionConfigs.FRONT_CONE_TOP.armRotation,
             () -> PositionConfigs.FRONT_CONE_TOP.armLength));
-            TAB_ARM.add(
+    TAB_ARM.add(
         "SA-MidCone",
         new SyncedArm(
             arm,
             () -> PositionConfigs.FRONT_CONE_MEDIUM.armRotation,
             () -> PositionConfigs.FRONT_CONE_MEDIUM.armLength));
-            TAB_ARM.add(
+    TAB_ARM.add(
         "SA-CollectBack",
         new SyncedArm(
             arm,

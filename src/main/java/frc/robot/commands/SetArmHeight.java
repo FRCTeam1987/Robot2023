@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -24,15 +23,16 @@ public class SetArmHeight extends InstantCommand {
   Height height;
   Arm arm;
   CommandXboxController controller;
+
   public SetArmHeight(
       Height height, Arm arm, Wrist wrist, Claw claw, CommandXboxController controller) {
     // Use addRequirements() here to declare subsystem dependencies.
-        this.wrist = wrist;
-        this.arm = arm;
-        this.claw = claw;
-        this.height = height;
-        this.controller = controller;
-        addRequirements(this.wrist, this.arm, this.claw);
+    this.wrist = wrist;
+    this.arm = arm;
+    this.claw = claw;
+    this.height = height;
+    this.controller = controller;
+    addRequirements(this.wrist, this.arm, this.claw);
   }
 
   // Called when the command is initially scheduled.
