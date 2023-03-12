@@ -1,10 +1,9 @@
 package frc.robot.subsystems.arm;
 
 import static frc.robot.Constants.ADVANTAGE_KIT_ENABLED;
+import static frc.robot.Constants.TAB_ARM;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.team3061.RobotConfig;
 import frc.lib.team6328.util.Alert;
@@ -22,12 +21,10 @@ public class Arm extends SubsystemBase {
   private static final Alert invalidAngle =
       new Alert("Invalid Angle Reached! (Arm Kinematics)", Alert.AlertType.ERROR);
 
-  final ShuffleboardTab tab = Shuffleboard.getTab("Arm Tab");
-
   public Arm(ArmIO io) {
     this.io = io;
-    tab.addNumber("Arm Angle", io::getArmAngle);
-    tab.addNumber("Arm Length", io::getArmLength);
+    TAB_ARM.addNumber("Arm Angle", io::getArmAngle);
+    TAB_ARM.addNumber("Arm Length", io::getArmLength);
   }
 
   public void setArmAngle(double degrees) {

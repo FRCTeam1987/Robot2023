@@ -4,14 +4,13 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.*;
+
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.FollowPathWithEvents;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -278,23 +277,20 @@ public class RobotContainer {
     // debugTab.add("Arm Length (inches)", arm.getArmLength()).withSize(2, 2).withPosition(0, 0);
     // debugTab.add("Arm Angle (Degrees)", arm.getArmAngle()).withSize(2, 2).withPosition(2, 0);
     // debugTab.add("Wrist Rotation (Degrees)", wrist.getDegrees()).withSize(2, 2).withPosition(4,
-    // 0);
-    ShuffleboardTab armTab = Shuffleboard.getTab("Arm Tab");
 
-    SmartDashboard.putData("Extend Arm to 12 Inches", new ExtendArm(arm, 12));
-    SmartDashboard.putData("Rotate Arm to 45 Degrees", new RotateArm(arm, 45));
-    SmartDashboard.putData("Flip Wrist to true", new FlipWrist(wrist, true));
+    TAB_COMMANDS.add("Extend Arm to 12 Inches", new ExtendArm(arm, 12));
+    TAB_COMMANDS.add("Rotate Arm to 45 Degrees", new RotateArm(arm, 45));
+    TAB_COMMANDS.add("Flip Wrist to true", new FlipWrist(wrist, true));
 
-    armTab.add("Sequential Command 45 pos", new SequentialCommandTest(arm, wrist, 16, 45, 3289));
-    armTab.add("Sequential Command -45 pos", new SequentialCommandTest(arm, wrist, 16, -45, 3289));
+    TAB_ARM.add("Sequential Command 45 pos", new SequentialCommandTest(arm, wrist, 16, 45, 3289));
+    TAB_ARM.add("Sequential Command -45 pos", new SequentialCommandTest(arm, wrist, 16, -45, 3289));
     // armTab.add("Collect Back Cube", );
 
-    armTab.add("Go Home", new GoHome(arm, wrist));
+    TAB_ARM.add("Go Home", new GoHome(arm, wrist));
 
-    SmartDashboard.putData("Stop Claw", new StopClawRollers(claw));
+    TAB_COMMANDS.add("Stop Claw", new StopClawRollers(claw));
 
-    SmartDashboard.putData(
-        "Scan Battery", new InstantCommand(() -> BatteryTracker.scanBattery(10.0)));
+    TAB_COMMANDS.add("Scan Battery", new InstantCommand(() -> BatteryTracker.scanBattery(10.0)));
 
     SendableChooser<PositionConfig> collectionChooser = new SendableChooser<>();
     collectionChooser.setDefaultOption("TEST POS", PositionConfigs.TEST_POS);
@@ -320,7 +316,7 @@ public class RobotContainer {
     collectionChooser.addOption("FRONT_DOUBLE_SUBSTATION", PositionConfigs.FRONT_DOUBLE_SUBSTATION);
     collectionChooser.addOption(
         "front cone tipped long", PositionConfigs.FRONT_CONE_FLOOR_TIPPED_LONG);
-    Shuffleboard.getTab("MAIN").add("Collect Chooser", collectionChooser);
+    TAB_MAIN.add("Collect Chooser", collectionChooser);
 
     SendableChooser<PositionConfig> ScoreChooser = new SendableChooser<>();
     ScoreChooser.addOption("BACK_CUBE_FLOOR", PositionConfigs.BACK_CUBE_FLOOR); // score
@@ -333,32 +329,22 @@ public class RobotContainer {
     ScoreChooser.addOption("FRONT_CUBE_MEDIUM", PositionConfigs.FRONT_CUBE_MEDIUM);
     ScoreChooser.addOption("FRONT_CUBE_TOP", PositionConfigs.FRONT_CUBE_TOP);
     ScoreChooser.addOption("FRONT_CONE_TOP", PositionConfigs.FRONT_CONE_TOP);
-    Shuffleboard.getTab("MAIN").add("Score Chooser", ScoreChooser);
+    TAB_MAIN.add("Score Chooser", ScoreChooser);
 
-    Shuffleboard.getTab("MAIN")
-        .add("Score Sequence", new ScoreSequence(arm, wrist, claw, ScoreChooser::getSelected));
+    TAB_MAIN.add("Score Sequence", new ScoreSequence(arm, wrist, claw, ScoreChooser::getSelected));
 
-    Shuffleboard.getTab("MAIN")
-        .add(
-            "Collect Sequence",
-            new CollectSequence(arm, wrist, claw, collectionChooser::getSelected));
-    Shuffleboard.getTab("MAIN").add("Eject Game Piece", new EjectGamePiece(claw).withTimeout(0.25));
-    Shuffleboard.getTab("MAIN")
-        .add("angle 25, length 1", new SetArm(arm, () -> 25, () -> 1, () -> false));
-    Shuffleboard.getTab("MAIN")
-        .add("angle 45, length 1", new SetArm(arm, () -> 45, () -> 1, () -> false));
-    Shuffleboard.getTab("MAIN")
-        .add("angle 65, length 1", new SetArm(arm, () -> 65, () -> 1, () -> false));
-    Shuffleboard.getTab("MAIN")
-        .add("angle 90, length 1", new SetArm(arm, () -> 90, () -> 1, () -> false));
-    Shuffleboard.getTab("MAIN")
-        .add("angle 45, length 10", new SetArm(arm, () -> 45, () -> 10, () -> false));
-    Shuffleboard.getTab("MAIN")
-        .add("angle 45, length 20", new SetArm(arm, () -> 45, () -> 20, () -> false));
-    Shuffleboard.getTab("MAIN")
-        .add("angle 45, length 36", new SetArm(arm, () -> 45, () -> 36, () -> false));
-    Shuffleboard.getTab("MAIN").add("set home", new GoHome(arm, wrist));
-    Shuffleboard.getTab("MAIN").add("Balance", new Balance(drivetrain));
+    TAB_MAIN.add(
+        "Collect Sequence", new CollectSequence(arm, wrist, claw, collectionChooser::getSelected));
+    TAB_MAIN.add("Eject Game Piece", new EjectGamePiece(claw).withTimeout(0.25));
+    TAB_MAIN.add("angle 25, length 1", new SetArm(arm, () -> 25, () -> 1, () -> false));
+    TAB_MAIN.add("angle 45, length 1", new SetArm(arm, () -> 45, () -> 1, () -> false));
+    TAB_MAIN.add("angle 65, length 1", new SetArm(arm, () -> 65, () -> 1, () -> false));
+    TAB_MAIN.add("angle 90, length 1", new SetArm(arm, () -> 90, () -> 1, () -> false));
+    TAB_MAIN.add("angle 45, length 10", new SetArm(arm, () -> 45, () -> 10, () -> false));
+    TAB_MAIN.add("angle 45, length 20", new SetArm(arm, () -> 45, () -> 20, () -> false));
+    TAB_MAIN.add("angle 45, length 36", new SetArm(arm, () -> 45, () -> 36, () -> false));
+    TAB_MAIN.add("set home", new GoHome(arm, wrist));
+    TAB_MAIN.add("Balance", new Balance(drivetrain));
   }
 
   /** Use this method to define your button->command mappings. */
@@ -476,9 +462,7 @@ public class RobotContainer {
     List<PathPlannerTrajectory> auto3Paths =
         PathPlanner.loadPathGroup(
             "3 Piece", config.getAutoMaxSpeed(), config.getAutoMaxAcceleration());
-    Command auto3Piece =
-        Commands.sequence(
-            new FollowPath(auto3Paths.get(0), drivetrain, true));
+    Command auto3Piece = Commands.sequence(new FollowPath(auto3Paths.get(0), drivetrain, true));
 
     // add commands to the auto chooser
     autoChooser.addDefaultOption("Do Nothing", new InstantCommand());
@@ -544,7 +528,7 @@ public class RobotContainer {
             .andThen(new Balance(drivetrain))
             .andThen(() -> drivetrain.setXStance(), drivetrain));
 
-    Shuffleboard.getTab("MAIN").add(autoChooser.getSendableChooser());
+    TAB_MAIN.add(autoChooser.getSendableChooser());
   }
 
   /**

@@ -1,5 +1,6 @@
 package frc.robot.subsystems.arm;
 
+import static frc.robot.Constants.TAB_ARM;
 import static frc.robot.subsystems.arm.ArmConstants.*;
 
 import com.ctre.phoenix.motorcontrol.*;
@@ -11,9 +12,7 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.lib.team6328.util.Alert;
 import java.util.Map;
@@ -125,10 +124,9 @@ public class ArmIOTalonFX implements ArmIO {
   }
 
   private void setShuffleboardLayout() {
-    ShuffleboardTab armTab = Shuffleboard.getTab("Arm Tab");
 
     ShuffleboardLayout rotList =
-        armTab.getLayout("Arm Rotation", BuiltInLayouts.kList).withSize(1, 5);
+        TAB_ARM.getLayout("Arm Rotation", BuiltInLayouts.kList).withSize(1, 5);
 
     GenericEntry targetAngle =
         rotList
@@ -136,17 +134,17 @@ public class ArmIOTalonFX implements ArmIO {
             .withWidget(BuiltInWidgets.kNumberSlider)
             .withProperties(Map.of("min", -MAX_ROTATION_ANGLE, "max", MAX_ROTATION_ANGLE))
             .getEntry();
-    armTab.add("Rotate Arm", new InstantCommand(() -> setArmAngle(targetAngle.getDouble(0))));
+    TAB_ARM.add("Rotate Arm", new InstantCommand(() -> setArmAngle(targetAngle.getDouble(0))));
     rotList.addNumber("Arm Angle", this::getArmAngle);
     rotList.addNumber("Rotation Motor Ticks", (() -> convertDegreesToTicks(getArmAngle())));
 
     rotList.addNumber("Rotation voltage", ROTATION_LEADER_TALON::getMotorOutputVoltage);
     rotList.addNumber("Rotation current", ROTATION_LEADER_TALON::getSupplyCurrent);
     rotList.addNumber("Rotation error", ROTATION_LEADER_TALON::getClosedLoopError);
-    armTab.addNumber("SensorSelectedVelocity", ROTATION_LEADER_TALON::getSelectedSensorVelocity);
+    TAB_ARM.addNumber("SensorSelectedVelocity", ROTATION_LEADER_TALON::getSelectedSensorVelocity);
 
     ShuffleboardLayout extList =
-        armTab.getLayout("Arm Extension", BuiltInLayouts.kList).withSize(1, 4);
+        TAB_ARM.getLayout("Arm Extension", BuiltInLayouts.kList).withSize(1, 4);
 
     GenericEntry targetLength = extList.add("Target Length", 0).getEntry();
 
@@ -154,14 +152,14 @@ public class ArmIOTalonFX implements ArmIO {
     extList.addNumber("Extension Motor Ticks", EXTENSION_TALON::getSelectedSensorPosition);
     extList.addNumber("Potentiometer Voltage", EXTENSION_POTENTIOMETER::getVoltage);
 
-    armTab.add("Extend Arm", new InstantCommand(() -> setArmLength(targetLength.getDouble(0))));
+    TAB_ARM.add("Extend Arm", new InstantCommand(() -> setArmLength(targetLength.getDouble(0))));
 
-    armTab.add("Coast Rotation", new InstantCommand(this::coastArmRotation).ignoringDisable(true));
-    armTab.add(
+    TAB_ARM.add("Coast Rotation", new InstantCommand(this::coastArmRotation).ignoringDisable(true));
+    TAB_ARM.add(
         "Coast Extension", new InstantCommand(this::coastArmExtension).ignoringDisable(true));
-    armTab.add(
+    TAB_ARM.add(
         "Brake Extension", new InstantCommand(this::brakeArmExtension).ignoringDisable(true));
-    armTab.add("Brake Rotation", new InstantCommand(this::brakeArmRotation).ignoringDisable(true));
+    TAB_ARM.add("Brake Rotation", new InstantCommand(this::brakeArmRotation).ignoringDisable(true));
   }
 
   public int convertDegreesToTicks(double degrees) {

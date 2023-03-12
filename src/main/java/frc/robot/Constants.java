@@ -10,6 +10,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RuntimeType;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.lib.team6328.util.Alert;
 import frc.lib.team6328.util.Alert.AlertType;
 import frc.robot.subsystems.arm.Arm;
@@ -31,6 +33,12 @@ public final class Constants {
   // FIXME: If Limelight is used, specify the pipeline for detecting AprilTags
   public static final int LIMELIGHT_PIPELINE = 1;
 
+  public static final ShuffleboardTab TAB_VISION = Shuffleboard.getTab("Vision");
+  public static final ShuffleboardTab TAB_MAIN = Shuffleboard.getTab("Main");
+  public static final ShuffleboardTab TAB_ARM = Shuffleboard.getTab("Arm");
+  public static final ShuffleboardTab TAB_WRIST = Shuffleboard.getTab("Wrist");
+  public static final ShuffleboardTab TAB_CLAW = Shuffleboard.getTab("Claw");
+  public static final ShuffleboardTab TAB_COMMANDS = Shuffleboard.getTab("Commands");
   private static final RobotType ROBOT =
       RobotBase.getRuntimeType().equals(RuntimeType.kRoboRIO)
           ? RobotType.ROBOT_2023_TEST
@@ -49,6 +57,11 @@ public final class Constants {
         return ROBOT;
       }
     } else {
+      if (ROBOT == RobotType.ROBOT_SIMBOT && !ADVANTAGE_KIT_ENABLED) {
+        invalidRobotAlert.set(true);
+      } else {
+        return ROBOT;
+      }
       return ROBOT;
     }
   }

@@ -8,8 +8,9 @@
 
 package frc.lib.team3061.pneumatics;
 
+import static frc.robot.Constants.TAB_MAIN;
+
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.team6328.util.Alert;
 import frc.lib.team6328.util.Alert.AlertType;
@@ -50,7 +51,7 @@ public class Pneumatics extends SubsystemBase {
     noPressureTimer.start();
     compressorEnabledTimer.start();
 
-    Shuffleboard.getTab("MAIN").addNumber("Pressure", this::getPressure);
+    TAB_MAIN.addNumber("Pressure", this::getPressure);
   }
 
   public double getPressure() {

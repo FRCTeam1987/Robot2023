@@ -1,10 +1,8 @@
 package frc.robot.subsystems.wrist;
 
 import static frc.robot.Constants.ADVANTAGE_KIT_ENABLED;
+import static frc.robot.Constants.TAB_WRIST;
 
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.SetWristPosition;
@@ -15,8 +13,6 @@ public class Wrist extends SubsystemBase {
   private final WristIOInputsAutoLogged inputs = new WristIOInputsAutoLogged();
 
   private final double currentThreshold = 10.0; // amps
-  public static final ShuffleboardTab tab = Shuffleboard.getTab("wrist");
-
   public static final int ANGLE_STRAIGHT = 2109;
   public static final int ANGLE_FRONT_MAX = 795; // when telescope extended
   public static final int ANGLE_FRONT_PERPENDICULAR = 1275;
@@ -28,14 +24,14 @@ public class Wrist extends SubsystemBase {
   /** Creates a new Wrist. */
   public Wrist(WristIO io) {
     this.io = io;
-    SmartDashboard.putData("norm", new InstantCommand(() -> io.setRotation(true)));
-    SmartDashboard.putData("invert", new InstantCommand(() -> io.setRotation(false)));
+    TAB_WRIST.add("norm", new InstantCommand(() -> io.setRotation(true)));
+    TAB_WRIST.add("invert", new InstantCommand(() -> io.setRotation(false)));
 
-    tab.add("Set Straight", new SetWristPosition(ANGLE_STRAIGHT, this));
-    tab.add("Set Front Perpendicular", new SetWristPosition(ANGLE_FRONT_PERPENDICULAR, this));
-    tab.add("Set Back Perpendicular", new SetWristPosition(ANGLE_BACK_PERPENDICULAR, this));
-    tab.add("Set Back Half Perpendicular", new SetWristPosition(ANGLE_BACK_HALF, this));
-    tab.add("Set Front Half Perpendicular", new SetWristPosition(ANGLE_FRONT_HALF, this));
+    TAB_WRIST.add("Set Straight", new SetWristPosition(ANGLE_STRAIGHT, this));
+    TAB_WRIST.add("Set Front Perpendicular", new SetWristPosition(ANGLE_FRONT_PERPENDICULAR, this));
+    TAB_WRIST.add("Set Back Perpendicular", new SetWristPosition(ANGLE_BACK_PERPENDICULAR, this));
+    TAB_WRIST.add("Set Back Half Perpendicular", new SetWristPosition(ANGLE_BACK_HALF, this));
+    TAB_WRIST.add("Set Front Half Perpendicular", new SetWristPosition(ANGLE_FRONT_HALF, this));
   }
 
   public double getCurrent() {

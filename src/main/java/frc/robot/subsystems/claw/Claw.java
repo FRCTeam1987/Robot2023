@@ -1,9 +1,8 @@
 package frc.robot.subsystems.claw;
 
 import static frc.robot.Constants.ADVANTAGE_KIT_ENABLED;
+import static frc.robot.Constants.TAB_CLAW;
 
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.EjectGamePiece;
@@ -29,14 +28,13 @@ public class Claw extends SubsystemBase {
   /** Creates a new Claw. */
   public Claw(ClawIO io) {
     this.io = io;
-    SmartDashboard.putData("Stop Claw", new StopClawRollers(this));
-    Shuffleboard.getTab("SmartDashboard").addBoolean("is cone", this::isCone);
-    // SmartDashboard.putData("Collect Cube", new CollectGamePiece(this, GamePiece.CUBE));
-    // SmartDashboard.putData("Collect Cone", new CollectGamePiece(this, GamePiece.CONE));
-    // SmartDashboard.putData("Switch game piece", new InstantCommand(() ->
+    TAB_CLAW.add("Stop Claw", new StopClawRollers(this));
+    // TAB_CLAW.add("Collect Cube", new CollectGamePiece(this, GamePiece.CUBE));
+    // TAB_CLAW.add("Collect Cone", new CollectGamePiece(this, GamePiece.CONE));
+    // TAB_CLAW.add("Switch game piece", new InstantCommand(() ->
     // this.changeGamePiece()));
-    SmartDashboard.putData("Run Claw Plain", new InstantCommand(() -> setRollerSpeed(0.75), this));
-    SmartDashboard.putData("Eject Game Piece", new EjectGamePiece(this).withTimeout(0.25));
+    TAB_CLAW.add("Run Claw Plain", new InstantCommand(() -> setRollerSpeed(0.75), this));
+    TAB_CLAW.add("Eject Game Piece", new EjectGamePiece(this).withTimeout(0.25));
   }
 
   public void setCone() {
