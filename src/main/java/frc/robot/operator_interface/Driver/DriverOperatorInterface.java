@@ -69,8 +69,7 @@ public interface DriverOperatorInterface {
     return new Trigger(() -> false);
   }
 
-  // CoDriver
-  public default Trigger getTempScore() {
-    return new Trigger(() -> false);
-  }
+  // public default Trigger getTempScore() {
+  //   return new Trigger(() -> false);
+  // }
 }

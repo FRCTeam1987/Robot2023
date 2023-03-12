@@ -311,29 +311,30 @@ public class RobotContainer {
     TAB_COMMANDS.add("Scan Battery", new InstantCommand(() -> BatteryTracker.scanBattery(10.0)));
 
     SendableChooser<PositionConfig> collectionChooser = new SendableChooser<>();
-    collectionChooser.setDefaultOption("TEST_POS", TEST_POS);
-    collectionChooser.addOption("TEST_NEG", TEST_NEG);
+    // collectionChooser.setDefaultOption("TEST_POS", TEST_POS);
+    // collectionChooser.addOption("TEST_NEG", TEST_NEG);
     collectionChooser.addOption("BACK_CUBE_FLOOR", BACK_CUBE_FLOOR);
     collectionChooser.addOption("BACK_CONE_FLOOR", BACK_CONE_FLOOR);
     collectionChooser.addOption("BACK_CONE_FLOOR_TIPPED", BACK_CONE_FLOOR_TIPPED);
     collectionChooser.addOption("FRONT_CUBE_FLOOR", FRONT_CUBE_FLOOR);
     collectionChooser.addOption("FRONT_CONE_FLOOR", FRONT_CONE_FLOOR);
     collectionChooser.addOption("FRONT_CONE_FLOOR_TIPPED", FRONT_CONE_FLOOR_TIPPED);
-    collectionChooser.addOption("BACK_CUBE_FLOOR", BACK_CUBE_FLOOR); // score
-    collectionChooser.addOption("BACK_CONE_FLOOR_TIPPED", BACK_CONE_FLOOR_TIPPED);
-    collectionChooser.addOption("BACK_CONE_TOP", BACK_CONE_TOP);
-    collectionChooser.addOption("BACK_CONE_MEDIUM", BACK_CONE_MEDIUM);
-    collectionChooser.addOption("BACK_CUBE_TOP", BACK_CUBE_TOP);
-    collectionChooser.addOption("BACK_CUBE_MEDIUM", BACK_CUBE_MEDIUM);
+    // collectionChooser.addOption("BACK_CUBE_FLOOR", BACK_CUBE_FLOOR); // score
+    // collectionChooser.addOption("BACK_CONE_FLOOR_TIPPED", BACK_CONE_FLOOR_TIPPED);
+    // collectionChooser.addOption("BACK_CONE_TOP", BACK_CONE_TOP);
+    // collectionChooser.addOption("BACK_CONE_MEDIUM", BACK_CONE_MEDIUM);
+    // collectionChooser.addOption("BACK_CUBE_TOP", BACK_CUBE_TOP);
+    // collectionChooser.addOption("BACK_CUBE_MEDIUM", BACK_CUBE_MEDIUM);
     collectionChooser.addOption("FRONT_CONE_TOP", FRONT_CONE_TOP);
     collectionChooser.addOption("FRONT_CONE_MEDIUM", FRONT_CONE_MEDIUM);
     collectionChooser.addOption("FRONT_CUBE_MEDIUM", FRONT_CUBE_MEDIUM);
     collectionChooser.addOption("FRONT_CUBE_TOP", FRONT_CUBE_TOP);
     collectionChooser.addOption("FRONT_CONE_TOP", FRONT_CONE_TOP);
-    collectionChooser.addOption("FRONT_SINGLE_SUBSTATION", FRONT_SINGLE_SUBSTATION);
-    collectionChooser.addOption("FRONT_DOUBLE_SUBSTATION", FRONT_DOUBLE_SUBSTATION);
+    // collectionChooser.addOption("FRONT_SINGLE_SUBSTATION", FRONT_SINGLE_SUBSTATION);
+    collectionChooser.addOption("BACK_SINGLE_SUBSTATION", BACK_SINGLE_SUBSTATION);
+    // collectionChooser.addOption("FRONT_DOUBLE_SUBSTATION", FRONT_DOUBLE_SUBSTATION);
     collectionChooser.addOption("BACK_DOUBLE_SUBSTATION", BACK_DOUBLE_SUBSTATION);
-    collectionChooser.addOption("FRONT_CONE_FLOOR_TIPPED_LONG", FRONT_CONE_FLOOR_TIPPED_LONG);
+    // collectionChooser.addOption("FRONT_CONE_FLOOR_TIPPED_LONG", FRONT_CONE_FLOOR_TIPPED_LONG);
     TAB_MAIN.add("Collect Chooser", collectionChooser);
 
     SendableChooser<PositionConfig> ScoreChooser = new SendableChooser<>();
@@ -453,6 +454,7 @@ public class RobotContainer {
     CoDriver.getTempMediumScore().onTrue(new InstantCommand(() -> this.setMedium()));
     CoDriver.getTempHighScore().onTrue(new InstantCommand(() -> this.setHigh()));
 
+    /* //TODO FIX ME FOR SCORE, MAKE STATIC NON-STATIC
     if (getHeight() == height.FLOOR) {
       driver
         .getTempScore()
@@ -478,6 +480,7 @@ public class RobotContainer {
                 new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CUBE_TOP),
                 () -> claw.isCone()));
     }
+    */
 
     driver
         .getTempCollectConeFloor()

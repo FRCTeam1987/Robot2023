@@ -83,7 +83,7 @@ public class DriverHandheldOI implements DriverOperatorInterface {
     return new Trigger(controller::getStartButton);
   }
 
-  public Trigger getTempScore() {
-    return new Trigger(controller::getBButton);
-  }
+  // public Trigger getTempScore() {
+  //   return new Trigger(controller::getBButton);
+  // }
 }
