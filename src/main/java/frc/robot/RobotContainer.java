@@ -10,6 +10,8 @@ import static frc.robot.Constants.PositionConfigs.*;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.FollowPathWithEvents;
+
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -20,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.team3061.RobotConfig;
 import frc.lib.team3061.gyro.GyroIO;
 import frc.lib.team3061.gyro.GyroIOPigeon2;
@@ -40,10 +43,7 @@ import frc.robot.commands.auto.AutoPathHelper;
 import frc.robot.commands.auto.Balance;
 import frc.robot.configs.CompRobotConfig;
 import frc.robot.configs.TestRobotConfig;
-import frc.robot.operator_interface.CoDriver.CoDriverOISelector;
-import frc.robot.operator_interface.CoDriver.CoDriverOperatorInterface;
-import frc.robot.operator_interface.Driver.DriverOISelector;
-import frc.robot.operator_interface.Driver.DriverOperatorInterface;
+
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.claw.Claw;
@@ -58,6 +58,7 @@ import frc.robot.util.BatteryTracker;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.Condition;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -66,8 +67,6 @@ import java.util.Map;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  private DriverOperatorInterface driver = new DriverOperatorInterface() {};
-  private CoDriverOperatorInterface coDriver = new CoDriverOperatorInterface() {};
 
   private RobotConfig config;
   private Drivetrain drivetrain;
@@ -90,9 +89,8 @@ public class RobotContainer {
   // RobotContainer singleton
   private static final RobotContainer robotContainer = new RobotContainer();
   private final Map<String, Command> autoEventMap = new HashMap<>();
-  CommandXboxController driverController =
-      new CommandXboxController(1); // Creates a CommandXboxController on port 1.
-  CommandXboxController coDriverController = new CommandXboxController(2);
+  XboxController driverController = new XboxController(0); // Creates a CommandXboxController on port 1.
+  XboxController coDriverController = new XboxController(1);
 
   /** Create the container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -241,8 +239,11 @@ public class RobotContainer {
     // disable all telemetry in the LiveWindow to reduce the processing during each iteration
     LiveWindow.disableAllTelemetry();
 
-    updateOI();
+    drivetrain.setDefaultCommand(
+        new TeleopSwerve(
+            drivetrain, driverController::getLeftY, driverController::getLeftX, driverController::getRightX));
 
+    configureButtonBindings();
     configureAutoCommands();
     configureSmartDashboard();
   }
@@ -251,32 +252,6 @@ public class RobotContainer {
    * This method scans for any changes to the connected joystick. If anything changed, it creates
    * new OI objects and binds all the buttons to commands.
    */
-  public void updateOI() {
-    if (!DriverOISelector.didJoysticksChange()) {
-      return;
-    }
-
-    CommandScheduler.getInstance().getActiveButtonLoop().clear();
-    driver = DriverOISelector.findOperatorInterface();
-    coDriver = CoDriverOISelector.findOperatorInterface();
-
-    /*
-     * Set up the default command for the drivetrain. The joysticks' values map to percentage of the
-     * maximum velocities. The velocities may be specified from either the robot's frame of
-     * reference or the field's frame of reference. In the robot's frame of reference, the positive
-     * x direction is forward; the positive y direction, left; position rotation, CCW. In the field
-     * frame of reference, the origin of the field to the lower left corner (i.e., the corner of the
-     * field to the driver's right). Zero degrees is away from the driver and increases in the CCW
-     * direction. This is why the left joystick's y-axis specifies the velocity in the x direction
-     * and the left joystick's x-axis specifies the velocity in the y direction.
-     */
-    drivetrain.setDefaultCommand(
-        new TeleopSwerve(
-            drivetrain, driver::getTranslateX, driver::getTranslateY, driver::getRotate));
-
-    configureButtonBindings();
-  }
-
   /**
    * Factory method to create the singleton robot container object.
    *
@@ -295,9 +270,6 @@ public class RobotContainer {
     TAB_COMMANDS.add("Extend to 12in", new ExtendArm(arm, 12));
     TAB_COMMANDS.add("Rotate to 45deg", new RotateArm(arm, 45));
     TAB_COMMANDS.add("Flip Wrist to true", new FlipWrist(wrist, true));
-    TAB_COMMANDS.add(
-        "Test Score", new SetArmHeight(getHeight(), arm, wrist, claw, this.driverController));
-
     TAB_ARM.add("Seq 45 pos", new SequentialCommandTest(arm, wrist, 16, 45, 3289));
     TAB_ARM.add("Seq -45 pos", new SequentialCommandTest(arm, wrist, 16, -45, 3289));
     // armTab.add("Collect Back Cube", );
@@ -366,21 +338,11 @@ public class RobotContainer {
 
   /** Use this method to define your button->command mappings. */
   private void configureButtonBindings() {
-    // field-relative toggle
-    driver
-        .getFieldRelativeButton()
-        .toggleOnTrue(
-            Commands.either(
-                Commands.runOnce(drivetrain::disableFieldRelative, drivetrain),
-                Commands.runOnce(drivetrain::enableFieldRelative, drivetrain),
-                drivetrain::getFieldRelative));
 
     // reset gyro to 0 degrees
-    driver.getResetGyroButton().onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
+    new Trigger(driverController::getStartButton).onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
 
     // x-stance
-    driver.getXStanceButton().onTrue(Commands.runOnce(drivetrain::enableXstance, drivetrain));
-    driver.getXStanceButton().onFalse(Commands.runOnce(drivetrain::disableXstance, drivetrain));
 
     // Creates a new Trigger object for the `Right bumper` button that collects cones
     // driverController.rightBumper().onTrue(new CollectGamePiece(claw, GamePiece.CONE));
@@ -429,15 +391,13 @@ public class RobotContainer {
     //               wrist.setRotation(false);
     //             }));
     // oi.getRotateButton().onTrue(new InstantCommand(() -> arm.setArmAngle(45)));
-    driver
-        .getTempCollectCube()
+    new Trigger(driverController::getRightBumper)
         .onTrue(new CollectSequence(arm, wrist, claw, () -> BACK_CUBE_FLOOR));
-    driver
-        .getTempEject()
+        new Trigger(driverController::getLeftBumper)
         .onTrue(
             new SequentialCommandGroup(
                 new EjectGamePiece(claw).withTimeout(0.25), new GoHome(arm, wrist)));
-    driver.getTempGoHome().onTrue(new GoHome(arm, wrist));
+                new Trigger(driverController::getBackButton).onTrue(new GoHome(arm, wrist));
     // new SequentialCommandGroup(
     //     new ParallelCommandGroup(
     //         new SetArm(arm, () -> -45.0, () -> 6.0, () -> false), new SetWristPosition(1350,
@@ -448,39 +408,56 @@ public class RobotContainer {
     //         new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
     //     new InstantCommand(() -> arm.setExtensionNominal(), arm)));
 
-    coDriver.getTempFloorScore().onTrue(new InstantCommand(() -> System.out.println("Floor")));
-    coDriver.getTempMediumScore().onTrue(new InstantCommand(() -> this.setHeight(Height.MEDIUM)));
-    coDriver.getTempHighScore().onTrue(new InstantCommand(() -> this.setHeight(Height.HIGH)));
+    new Trigger(coDriverController::getAButton).onTrue(new InstantCommand(() -> this.setHeight(Height.FLOOR)));
+    new Trigger(coDriverController::getXButton).onTrue(new InstantCommand(() -> this.setHeight(Height.MEDIUM)));
+    new Trigger(coDriverController::getYButton).onTrue(new InstantCommand(() -> this.setHeight(Height.HIGH)));
 
-    driver
-        .getTempScore()
-        .onTrue(new SetArmHeight(getHeight(), arm, wrist, claw, this.driverController));
 
-    driver
-        .getTempCollectConeFloor()
+    ConditionalCommand floorScore = new ConditionalCommand(
+        new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CONE_FLOOR),
+        new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CUBE_FLOOR),
+        () -> claw.isCone());
+    ConditionalCommand mediumScore = new ConditionalCommand(
+        new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CONE_MEDIUM),
+        new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CUBE_MEDIUM),
+        () -> claw.isCone());
+    ConditionalCommand highScore = new ConditionalCommand(
+        new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CONE_TOP),
+        new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CUBE_TOP),
+        () -> claw.isCone());
+        new Trigger(driverController::getAButton)
+        .onTrue(new ConditionalCommand(
+            floorScore, 
+            new ConditionalCommand(
+                mediumScore,
+                highScore,
+                () -> height == Height.MEDIUM),
+            () -> height == Height.FLOOR)
+        );
+
+        new Trigger(driverController::getYButton)
         .onTrue(
             new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CONE_FLOOR));
-    driver
-        .getTempCollectConeTip()
+            new Trigger(driverController::getXButton)
         .onTrue(
             new CollectSequence(
                 arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CONE_FLOOR_TIPPED));
 
-    driver
-        .getTempTopScore()
-        .onTrue(
-            new ConditionalCommand(
-                new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CONE_TOP),
-                new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CUBE_TOP),
-                () -> claw.getGamePiece() == GamePiece.CONE));
+    // driver
+    //     .getTempTopScore()
+    //     .onTrue(
+    //         new ConditionalCommand(
+    //             new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CONE_TOP),
+    //             new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CUBE_TOP),
+    //             () -> claw.getGamePiece() == GamePiece.CONE));
 
-    driver
-        .getTempMedScore()
-        .onTrue(
-            new ConditionalCommand(
-                new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CONE_MEDIUM),
-                new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CUBE_MEDIUM),
-                () -> claw.getGamePiece() == GamePiece.CONE));
+    // driver
+    //     .getTempMedScore()
+    //     .onTrue(
+    //         new ConditionalCommand(
+    //             new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CONE_MEDIUM),
+    //             new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CUBE_MEDIUM),
+    //             () -> claw.getGamePiece() == GamePiece.CONE));
   }
 
   /** Use this method to define your commands for autonomous mode. */
