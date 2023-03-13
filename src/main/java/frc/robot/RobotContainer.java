@@ -468,7 +468,7 @@ public class RobotContainer {
     // build auto path commands
     List<PathPlannerTrajectory> auto1Paths =
         PathPlanner.loadPathGroup(
-            "testPaths1", config.getAutoMaxSpeed(), config.getAutoMaxAcceleration());
+            "Straight (shop)", config.getAutoMaxSpeed(), config.getAutoMaxAcceleration());
     Command autoTest =
         Commands.sequence(
             new FollowPathWithEvents(
@@ -608,5 +608,17 @@ public class RobotContainer {
 
   public Height getHeight() {
     return height;
+  }
+
+  public void enableFieldRelative() {
+    drivetrain.enableFieldRelative();
+  }
+
+  public void enableXstance() {
+    drivetrain.enableXstance();
+  }
+
+  public void disableXstance() {
+    drivetrain.disableXstance();
   }
 }

@@ -33,6 +33,12 @@ public final class Constants {
   // FIXME: If Limelight is used, specify the pipeline for detecting AprilTags
   public static final int LIMELIGHT_PIPELINE = 1;
   public static final int WRIST_OFFSET = 606;
+  public static final double AUTO_DRIVE_P_CONTROLLER = 6.0;
+  public static final double AUTO_DRIVE_I_CONTROLLER = 0.0;
+  public static final double AUTO_DRIVE_D_CONTROLLER = 0.0;
+  public static final double AUTO_TURN_P_CONTROLLER = 25.0;
+  public static final double AUTO_TURN_I_CONTROLLER = 0.0;
+  public static final double AUTO_TURN_D_CONTROLLER = 0.0;
   public static final ShuffleboardTab TAB_VISION = Shuffleboard.getTab("Vision");
   public static final ShuffleboardTab TAB_MAIN = Shuffleboard.getTab("Main");
   public static final ShuffleboardTab TAB_ARM = Shuffleboard.getTab("Arm");

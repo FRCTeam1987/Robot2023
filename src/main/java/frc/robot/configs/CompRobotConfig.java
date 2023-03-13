@@ -51,21 +51,21 @@ public class CompRobotConfig extends RobotConfig {
   // FIXME: tune PID values for the angle and drive motors for the swerve modules
 
   /* Angle Motor PID Values */
-  private static final double ANGLE_KP = 0.125;
+  private static final double ANGLE_KP = 0.6;
   private static final double ANGLE_KI = 0.0;
-  private static final double ANGLE_KD = 0.0;
+  private static final double ANGLE_KD = 12.0;
   private static final double ANGLE_KF = 0.0;
 
   /* Drive Motor PID Values */
-  private static final double DRIVE_KP = 0.0;
+  private static final double DRIVE_KP = 0.1;
   private static final double DRIVE_KI = 0.0;
   private static final double DRIVE_KD = 0.0;
   private static final double DRIVE_KF = 0.0;
 
   // FIXME: characterize the drivetrain and update these constants
-  private static final double DRIVE_KS = 0.67900;
-  private static final double DRIVE_KV = 2.02673;
-  private static final double DRIVE_KA = 0.0;
+  private static final double DRIVE_KS = 0.55493;
+  private static final double DRIVE_KV = 2.3014;
+  private static final double DRIVE_KA = 0.12872;
 
   // FIXME: specify the type of swerve module (MK4 and MK4i are supported)
   private static final SwerveType SWERVE_TYPE = SwerveType.MK4I;
@@ -95,10 +95,10 @@ public class CompRobotConfig extends RobotConfig {
 
   private static final double AUTO_MAX_SPEED_METERS_PER_SECOND = 2.0;
   private static final double AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 2.0;
-  private static final double AUTO_DRIVE_P_CONTROLLER = 0.0;
+  private static final double AUTO_DRIVE_P_CONTROLLER = 6.0;
   private static final double AUTO_DRIVE_I_CONTROLLER = 0.0;
   private static final double AUTO_DRIVE_D_CONTROLLER = 0.0;
-  private static final double AUTO_TURN_P_CONTROLLER = 0.125;
+  private static final double AUTO_TURN_P_CONTROLLER = 10.0;
   private static final double AUTO_TURN_I_CONTROLLER = 0.0;
   private static final double AUTO_TURN_D_CONTROLLER = 0.0;
 
