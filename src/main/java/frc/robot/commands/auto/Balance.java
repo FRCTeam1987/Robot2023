@@ -6,7 +6,7 @@ package frc.robot.commands.auto;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
-import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.util.Util;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -14,9 +14,9 @@ import frc.robot.util.Util;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class Balance extends PIDCommand {
 
-  final Drivetrain drive;
+  final DrivetrainSubsystem drive;
   /** Creates a new Balance. */
-  public Balance(final Drivetrain drive) {
+  public Balance(final DrivetrainSubsystem drive) {
     super(
         // The controller that the command will use
         new PIDController(0.25, 0, 0),
@@ -28,7 +28,7 @@ public class Balance extends PIDCommand {
         output -> {
           // Use the output here
           {
-            drive.drive(-output / 5.0, 0, 0, true);
+            drive.drive(-output / 5.0, 0, 0);
           }
         });
     // Use addRequirements() here to declare subsystem dependencies.
@@ -43,8 +43,8 @@ public class Balance extends PIDCommand {
   @Override
   public boolean isFinished() {
     return this.getController().atSetpoint()
-        || Util.isWithinTolerance(drive.getPoseX(), 0, 1)
-        || Util.isWithinTolerance(drive.getPoseY(), 0, 1);
+        || Util.isWithinTolerance(drive.getPose().getX(), 0, 1)
+        || Util.isWithinTolerance(drive.getPose().getY(), 0, 1);
     // TODO double check that this actually stops it from  driving safely
   }
 }

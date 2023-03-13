@@ -9,7 +9,8 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.Constants;
+import frc.robot.subsystems.DrivetrainSubsystem;
 import java.util.HashMap;
 
 /** Add your docs here. */
@@ -21,15 +22,16 @@ public class AutoPathHelper {
   // }
 
   public static Command followPath(
-      final Drivetrain drive, final String pathName, final HashMap<String, Command> eventMap) {
+      final DrivetrainSubsystem drive,
+      final String pathName,
+      final HashMap<String, Command> eventMap) {
     SwerveAutoBuilder autoBuilder =
         new SwerveAutoBuilder(
             drive::getPose,
-            drive::resetPose,
-            drive.getKinematics(),
+            drive::setPose,
             new PIDConstants(5.0, 0, 0),
             new PIDConstants(1.0, 0, 0),
-            drive::setSwerveModuleStates,
+            drive::setChassisSpeeds,
             eventMap,
             true,
             drive);

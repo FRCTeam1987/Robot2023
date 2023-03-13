@@ -6,8 +6,8 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.claw.Claw;
-import frc.robot.subsystems.claw.Claw.GamePiece;
+import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.Claw.GamePiece;
 
 public class CollectGamePiece extends CommandBase {
 
@@ -28,7 +28,7 @@ public class CollectGamePiece extends CommandBase {
   }
 
   public boolean stopCondition() {
-    return CLAW.getCurrent() > MAXIMUM_CURRENT;
+    return CLAW.getCurrentAmps() > MAXIMUM_CURRENT;
   }
 
   @Override
@@ -44,7 +44,7 @@ public class CollectGamePiece extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    CLAW.stopRollers();
+    CLAW.setRollerSpeed(0.0);
     CLAW.setGamePiece(piece);
   }
 

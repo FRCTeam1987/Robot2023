@@ -4,14 +4,15 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.PositionConfigs;
 import frc.robot.RobotContainer.Height;
-import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.claw.Claw;
-import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.Wrist;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -22,10 +23,10 @@ public class SetArmHeight extends InstantCommand {
   Claw claw;
   Height height;
   Arm arm;
-  CommandXboxController controller;
+  XboxController controller;
 
   public SetArmHeight(
-      Height height, Arm arm, Wrist wrist, Claw claw, CommandXboxController controller) {
+      Height height, Arm arm, Wrist wrist, Claw claw, XboxController controller) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.wrist = wrist;
     this.arm = arm;

@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -11,10 +12,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public class RumbleCommand extends InstantCommand {
   /** Creates a new RumbleCommand. */
-  public RumbleCommand(CommandXboxController xboxController, double intensity, double duration) {
-    xboxController.getHID().setRumble(RumbleType.kBothRumble, intensity);
+  public RumbleCommand(XboxController xboxController, double intensity, double duration) {
+    xboxController.setRumble(RumbleType.kBothRumble, intensity);
     new WaitCommand(duration);
-    xboxController.getHID().setRumble(RumbleType.kBothRumble, 0);
+    xboxController.setRumble(RumbleType.kBothRumble, 0);
   }
 
   // Called when the command is initially scheduled.

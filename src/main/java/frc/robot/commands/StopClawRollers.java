@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.claw.Claw;
+import frc.robot.subsystems.Claw;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -20,6 +20,6 @@ public class StopClawRollers extends InstantCommand {
 
   @Override
   public void initialize() {
-    claw.stopRollers();
+    claw.setRollerSpeed(0.0);
   }
 }

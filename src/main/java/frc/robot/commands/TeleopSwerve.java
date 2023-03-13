@@ -1,11 +1,11 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.lib.team3061.RobotConfig;
-import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.Constants;
+import frc.robot.subsystems.DrivetrainSubsystem;
 import java.util.function.DoubleSupplier;
-import org.littletonrobotics.junction.Logger;
 
 /**
  * This command, when executed, instructs the drivetrain subsystem to drive based on the specified
@@ -20,7 +20,7 @@ import org.littletonrobotics.junction.Logger;
  */
 public class TeleopSwerve extends CommandBase {
 
-  private final Drivetrain drivetrain;
+  private final DrivetrainSubsystem drivetrain;
   private final DoubleSupplier translationXSupplier;
   private final DoubleSupplier translationYSupplier;
   private final DoubleSupplier rotationSupplier;
@@ -32,9 +32,9 @@ public class TeleopSwerve extends CommandBase {
 
   public static final double DEADBAND = 0.1;
 
-  private final double maxVelocityMetersPerSecond = RobotConfig.getInstance().getRobotMaxVelocity();
+  private final double maxVelocityMetersPerSecond = Constants.Drivetrain.MAX_VELOCITY_METERS_PER_SECOND;
   private final double maxAngularVelocityRadiansPerSecond =
-      RobotConfig.getInstance().getRobotMaxAngularVelocity();
+      Constants.Drivetrain.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
   /**
    * Create a new TeleopSwerve command object.
@@ -48,7 +48,7 @@ public class TeleopSwerve extends CommandBase {
    *     rotational velocity as defined by the standard field or robot coordinate system
    */
   public TeleopSwerve(
-      Drivetrain drivetrain,
+      DrivetrainSubsystem drivetrain,
       DoubleSupplier translationXSupplier,
       DoubleSupplier translationYSupplier,
       DoubleSupplier rotationSupplier) {
@@ -76,21 +76,21 @@ public class TeleopSwerve extends CommandBase {
     double yVelocity = yPercentage * maxVelocityMetersPerSecond;
     double rotationalVelocity = rotationPercentage * maxAngularVelocityRadiansPerSecond;
 
-    Logger.getInstance().recordOutput("ActiveCommands/TeleopSwerve", true);
-    Logger.getInstance().recordOutput("TeleopSwerve/xVelocity", xVelocity);
-    Logger.getInstance().recordOutput("TeleopSwerve/yVelocity", yVelocity);
-    Logger.getInstance().recordOutput("TeleopSwerve/rotationalVelocity", rotationalVelocity);
-
-    drivetrain.drive(xVelocity, yVelocity, rotationalVelocity, true);
+    drivetrain.drive(
+      ChassisSpeeds.fromFieldRelativeSpeeds(
+        xPercentage * Constants.Drivetrain.MAX_VELOCITY_METERS_PER_SECOND,
+        yPercentage * Constants.Drivetrain.MAX_VELOCITY_METERS_PER_SECOND,
+        rotationPercentage * Constants.Drivetrain.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
+        drivetrain.getYaw()
+      )
+    );
   }
 
   @Override
   public void end(boolean interrupted) {
-    this.drivetrain.stop();
+    this.drivetrain.drive(0, 0, 0);
 
     super.end(interrupted);
-
-    Logger.getInstance().recordOutput("ActiveCommands/TeleopSwerve", false);
   }
 
   /**

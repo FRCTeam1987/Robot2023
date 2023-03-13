@@ -5,8 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.claw.Claw;
-import frc.robot.subsystems.claw.Claw.GamePiece;
+import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.Claw.GamePiece;
 
 public class DefaultClawRollersSpin extends CommandBase {
 
@@ -31,7 +31,7 @@ public class DefaultClawRollersSpin extends CommandBase {
     } else if (gamePiece == GamePiece.CUBE && speed < CLAW_ROLLER_SPEED) {
       claw.setRollerSpeed(CLAW_ROLLER_SPEED);
     } else if (gamePiece == GamePiece.NONE && speed != 0.0) {
-      claw.stopRollers();
+      claw.setRollerSpeed(0.0);
     }
   }
 
