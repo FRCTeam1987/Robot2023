@@ -157,8 +157,8 @@ public class RobotContainer {
     TAB_COMMANDS.add("Rotate to 45deg", new RotateArm(arm, 45));
     TAB_COMMANDS.add("Flip Wrist to true", new FlipWrist(wrist, true));
 
-    TAB_ARM.add("Seq 45 pos", new SequentialCommandTest(arm, wrist, 16, 45, 3289));
-    TAB_ARM.add("Seq -45 pos", new SequentialCommandTest(arm, wrist, 16, -45, 3289));
+    //    TAB_ARM.add("Seq 45 pos", new SequentialCommandTest(arm, wrist, 16, 45, 3289));
+    //    TAB_ARM.add("Seq -45 pos", new SequentialCommandTest(arm, wrist, 16, -45, 3289));
     // armTab.add("Collect Back Cube", );
 
     TAB_ARM.add("Go Home", new GoHome(arm, wrist));
@@ -310,7 +310,7 @@ public class RobotContainer {
 
     new Trigger(coDriverController::getAButton)
         .onTrue(new InstantCommand(() -> this.setHeight(Height.FLOOR)));
-    new Trigger(coDriverController::getXButton)
+    new Trigger(coDriverController::getBButton)
         .onTrue(new InstantCommand(() -> this.setHeight(Height.MEDIUM)));
     new Trigger(coDriverController::getYButton)
         .onTrue(new InstantCommand(() -> this.setHeight(Height.HIGH)));
@@ -419,32 +419,11 @@ public class RobotContainer {
     final HashMap<String, Command> someEventMap = new HashMap<>();
     someEventMap.put(
         "Score Cone",
-        new SequentialCommandGroup(
-            new ParallelCommandGroup(
-                new SetArm(
-                    arm,
-                    () -> PositionConfigs.FRONT_CONE_TOP.armRotation,
-                    () -> PositionConfigs.FRONT_CONE_TOP.armLength,
-                    () -> false),
-                new SetWristPosition(PositionConfigs.FRONT_CONE_TOP.wristRotation, wrist)),
-            new EjectGamePiece(claw).withTimeout(0.25),
-            new GoHome(arm, wrist)));
+        new AutoScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP));
     someEventMap.put("Collect Cube", new CollectSequence(arm, wrist, claw, () -> BACK_CUBE_FLOOR));
     someEventMap.put(
         "Score Cube",
-        new SequentialCommandGroup(
-            new ParallelCommandGroup(
-                new SetArm(
-                    arm,
-                    () -> PositionConfigs.FRONT_CONE_TOP.armRotation,
-                    () -> PositionConfigs.FRONT_CONE_TOP.armLength,
-                    () -> false),
-                new SetWristPosition(PositionConfigs.FRONT_CONE_TOP.wristRotation, wrist)),
-            new EjectGamePiece(claw).withTimeout(0.25),
-            new ParallelCommandGroup(
-                new SetArm(arm, () -> Arm.HOME_ROTATION, () -> Arm.HOME_EXTENSION, () -> true),
-                new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
-            new InstantCommand(() -> arm.setExtensionNominal(), arm)));
+        new AutoScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_TOP));
     // TODO this auto does not fully work reliably
     autoChooser.addOption(
         "New Auto",
@@ -462,16 +441,13 @@ public class RobotContainer {
         "Score Cube Prep", new SetArm(arm, () -> -48.5, () -> 5, () -> false));
     TwoPieceNoCableEventMap.put(
         "Score Cube",
-        new ScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_TOP)
-            .andThen(new EjectGamePiece(claw).withTimeout(.25))
-            .andThen(new GoHome(arm, wrist).withTimeout(2)));
+        new AutoScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_TOP));
     TwoPieceNoCableEventMap.put("Go Home 2", new GoHome(arm, wrist).withTimeout(2));
     TwoPieceNoCableEventMap.put("Auto Balance", new Balance(drivetrain));
 
     autoChooser.addOption(
         "TwoPieceNoCable",
-        new ScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP)
-            .andThen(new EjectGamePiece(claw).withTimeout(.25))
+        new AutoScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP)
             .andThen(
                 AutoPathHelper.followPath(drivetrain, "TwoPieceNoCable", TwoPieceNoCableEventMap)));
 
@@ -521,7 +497,6 @@ public class RobotContainer {
             () -> PositionConfigs.BACK_CONE_FLOOR.armLength));
     TAB_MAIN.add(autoChooser);
   }
-
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

@@ -29,7 +29,7 @@ public final class Constants {
   public static final double FALCON_MAX_RPM = 6380.0;
   public static final int CLAW_MOTOR_ID = 8;
 
-  public static final int WRIST_OFFSET = 606;
+  public static final int WRIST_OFFSET = 360;
   public static final int WRIST_ROTATOR_MOTOR = 8;
   public static final double ROBOT_ARM_HEIGHT_OFFSET = 12.0;
   public static final int ARM_TELESCOPE_MOTOR = 6;
@@ -67,7 +67,7 @@ public final class Constants {
   // FIXME: tune PID values for the angle and drive motors for the swerve modules
 
   /* Angle Motor PID Values */
-  public static final double ANGLE_KP = 0.6;
+  public static final double ANGLE_KP = 0.45;
   public static final double ANGLE_KI = 0.0;
   public static final double ANGLE_KD = 12.0;
   public static final double ANGLE_KF = 0.0;
@@ -179,14 +179,15 @@ public final class Constants {
     public static final PositionConfig FRONT_CONE_MEDIUM =
         new PositionConfig(17, -43, 489 + WRIST_OFFSET, GamePiece.CONE);
     public static final PositionConfig FRONT_CONE_TOP =
-        new PositionConfig(35, -43, 575 + WRIST_OFFSET, GamePiece.CONE);
+        new PositionConfig(37, -51, 706 + WRIST_OFFSET, GamePiece.CONE);
     public static final PositionConfig FRONT_CUBE_MEDIUM =
-        new PositionConfig(1, -47, 1016 + WRIST_OFFSET, GamePiece.CUBE);
+        new PositionConfig(17, -43, 489 + WRIST_OFFSET, GamePiece.CONE);
     public static final PositionConfig FRONT_CUBE_TOP =
         new PositionConfig(
             20, -48.5, 1077 + WRIST_OFFSET, GamePiece.CUBE); // wrist 1027, arm angle -50
     public static final PositionConfig BACK_CONE_TOP =
-        new PositionConfig(35, 49.5, 2800 + WRIST_OFFSET, GamePiece.CONE);
+        new PositionConfig(
+            38, 49.5, 2800 + WRIST_OFFSET, GamePiece.CONE); // length 35, rotation 49.5, wrist
     public static final PositionConfig BACK_CONE_MEDIUM =
         new PositionConfig(22, 47.9, 3260 + WRIST_OFFSET, GamePiece.CONE);
     public static final PositionConfig BACK_CUBE_TOP =
@@ -199,7 +200,7 @@ public final class Constants {
         new PositionConfig(17, -33, 1270 + WRIST_OFFSET, GamePiece.CONE);
 
     public static final PositionConfig BACK_SINGLE_SUBSTATION =
-        new PositionConfig(0, 51, 2093, GamePiece.CONE);
+        new PositionConfig(0, 51, (1503 - 360) + WRIST_OFFSET, GamePiece.CONE);
     public static final PositionConfig BACK_DOUBLE_SUBSTATION =
         new PositionConfig(18, 27, 2570 + WRIST_OFFSET, GamePiece.CONE);
   }

@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.commands.arm;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -53,12 +49,14 @@ public class SetArm extends CommandBase {
 
     if (returning) {
       arm.setArmLength(desiredLength);
-      if (isLengthOnTarget(10)) {
+      if (isLengthOnTarget(25)) {
         arm.setArmAngle(angleSupplier.getAsDouble());
       }
     } else {
       arm.setArmAngle(desiredAngle);
-      if (isAngleOnTarget(5) && !isLengthOnTarget(1)) arm.setArmLength(desiredLength);
+      if (isAngleOnTarget(45) && !isLengthOnTarget(1)) {
+        arm.setArmLength(desiredLength);
+      }
     }
   }
 
@@ -80,12 +78,16 @@ public class SetArm extends CommandBase {
     if (interrupted) {
       arm.stop();
     }
+    if (Util.isWithinTolerance(arm.getArmAngle(), 0, 2)
+        && Util.isWithinTolerance(arm.getArmLength(), 1, 2)) {
+      arm.stop();
+    }
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return isAngleOnTarget(2) && isLengthOnTarget(1);
+    return isAngleOnTarget(2) && isLengthOnTarget(2);
   }
 
   private boolean isAngleOnTarget(final double tolerance) {
