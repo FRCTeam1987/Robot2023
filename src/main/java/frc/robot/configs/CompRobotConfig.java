@@ -51,7 +51,7 @@ public class CompRobotConfig extends RobotConfig {
   // FIXME: tune PID values for the angle and drive motors for the swerve modules
 
   /* Angle Motor PID Values */
-  private static final double ANGLE_KP = 0.6;
+  private static final double ANGLE_KP = 0.45;
   private static final double ANGLE_KI = 0.0;
   private static final double ANGLE_KD = 12.0;
   private static final double ANGLE_KF = 0.0;
@@ -102,7 +102,7 @@ public class CompRobotConfig extends RobotConfig {
   private static final double AUTO_TURN_I_CONTROLLER = 0.0;
   private static final double AUTO_TURN_D_CONTROLLER = 0.0;
 
-  private static final int ANGLE_STRAIGHT = 2289;
+  private static final int ANGLE_STRAIGHT = 2289; 
   private static final int ANGLE_FRONT_MAX = 795; // when telescope extended
   private static final int ANGLE_FRONT_PERPENDICULAR = 1275;
   private static final int ANGLE_BACK_PERPENDICULAR = 3289;

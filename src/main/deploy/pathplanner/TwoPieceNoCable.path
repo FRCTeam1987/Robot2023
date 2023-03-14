@@ -109,12 +109,6 @@
       ]
     },
     {
-      "position": 0.0,
-      "names": [
-        "Go Home"
-      ]
-    },
-    {
       "position": 1.15,
       "names": [
         "Score Cube Prep"
@@ -130,6 +124,12 @@
       "position": 2.4640702681107958,
       "names": [
         "event"
+      ]
+    },
+    {
+      "position": 0.0,
+      "names": [
+        "Go Home"
       ]
     }
   ]

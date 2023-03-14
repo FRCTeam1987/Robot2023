@@ -83,7 +83,7 @@ public class SetArm extends CommandBase {
       arm.stop();
     }
     if (Util.isWithinTolerance(arm.getArmAngle(), 0, 2)
-      && Util.isWithinTolerance(arm.getArmLength(), 1, 2)) {
+        && Util.isWithinTolerance(arm.getArmLength(), 1, 2)) {
       arm.stop();
     }
   }

@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems.drivetrain;
 
-import static frc.robot.Constants.ADVANTAGE_KIT_ENABLED;
 import static frc.robot.Constants.TAB_MAIN;
 
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
@@ -32,7 +31,6 @@ import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.util.RobotOdometry;
 import frc.lib.team6328.util.TunableNumber;
 import frc.robot.configs.CompRobotConfig;
-
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -67,7 +65,7 @@ public class Drivetrain extends SubsystemBase {
   private final double trackwidthMeters = CompRobotConfig.getInstance().getTrackwidth();
   private final double wheelbaseMeters = CompRobotConfig.getInstance().getWheelbase();
   private final SwerveDriveKinematics kinematics =
-    CompRobotConfig.getInstance().getSwerveDriveKinematics();
+      CompRobotConfig.getInstance().getSwerveDriveKinematics();
 
   private final SwerveModule[] swerveModules = new SwerveModule[4]; // FL, FR, BL, BR
 

@@ -4,10 +4,8 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.PositionConfigs;
 import frc.robot.RobotContainer.Height;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.claw.Claw;
@@ -39,6 +37,5 @@ public class SetArmHeight extends InstantCommand {
   @Override
   public void initialize() {
     System.out.println(height.toString());
-
   }
 }

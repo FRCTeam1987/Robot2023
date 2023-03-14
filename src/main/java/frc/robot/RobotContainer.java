@@ -44,7 +44,6 @@ import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.claw.Claw;
 import frc.robot.subsystems.claw.ClawIOSparkMAX;
-import frc.robot.subsystems.claw.Claw.GamePiece;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOLimelight;
@@ -269,8 +268,8 @@ public class RobotContainer {
     TAB_COMMANDS.add("Extend to 12in", new ExtendArm(arm, 12));
     TAB_COMMANDS.add("Rotate to 45deg", new RotateArm(arm, 45));
     TAB_COMMANDS.add("Flip Wrist to true", new FlipWrist(wrist, true));
-    TAB_ARM.add("Seq 45 pos", new SequentialCommandTest(arm, wrist, 16, 45, 3289));
-    TAB_ARM.add("Seq -45 pos", new SequentialCommandTest(arm, wrist, 16, -45, 3289));
+    // TAB_ARM.add("Seq 45 pos", new SequentialCommandTest(arm, wrist, 16, 45, 3289));
+    // TAB_ARM.add("Seq -45 pos", new SequentialCommandTest(arm, wrist, 16, -45, 3289));
     // armTab.add("Collect Back Cube", );
 
     TAB_ARM.add("Go Home", new GoHome(arm, wrist));
@@ -401,13 +400,15 @@ public class RobotContainer {
     new Trigger(driverController::getLeftBumper)
         .onTrue(
             new SequentialCommandGroup(
-                new EjectGamePiece(claw).withTimeout(0.25), 
-                new GoHome(arm, wrist)));
+                new EjectGamePiece(claw).withTimeout(0.25), new GoHome(arm, wrist)));
+    new Trigger(coDriverController::getLeftBumper)
+        .onTrue(new DumpGamePiece(wrist, claw));
     new Trigger(driverController::getStartButton).onTrue(new GoHome(arm, wrist));
     new Trigger(driverController::getBButton)
         .onTrue(
-            new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_SINGLE_SUBSTATION));
-        
+            new CollectSequence(
+                arm, wrist, claw, () -> Constants.PositionConfigs.BACK_SINGLE_SUBSTATION));
+
     // new SequentialCommandGroup(
     //     new ParallelCommandGroup(
     //         new SetArm(arm, () -> -45.0, () -> 6.0, () -> false), new SetWristPosition(1350,
@@ -420,7 +421,7 @@ public class RobotContainer {
 
     new Trigger(coDriverController::getAButton)
         .onTrue(new InstantCommand(() -> this.setHeight(Height.FLOOR)));
-    new Trigger(coDriverController::getXButton)
+    new Trigger(coDriverController::getBButton)
         .onTrue(new InstantCommand(() -> this.setHeight(Height.MEDIUM)));
     new Trigger(coDriverController::getYButton)
         .onTrue(new InstantCommand(() -> this.setHeight(Height.HIGH)));
@@ -456,7 +457,6 @@ public class RobotContainer {
                 arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CONE_FLOOR_TIPPED));
 
     // driver
-
 
     //     .getTempTopScore()
     //     .onTrue(
@@ -526,34 +526,9 @@ public class RobotContainer {
             drivetrain::getCharacterizationVelocity));
 
     final HashMap<String, Command> someEventMap = new HashMap<>();
-    someEventMap.put(
-        "Score Cone",
-        new SequentialCommandGroup(
-            new ParallelCommandGroup(
-                new SetArm(
-                    arm,
-                    () -> PositionConfigs.FRONT_CONE_TOP.armRotation,
-                    () -> PositionConfigs.FRONT_CONE_TOP.armLength,
-                    () -> false),
-                new SetWristPosition(PositionConfigs.FRONT_CONE_TOP.wristRotation, wrist)),
-            new EjectGamePiece(claw).withTimeout(0.25),
-            new GoHome(arm, wrist)));
+    someEventMap.put("Score Cone", new AutoScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP));
     someEventMap.put("Collect Cube", new CollectSequence(arm, wrist, claw, () -> BACK_CUBE_FLOOR));
-    someEventMap.put(
-        "Score Cube",
-        new SequentialCommandGroup(
-            new ParallelCommandGroup(
-                new SetArm(
-                    arm,
-                    () -> PositionConfigs.FRONT_CONE_TOP.armRotation,
-                    () -> PositionConfigs.FRONT_CONE_TOP.armLength,
-                    () -> false),
-                new SetWristPosition(PositionConfigs.FRONT_CONE_TOP.wristRotation, wrist)),
-            new EjectGamePiece(claw).withTimeout(0.25),
-            new ParallelCommandGroup(
-                new SetArm(arm, () -> Arm.HOME_ROTATION, () -> Arm.HOME_EXTENSION, () -> true),
-                new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
-            new InstantCommand(() -> arm.setExtensionNominal(), arm)));
+    someEventMap.put("Score Cube", new AutoScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_TOP));
     // TODO this auto does not fully work reliably
     autoChooser.addOption(
         "New Auto",
@@ -561,27 +536,24 @@ public class RobotContainer {
             .andThen(new Balance(drivetrain))
             .andThen(() -> drivetrain.setXStance(), drivetrain));
 
-
     final HashMap<String, Command> TwoPieceNoCableEventMap = new HashMap<>();
-        TwoPieceNoCableEventMap.put("Go Home", 
-                new GoHome(arm, wrist).withTimeout(2));
-        TwoPieceNoCableEventMap.put("Collect Cube", 
-            new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR)
+    TwoPieceNoCableEventMap.put("Go Home", new GoHome(arm, wrist).withTimeout(2));
+    TwoPieceNoCableEventMap.put(
+        "Collect Cube",
+        new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR)
             .andThen(new GoHome(arm, wrist).withTimeout(2)));
-        TwoPieceNoCableEventMap.put("Score Cube Prep", new SetArm(arm, () -> -48.5, () -> 5, () -> false));
-        TwoPieceNoCableEventMap.put("Score Cube", 
-            new ScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_TOP)
-                .andThen(new EjectGamePiece(claw).withTimeout(.25))
-                .andThen(new GoHome(arm, wrist).withTimeout(2)));
-        TwoPieceNoCableEventMap.put("Go Home 2", new GoHome(arm, wrist).withTimeout(2));
-        TwoPieceNoCableEventMap.put("Auto Balance", new Balance(drivetrain));
+    TwoPieceNoCableEventMap.put(
+        "Score Cube Prep", new SetArm(arm, () -> -48.5, () -> 5, () -> false));
+    TwoPieceNoCableEventMap.put(
+        "Score Cube",
+        new AutoScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_TOP));
+    TwoPieceNoCableEventMap.put("Go Home 2", new GoHome(arm, wrist).withTimeout(2));
+    TwoPieceNoCableEventMap.put("Auto Balance", new Balance(drivetrain));
 
-    autoChooser.addOption( "TwoPieceNoCable",
-        new ScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP)
-            .andThen(new EjectGamePiece(claw).withTimeout(.25))
+    autoChooser.addOption(
+        "TwoPieceNoCable",
+        new AutoScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP)
             .andThen(AutoPathHelper.followPath(drivetrain, "TwoPieceNoCable", TwoPieceNoCableEventMap)));
-
-
 
     // autoChooser.addOption(
     //     "Some Auto",
