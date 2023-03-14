@@ -16,8 +16,8 @@ public class WristIOTalonSRX implements WristIO {
   public WristIOTalonSRX(int wristMotorID) {
     wristMotor = new WPI_TalonSRX(wristMotorID);
     TalonSRXConfiguration wristConfig = new TalonSRXConfiguration();
-    wristConfig.motionAcceleration = 600;
-    wristConfig.motionCruiseVelocity = 950;
+    wristConfig.motionAcceleration = 4000;
+    wristConfig.motionCruiseVelocity = 6000;
     wristConfig.feedbackNotContinuous = true;
     wristConfig.slot0.kP = 4.0;
     wristConfig.slot0.kD = 0.0;

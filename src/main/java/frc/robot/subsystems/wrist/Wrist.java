@@ -31,10 +31,10 @@ public class Wrist extends SubsystemBase {
 
     TAB_WRIST.add("Set Straight", new SetWristPosition(ANGLE_STRAIGHT, this)).withSize(2, 1);
     TAB_WRIST
-        .add("Set Front Perpendicular", new SetWristPosition(ANGLE_FRONT_PERPENDICULAR, this))
+        .add("Set Front Perpendicular", new SetWristPosition(ANGLE_STRAIGHT + 800, this))
         .withSize(2, 1);
     TAB_WRIST
-        .add("Set Back Perpendicular", new SetWristPosition(ANGLE_BACK_PERPENDICULAR, this))
+        .add("Set Back Perpendicular", new SetWristPosition(ANGLE_STRAIGHT - 800, this))
         .withSize(2, 1);
     TAB_WRIST
         .add("Set Back Half Perpendicular", new SetWristPosition(ANGLE_BACK_HALF, this))

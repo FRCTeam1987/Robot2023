@@ -324,6 +324,7 @@ public class RobotContainer {
     TAB_MAIN.add(
         "Collect Sequence", new CollectSequence(arm, wrist, claw, collectionChooser::getSelected));
     TAB_MAIN.add("Eject Game Piece", new EjectGamePiece(claw).withTimeout(0.25));
+    TAB_MAIN.add("Angle 0, Length 1", new SetArm(arm, () -> 0, () -> 1, () -> true));
     TAB_MAIN.add("Angle 25, Length 1", new SetArm(arm, () -> 25, () -> 1, () -> false));
     TAB_MAIN.add("Angle 45, Length 1", new SetArm(arm, () -> 45, () -> 1, () -> false));
     TAB_MAIN.add("Angle 65, Length 1", new SetArm(arm, () -> 65, () -> 1, () -> false));
