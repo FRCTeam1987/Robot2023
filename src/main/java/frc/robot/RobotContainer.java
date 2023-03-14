@@ -10,36 +10,19 @@ import static frc.robot.Constants.PositionConfigs.*;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.FollowPathWithEvents;
-import com.swervedrivespecialties.swervelib.MkSwerveModuleBuilder;
-import com.swervedrivespecialties.swervelib.MotorType;
-import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
-import com.swervedrivespecialties.swervelib.SwerveModule;
-
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.PositionConfig;
-import frc.robot.Constants.PositionConfigs;
 import frc.robot.commands.*;
-import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
 import frc.robot.commands.arm.SetArm;
 import frc.robot.commands.arm.SyncedArm;
 import frc.robot.commands.auto.AutoPathHelper;
 import frc.robot.commands.auto.Balance;
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Claw;
-import frc.robot.subsystems.Claw.GamePiece;
-import frc.robot.subsystems.DrivetrainSubsystem;
-import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.Wrist;
+import frc.robot.subsystems.*;
+import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.swerve3061.SwerveModule;
 import frc.robot.util.BatteryTracker;
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +35,7 @@ import java.util.Map;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  private DrivetrainSubsystem drivetrain;
+  private Drivetrain drivetrain;
   private Wrist wrist;
   private Claw claw;
   private Height height = Height.HIGH;
@@ -72,8 +55,9 @@ public class RobotContainer {
   // RobotContainer singleton
   private static final RobotContainer robotContainer = new RobotContainer();
   private final Map<String, Command> autoEventMap = new HashMap<>();
-  XboxController driverController = new XboxController(1); // Creates a CommandXboxController on port 1.
-  XboxController coDriverController = new XboxController(2);
+  XboxController driverController =
+      new XboxController(0); // Creates a CommandXboxController on port 1.
+  XboxController coDriverController = new XboxController(1);
 
   /** Create the container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -84,70 +68,49 @@ public class RobotContainer {
 
     // create real, simulated, or replay subsystems based on the mode and robot specified
 
-    SwerveModule frontLeftModule =
-        new MkSwerveModuleBuilder()
-            .withLayout(
-                TAB_DRIVETRAIN
-                    .getLayout("Front Left Module", BuiltInLayouts.kList)
-                    .withSize(2, 4)
-                    .withPosition(0, 0))
-            .withGearRatio(SdsModuleConfigurations.MK4I_L2)
-            .withDriveMotor(MotorType.FALCON, Constants.FRONT_LEFT_MODULE_DRIVE_MOTOR, Constants.CAN_BUS_NAME)
-            .withSteerMotor(MotorType.FALCON, Constants.FRONT_LEFT_MODULE_STEER_MOTOR, Constants.CAN_BUS_NAME)
-            .withSteerEncoderPort(Constants.FRONT_LEFT_MODULE_STEER_ENCODER, Constants.CAN_BUS_NAME)
-            .withSteerOffset(Constants.FRONT_LEFT_MODULE_STEER_OFFSET)
-            .withModuleId(2)
-            .build();
+    SwerveModule flModule =
+        new SwerveModule(
+            FRONT_LEFT_MODULE_DRIVE_MOTOR,
+            FRONT_LEFT_MODULE_STEER_MOTOR,
+            FRONT_LEFT_MODULE_STEER_ENCODER,
+            FRONT_LEFT_MODULE_STEER_OFFSET,
+            0,
+            MAX_VELOCITY_METERS_PER_SECOND);
 
-    SwerveModule frontRightModule =
-        new MkSwerveModuleBuilder()
-            .withLayout(
-                TAB_DRIVETRAIN
-                    .getLayout("Front Right Module", BuiltInLayouts.kList)
-                    .withSize(2, 4)
-                    .withPosition(2, 0))
-            .withGearRatio(SdsModuleConfigurations.MK4I_L2)
-            .withDriveMotor(MotorType.FALCON, Constants.FRONT_RIGHT_MODULE_DRIVE_MOTOR, Constants.CAN_BUS_NAME)
-            .withSteerMotor(MotorType.FALCON, Constants.FRONT_RIGHT_MODULE_STEER_MOTOR, Constants.CAN_BUS_NAME)
-            .withSteerEncoderPort(Constants.FRONT_RIGHT_MODULE_STEER_ENCODER, Constants.CAN_BUS_NAME)
-            .withSteerOffset(Constants.FRONT_RIGHT_MODULE_STEER_OFFSET)
-            .withModuleId(1)
-            .build();
+    SwerveModule frModule =
+        new SwerveModule(
+            FRONT_RIGHT_MODULE_DRIVE_MOTOR,
+            FRONT_RIGHT_MODULE_STEER_MOTOR,
+            FRONT_RIGHT_MODULE_STEER_ENCODER,
+            FRONT_RIGHT_MODULE_STEER_OFFSET,
+            1,
+            MAX_VELOCITY_METERS_PER_SECOND);
 
-    SwerveModule backLeftModule =
-        new MkSwerveModuleBuilder()
-            .withLayout(
-                TAB_DRIVETRAIN
-                    .getLayout("Back Left Module", BuiltInLayouts.kList)
-                    .withSize(2, 4)
-                    .withPosition(4, 0))
-            .withGearRatio(SdsModuleConfigurations.MK4I_L2)
-            .withDriveMotor(MotorType.FALCON, Constants.BACK_LEFT_MODULE_DRIVE_MOTOR, Constants.CAN_BUS_NAME)
-            .withSteerMotor(MotorType.FALCON, Constants.BACK_LEFT_MODULE_STEER_MOTOR, Constants.CAN_BUS_NAME)
-            .withSteerEncoderPort(Constants.BACK_LEFT_MODULE_STEER_ENCODER, Constants.CAN_BUS_NAME)
-            .withSteerOffset(Constants.BACK_LEFT_MODULE_STEER_OFFSET)
-            .withModuleId(3)
-            .build();
+    SwerveModule blModule =
+        new SwerveModule(
+            BACK_LEFT_MODULE_DRIVE_MOTOR,
+            BACK_LEFT_MODULE_STEER_MOTOR,
+            BACK_LEFT_MODULE_STEER_ENCODER,
+            BACK_LEFT_MODULE_STEER_OFFSET,
+            2,
+            MAX_VELOCITY_METERS_PER_SECOND);
 
-    SwerveModule backRightModule =
-        new MkSwerveModuleBuilder()
-            .withLayout(
-                TAB_DRIVETRAIN
-                    .getLayout("Back Right Module", BuiltInLayouts.kList)
-                    .withSize(2, 4)
-                    .withPosition(6, 0))
-            .withGearRatio(SdsModuleConfigurations.MK4I_L2)
-            .withDriveMotor(MotorType.FALCON, Constants.BACK_RIGHT_MODULE_DRIVE_MOTOR, Constants.CAN_BUS_NAME)
-            .withSteerMotor(MotorType.FALCON, Constants.BACK_RIGHT_MODULE_STEER_MOTOR, Constants.CAN_BUS_NAME)
-            .withSteerEncoderPort(Constants.BACK_RIGHT_MODULE_STEER_ENCODER, Constants.CAN_BUS_NAME)
-            .withSteerOffset(Constants.BACK_RIGHT_MODULE_STEER_OFFSET)
-            .withModuleId(4)
-            .build();
+    SwerveModule brModule =
+        new SwerveModule(
+            BACK_RIGHT_MODULE_DRIVE_MOTOR,
+            BACK_RIGHT_MODULE_STEER_MOTOR,
+            BACK_RIGHT_MODULE_STEER_ENCODER,
+            BACK_RIGHT_MODULE_STEER_OFFSET,
+            3,
+            MAX_VELOCITY_METERS_PER_SECOND);
 
-    drivetrain =
-        new DrivetrainSubsystem(
-            Constants.GYRO_ID, frontLeftModule, frontRightModule, backLeftModule, backRightModule);
-    drivetrain.setDefaultCommand(new TeleopSwerve(drivetrain, driverController::getLeftX, driverController::getLeftY, driverController::getRightX));
+    drivetrain = new Drivetrain(Constants.GYRO_ID, flModule, frModule, blModule, brModule);
+    drivetrain.setDefaultCommand(
+        new TeleopSwerve(
+            drivetrain,
+            driverController::getLeftX,
+            driverController::getLeftY,
+            driverController::getRightX));
     // new Pneumatics(new PneumaticsIORev()); // Needs CTRE for practice bot
     wrist = new Wrist(Constants.WRIST_ROTATOR_MOTOR);
     claw = new Claw(Constants.CLAW_MOTOR_ID);
@@ -193,8 +156,6 @@ public class RobotContainer {
     TAB_COMMANDS.add("Extend to 12in", new ExtendArm(arm, 12));
     TAB_COMMANDS.add("Rotate to 45deg", new RotateArm(arm, 45));
     TAB_COMMANDS.add("Flip Wrist to true", new FlipWrist(wrist, true));
-    TAB_COMMANDS.add(
-        "Test Score", new SetArmHeight(getHeight(), arm, wrist, claw, this.driverController));
 
     TAB_ARM.add("Seq 45 pos", new SequentialCommandTest(arm, wrist, 16, 45, 3289));
     TAB_ARM.add("Seq -45 pos", new SequentialCommandTest(arm, wrist, 16, -45, 3289));
@@ -271,13 +232,17 @@ public class RobotContainer {
     //         Commands.runOnce(drivetrain::enableFieldRelative, drivetrain),
     //         drivetrain::getFieldRelative));
 
-
     // reset gyro to 0 degrees
-    new Trigger(driverController::getBackButton).onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
+    new Trigger(driverController::getBackButton)
+        .onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
 
     // x-stance
-    // new Trigger(driverController::getBackButton).onTrue(Commands.runOnce(drivetrain::enableXstance, drivetrain));
-    // new Trigger(driverController::getBackButton).onFalse(Commands.runOnce(drivetrain::disableXstance, drivetrain));
+    // new
+    // Trigger(driverController::getBackButton).onTrue(Commands.runOnce(drivetrain::enableXstance,
+    // drivetrain));
+    // new
+    // Trigger(driverController::getBackButton).onFalse(Commands.runOnce(drivetrain::disableXstance,
+    // drivetrain));
 
     // Creates a new Trigger object for the `Right bumper` button that collects cones
     // driverController.rightBumper().onTrue(new CollectGamePiece(claw, GamePiece.CONE));
@@ -328,11 +293,11 @@ public class RobotContainer {
     // oi.getRotateButton().onTrue(new InstantCommand(() -> arm.setArmAngle(45)));
     new Trigger(driverController::getRightBumper)
         .onTrue(new CollectSequence(arm, wrist, claw, () -> BACK_CUBE_FLOOR));
-        new Trigger(driverController::getLeftBumper)
+    new Trigger(driverController::getLeftBumper)
         .onTrue(
             new SequentialCommandGroup(
                 new EjectGamePiece(claw).withTimeout(0.25), new GoHome(arm, wrist)));
-        new Trigger(driverController::getStartButton).onTrue(new GoHome(arm, wrist));
+    new Trigger(driverController::getStartButton).onTrue(new GoHome(arm, wrist));
     // new SequentialCommandGroup(
     //     new ParallelCommandGroup(
     //         new SetArm(arm, () -> -45.0, () -> 6.0, () -> false), new SetWristPosition(1350,
@@ -343,12 +308,33 @@ public class RobotContainer {
     //         new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
     //     new InstantCommand(() -> arm.setExtensionNominal(), arm)));
 
-    new Trigger(coDriverController::getAButton).onTrue(new InstantCommand(() -> System.out.println("Floor")));
-    new Trigger(coDriverController::getXButton).onTrue(new InstantCommand(() -> this.setHeight(Height.MEDIUM)));
-    new Trigger(coDriverController::getYButton).onTrue(new InstantCommand(() -> this.setHeight(Height.HIGH)));
-
-    new Trigger(driverController::getBButton)
-        .onTrue(new SetArmHeight(getHeight(), arm, wrist, claw, this.driverController));
+    new Trigger(coDriverController::getAButton)
+        .onTrue(new InstantCommand(() -> this.setHeight(Height.FLOOR)));
+    new Trigger(coDriverController::getXButton)
+        .onTrue(new InstantCommand(() -> this.setHeight(Height.MEDIUM)));
+    new Trigger(coDriverController::getYButton)
+        .onTrue(new InstantCommand(() -> this.setHeight(Height.HIGH)));
+    ConditionalCommand floorScore =
+        new ConditionalCommand(
+            new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CONE_FLOOR),
+            new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CUBE_FLOOR),
+            () -> claw.isCone());
+    ConditionalCommand mediumScore =
+        new ConditionalCommand(
+            new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CONE_MEDIUM),
+            new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CUBE_MEDIUM),
+            () -> claw.isCone());
+    ConditionalCommand highScore =
+        new ConditionalCommand(
+            new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CONE_TOP),
+            new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CUBE_TOP),
+            () -> claw.isCone());
+    new Trigger(driverController::getAButton)
+        .onTrue(
+            new ConditionalCommand(
+                floorScore,
+                new ConditionalCommand(mediumScore, highScore, () -> height == Height.MEDIUM),
+                () -> height == Height.FLOOR));
 
     new Trigger(driverController::getYButton)
         .onTrue(
@@ -383,53 +369,52 @@ public class RobotContainer {
     // build auto path commands
     List<PathPlannerTrajectory> auto1Paths =
         PathPlanner.loadPathGroup(
-            "testPaths1",
-            Constants.AUTO_MAX_SPEED_METERS_PER_SECOND,
-            Constants.AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
-    // Command autoTest =
-    //     Commands.sequence(
-    //         new FollowPathWithEvents(
-    //             new FollowPath(auto1Paths.get(0), drivetrain, true),
-    //             auto1Paths.get(0).getMarkers(),
-    //             autoEventMap),
-    //         // Commands.runOnce(drivetrain::enableXstance, drivetrain),
-    //         Commands.waitSeconds(5.0)
-    //         // Commands.runOnce(drivetrain::disableXstance, drivetrain)
-    //         );
+            "Straight (shop)",
+            AUTO_MAX_SPEED_METERS_PER_SECOND,
+            AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
+    Command autoTest =
+        Commands.sequence(
+            new FollowPathWithEvents(
+                new FollowPath(auto1Paths.get(0), drivetrain, true),
+                auto1Paths.get(0).getMarkers(),
+                autoEventMap),
+            Commands.runOnce(drivetrain::enableXstance, drivetrain),
+            Commands.waitSeconds(5.0),
+            Commands.runOnce(drivetrain::disableXstance, drivetrain));
 
     // build auto path commands
     List<PathPlannerTrajectory> auto3Paths =
         PathPlanner.loadPathGroup(
             "3 Piece",
-            Constants.AUTO_MAX_SPEED_METERS_PER_SECOND,
-            Constants.AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
-    //Command auto3Piece = Commands.sequence(new FollowPath(auto3Paths.get(0), drivetrain, true));
+            AUTO_MAX_SPEED_METERS_PER_SECOND,
+            AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
+    Command auto3Piece = Commands.sequence(new FollowPath(auto3Paths.get(0), drivetrain, true));
 
     // add commands to the auto chooser
     autoChooser.setDefaultOption("Do Nothing", new InstantCommand());
 
     // demonstration of PathPlanner path group with event markers
-    //autoChooser.addOption("Test Path", autoTest);
+    autoChooser.addOption("Test Path", autoTest);
     // autoChooser.addOption("3 Piece", auto3Piece);
 
     // "auto" command for tuning the drive velocity PID
-    // autoChooser.addOption(
-    //     "Drive Velocity Tuning",
-    //     Commands.sequence(
-    //         Commands.runOnce(drivetrain::disableFieldRelative, drivetrain),
-    //         Commands.deadline(
-    //             Commands.waitSeconds(5.0),
-    //             Commands.run(() -> drivetrain.drive(1.5, 0.0, 0.0), drivetrain))));
+    autoChooser.addOption(
+        "Drive Velocity Tuning",
+        Commands.sequence(
+            Commands.runOnce(drivetrain::disableFieldRelative, drivetrain),
+            Commands.deadline(
+                Commands.waitSeconds(5.0),
+                Commands.run(() -> drivetrain.drive(1.5, 0.0, 0.0, false), drivetrain))));
 
     // "auto" command for characterizing the drivetrain
-    // autoChooser.addOption(
-    //     "Drive Characterization",
-    //     new FeedForwardCharacterization(
-    //         drivetrain,
-    //         true,
-    //         new FeedForwardCharacterizationData("drive"),
-    //         drivetrain::runCharacterizationVolts,
-    //         drivetrain::getCharacterizationVelocity));
+    autoChooser.addOption(
+        "Drive Characterization",
+        new FeedForwardCharacterization(
+            drivetrain,
+            true,
+            new FeedForwardCharacterization.FeedForwardCharacterizationData("drive"),
+            drivetrain::runCharacterizationVolts,
+            drivetrain::getCharacterizationVelocity));
 
     final HashMap<String, Command> someEventMap = new HashMap<>();
     someEventMap.put(
@@ -461,12 +446,35 @@ public class RobotContainer {
                 new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
             new InstantCommand(() -> arm.setExtensionNominal(), arm)));
     // TODO this auto does not fully work reliably
-    // autoChooser.addOption(
-    //     "New Auto",
-    //     AutoPathHelper.followPath(drivetrain, "Some Auto", someEventMap)
-    //         .andThen(new Balance(drivetrain))
-    //         //.andThen(() -> drivetrain.setXStance(), drivetrain));
-    //         ;
+    autoChooser.addOption(
+        "New Auto",
+        AutoPathHelper.followPath(drivetrain, "Some Auto", someEventMap)
+            .andThen(new Balance(drivetrain))
+            .andThen(() -> drivetrain.setXStance(), drivetrain));
+
+    final HashMap<String, Command> TwoPieceNoCableEventMap = new HashMap<>();
+    TwoPieceNoCableEventMap.put("Go Home", new GoHome(arm, wrist).withTimeout(2));
+    TwoPieceNoCableEventMap.put(
+        "Collect Cube",
+        new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR)
+            .andThen(new GoHome(arm, wrist).withTimeout(2)));
+    TwoPieceNoCableEventMap.put(
+        "Score Cube Prep", new SetArm(arm, () -> -48.5, () -> 5, () -> false));
+    TwoPieceNoCableEventMap.put(
+        "Score Cube",
+        new ScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_TOP)
+            .andThen(new EjectGamePiece(claw).withTimeout(.25))
+            .andThen(new GoHome(arm, wrist).withTimeout(2)));
+    TwoPieceNoCableEventMap.put("Go Home 2", new GoHome(arm, wrist).withTimeout(2));
+    TwoPieceNoCableEventMap.put("Auto Balance", new Balance(drivetrain));
+
+    autoChooser.addOption(
+        "TwoPieceNoCable",
+        new ScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP)
+            .andThen(new EjectGamePiece(claw).withTimeout(.25))
+            .andThen(
+                AutoPathHelper.followPath(drivetrain, "TwoPieceNoCable", TwoPieceNoCableEventMap)));
+
     // autoChooser.addOption(
     //     "Some Auto",
     //     new SequentialCommandGroup(

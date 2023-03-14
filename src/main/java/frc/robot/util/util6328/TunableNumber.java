@@ -2,7 +2,7 @@
  * Initially from https://github.com/Mechanical-Advantage/SwerveDevelopment
  */
 
-package frc.lib.team6328.util;
+package frc.robot.util.util6328;
 
 import static frc.robot.Constants.*;
 

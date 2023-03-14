@@ -6,7 +6,7 @@
  * Initially from https://github.com/Mechanical-Advantage/RobotCode2022
  */
 
-package frc.lib.team6328.util;
+package frc.robot.util.util6328;
 
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;

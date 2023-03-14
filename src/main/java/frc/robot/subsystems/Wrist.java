@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import static frc.robot.Constants.TAB_WRIST;
+import static frc.robot.Constants.WRIST_OFFSET;
 
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -17,7 +18,7 @@ public class Wrist extends SubsystemBase {
 
   private final WPI_TalonSRX wristMotor;
   private final double currentThreshold = 10.0; // amps
-  public static final int ANGLE_STRAIGHT = 1457;
+  public static final int ANGLE_STRAIGHT = 1457 + WRIST_OFFSET; // 2062
   public static final int ANGLE_FRONT_MAX = 795; // when telescope extended
   public static final int ANGLE_FRONT_PERPENDICULAR = 447;
   public static final int ANGLE_BACK_PERPENDICULAR = 2439;
@@ -38,7 +39,7 @@ public class Wrist extends SubsystemBase {
     wristConfig.neutralDeadband = 0.001;
     wristMotor.configFactoryDefault();
     wristMotor.configAllSettings(wristConfig);
-    wristMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+    wristMotor.configSelectedFeedbackSensor(FeedbackDevice.PulseWidthEncodedPosition);
     wristMotor.setNeutralMode(NeutralMode.Brake);
     wristMotor.configVoltageCompSaturation(6);
     wristMotor.enableVoltageCompensation(true);
@@ -46,8 +47,7 @@ public class Wrist extends SubsystemBase {
     wristMotor.setSensorPhase(true);
     wristMotor.configContinuousCurrentLimit(15);
     wristMotor.configPeakCurrentLimit(30);
-    // setPosition(ANGLE_STRAIGHT);
-    wristMotor.setSelectedSensorPosition(0);
+    setPosition(ANGLE_STRAIGHT);
     TAB_WRIST.add(
         "reset",
         new InstantCommand(

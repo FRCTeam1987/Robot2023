@@ -1,10 +1,8 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.Drivetrain;
 import java.util.function.DoubleSupplier;
 
 /**
@@ -20,21 +18,16 @@ import java.util.function.DoubleSupplier;
  */
 public class TeleopSwerve extends CommandBase {
 
-  private final DrivetrainSubsystem drivetrain;
+  private final Drivetrain drivetrain;
   private final DoubleSupplier translationXSupplier;
   private final DoubleSupplier translationYSupplier;
   private final DoubleSupplier rotationSupplier;
 
-  // TODO greyson play with these slew rate values
-  private final SlewRateLimiter translationXSlewRate = new SlewRateLimiter(2.5);
-  private final SlewRateLimiter translationYSlewRate = new SlewRateLimiter(2.5);
-  private final SlewRateLimiter rotationSlewRate = new SlewRateLimiter(2);
-
   public static final double DEADBAND = 0.1;
 
-  private final double maxVelocityMetersPerSecond = Constants.Drivetrain.MAX_VELOCITY_METERS_PER_SECOND;
+  private final double maxVelocityMetersPerSecond = Constants.MAX_VELOCITY_METERS_PER_SECOND;
   private final double maxAngularVelocityRadiansPerSecond =
-      Constants.Drivetrain.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+      Constants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
   /**
    * Create a new TeleopSwerve command object.
@@ -48,7 +41,7 @@ public class TeleopSwerve extends CommandBase {
    *     rotational velocity as defined by the standard field or robot coordinate system
    */
   public TeleopSwerve(
-      DrivetrainSubsystem drivetrain,
+      Drivetrain drivetrain,
       DoubleSupplier translationXSupplier,
       DoubleSupplier translationYSupplier,
       DoubleSupplier rotationSupplier) {
@@ -65,30 +58,20 @@ public class TeleopSwerve extends CommandBase {
 
     // invert the controller input and apply the deadband and squaring to make the robot more
     // responsive to small changes in the controller
-    double xPercentage =
-        translationXSlewRate.calculate(modifyAxis(translationXSupplier.getAsDouble()));
-    double yPercentage =
-        translationYSlewRate.calculate(modifyAxis(translationYSupplier.getAsDouble()));
-    double rotationPercentage =
-        rotationSlewRate.calculate(modifyAxis(rotationSupplier.getAsDouble()));
+    double xPercentage = modifyAxis(-translationXSupplier.getAsDouble());
+    double yPercentage = modifyAxis(-translationYSupplier.getAsDouble());
+    double rotationPercentage = modifyAxis(-rotationSupplier.getAsDouble());
 
     double xVelocity = xPercentage * maxVelocityMetersPerSecond;
     double yVelocity = yPercentage * maxVelocityMetersPerSecond;
     double rotationalVelocity = rotationPercentage * maxAngularVelocityRadiansPerSecond;
 
-    drivetrain.drive(
-      ChassisSpeeds.fromFieldRelativeSpeeds(
-        xPercentage * Constants.Drivetrain.MAX_VELOCITY_METERS_PER_SECOND,
-        yPercentage * Constants.Drivetrain.MAX_VELOCITY_METERS_PER_SECOND,
-        rotationPercentage * Constants.Drivetrain.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
-        drivetrain.getYaw()
-      )
-    );
+    drivetrain.drive(xVelocity, yVelocity, rotationalVelocity, true);
   }
 
   @Override
   public void end(boolean interrupted) {
-    this.drivetrain.drive(0, 0, 0);
+    this.drivetrain.stop();
 
     super.end(interrupted);
   }
@@ -97,8 +80,8 @@ public class TeleopSwerve extends CommandBase {
    * Squares the specified value, while preserving the sign. This method is used on all joystick
    * inputs. This is useful as a non-linear range is more natural for the driver.
    *
-   * @param value input value
-   * @return square of the value
+   * @param value
+   * @return
    */
   private static double modifyAxis(double value) {
     // Deadband

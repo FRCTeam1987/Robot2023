@@ -1,4 +1,4 @@
-package frc.lib.team3061.util;
+package frc.robot.subsystems.swerve3061;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -13,7 +13,6 @@ import frc.robot.Constants;
 public class RobotOdometry {
   private static final RobotOdometry robotOdometry = new RobotOdometry();
   private final SwerveDrivePoseEstimator estimator;
-  // TODO: [MARKER] This can become a local variable in constructor
   private final SwerveModulePosition[] defaultPositions =
       new SwerveModulePosition[] {
         new SwerveModulePosition(),
@@ -25,7 +24,7 @@ public class RobotOdometry {
   private RobotOdometry() {
     estimator =
         new SwerveDrivePoseEstimator(
-            Constants.Drivetrain.KINEMATICS, new Rotation2d(), defaultPositions, new Pose2d());
+            Constants.KINEMATICS, new Rotation2d(), defaultPositions, new Pose2d());
   }
 
   public static RobotOdometry getInstance() {

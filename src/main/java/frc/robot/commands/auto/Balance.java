@@ -6,7 +6,7 @@ package frc.robot.commands.auto;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
-import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.Drivetrain;
 import frc.robot.util.Util;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -14,21 +14,21 @@ import frc.robot.util.Util;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class Balance extends PIDCommand {
 
-  final DrivetrainSubsystem drive;
+  final Drivetrain drive;
   /** Creates a new Balance. */
-  public Balance(final DrivetrainSubsystem drive) {
+  public Balance(final Drivetrain drive) {
     super(
         // The controller that the command will use
         new PIDController(0.25, 0, 0),
         // This should return the measurement
-        drive::getPitch,
+        drive::getYaw,
         // This should return the setpoint (can also be a constant)
         () -> 0,
         // This uses the output
         output -> {
           // Use the output here
           {
-            drive.drive(-output / 5.0, 0, 0);
+            drive.drive(-output / 7.0, 0, 0, true);
           }
         });
     // Use addRequirements() here to declare subsystem dependencies.

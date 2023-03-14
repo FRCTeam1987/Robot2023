@@ -10,7 +10,7 @@
  *
  */
 
-package frc.lib.team6328.util;
+package frc.robot.util.util6328;
 
 import Jama.Matrix;
 import Jama.QRDecomposition;
