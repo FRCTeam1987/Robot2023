@@ -137,8 +137,7 @@ public class Robot extends LoggedRobot {
   }
 
   @Override
-  public void disabledPeriodic() {
-  }
+  public void disabledPeriodic() {}
 
   /**
    * This method is invoked at the start of the autonomous period. It schedules the autonomous

@@ -53,7 +53,7 @@ public class SetArm extends CommandBase {
 
     if (returning) {
       arm.setArmLength(desiredLength);
-      if (isLengthOnTarget(10)) {
+      if (isLengthOnTarget(20)) {
         arm.setArmAngle(angleSupplier.getAsDouble());
       }
     } else {

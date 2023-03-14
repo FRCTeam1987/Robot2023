@@ -31,6 +31,8 @@ import frc.lib.team3061.gyro.GyroIOInputsAutoLogged;
 import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.util.RobotOdometry;
 import frc.lib.team6328.util.TunableNumber;
+import frc.robot.configs.CompRobotConfig;
+
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -62,10 +64,10 @@ public class Drivetrain extends SubsystemBase {
   private final PIDController autoThetaController =
       new PIDController(autoTurnKp.get(), autoTurnKi.get(), autoTurnKd.get());
 
-  private final double trackwidthMeters = RobotConfig.getInstance().getTrackwidth();
-  private final double wheelbaseMeters = RobotConfig.getInstance().getWheelbase();
+  private final double trackwidthMeters = CompRobotConfig.getInstance().getTrackwidth();
+  private final double wheelbaseMeters = CompRobotConfig.getInstance().getWheelbase();
   private final SwerveDriveKinematics kinematics =
-      RobotConfig.getInstance().getSwerveDriveKinematics();
+    CompRobotConfig.getInstance().getSwerveDriveKinematics();
 
   private final SwerveModule[] swerveModules = new SwerveModule[4]; // FL, FR, BL, BR
 
@@ -334,9 +336,9 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
 
     // update and log gyro inputs
-    if (ADVANTAGE_KIT_ENABLED) {
+    if (true) {
       gyroIO.updateInputs(gyroInputs);
-      Logger.getInstance().processInputs("Drive/Gyro", gyroInputs);
+      // Logger.getInstance().processInputs("Drive/Gyro", gyroInputs);
     }
 
     // update and log the swerve moudles inputs

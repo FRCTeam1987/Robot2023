@@ -10,18 +10,15 @@ import static frc.robot.Constants.PositionConfigs.*;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.FollowPathWithEvents;
-
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.team3061.RobotConfig;
 import frc.lib.team3061.gyro.GyroIO;
@@ -43,12 +40,11 @@ import frc.robot.commands.auto.AutoPathHelper;
 import frc.robot.commands.auto.Balance;
 import frc.robot.configs.CompRobotConfig;
 import frc.robot.configs.TestRobotConfig;
-
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.claw.Claw;
-import frc.robot.subsystems.claw.Claw.GamePiece;
 import frc.robot.subsystems.claw.ClawIOSparkMAX;
+import frc.robot.subsystems.claw.Claw.GamePiece;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOLimelight;
@@ -58,7 +54,6 @@ import frc.robot.util.BatteryTracker;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.Condition;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -89,7 +84,8 @@ public class RobotContainer {
   // RobotContainer singleton
   private static final RobotContainer robotContainer = new RobotContainer();
   private final Map<String, Command> autoEventMap = new HashMap<>();
-  XboxController driverController = new XboxController(0); // Creates a CommandXboxController on port 1.
+  XboxController driverController =
+      new XboxController(0); // Creates a CommandXboxController on port 1.
   XboxController coDriverController = new XboxController(1);
 
   /** Create the container for the robot. Contains subsystems, OI devices, and commands. */
@@ -241,7 +237,10 @@ public class RobotContainer {
 
     drivetrain.setDefaultCommand(
         new TeleopSwerve(
-            drivetrain, driverController::getLeftY, driverController::getLeftX, driverController::getRightX));
+            drivetrain,
+            driverController::getLeftY,
+            driverController::getLeftX,
+            driverController::getRightX));
 
     configureButtonBindings();
     configureAutoCommands();
@@ -336,11 +335,16 @@ public class RobotContainer {
     TAB_MAIN.add("Balance", new Balance(drivetrain));
   }
 
+  public boolean shouldScore() {
+    return true;
+  }
+
   /** Use this method to define your button->command mappings. */
   private void configureButtonBindings() {
 
     // reset gyro to 0 degrees
-    new Trigger(driverController::getStartButton).onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
+    new Trigger(driverController::getBackButton)
+        .onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
 
     // x-stance
 
@@ -393,11 +397,16 @@ public class RobotContainer {
     // oi.getRotateButton().onTrue(new InstantCommand(() -> arm.setArmAngle(45)));
     new Trigger(driverController::getRightBumper)
         .onTrue(new CollectSequence(arm, wrist, claw, () -> BACK_CUBE_FLOOR));
-        new Trigger(driverController::getLeftBumper)
+    new Trigger(driverController::getLeftBumper)
         .onTrue(
             new SequentialCommandGroup(
-                new EjectGamePiece(claw).withTimeout(0.25), new GoHome(arm, wrist)));
-                new Trigger(driverController::getBackButton).onTrue(new GoHome(arm, wrist));
+                new EjectGamePiece(claw).withTimeout(0.25), 
+                new GoHome(arm, wrist)));
+    new Trigger(driverController::getStartButton).onTrue(new GoHome(arm, wrist));
+    new Trigger(driverController::getBButton)
+        .onTrue(
+            new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_SINGLE_SUBSTATION));
+        
     // new SequentialCommandGroup(
     //     new ParallelCommandGroup(
     //         new SetArm(arm, () -> -45.0, () -> 6.0, () -> false), new SetWristPosition(1350,
@@ -408,42 +417,46 @@ public class RobotContainer {
     //         new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
     //     new InstantCommand(() -> arm.setExtensionNominal(), arm)));
 
-    new Trigger(coDriverController::getAButton).onTrue(new InstantCommand(() -> this.setHeight(Height.FLOOR)));
-    new Trigger(coDriverController::getXButton).onTrue(new InstantCommand(() -> this.setHeight(Height.MEDIUM)));
-    new Trigger(coDriverController::getYButton).onTrue(new InstantCommand(() -> this.setHeight(Height.HIGH)));
+    new Trigger(coDriverController::getAButton)
+        .onTrue(new InstantCommand(() -> this.setHeight(Height.FLOOR)));
+    new Trigger(coDriverController::getXButton)
+        .onTrue(new InstantCommand(() -> this.setHeight(Height.MEDIUM)));
+    new Trigger(coDriverController::getYButton)
+        .onTrue(new InstantCommand(() -> this.setHeight(Height.HIGH)));
 
-
-    ConditionalCommand floorScore = new ConditionalCommand(
-        new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CONE_FLOOR),
-        new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CUBE_FLOOR),
-        () -> claw.isCone());
-    ConditionalCommand mediumScore = new ConditionalCommand(
-        new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CONE_MEDIUM),
-        new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CUBE_MEDIUM),
-        () -> claw.isCone());
-    ConditionalCommand highScore = new ConditionalCommand(
-        new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CONE_TOP),
-        new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CUBE_TOP),
-        () -> claw.isCone());
-        new Trigger(driverController::getAButton)
-        .onTrue(new ConditionalCommand(
-            floorScore, 
+    ConditionalCommand floorScore =
+        new ConditionalCommand(
+            new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CONE_FLOOR),
+            new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CUBE_FLOOR),
+            () -> claw.isCone());
+    ConditionalCommand mediumScore =
+        new ConditionalCommand(
+            new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CONE_MEDIUM),
+            new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CUBE_MEDIUM),
+            () -> claw.isCone());
+    ConditionalCommand highScore =
+        new ConditionalCommand(
+            new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CONE_TOP),
+            new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CUBE_TOP),
+            () -> claw.isCone());
+    new Trigger(driverController::getAButton)
+        .onTrue(
             new ConditionalCommand(
-                mediumScore,
-                highScore,
-                () -> height == Height.MEDIUM),
-            () -> height == Height.FLOOR)
-        );
+                floorScore,
+                new ConditionalCommand(mediumScore, highScore, () -> height == Height.MEDIUM),
+                () -> height == Height.FLOOR));
 
-        new Trigger(driverController::getYButton)
+    new Trigger(driverController::getYButton)
         .onTrue(
             new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CONE_FLOOR));
-            new Trigger(driverController::getXButton)
+    new Trigger(driverController::getXButton)
         .onTrue(
             new CollectSequence(
                 arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CONE_FLOOR_TIPPED));
 
     // driver
+
+
     //     .getTempTopScore()
     //     .onTrue(
     //         new ConditionalCommand(
@@ -546,6 +559,29 @@ public class RobotContainer {
         AutoPathHelper.followPath(drivetrain, "Some Auto", someEventMap)
             .andThen(new Balance(drivetrain))
             .andThen(() -> drivetrain.setXStance(), drivetrain));
+
+
+    final HashMap<String, Command> TwoPieceNoCableEventMap = new HashMap<>();
+        TwoPieceNoCableEventMap.put("Go Home", 
+                new GoHome(arm, wrist).withTimeout(2));
+        TwoPieceNoCableEventMap.put("Collect Cube", 
+            new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR)
+            .andThen(new GoHome(arm, wrist).withTimeout(2)));
+        TwoPieceNoCableEventMap.put("Score Cube Prep", new SetArm(arm, () -> -48.5, () -> 5, () -> false));
+        TwoPieceNoCableEventMap.put("Score Cube", 
+            new ScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_TOP)
+                .andThen(new EjectGamePiece(claw).withTimeout(.25))
+                .andThen(new GoHome(arm, wrist).withTimeout(2)));
+        TwoPieceNoCableEventMap.put("Go Home 2", new GoHome(arm, wrist).withTimeout(2));
+        TwoPieceNoCableEventMap.put("Auto Balance", new Balance(drivetrain));
+
+    autoChooser.addOption( "TwoPieceNoCable",
+        new ScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP)
+            .andThen(new EjectGamePiece(claw).withTimeout(.25))
+            .andThen(AutoPathHelper.followPath(drivetrain, "TwoPieceNoCable", TwoPieceNoCableEventMap)));
+
+
+
     // autoChooser.addOption(
     //     "Some Auto",
     //     new SequentialCommandGroup(

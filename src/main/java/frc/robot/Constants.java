@@ -36,7 +36,7 @@ public final class Constants {
   public static final double AUTO_DRIVE_P_CONTROLLER = 6.0;
   public static final double AUTO_DRIVE_I_CONTROLLER = 0.0;
   public static final double AUTO_DRIVE_D_CONTROLLER = 0.0;
-  public static final double AUTO_TURN_P_CONTROLLER = 25.0;
+  public static final double AUTO_TURN_P_CONTROLLER = 10.0;
   public static final double AUTO_TURN_I_CONTROLLER = 0.0;
   public static final double AUTO_TURN_D_CONTROLLER = 0.0;
   public static final ShuffleboardTab TAB_VISION = Shuffleboard.getTab("Vision");
@@ -148,7 +148,7 @@ public final class Constants {
     public static final PositionConfig FRONT_CUBE_MEDIUM =
         new PositionConfig(1, -47, 1016 + WRIST_OFFSET, GamePiece.CUBE);
     public static final PositionConfig FRONT_CUBE_TOP =
-        new PositionConfig(20, -48.5, 1077 + WRIST_OFFSET, GamePiece.CUBE); // wrist 1027, arm angle -50
+        new PositionConfig( 20, -48.5, 1077 + WRIST_OFFSET, GamePiece.CUBE); // wrist 1027, arm angle -50
     public static final PositionConfig BACK_CONE_TOP =
         new PositionConfig(35, 49.5, 2800 + WRIST_OFFSET, GamePiece.CONE);
     public static final PositionConfig BACK_CONE_MEDIUM =
@@ -163,7 +163,7 @@ public final class Constants {
         new PositionConfig(17, -33, 1270 + WRIST_OFFSET, GamePiece.CONE);
 
     public static final PositionConfig BACK_SINGLE_SUBSTATION =
-        new PositionConfig(0, 70.5, -1266 + WRIST_OFFSET, GamePiece.CONE);
+        new PositionConfig(0, 51, 2093, GamePiece.CONE);
     public static final PositionConfig BACK_DOUBLE_SUBSTATION =
         new PositionConfig(18, 27, 2570 + WRIST_OFFSET, GamePiece.CONE);
   }
