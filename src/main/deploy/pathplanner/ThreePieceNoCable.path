@@ -7,8 +7,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.165595904387881,
-        "y": 4.9326415443738005
+        "x": 2.892776136429466,
+        "y": 5.069114875071856
       },
       "holonomicAngle": -180.0,
       "isReversal": false,
@@ -16,7 +16,9 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "Go Home"
+        ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
@@ -24,16 +26,16 @@
     },
     {
       "anchorPoint": {
-        "x": 7.091382252939945,
-        "y": 4.579428632541476
+        "x": 7.0987840777177755,
+        "y": 4.604150385509367
       },
       "prevControl": {
-        "x": 3.576900784049164,
-        "y": 4.638432696301557
+        "x": 2.7392632028865527,
+        "y": 4.588920336803657
       },
       "nextControl": {
-        "x": 3.576900784049164,
-        "y": 4.638432696301557
+        "x": 2.7392632028865527,
+        "y": 4.588920336803657
       },
       "holonomicAngle": -180.0,
       "isReversal": true,
@@ -49,20 +51,20 @@
     },
     {
       "anchorPoint": {
-        "x": 2.0403593438765824,
-        "y": 4.325517247525723
+        "x": 1.9007080821203768,
+        "y": 4.49985349863597
       },
       "prevControl": {
-        "x": 2.0360566386786223,
-        "y": 4.949409501229995
+        "x": 4.154314905855179,
+        "y": 5.08110063264147
       },
       "nextControl": {
-        "x": 2.043986649376807,
-        "y": 3.7995579499930927
+        "x": 4.154314905855179,
+        "y": 5.08110063264147
       },
       "holonomicAngle": 179.69152776879326,
-      "isReversal": false,
-      "velOverride": 0.25,
+      "isReversal": true,
+      "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
@@ -76,16 +78,19 @@
     },
     {
       "anchorPoint": {
-        "x": 3.9116916942435993,
-        "y": 2.856027956253916
+        "x": 7.07324572543882,
+        "y": 3.3733495537166522
       },
       "prevControl": {
-        "x": 1.9417075198723026,
-        "y": 2.8265789485714476
+        "x": 4.8696576340521105,
+        "y": 4.933090918813416
       },
-      "nextControl": null,
-      "holonomicAngle": -180.0,
-      "isReversal": false,
+      "nextControl": {
+        "x": 4.8696576340521105,
+        "y": 4.933090918813416
+      },
+      "holonomicAngle": 151.58733855692748,
+      "isReversal": true,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
@@ -97,37 +102,59 @@
         "waitBehavior": "none",
         "waitTime": 0
       }
+    },
+    {
+      "anchorPoint": {
+        "x": 1.9007080821203768,
+        "y": 4.340252056626069
+      },
+      "prevControl": {
+        "x": 3.4894678912189425,
+        "y": 5.105613517173551
+      },
+      "nextControl": null,
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
     }
   ],
   "markers": [
     {
-      "position": 0.18,
-      "names": [
-        "Collect Cube"
-      ]
-    },
-    {
-      "position": 1.15,
-      "names": [
-        "Score Cube Prep"
-      ]
-    },
-    {
-      "position": 1.7,
-      "names": [
-        "Score Cube"
-      ]
-    },
-    {
-      "position": 2.4640702681107958,
+      "position": 0.4363636363636363,
       "names": [
         "event"
       ]
     },
     {
-      "position": 0.01,
+      "position": 1.0909090909090908,
       "names": [
-        "Go Home"
+        "event"
+      ]
+    },
+    {
+      "position": 1.4181818181818184,
+      "names": [
+        "event"
+      ]
+    },
+    {
+      "position": 2.145454545454545,
+      "names": [
+        "event"
+      ]
+    },
+    {
+      "position": 3.1999999999999935,
+      "names": [
+        "event"
       ]
     }
   ]

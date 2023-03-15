@@ -6,6 +6,7 @@ package frc.robot;
 
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.PositionConfigs.*;
+import static frc.robot.subsystems.wrist.Wrist.ANGLE_STRAIGHT;
 
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -13,12 +14,7 @@ import com.pathplanner.lib.commands.FollowPathWithEvents;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.team3061.RobotConfig;
 import frc.lib.team3061.gyro.GyroIO;
@@ -37,6 +33,7 @@ import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizatio
 import frc.robot.commands.arm.SetArm;
 import frc.robot.commands.arm.SyncedArm;
 import frc.robot.commands.auto.AutoPathHelper;
+import frc.robot.commands.auto.AutoScoreSequenceNoHome;
 import frc.robot.commands.auto.Balance;
 import frc.robot.configs.CompRobotConfig;
 import frc.robot.configs.TestRobotConfig;
@@ -537,7 +534,9 @@ public class RobotContainer {
             .andThen(() -> drivetrain.setXStance(), drivetrain));
 
     final HashMap<String, Command> TwoPieceNoCableEventMap = new HashMap<>();
-    TwoPieceNoCableEventMap.put("Go Home", new GoHome(arm, wrist).withTimeout(2));
+    TwoPieceNoCableEventMap.put("Go Home", new ParallelCommandGroup(new SetArm(arm, () -> 0, () -> 1, () -> true),
+            new SetWristPosition(ANGLE_STRAIGHT, wrist)
+    ));
     TwoPieceNoCableEventMap.put(
         "Collect Cube",
         new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR)
@@ -546,13 +545,25 @@ public class RobotContainer {
         "Score Cube Prep", new SetArm(arm, () -> -48.5, () -> 5, () -> false));
     TwoPieceNoCableEventMap.put(
         "Score Cube",
-        new AutoScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_TOP));
+        new AutoScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_TOP_AUTO));
     TwoPieceNoCableEventMap.put("Go Home 2", new GoHome(arm, wrist).withTimeout(2));
     TwoPieceNoCableEventMap.put("Auto Balance", new Balance(drivetrain));
 
     autoChooser.addOption(
+            "TwoPieceBalanceCable",
+            new AutoScoreSequenceNoHome(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP)
+                    .andThen(AutoPathHelper.followPath(drivetrain, "TwoPieceBalanceCable", TwoPieceNoCableEventMap)));
+    autoChooser.addOption(
+            "ThreePieceNoCable",
+            new AutoScoreSequenceNoHome(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP)
+                    .andThen(AutoPathHelper.followPath(drivetrain, "ThreePieceNoCable", TwoPieceNoCableEventMap)).andThen(
+                            new AutoScoreSequence(arm, wrist, claw, () -> FRONT_CUBE_MEDIUM)
+                    ));
+
+
+    autoChooser.addOption(
         "TwoPieceNoCable",
-        new AutoScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP)
+        new AutoScoreSequenceNoHome(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP)
             .andThen(AutoPathHelper.followPath(drivetrain, "TwoPieceNoCable", TwoPieceNoCableEventMap)));
 
     // autoChooser.addOption(
