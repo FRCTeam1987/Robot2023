@@ -58,7 +58,7 @@ public class SetArm extends CommandBase {
       }
     } else {
       arm.setArmAngle(desiredAngle);
-      if (isAngleOnTarget(45) && !isLengthOnTarget(1)) {
+      if (isAngleOnTarget(35) && !isLengthOnTarget(1)) {
         arm.setArmLength(desiredLength);
       }
     }

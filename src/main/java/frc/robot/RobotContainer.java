@@ -549,16 +549,21 @@ public class RobotContainer {
     TwoPieceNoCableEventMap.put("Go Home 2", new GoHome(arm, wrist).withTimeout(2));
     TwoPieceNoCableEventMap.put("Auto Balance", new Balance(drivetrain));
 
+    final HashMap<String, Command> ThreePieceNoCableEventMap = new HashMap<>();
+    ThreePieceNoCableEventMap.putAll(TwoPieceNoCableEventMap);
+    ThreePieceNoCableEventMap.put("Score Cube Medium", new AutoScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_MEDIUM)
+    );
+
     autoChooser.addOption(
             "TwoPieceBalanceCable",
             new AutoScoreSequenceNoHome(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP)
                     .andThen(AutoPathHelper.followPath(drivetrain, "TwoPieceBalanceCable", TwoPieceNoCableEventMap)));
+
     autoChooser.addOption(
             "ThreePieceNoCable",
             new AutoScoreSequenceNoHome(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP)
-                    .andThen(AutoPathHelper.followPath(drivetrain, "ThreePieceNoCable", TwoPieceNoCableEventMap)).andThen(
-                            new AutoScoreSequence(arm, wrist, claw, () -> FRONT_CUBE_MEDIUM)
-                    ));
+                    .andThen(AutoPathHelper.followPath(drivetrain, "ThreePieceNoCable", ThreePieceNoCableEventMap))
+                    );
 
 
     autoChooser.addOption(
