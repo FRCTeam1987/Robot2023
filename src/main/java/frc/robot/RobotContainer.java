@@ -437,7 +437,17 @@ public class RobotContainer {
         .onTrue(
             new SequentialCommandGroup(
                 new EjectGamePiece(claw).withTimeout(0.25), new GoHome(arm, wrist)));
+<<<<<<< Updated upstream
     driver.getTempGoHome().onTrue(new GoHome(arm, wrist));
+=======
+    new Trigger(coDriverController::getLeftBumper).onTrue(new DumpGamePiece(wrist, claw));
+    new Trigger(driverController::getStartButton).onTrue(new GoHome(arm, wrist));
+    new Trigger(driverController::getBButton)
+        .onTrue(
+            new CollectSequence(
+                arm, wrist, claw, () -> Constants.PositionConfigs.BACK_SINGLE_SUBSTATION));
+
+>>>>>>> Stashed changes
     // new SequentialCommandGroup(
     //     new ParallelCommandGroup(
     //         new SetArm(arm, () -> -45.0, () -> 6.0, () -> false), new SetWristPosition(1350,
@@ -537,6 +547,7 @@ public class RobotContainer {
     final HashMap<String, Command> someEventMap = new HashMap<>();
     someEventMap.put(
         "Score Cone",
+<<<<<<< Updated upstream
         new SequentialCommandGroup(
             new ParallelCommandGroup(
                 new SetArm(
@@ -563,12 +574,74 @@ public class RobotContainer {
                 new SetArm(arm, () -> Arm.HOME_ROTATION, () -> Arm.HOME_EXTENSION, () -> true),
                 new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
             new InstantCommand(() -> arm.setExtensionNominal(), arm)));
+=======
+        new AutoScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP));
+    someEventMap.put("Collect Cube", new CollectSequence(arm, wrist, claw, () -> BACK_CUBE_FLOOR));
+    someEventMap.put(
+        "Score Cube",
+        new AutoScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_TOP));
+>>>>>>> Stashed changes
     // TODO this auto does not fully work reliably
     autoChooser.addOption(
         "New Auto",
         AutoPathHelper.followPath(drivetrain, "Some Auto", someEventMap)
             .andThen(new Balance(drivetrain))
             .andThen(() -> drivetrain.setXStance(), drivetrain));
+<<<<<<< Updated upstream
+=======
+
+    final HashMap<String, Command> TwoPieceNoCableEventMap = new HashMap<>();
+    TwoPieceNoCableEventMap.put(
+        "Go Home",
+        new ParallelCommandGroup(
+            new SetArm(arm, () -> 0, () -> 1, () -> true),
+            new SetWristPosition(ANGLE_STRAIGHT, wrist)));
+    TwoPieceNoCableEventMap.put(
+        "Collect Cube",
+        new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR)
+            .andThen(new GoHome(arm, wrist).withTimeout(2)));
+    TwoPieceNoCableEventMap.put(
+        "Score Cube Prep", new SetArm(arm, () -> -48.5, () -> 5, () -> false));
+    TwoPieceNoCableEventMap.put(
+        "Score Cube",
+        new AutoScoreSequence(
+            arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_TOP_AUTO));
+    TwoPieceNoCableEventMap.put(
+        "Score Cube No Momentum",
+        new AutoScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_TOP));
+    TwoPieceNoCableEventMap.put("Go Home 2", new GoHome(arm, wrist).withTimeout(2));
+    TwoPieceNoCableEventMap.put("Auto Balance", new Balance(drivetrain));
+
+    final HashMap<String, Command> ThreePieceNoCableEventMap = new HashMap<>();
+    ThreePieceNoCableEventMap.putAll(TwoPieceNoCableEventMap);
+    ThreePieceNoCableEventMap.put(
+        "Score Cube Medium",
+        new AutoScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_MEDIUM));
+
+    autoChooser.addOption(
+        "TwoPieceBalanceCable",
+        new AutoScoreSequenceNoHome(
+                arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP)
+            .andThen(
+                AutoPathHelper.followPath(
+                    drivetrain, "TwoPieceBalanceCable", TwoPieceNoCableEventMap)));
+
+    autoChooser.addOption(
+        "ThreePieceNoCable",
+        new AutoScoreSequenceNoHome(
+                arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP)
+            .andThen(
+                AutoPathHelper.followPath(
+                    drivetrain, "ThreePieceNoCable", ThreePieceNoCableEventMap)));
+
+    autoChooser.addOption(
+        "TwoPieceNoCable",
+        new AutoScoreSequenceNoHome(
+                arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP)
+            .andThen(
+                AutoPathHelper.followPath(drivetrain, "TwoPieceNoCable", TwoPieceNoCableEventMap)));
+
+>>>>>>> Stashed changes
     // autoChooser.addOption(
     //     "Some Auto",
     //     new SequentialCommandGroup(

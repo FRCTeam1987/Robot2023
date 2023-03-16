@@ -10,9 +10,19 @@ import frc.robot.subsystems.wrist.Wrist;
 
 public class SequentialCommandTest extends SequentialCommandGroup {
 
+<<<<<<< Updated upstream
   public SequentialCommandTest(
       final Arm ARM, final Wrist WRIST, final int INCHES, final double ANGLE, final int ticks) {
     addCommands(
         new RotateArm(ARM, ANGLE), new ExtendArm(ARM, INCHES), new SetWristPosition(ticks, WRIST));
   }
 }
+=======
+//   public SequentialCommandTest(
+//       final Arm ARM, final Wrist WRIST, final int INCHES, final double ANGLE, final int ticks) {
+//     addCommands(
+//         new RotateArm(ARM, ANGLE), new ExtendArm(ARM, INCHES), new SetWristPosition(ticks,
+// WRIST));
+//   }
+// }
+>>>>>>> Stashed changes

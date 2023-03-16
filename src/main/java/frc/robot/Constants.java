@@ -32,7 +32,17 @@ public final class Constants {
 
   // FIXME: If Limelight is used, specify the pipeline for detecting AprilTags
   public static final int LIMELIGHT_PIPELINE = 1;
+<<<<<<< Updated upstream
 
+=======
+  public static final int WRIST_OFFSET = -217; // 606
+  public static final double AUTO_DRIVE_P_CONTROLLER = 6.0;
+  public static final double AUTO_DRIVE_I_CONTROLLER = 0.0;
+  public static final double AUTO_DRIVE_D_CONTROLLER = 0.0;
+  public static final double AUTO_TURN_P_CONTROLLER = 10.0;
+  public static final double AUTO_TURN_I_CONTROLLER = 0.0;
+  public static final double AUTO_TURN_D_CONTROLLER = 0.0;
+>>>>>>> Stashed changes
   public static final ShuffleboardTab TAB_VISION = Shuffleboard.getTab("Vision");
   public static final ShuffleboardTab TAB_MAIN = Shuffleboard.getTab("Main");
   public static final ShuffleboardTab TAB_ARM = Shuffleboard.getTab("Arm");
@@ -138,13 +148,28 @@ public final class Constants {
     public static final PositionConfig FRONT_CONE_MEDIUM =
         new PositionConfig(17, -43, 489, GamePiece.CONE);
     public static final PositionConfig FRONT_CONE_TOP =
+<<<<<<< Updated upstream
         new PositionConfig(35, -43, 575, GamePiece.CONE);
+=======
+        new PositionConfig(37, -51, 706 + WRIST_OFFSET, GamePiece.CONE);
+>>>>>>> Stashed changes
     public static final PositionConfig FRONT_CUBE_MEDIUM =
         new PositionConfig(1, -47, 1016, GamePiece.CUBE);
     public static final PositionConfig FRONT_CUBE_TOP =
+<<<<<<< Updated upstream
         new PositionConfig(20, -48.5, 1077, GamePiece.CUBE); // wrist 1027, arm angle -50
     public static final PositionConfig BACK_CONE_TOP =
         new PositionConfig(35, 49.5, 2800, GamePiece.CONE);
+=======
+        new PositionConfig(
+            20, -48.5, 1077 + WRIST_OFFSET, GamePiece.CUBE); // wrist 1027, arm angle -50
+    public static final PositionConfig FRONT_CUBE_TOP_AUTO =
+        new PositionConfig(
+            16, -48.5, 1077 + WRIST_OFFSET, GamePiece.CUBE); // wrist 1027, arm angle -50
+    public static final PositionConfig BACK_CONE_TOP =
+        new PositionConfig(
+            38, 49.5, 2800 + WRIST_OFFSET, GamePiece.CONE); // length 35, rotation 49.5, wrist
+>>>>>>> Stashed changes
     public static final PositionConfig BACK_CONE_MEDIUM =
         new PositionConfig(22, 47.9, 3260, GamePiece.CONE);
     public static final PositionConfig BACK_CUBE_TOP =
@@ -157,7 +182,11 @@ public final class Constants {
         new PositionConfig(17, -33, 1270, GamePiece.CONE);
 
     public static final PositionConfig BACK_SINGLE_SUBSTATION =
+<<<<<<< Updated upstream
         new PositionConfig(0, 70.5, -1266, GamePiece.CONE);
+=======
+        new PositionConfig(0, 80.5, 607 + WRIST_OFFSET, GamePiece.CONE);
+>>>>>>> Stashed changes
     public static final PositionConfig BACK_DOUBLE_SUBSTATION =
         new PositionConfig(18, 27, 2570, GamePiece.CONE);
   }
