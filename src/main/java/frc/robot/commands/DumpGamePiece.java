@@ -10,11 +10,10 @@ import frc.robot.subsystems.wrist.Wrist;
 
 public class DumpGamePiece extends SequentialCommandGroup {
 
-  public DumpGamePiece(
-     final Wrist wrist, final Claw claw) {
+  public DumpGamePiece(final Wrist wrist, final Claw claw) {
     addCommands(
-      new SetWristPosition(3289, wrist),
-      new EjectGamePiece(claw).withTimeout(.66),
-      new SetWristPosition(2289, wrist));
+        new SetWristPosition(3289, wrist),
+        new EjectGamePiece(claw).withTimeout(.66),
+        new SetWristPosition(2289, wrist));
   }
 }

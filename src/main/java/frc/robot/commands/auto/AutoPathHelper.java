@@ -37,6 +37,7 @@ public class AutoPathHelper {
             eventMap,
             true,
             drive);
-    return autoBuilder.fullAuto(PathPlanner.loadPathGroup(pathName, new PathConstraints(3.25, 2.5)));
+    return autoBuilder.fullAuto(
+        PathPlanner.loadPathGroup(pathName, new PathConstraints(3.25, 2.5)));
   }
 }

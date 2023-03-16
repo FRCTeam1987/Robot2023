@@ -13,6 +13,7 @@
 //   public SequentialCommandTest(
 //       final Arm ARM, final Wrist WRIST, final int INCHES, final double ANGLE, final int ticks) {
 //     addCommands(
-//         new RotateArm(ARM, ANGLE), new ExtendArm(ARM, INCHES), new SetWristPosition(ticks, WRIST));
+//         new RotateArm(ARM, ANGLE), new ExtendArm(ARM, INCHES), new SetWristPosition(ticks,
+// WRIST));
 //   }
 // }
