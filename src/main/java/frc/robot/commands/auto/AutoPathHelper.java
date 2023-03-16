@@ -4,6 +4,8 @@
 
 package frc.robot.commands.auto;
 
+import static frc.robot.Constants.*;
+
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.auto.PIDConstants;
@@ -27,12 +29,15 @@ public class AutoPathHelper {
             drive::getPose,
             drive::resetPose,
             drive.getKinematics(),
-            new PIDConstants(5.0, 0, 0),
-            new PIDConstants(1.0, 0, 0),
+            new PIDConstants(
+                AUTO_DRIVE_P_CONTROLLER, AUTO_DRIVE_I_CONTROLLER, AUTO_DRIVE_D_CONTROLLER),
+            new PIDConstants(
+                AUTO_TURN_P_CONTROLLER, AUTO_TURN_I_CONTROLLER, AUTO_TURN_D_CONTROLLER),
             drive::setSwerveModuleStates,
             eventMap,
             true,
             drive);
-    return autoBuilder.fullAuto(PathPlanner.loadPathGroup(pathName, new PathConstraints(2, 2)));
+    return autoBuilder.fullAuto(
+        PathPlanner.loadPathGroup(pathName, new PathConstraints(3.25, 2.5)));
   }
 }

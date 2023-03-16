@@ -137,9 +137,7 @@ public class Robot extends LoggedRobot {
   }
 
   @Override
-  public void disabledPeriodic() {
-    robotContainer.updateOI();
-  }
+  public void disabledPeriodic() {}
 
   /**
    * This method is invoked at the start of the autonomous period. It schedules the autonomous
@@ -166,6 +164,8 @@ public class Robot extends LoggedRobot {
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
+    robotContainer.enableFieldRelative();
+    robotContainer.disableXstance();
   }
 
   /** This method is invoked at the start of the test period. */
@@ -173,5 +173,10 @@ public class Robot extends LoggedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+  }
+
+  @Override
+  public void autonomousExit() {
+    robotContainer.enableXstance();
   }
 }
