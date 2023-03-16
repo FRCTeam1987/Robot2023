@@ -5,6 +5,7 @@ import static frc.robot.Constants.TAB_WRIST;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.commands.SetWristPosition;
 import org.littletonrobotics.junction.Logger;
 
@@ -13,7 +14,7 @@ public class Wrist extends SubsystemBase {
   private final WristIOInputsAutoLogged inputs = new WristIOInputsAutoLogged();
 
   private final double currentThreshold = 10.0; // amps
-  public static final int ANGLE_STRAIGHT = 1457;
+  public static final int ANGLE_STRAIGHT = 1457 + Constants.WRIST_OFFSET; // 2062
   public static final int ANGLE_FRONT_MAX = 795; // when telescope extended
   public static final int ANGLE_FRONT_PERPENDICULAR = 447;
   public static final int ANGLE_BACK_PERPENDICULAR = 2439;
@@ -30,10 +31,10 @@ public class Wrist extends SubsystemBase {
 
     TAB_WRIST.add("Set Straight", new SetWristPosition(ANGLE_STRAIGHT, this)).withSize(2, 1);
     TAB_WRIST
-        .add("Set Front Perpendicular", new SetWristPosition(ANGLE_FRONT_PERPENDICULAR, this))
+        .add("Set Front Perpendicular", new SetWristPosition(ANGLE_STRAIGHT + 800, this))
         .withSize(2, 1);
     TAB_WRIST
-        .add("Set Back Perpendicular", new SetWristPosition(ANGLE_BACK_PERPENDICULAR, this))
+        .add("Set Back Perpendicular", new SetWristPosition(ANGLE_STRAIGHT - 800, this))
         .withSize(2, 1);
     TAB_WRIST
         .add("Set Back Half Perpendicular", new SetWristPosition(ANGLE_BACK_HALF, this))

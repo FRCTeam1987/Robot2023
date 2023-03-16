@@ -53,12 +53,14 @@ public class SetArm extends CommandBase {
 
     if (returning) {
       arm.setArmLength(desiredLength);
-      if (isLengthOnTarget(10)) {
+      if (isLengthOnTarget(25)) {
         arm.setArmAngle(angleSupplier.getAsDouble());
       }
     } else {
       arm.setArmAngle(desiredAngle);
-      if (isAngleOnTarget(5) && !isLengthOnTarget(1)) arm.setArmLength(desiredLength);
+      if (isAngleOnTarget(35) && !isLengthOnTarget(1)) {
+        arm.setArmLength(desiredLength);
+      }
     }
   }
 
@@ -80,12 +82,16 @@ public class SetArm extends CommandBase {
     if (interrupted) {
       arm.stop();
     }
+    if (Util.isWithinTolerance(arm.getArmAngle(), 0, 2)
+        && Util.isWithinTolerance(arm.getArmLength(), 1, 2)) {
+      arm.stop();
+    }
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return isAngleOnTarget(2) && isLengthOnTarget(1);
+    return isAngleOnTarget(2) && isLengthOnTarget(2);
   }
 
   private boolean isAngleOnTarget(final double tolerance) {

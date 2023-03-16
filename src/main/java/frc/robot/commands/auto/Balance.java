@@ -28,7 +28,7 @@ public class Balance extends PIDCommand {
         output -> {
           // Use the output here
           {
-            drive.drive(-output / 5.0, 0, 0, true);
+            drive.drive(-output / 7.0, 0, 0, true);
           }
         });
     // Use addRequirements() here to declare subsystem dependencies.
