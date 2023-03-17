@@ -32,7 +32,7 @@ public final class Constants {
 
   // FIXME: If Limelight is used, specify the pipeline for detecting AprilTags
   public static final int LIMELIGHT_PIPELINE = 1;
-  public static final int WRIST_OFFSET = -217; // 606
+  public static final int WRIST_OFFSET = 607; // -217 // 606
   public static final double AUTO_DRIVE_P_CONTROLLER = 6.0;
   public static final double AUTO_DRIVE_I_CONTROLLER = 0.0;
   public static final double AUTO_DRIVE_D_CONTROLLER = 0.0;
@@ -138,13 +138,15 @@ public final class Constants {
     public static final PositionConfig BACK_CUBE_FLOOR =
         new PositionConfig(Arm.HOME_EXTENSION, 101.7, 1550 + WRIST_OFFSET, GamePiece.CUBE);
     public static final PositionConfig BACK_CONE_FLOOR =
-        new PositionConfig(Arm.HOME_EXTENSION, 90.9, 1755 + WRIST_OFFSET, GamePiece.CONE);
+        new PositionConfig(Arm.HOME_EXTENSION, 90.9, 1805 + WRIST_OFFSET, GamePiece.CONE);
     public static final PositionConfig BACK_CONE_FLOOR_TIPPED =
         new PositionConfig(Arm.HOME_EXTENSION, 108, 1347 + WRIST_OFFSET, GamePiece.CONE);
     public static final PositionConfig FRONT_CONE_MEDIUM =
         new PositionConfig(17, -43, 489 + WRIST_OFFSET, GamePiece.CONE);
     public static final PositionConfig FRONT_CONE_TOP =
-        new PositionConfig(37, -51, 706 + WRIST_OFFSET, GamePiece.CONE);
+        new PositionConfig(37, -49, 706 + WRIST_OFFSET, GamePiece.CONE);
+    public static final PositionConfig AUTO_FRONT_CONE_TOP =
+        new PositionConfig(37, -49, 656 + WRIST_OFFSET, GamePiece.CONE);
     public static final PositionConfig FRONT_CUBE_MEDIUM =
         new PositionConfig(1, -47, 1016 + WRIST_OFFSET, GamePiece.CUBE);
     public static final PositionConfig FRONT_CUBE_TOP =
@@ -168,7 +170,7 @@ public final class Constants {
         new PositionConfig(17, -33, 1270 + WRIST_OFFSET, GamePiece.CONE);
 
     public static final PositionConfig BACK_SINGLE_SUBSTATION =
-        new PositionConfig(0, 51, 1187 + WRIST_OFFSET, GamePiece.CONE);
+        new PositionConfig(0, 81, 750 + WRIST_OFFSET, GamePiece.CONE);
     public static final PositionConfig BACK_DOUBLE_SUBSTATION =
         new PositionConfig(18, 27, 2570 + WRIST_OFFSET, GamePiece.CONE);
   }

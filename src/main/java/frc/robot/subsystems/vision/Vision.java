@@ -6,8 +6,10 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.team3061.util.RobotOdometry;
+import frc.robot.Constants;
 import frc.robot.subsystems.vision.VisionIO.VisionIOInputs;
 import org.littletonrobotics.junction.Logger;
 
@@ -15,18 +17,35 @@ public class Vision extends SubsystemBase {
   private final VisionIO visionIO;
   private final VisionIOInputs io = new VisionIOInputs();
   private final SwerveDrivePoseEstimator poseEstimator;
+  private boolean LOGGING = false;
 
   public Vision(VisionIO visionIO) {
     this.visionIO = visionIO;
     this.poseEstimator = RobotOdometry.getInstance().getPoseEstimator();
+    Constants.TAB_VISION.add(
+        "EnablePoseUpdate",
+        new InstantCommand(
+            () -> {
+              this.LOGGING = true;
+            }));
+    Constants.TAB_VISION.add(
+        "DisablePoseUpdate",
+        new InstantCommand(
+            () -> {
+              this.LOGGING = false;
+            }));
   }
 
   @Override
   public void periodic() {
 
     if (ADVANTAGE_KIT_ENABLED) {
-      visionIO.updateInputs(io);
-      Logger.getInstance().processInputs("Vision", io);
+      try {
+        visionIO.updateInputs(io);
+        Logger.getInstance().processInputs("Vision", io);
+      } catch (Exception ignored) {
+
+      }
     }
 
     VisionIOLimelightBase limelight = VisionIOLimelight.getInstance().getBestLimelight();
@@ -39,7 +58,7 @@ public class Vision extends SubsystemBase {
       if (ADVANTAGE_KIT_ENABLED) {
         Logger.getInstance().recordOutput("Vision/RobotPose", pose3d);
       }
-      // poseEstimator.addVisionMeasurement(pose3d.toPose2d(), pose[6]);
+      if (LOGGING) poseEstimator.addVisionMeasurement(pose3d.toPose2d(), pose[6]);
     } catch (Exception ignored) {
 
     }

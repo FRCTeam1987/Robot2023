@@ -23,7 +23,7 @@ public class AutoScoreSequence extends SequentialCommandGroup {
       final Supplier<PositionConfig> positionConfigSupplier) {
     addCommands(
         new ScoreSequence(arm, wrist, claw, positionConfigSupplier),
-        new EjectGamePiece(claw).withTimeout(0.06),
+        new EjectGamePiece(claw).withTimeout(0.3),
         new GoHome(arm, wrist).withTimeout(2.0));
 
     // new EjectGamePiece(claw).withTimeout(0.5),

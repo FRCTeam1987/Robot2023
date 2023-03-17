@@ -261,7 +261,11 @@ public class RobotContainer {
     // debugTab.add("Arm Length (inches)", arm.getArmLength()).withSize(2, 2).withPosition(0, 0);
     // debugTab.add("Arm Angle (Degrees)", arm.getArmAngle()).withSize(2, 2).withPosition(2, 0);
     // debugTab.add("Wrist Rotation (Degrees)", wrist.getDegrees()).withSize(2, 2).withPosition(4,
-
+    TAB_MAIN.addString(
+        "Height",
+        () -> {
+          return this.getHeight().toString();
+        });
     TAB_COMMANDS.add("Extend to 12in", new ExtendArm(arm, 12));
     TAB_COMMANDS.add("Rotate to 45deg", new RotateArm(arm, 45));
     TAB_COMMANDS.add("Flip Wrist to true", new FlipWrist(wrist, true));
