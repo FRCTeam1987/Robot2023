@@ -32,7 +32,7 @@ public final class Constants {
 
   // FIXME: If Limelight is used, specify the pipeline for detecting AprilTags
   public static final int LIMELIGHT_PIPELINE = 1;
-  public static final int WRIST_OFFSET = 607; // -217 // 606
+  public static final int WRIST_OFFSET = 458; // -217 // 606
   public static final double AUTO_DRIVE_P_CONTROLLER = 6.0;
   public static final double AUTO_DRIVE_I_CONTROLLER = 0.0;
   public static final double AUTO_DRIVE_D_CONTROLLER = 0.0;
@@ -146,7 +146,7 @@ public final class Constants {
     public static final PositionConfig FRONT_CONE_TOP =
         new PositionConfig(37, -49, 706 + WRIST_OFFSET, GamePiece.CONE);
     public static final PositionConfig AUTO_FRONT_CONE_TOP =
-        new PositionConfig(37, -49, 656 + WRIST_OFFSET, GamePiece.CONE);
+        new PositionConfig(37, -48, 621 + WRIST_OFFSET, GamePiece.CONE); // -49 rotation, 656 wrist
     public static final PositionConfig FRONT_CUBE_MEDIUM =
         new PositionConfig(1, -47, 1016 + WRIST_OFFSET, GamePiece.CUBE);
     public static final PositionConfig FRONT_CUBE_TOP =
