@@ -23,13 +23,25 @@ public class Vision extends SubsystemBase {
     this.visionIO = visionIO;
     this.poseEstimator = RobotOdometry.getInstance().getPoseEstimator();
     Constants.TAB_VISION.add(
-        "EnablePoseUpdate",
+        "Enable Estimator",
+        new InstantCommand(
+            () -> {
+              this.LOGGING = true;
+            }));
+    Constants.TAB_MATCH.add(
+        "Enable Estimator",
         new InstantCommand(
             () -> {
               this.LOGGING = true;
             }));
     Constants.TAB_VISION.add(
-        "DisablePoseUpdate",
+        "Disable Estimator",
+        new InstantCommand(
+            () -> {
+              this.LOGGING = false;
+            }));
+    Constants.TAB_MATCH.add(
+        "Disable Estimator",
         new InstantCommand(
             () -> {
               this.LOGGING = false;

@@ -32,7 +32,7 @@ public final class Constants {
 
   // FIXME: If Limelight is used, specify the pipeline for detecting AprilTags
   public static final int LIMELIGHT_PIPELINE = 1;
-  public static final int WRIST_OFFSET = 458; // -217 // 606
+  public static final int WRIST_OFFSET = 670; // -217 // 606
   public static final double AUTO_DRIVE_P_CONTROLLER = 6.0;
   public static final double AUTO_DRIVE_I_CONTROLLER = 0.0;
   public static final double AUTO_DRIVE_D_CONTROLLER = 0.0;
@@ -45,6 +45,7 @@ public final class Constants {
   public static final ShuffleboardTab TAB_WRIST = Shuffleboard.getTab("Wrist");
   public static final ShuffleboardTab TAB_CLAW = Shuffleboard.getTab("Claw");
   public static final ShuffleboardTab TAB_COMMANDS = Shuffleboard.getTab("Commands");
+  public static final ShuffleboardTab TAB_MATCH = Shuffleboard.getTab("Match");
   private static final RobotType ROBOT =
       RobotBase.getRuntimeType().equals(RuntimeType.kRoboRIO)
           ? RobotType.ROBOT_2023_TEST
@@ -146,15 +147,14 @@ public final class Constants {
     public static final PositionConfig FRONT_CONE_TOP =
         new PositionConfig(37, -49, 706 + WRIST_OFFSET, GamePiece.CONE);
     public static final PositionConfig AUTO_FRONT_CONE_TOP =
-        new PositionConfig(37, -48, 621 + WRIST_OFFSET, GamePiece.CONE); // -49 rotation, 656 wrist
+        new PositionConfig(39, -47, 321 + WRIST_OFFSET, GamePiece.CONE); // -49 rotation, 656 wrist
     public static final PositionConfig FRONT_CUBE_MEDIUM =
         new PositionConfig(1, -47, 1016 + WRIST_OFFSET, GamePiece.CUBE);
     public static final PositionConfig FRONT_CUBE_TOP =
+        new PositionConfig(20, -48.5, 1077 + WRIST_OFFSET, GamePiece.CUBE);
+    public static final PositionConfig AUTO_FRONT_CUBE_TOP =
         new PositionConfig(
-            20, -48.5, 1077 + WRIST_OFFSET, GamePiece.CUBE); // wrist 1027, arm angle -50
-    public static final PositionConfig FRONT_CUBE_TOP_AUTO =
-        new PositionConfig(
-            16, -48.5, 1077 + WRIST_OFFSET, GamePiece.CUBE); // wrist 1027, arm angle -50
+            18, -46.5, 1177 + WRIST_OFFSET, GamePiece.CUBE); // wrist 1027, arm angle -50
     public static final PositionConfig BACK_CONE_TOP =
         new PositionConfig(
             38, 49.5, 2800 + WRIST_OFFSET, GamePiece.CONE); // length 35, rotation 49.5, wrist
