@@ -38,6 +38,6 @@ public class AutoPathHelper {
             true,
             drive);
     return autoBuilder.fullAuto(
-        PathPlanner.loadPathGroup(pathName, new PathConstraints(3.25, 2.5)));
+        PathPlanner.loadPathGroup(pathName, new PathConstraints(3.75, 3.0)));
   }
 }

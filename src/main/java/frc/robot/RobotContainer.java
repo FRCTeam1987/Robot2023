@@ -317,7 +317,8 @@ public class RobotContainer {
     collectionChooser.addOption("BACK_SINGLE_SUBSTATION", BACK_SINGLE_SUBSTATION);
     // collectionChooser.addOption("FRONT_DOUBLE_SUBSTATION", FRONT_DOUBLE_SUBSTATION);
     collectionChooser.addOption("BACK_DOUBLE_SUBSTATION", BACK_DOUBLE_SUBSTATION);
-    // collectionChooser.addOption("FRONT_CONE_FLOOR_TIPPED_LONG", FRONT_CONE_FLOOR_TIPPED_LONG);
+    collectionChooser.addOption("FRONT_CONE_FLOOR_TIPPED_LONG", FRONT_CONE_FLOOR_TIPPED_LONG);
+    collectionChooser.addOption("BACK_CUBE_FLOOR_LONG", BACK_CUBE_FLOOR_LONG);
     TAB_MAIN.add("Collect Chooser", collectionChooser);
 
     SendableChooser<PositionConfig> ScoreChooser = new SendableChooser<>();
@@ -567,7 +568,7 @@ public class RobotContainer {
             .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)))
             .andThen(new GoHome(arm, wrist).withTimeout(2)));
     TwoPieceNoCableEventMap.put(
-        "Score Cube Prep", new SetArm(arm, () -> -49.5, () -> 5, () -> false));
+        "Score Cube Prep", new SetArm(arm, () -> -49.5, () -> 5, () -> true));
     TwoPieceNoCableEventMap.put(
         "Score Cube",
         new AutoScoreSequence(
@@ -578,10 +579,23 @@ public class RobotContainer {
     final HashMap<String, Command> ThreePieceNoCableEventMap = new HashMap<>();
     ThreePieceNoCableEventMap.putAll(TwoPieceNoCableEventMap);
     ThreePieceNoCableEventMap.put(
+        "Collect Cube Long",
+        new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR_LONG) //TODO SHOULD START ROLLERS AS SOON AS IT GOES TO POSITION
+            .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)))
+            .andThen(new GoHome(arm, wrist).withTimeout(2)));
+    
+    ThreePieceNoCableEventMap.put(
         "Score Cube Medium",
         new AutoScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_MEDIUM)
         .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)))
         .andThen(new GoHome(arm, wrist)));
+    ThreePieceNoCableEventMap.put(
+        "Score Cube Prep Medium", new SetArm(arm, () -> -49.5, () -> 5, () -> true));
+
+    final HashMap<String, Command> ThreePieceBalanceEventMap = new HashMap<>();
+    ThreePieceBalanceEventMap.putAll(ThreePieceNoCableEventMap);
+    ThreePieceBalanceEventMap.put("Balance", new Balance(drivetrain));
+    
 
     autoChooser.addOption(
         "TwoPieceBalanceCable",
@@ -606,7 +620,17 @@ public class RobotContainer {
             .andThen(
                 AutoPathHelper.followPath(drivetrain, "TwoPieceNoCable", TwoPieceNoCableEventMap)));
 
+    autoChooser.addOption(
+        "ThreePieceBalance", 
+        new AutoScoreSequenceNoHome(
+            arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP)
+        .andThen(
+            AutoPathHelper.followPath(drivetrain, "ThreePieceBalance", ThreePieceBalanceEventMap)));
+             
+
+
     // autoChooser.addOption(
+
     //     "Some Auto",
     //     new SequentialCommandGroup(
     //             new ParallelCommandGroup(

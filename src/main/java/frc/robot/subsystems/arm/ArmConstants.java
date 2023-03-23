@@ -19,7 +19,7 @@ public final class ArmConstants {
   public static final double EXTENSION_CRUISE_VELOCITY = 65000;
   public static final double EXTENSION_ALLOWABLE_ERROR = 500.0;
 
-  public static final double CANCODER_OFFSET = -321.475;
+  public static final double CANCODER_OFFSET = -261.475;//-321.475
   public static final double MAX_ROTATION_ANGLE = 115;
   public static final double FULL_ROTATION_DEGREES = 360.0;
   public static final double FULL_ROTATION_TICKS = 4096.0;
