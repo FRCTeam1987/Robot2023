@@ -28,7 +28,7 @@ public class DefaultClawRollersSpin extends CommandBase {
     double speed = claw.getSpeedPercent();
     if (gamePiece == GamePiece.CONE && speed != 0.0) {
       claw.setRollerSpeed(0.0);
-    } else if (gamePiece == GamePiece.CUBE && speed < CLAW_ROLLER_SPEED) {
+    } else if (gamePiece == GamePiece.CUBE) {
       claw.setRollerSpeed(CLAW_ROLLER_SPEED);
     } else if (gamePiece == GamePiece.NONE && speed != 0.0) {
       claw.stopRollers();

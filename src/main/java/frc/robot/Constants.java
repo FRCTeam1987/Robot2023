@@ -32,23 +32,20 @@ public final class Constants {
 
   // FIXME: If Limelight is used, specify the pipeline for detecting AprilTags
   public static final int LIMELIGHT_PIPELINE = 1;
-<<<<<<< Updated upstream
-
-=======
-  public static final int WRIST_OFFSET = -217; // 606
+  public static final int WRIST_OFFSET = 670; // -217 // 606
   public static final double AUTO_DRIVE_P_CONTROLLER = 6.0;
   public static final double AUTO_DRIVE_I_CONTROLLER = 0.0;
   public static final double AUTO_DRIVE_D_CONTROLLER = 0.0;
   public static final double AUTO_TURN_P_CONTROLLER = 10.0;
   public static final double AUTO_TURN_I_CONTROLLER = 0.0;
   public static final double AUTO_TURN_D_CONTROLLER = 0.0;
->>>>>>> Stashed changes
   public static final ShuffleboardTab TAB_VISION = Shuffleboard.getTab("Vision");
   public static final ShuffleboardTab TAB_MAIN = Shuffleboard.getTab("Main");
   public static final ShuffleboardTab TAB_ARM = Shuffleboard.getTab("Arm");
   public static final ShuffleboardTab TAB_WRIST = Shuffleboard.getTab("Wrist");
   public static final ShuffleboardTab TAB_CLAW = Shuffleboard.getTab("Claw");
   public static final ShuffleboardTab TAB_COMMANDS = Shuffleboard.getTab("Commands");
+  public static final ShuffleboardTab TAB_MATCH = Shuffleboard.getTab("Match");
   private static final RobotType ROBOT =
       RobotBase.getRuntimeType().equals(RuntimeType.kRoboRIO)
           ? RobotType.ROBOT_2023_TEST
@@ -128,66 +125,53 @@ public final class Constants {
 
   public static class PositionConfigs {
     public static final PositionConfig TEST_POS =
-        new PositionConfig(Arm.HOME_EXTENSION, 45, 1692, GamePiece.CUBE);
+        new PositionConfig(Arm.HOME_EXTENSION, 45, 1692 + WRIST_OFFSET, GamePiece.CUBE);
     public static final PositionConfig TEST_NEG =
-        new PositionConfig(Arm.HOME_EXTENSION, -45, 1692, GamePiece.CONE);
+        new PositionConfig(Arm.HOME_EXTENSION, -45, 1692 + WRIST_OFFSET, GamePiece.CONE);
     public static final PositionConfig FRONT_CUBE_FLOOR =
-        new PositionConfig(Arm.HOME_EXTENSION, -105.4, 1780, GamePiece.CUBE);
+        new PositionConfig(Arm.HOME_EXTENSION, -105.4, 1780 + WRIST_OFFSET, GamePiece.CUBE);
     public static final PositionConfig FRONT_CONE_FLOOR =
-        new PositionConfig(Arm.HOME_EXTENSION, -102.4, 2072, GamePiece.CONE);
+        new PositionConfig(Arm.HOME_EXTENSION, -102.4, 2072 + WRIST_OFFSET, GamePiece.CONE);
     public static final PositionConfig FRONT_CONE_FLOOR_TIPPED =
-        new PositionConfig(Arm.HOME_EXTENSION, -107.3, 1906, GamePiece.CONE);
+        new PositionConfig(Arm.HOME_EXTENSION, -107.3, 1906 + WRIST_OFFSET, GamePiece.CONE);
     public static final PositionConfig FRONT_CONE_FLOOR_TIPPED_LONG =
-        new PositionConfig(23, -102.4, 2130, GamePiece.CONE);
+        new PositionConfig(23, -102.4, 2130 + WRIST_OFFSET, GamePiece.CONE);
     public static final PositionConfig BACK_CUBE_FLOOR =
-        new PositionConfig(Arm.HOME_EXTENSION, 101.7, 1550, GamePiece.CUBE);
+        new PositionConfig(Arm.HOME_EXTENSION, 101.7, 1550 + WRIST_OFFSET, GamePiece.CUBE);
     public static final PositionConfig BACK_CONE_FLOOR =
-        new PositionConfig(Arm.HOME_EXTENSION, 90.9, 1755, GamePiece.CONE);
+        new PositionConfig(Arm.HOME_EXTENSION, 90.9, 1805 + WRIST_OFFSET, GamePiece.CONE);
     public static final PositionConfig BACK_CONE_FLOOR_TIPPED =
-        new PositionConfig(Arm.HOME_EXTENSION, 108, 1347, GamePiece.CONE);
+        new PositionConfig(Arm.HOME_EXTENSION, 108, 1347 + WRIST_OFFSET, GamePiece.CONE);
     public static final PositionConfig FRONT_CONE_MEDIUM =
-        new PositionConfig(17, -43, 489, GamePiece.CONE);
+        new PositionConfig(17, -43, 489 + WRIST_OFFSET, GamePiece.CONE);
     public static final PositionConfig FRONT_CONE_TOP =
-<<<<<<< Updated upstream
-        new PositionConfig(35, -43, 575, GamePiece.CONE);
-=======
-        new PositionConfig(37, -51, 706 + WRIST_OFFSET, GamePiece.CONE);
->>>>>>> Stashed changes
+        new PositionConfig(37, -49, 706 + WRIST_OFFSET, GamePiece.CONE);
+    public static final PositionConfig AUTO_FRONT_CONE_TOP =
+        new PositionConfig(39, -47, 321 + WRIST_OFFSET, GamePiece.CONE); // -49 rotation, 656 wrist
     public static final PositionConfig FRONT_CUBE_MEDIUM =
-        new PositionConfig(1, -47, 1016, GamePiece.CUBE);
+        new PositionConfig(1, -47, 1016 + WRIST_OFFSET, GamePiece.CUBE);
     public static final PositionConfig FRONT_CUBE_TOP =
-<<<<<<< Updated upstream
-        new PositionConfig(20, -48.5, 1077, GamePiece.CUBE); // wrist 1027, arm angle -50
-    public static final PositionConfig BACK_CONE_TOP =
-        new PositionConfig(35, 49.5, 2800, GamePiece.CONE);
-=======
+        new PositionConfig(20, -48.5, 1077 + WRIST_OFFSET, GamePiece.CUBE);
+    public static final PositionConfig AUTO_FRONT_CUBE_TOP =
         new PositionConfig(
-            20, -48.5, 1077 + WRIST_OFFSET, GamePiece.CUBE); // wrist 1027, arm angle -50
-    public static final PositionConfig FRONT_CUBE_TOP_AUTO =
-        new PositionConfig(
-            16, -48.5, 1077 + WRIST_OFFSET, GamePiece.CUBE); // wrist 1027, arm angle -50
+            18, -46.5, 1177 + WRIST_OFFSET, GamePiece.CUBE); // wrist 1027, arm angle -50
     public static final PositionConfig BACK_CONE_TOP =
         new PositionConfig(
             38, 49.5, 2800 + WRIST_OFFSET, GamePiece.CONE); // length 35, rotation 49.5, wrist
->>>>>>> Stashed changes
     public static final PositionConfig BACK_CONE_MEDIUM =
-        new PositionConfig(22, 47.9, 3260, GamePiece.CONE);
+        new PositionConfig(22, 47.9, 701 + WRIST_OFFSET, GamePiece.CONE);
     public static final PositionConfig BACK_CUBE_TOP =
-        new PositionConfig(21, 51, 2360, GamePiece.CUBE);
+        new PositionConfig(21, 51, 2360 + WRIST_OFFSET, GamePiece.CUBE);
     public static final PositionConfig BACK_CUBE_MEDIUM =
-        new PositionConfig(0, 51.5, 2383, GamePiece.CUBE);
+        new PositionConfig(0, 51.5, 2383 + WRIST_OFFSET, GamePiece.CUBE);
     public static final PositionConfig FRONT_SINGLE_SUBSTATION =
-        new PositionConfig(0, -72, 2330, GamePiece.CONE);
+        new PositionConfig(0, -72, 2330 + WRIST_OFFSET, GamePiece.CONE);
     public static final PositionConfig FRONT_DOUBLE_SUBSTATION =
-        new PositionConfig(17, -33, 1270, GamePiece.CONE);
+        new PositionConfig(17, -33, 1270 + WRIST_OFFSET, GamePiece.CONE);
 
     public static final PositionConfig BACK_SINGLE_SUBSTATION =
-<<<<<<< Updated upstream
-        new PositionConfig(0, 70.5, -1266, GamePiece.CONE);
-=======
-        new PositionConfig(0, 80.5, 607 + WRIST_OFFSET, GamePiece.CONE);
->>>>>>> Stashed changes
+        new PositionConfig(0, 81, 750 + WRIST_OFFSET, GamePiece.CONE);
     public static final PositionConfig BACK_DOUBLE_SUBSTATION =
-        new PositionConfig(18, 27, 2570, GamePiece.CONE);
+        new PositionConfig(18, 27, 2570 + WRIST_OFFSET, GamePiece.CONE);
   }
 }

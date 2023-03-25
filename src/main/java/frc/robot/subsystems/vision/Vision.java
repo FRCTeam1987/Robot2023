@@ -17,19 +17,31 @@ public class Vision extends SubsystemBase {
   private final VisionIO visionIO;
   private final VisionIOInputs io = new VisionIOInputs();
   private final SwerveDrivePoseEstimator poseEstimator;
-  private boolean LOGGING;
+  private boolean LOGGING = false;
 
   public Vision(VisionIO visionIO) {
     this.visionIO = visionIO;
     this.poseEstimator = RobotOdometry.getInstance().getPoseEstimator();
     Constants.TAB_VISION.add(
-        "Enable PoseUpdates",
+        "Enable Estimator",
+        new InstantCommand(
+            () -> {
+              this.LOGGING = true;
+            }));
+    Constants.TAB_MATCH.add(
+        "Enable Estimator",
         new InstantCommand(
             () -> {
               this.LOGGING = true;
             }));
     Constants.TAB_VISION.add(
-        "Disable PoseUpdates",
+        "Disable Estimator",
+        new InstantCommand(
+            () -> {
+              this.LOGGING = false;
+            }));
+    Constants.TAB_MATCH.add(
+        "Disable Estimator",
         new InstantCommand(
             () -> {
               this.LOGGING = false;
