@@ -40,8 +40,8 @@ import frc.robot.configs.TestRobotConfig;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.claw.Claw;
-import frc.robot.subsystems.claw.ClawIOSparkMAX;
 import frc.robot.subsystems.claw.Claw.GamePiece;
+import frc.robot.subsystems.claw.ClawIOSparkMAX;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOLimelight;
@@ -416,7 +416,8 @@ public class RobotContainer {
         .onTrue(
             new SequentialCommandGroup(
                 new EjectGamePiece(claw).withTimeout(0.25), new GoHome(arm, wrist)));
-    new Trigger(coDriverController::getLeftBumper).onTrue(new EjectGamePiece(claw).withTimeout(.25));
+    new Trigger(coDriverController::getLeftBumper)
+        .onTrue(new EjectGamePiece(claw).withTimeout(.25));
     new Trigger(driverController::getStartButton).onTrue(new GoHome(arm, wrist));
     new Trigger(driverController::getBButton)
         .onTrue(
@@ -580,8 +581,8 @@ public class RobotContainer {
     ThreePieceNoCableEventMap.put(
         "Score Cube Medium",
         new AutoScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_MEDIUM)
-        .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)))
-        .andThen(new GoHome(arm, wrist)));
+            .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)))
+            .andThen(new GoHome(arm, wrist)));
 
     autoChooser.addOption(
         "TwoPieceBalanceCable",
