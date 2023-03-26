@@ -40,8 +40,8 @@ import frc.robot.configs.TestRobotConfig;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.claw.Claw;
-import frc.robot.subsystems.claw.ClawIOSparkMAX;
 import frc.robot.subsystems.claw.Claw.GamePiece;
+import frc.robot.subsystems.claw.ClawIOSparkMAX;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOLimelight;
@@ -237,7 +237,8 @@ public class RobotContainer {
             drivetrain,
             driverController::getLeftY,
             driverController::getLeftX,
-            driverController::getRightX));
+            driverController::getRightX
+            ));
 
     configureButtonBindings();
     configureAutoCommands();
@@ -361,7 +362,6 @@ public class RobotContainer {
     // reset gyro to 0 degrees
     new Trigger(driverController::getBackButton)
         .onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
-
     // x-stance
 
     // Creates a new Trigger object for the `Right bumper` button that collects cones
@@ -413,11 +413,21 @@ public class RobotContainer {
     // oi.getRotateButton().onTrue(new InstantCommand(() -> arm.setArmAngle(45)));
     new Trigger(driverController::getRightBumper)
         .onTrue(new CollectSequence(arm, wrist, claw, () -> BACK_CUBE_FLOOR));
+    new Trigger(() -> (driverController.getRightTriggerAxis() > 0.1))
+        .whileTrue(
+            new TeleopSwerve(
+                drivetrain,
+                driverController::getLeftY,
+                driverController::getLeftX,
+                driverController::getRightX
+                ));
+
     new Trigger(driverController::getLeftBumper)
         .onTrue(
             new SequentialCommandGroup(
                 new EjectGamePiece(claw).withTimeout(0.25), new GoHome(arm, wrist)));
-    new Trigger(coDriverController::getLeftBumper).onTrue(new EjectGamePiece(claw).withTimeout(.25));
+    new Trigger(coDriverController::getLeftBumper)
+        .onTrue(new EjectGamePiece(claw).withTimeout(.25));
     new Trigger(driverController::getStartButton).onTrue(new GoHome(arm, wrist));
     new Trigger(driverController::getBButton)
         .onTrue(
@@ -580,27 +590,33 @@ public class RobotContainer {
     ThreePieceNoCableEventMap.putAll(TwoPieceNoCableEventMap);
     ThreePieceNoCableEventMap.put(
         "Collect Cube Long",
-        new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR_LONG) //TODO SHOULD START ROLLERS AS SOON AS IT GOES TO POSITION
+        new CollectSequence(
+                arm,
+                wrist,
+                claw,
+                () ->
+                    Constants.PositionConfigs
+                        .BACK_CUBE_FLOOR_LONG) // TODO SHOULD START ROLLERS AS SOON AS IT GOES TO
+            // POSITION
             .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)))
             .andThen(new GoHome(arm, wrist).withTimeout(2)));
-    
+
     ThreePieceNoCableEventMap.put(
         "Score Cube Medium",
         new AutoScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_MEDIUM)
-        .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)))
-        .andThen(new GoHome(arm, wrist)));
+            .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)))
+            .andThen(new GoHome(arm, wrist)));
     ThreePieceNoCableEventMap.put(
         "Score Cube Prep Medium", new SetArm(arm, () -> -49.5, () -> 5, () -> true));
 
     final HashMap<String, Command> ThreePieceBalanceEventMap = new HashMap<>();
     ThreePieceBalanceEventMap.putAll(ThreePieceNoCableEventMap);
     ThreePieceBalanceEventMap.put("Balance", new Balance(drivetrain));
-    
 
     autoChooser.addOption(
         "TwoPieceBalanceCable",
         new AutoScoreSequenceNoHome(
-                arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP)
+                arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO)
             .andThen(
                 AutoPathHelper.followPath(
                     drivetrain, "TwoPieceBalanceCable", TwoPieceNoCableEventMap)));
@@ -608,26 +624,33 @@ public class RobotContainer {
     autoChooser.addOption(
         "ThreePieceNoCable",
         new AutoScoreSequenceNoHome(
-                arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP)
+                arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO)
             .andThen(
                 AutoPathHelper.followPath(
                     drivetrain, "ThreePieceNoCable", ThreePieceNoCableEventMap)));
 
     autoChooser.addOption(
+        "ThreePieceCable",
+        new AutoScoreSequenceNoHome(
+                arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO)
+            .andThen(
+                AutoPathHelper.followPath(
+                    drivetrain, "ThreePieceCable", ThreePieceNoCableEventMap)));
+
+    autoChooser.addOption(
         "TwoPieceNoCable",
         new AutoScoreSequenceNoHome(
-                arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP)
+                arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO)
             .andThen(
                 AutoPathHelper.followPath(drivetrain, "TwoPieceNoCable", TwoPieceNoCableEventMap)));
 
     autoChooser.addOption(
-        "ThreePieceBalance", 
+        "ThreePieceBalance",
         new AutoScoreSequenceNoHome(
-            arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP)
-        .andThen(
-            AutoPathHelper.followPath(drivetrain, "ThreePieceBalance", ThreePieceBalanceEventMap)));
-             
-
+                arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO)
+            .andThen(
+                AutoPathHelper.followPath(
+                    drivetrain, "ThreePieceBalance", ThreePieceBalanceEventMap)));
 
     // autoChooser.addOption(
 

@@ -176,7 +176,7 @@ public class Drivetrain extends SubsystemBase {
    *
    * @return the rotation of the robot
    */
-  private Rotation2d getRotation() {
+  public Rotation2d getRotation() {
     if (gyroInputs.connected) {
       return Rotation2d.fromDegrees(gyroInputs.positionDeg + this.gyroOffset);
     } else {
