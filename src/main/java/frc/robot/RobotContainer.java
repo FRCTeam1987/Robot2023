@@ -35,6 +35,7 @@ import frc.robot.commands.arm.SyncedArm;
 import frc.robot.commands.auto.AutoPathHelper;
 import frc.robot.commands.auto.AutoScoreSequenceNoHome;
 import frc.robot.commands.auto.Balance;
+import frc.robot.commands.auto.PreBalance;
 import frc.robot.configs.CompRobotConfig;
 import frc.robot.configs.TestRobotConfig;
 import frc.robot.subsystems.arm.Arm;
@@ -237,7 +238,9 @@ public class RobotContainer {
             drivetrain,
             driverController::getLeftY,
             driverController::getLeftX,
-            driverController::getRightX
+            driverController::getRightX,
+            () -> 1,
+            driverController::getPOV
             ));
 
     configureButtonBindings();
@@ -262,7 +265,8 @@ public class RobotContainer {
     // ShuffleboardTab debugTab = Shuffleboard.getTab("Debug");
     // debugTab.add("Arm Length (inches)", arm.getArmLength()).withSize(2, 2).withPosition(0, 0);
     // debugTab.add("Arm Angle (Degrees)", arm.getArmAngle()).withSize(2, 2).withPosition(2, 0);
-    // debugTab.add("Wrist Rotation (Degrees)", wrist.getDegrees()).withSize(2, 2).withPosition(4,
+    TAB_MAIN.add("preBalance", new PreBalance(drivetrain).andThen(new Balance(drivetrain)));    
+// debugTab.add("Wrist Rotation (Degrees)", wrist.getDegrees()).withSize(2, 2).withPosition(4,
     TAB_MAIN.addString(
         "Height",
         () -> {
@@ -419,7 +423,9 @@ public class RobotContainer {
                 drivetrain,
                 driverController::getLeftY,
                 driverController::getLeftX,
-                driverController::getRightX
+                driverController::getRightX,
+                () -> 0.5,
+                driverController::getPOV
                 ));
 
     new Trigger(driverController::getLeftBumper)
@@ -586,6 +592,8 @@ public class RobotContainer {
     TwoPieceNoCableEventMap.put("Go Home 2", new GoHome(arm, wrist).withTimeout(2));
     TwoPieceNoCableEventMap.put("Auto Balance", new Balance(drivetrain));
 
+    //TODO Change this back from prebalance
+
     final HashMap<String, Command> ThreePieceNoCableEventMap = new HashMap<>();
     ThreePieceNoCableEventMap.putAll(TwoPieceNoCableEventMap);
     ThreePieceNoCableEventMap.put(
@@ -611,7 +619,7 @@ public class RobotContainer {
 
     final HashMap<String, Command> ThreePieceBalanceEventMap = new HashMap<>();
     ThreePieceBalanceEventMap.putAll(ThreePieceNoCableEventMap);
-    ThreePieceBalanceEventMap.put("Balance", new Balance(drivetrain));
+    ThreePieceBalanceEventMap.put("Balance", new PreBalance(drivetrain));
 
     autoChooser.addOption(
         "TwoPieceBalanceCable",
@@ -623,8 +631,9 @@ public class RobotContainer {
 
     autoChooser.addOption(
         "ThreePieceNoCable",
-        new AutoScoreSequenceNoHome(
-                arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO)
+        new InstantCommand(() -> claw.setCone(), claw)
+            .andThen(new AutoScoreSequenceNoHome(
+                arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
             .andThen(
                 AutoPathHelper.followPath(
                     drivetrain, "ThreePieceNoCable", ThreePieceNoCableEventMap)));

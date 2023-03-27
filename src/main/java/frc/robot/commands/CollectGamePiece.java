@@ -12,11 +12,11 @@ import frc.robot.subsystems.claw.Claw.GamePiece;
 public class CollectGamePiece extends CommandBase {
 
   private final Claw CLAW;
-  private final Debouncer DEBOUNCER;
+  private Debouncer DEBOUNCER;
   private boolean isCollected;
 
-  private static final double COLLECTION_TIME = 0.15;
-  private static final double CLAW_ROLLER_SPEED = -0.95;
+  private static final double COLLECTION_TIME = 0.16;
+  private static final double CLAW_ROLLER_SPEED = -0.75;
   private static final double MAXIMUM_CURRENT = 30;
   private final GamePiece piece;
 
@@ -28,11 +28,13 @@ public class CollectGamePiece extends CommandBase {
   }
 
   public boolean stopCondition() {
+    System.out.println("Current" + CLAW.getCurrent());
     return CLAW.getCurrent() > MAXIMUM_CURRENT;
   }
 
   @Override
   public void initialize() {
+    DEBOUNCER = new Debouncer(COLLECTION_TIME);
     isCollected = DEBOUNCER.calculate(stopCondition());
     CLAW.setRollerSpeed(CLAW_ROLLER_SPEED);
   }

@@ -35,7 +35,7 @@ public class CollectSequence extends SequentialCommandGroup {
                 () -> PositionConfig.get().armLength,
                 () -> false),
             new SetWristPositionSupplier(wrist, () -> PositionConfig.get().wristRotation),
-            new InstantCommand(() -> claw.setRollerSpeed(-1.0), claw)),
+            new InstantCommand(() -> claw.setRollerSpeed(-.5), claw)),
         new ConditionalCommand(
             new CollectGamePiece(claw, GamePiece.CUBE),
             new CollectGamePiece(claw, GamePiece.CONE),
