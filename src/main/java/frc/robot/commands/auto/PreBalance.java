@@ -19,6 +19,7 @@ public class PreBalance extends CommandBase {
 
   final Drivetrain drive;
   double maxGyroAngle = 0.0;
+  double startingPose = 0.0;
   /** Creates a new Balance. */
   public PreBalance(final Drivetrain drive) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -32,6 +33,7 @@ public class PreBalance extends CommandBase {
   public void initialize() {
     drive.drive(Math.copySign(0.75, drive.getPitch()), 0, 0, true);
     maxGyroAngle = Math.abs(drive.getPitch());
+    startingPose = drive.getPoseX();
   }
 
   @Override
@@ -52,7 +54,9 @@ public class PreBalance extends CommandBase {
   @Override
   public boolean isFinished() {
     System.out.println("Ran IsFinished" + (Util.isWithinTolerance(Math.abs(drive.getPitch()), 0, 2)));
-    // return Math.abs(drive.getPitch()) < maxGyroAngle;
-    return Util.isWithinTolerance(Math.abs(drive.getPitch()), 0, 2);
+    return 
+      Math.abs(drive.getPoseX() - startingPose) > 0.75 && Math.abs(drive.getPitch()) < maxGyroAngle -2;
+    
+    // return Util.isWithinTolerance(Math.abs(drive.getPitch()), 0, 1);
   }
 }

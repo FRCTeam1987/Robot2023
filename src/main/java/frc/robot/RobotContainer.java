@@ -280,14 +280,14 @@ public class RobotContainer {
     TAB_COMMANDS.add("Extend to 12in", new ExtendArm(arm, 12));
     TAB_COMMANDS.add("Rotate to 45deg", new RotateArm(arm, 45));
     TAB_COMMANDS.add("Flip Wrist to true", new FlipWrist(wrist, true));
-    TAB_COMMANDS.add(
-        "Auto Score Sequence",
-        new AutoScoreSequence(
-            arm, wrist, claw, () -> Constants.PositionConfigs.AUTO_FRONT_CONE_TOP));
-    TAB_COMMANDS.add(
-        "Auto",
-        new AutoScoreSequence(
-            arm, wrist, claw, () -> Constants.PositionConfigs.AUTO_FRONT_CONE_TOP));
+    // TAB_COMMANDS.add(
+    //     "Auto Score Sequence",
+    //     new AutoScoreSequence(
+    //         arm, wrist, claw, () -> Constants.PositionConfigs.AUTO_FRONT_CONE_TOP));
+    // TAB_COMMANDS.add(
+    //     "Auto",
+    //     new AutoScoreSequence(
+    //         arm, wrist, claw, () -> Constants.PositionConfigs.AUTO_FRONT_CONE_TOP));
     // TAB_ARM.add("Seq 45 pos", new SequentialCommandTest(arm, wrist, 16, 45, 3289));
     // TAB_ARM.add("Seq -45 pos", new SequentialCommandTest(arm, wrist, 16, -45, 3289));
     // armTab.add("Collect Back Cube", );
