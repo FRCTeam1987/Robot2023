@@ -2,17 +2,12 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.lib.team3061.RobotConfig;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.Util;
-
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
-
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -35,7 +30,7 @@ public class TeleopSwerve extends CommandBase {
   private double setPoint = 0.0;
 
   private int dpadTolerance = 20;
-  //private BooleanSupplier holdButton;
+  // private BooleanSupplier holdButton;
 
   private final Drivetrain drivetrain;
   private final DoubleSupplier translationXSupplier;
@@ -74,7 +69,7 @@ public class TeleopSwerve extends CommandBase {
 
     m_speedMultiplier = speedMultiplier;
     m_povDegree = povDegree;
-    //this.holdButton = holdButton;
+    // this.holdButton = holdButton;
     this.drivetrain = drivetrain;
     this.translationXSupplier = translationXSupplier;
     this.translationYSupplier = translationYSupplier;
@@ -85,7 +80,7 @@ public class TeleopSwerve extends CommandBase {
         new PIDController(
             0.01, 0.0,
             0.0); // TODO replace with real values from testing. These values come from team 3467.
-    
+
     controller.enableContinuousInput(-180, 180);
   }
 
@@ -105,15 +100,14 @@ public class TeleopSwerve extends CommandBase {
         translationYSlewRate.calculate(modifyAxis(-translationYSupplier.getAsDouble()));
     double rotationPercentage =
         rotationSlewRate.calculate(modifyAxis(-rotationSupplier.getAsDouble()));
-    
-    if (useDPad && !Util.isWithinTolerance(rotationSupplier.getAsDouble(), 0.0, 0.25))  {
+
+    if (useDPad && !Util.isWithinTolerance(rotationSupplier.getAsDouble(), 0.0, 0.25)) {
       useDPad = false;
       setPoint = 0.0;
       System.out.println("Stop using DPad.");
-    }
-    else if (m_povDegree.getAsInt() >= 0) {
+    } else if (m_povDegree.getAsInt() >= 0) {
       useDPad = true;
-      switch((int)m_povDegree.getAsInt()) {
+      switch ((int) m_povDegree.getAsInt()) {
         case 0:
           setPoint = 0.0;
           break;
@@ -189,4 +183,3 @@ public class TeleopSwerve extends CommandBase {
     }
   }
 }
-

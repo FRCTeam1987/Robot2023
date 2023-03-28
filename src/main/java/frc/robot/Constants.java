@@ -154,7 +154,8 @@ public final class Constants {
         new PositionConfig(35, -51, 506 + WRIST_OFFSET, GamePiece.CONE);
 
     // public static final PositionConfig AUTO_FRONT_CONE_TOP =
-    //     new PositionConfig(39, -47, 321 + WRIST_OFFSET, GamePiece.CONE); // -49 rotation, 656 wrist
+    //     new PositionConfig(39, -47, 321 + WRIST_OFFSET, GamePiece.CONE); // -49 rotation, 656
+    // wrist
     public static final PositionConfig FRONT_CUBE_MEDIUM =
         new PositionConfig(1, -47, 1016 + WRIST_OFFSET, GamePiece.CUBE);
     public static final PositionConfig FRONT_CUBE_TOP =

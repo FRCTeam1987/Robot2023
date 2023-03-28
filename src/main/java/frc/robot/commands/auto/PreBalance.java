@@ -4,11 +4,7 @@
 
 package frc.robot.commands.auto;
 
-import java.net.SocketImpl;
-
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.Util;
 
@@ -26,7 +22,6 @@ public class PreBalance extends CommandBase {
     // Configure additional PID options by calling `getController` here.
     this.drive = drive;
     addRequirements(this.drive);
-  
   }
 
   @Override
@@ -53,10 +48,11 @@ public class PreBalance extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    System.out.println("Ran IsFinished" + (Util.isWithinTolerance(Math.abs(drive.getPitch()), 0, 2)));
-    return 
-      Math.abs(drive.getPoseX() - startingPose) > 0.75 && Math.abs(drive.getPitch()) < maxGyroAngle -2;
-    
+    System.out.println(
+        "Ran IsFinished" + (Util.isWithinTolerance(Math.abs(drive.getPitch()), 0, 2)));
+    return Math.abs(drive.getPoseX() - startingPose) > 0.75
+        && Math.abs(drive.getPitch()) < maxGyroAngle - 2;
+
     // return Util.isWithinTolerance(Math.abs(drive.getPitch()), 0, 1);
   }
 }

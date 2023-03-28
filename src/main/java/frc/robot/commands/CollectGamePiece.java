@@ -46,7 +46,7 @@ public class CollectGamePiece extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    if(piece == GamePiece.CUBE) {
+    if (piece == GamePiece.CUBE) {
       CLAW.setRollerSpeed(DefaultClawRollersSpin.CLAW_ROLLER_SPEED);
     } else {
       CLAW.stopRollers();
