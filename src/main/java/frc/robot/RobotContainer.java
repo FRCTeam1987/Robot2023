@@ -567,7 +567,7 @@ public class RobotContainer {
     // TODO this auto does not fully work reliably
     autoChooser.addOption(
         "New Auto",
-        AutoPathHelper.followPath(drivetrain, "Some Auto", someEventMap)
+        AutoPathHelper.followPath(drivetrain, "Some Auto", someEventMap, 3.25, 2.5)
             .andThen(new Balance(drivetrain))
             .andThen(() -> drivetrain.setXStance(), drivetrain));
 
@@ -626,7 +626,7 @@ public class RobotContainer {
                 arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO)
             .andThen(
                 AutoPathHelper.followPath(
-                    drivetrain, "TwoPieceBalanceCable", TwoPieceNoCableEventMap)));
+                    drivetrain, "TwoPieceBalanceCable", TwoPieceNoCableEventMap, 3.25, 2.5)));
 
     autoChooser.addOption(
         "ThreePieceNoCable",
@@ -636,7 +636,7 @@ public class RobotContainer {
                     arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
             .andThen(
                 AutoPathHelper.followPath(
-                    drivetrain, "ThreePieceNoCable", ThreePieceNoCableEventMap)));
+                    drivetrain, "ThreePieceNoCable", ThreePieceNoCableEventMap, 3.25, 2.5)));
 
     autoChooser.addOption(
         "ThreePieceCable",
@@ -644,14 +644,15 @@ public class RobotContainer {
                 arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO)
             .andThen(
                 AutoPathHelper.followPath(
-                    drivetrain, "ThreePieceCable", ThreePieceNoCableEventMap)));
+                    drivetrain, "ThreePieceCable", ThreePieceNoCableEventMap, 3.75, 2.7)));
 
     autoChooser.addOption(
         "TwoPieceNoCable",
         new AutoScoreSequenceNoHome(
                 arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO)
             .andThen(
-                AutoPathHelper.followPath(drivetrain, "TwoPieceNoCable", TwoPieceNoCableEventMap)));
+                AutoPathHelper.followPath(
+                    drivetrain, "TwoPieceNoCable", TwoPieceNoCableEventMap, 3.25, 2.5)));
 
     autoChooser.addOption(
         "ThreePieceBalance",
@@ -659,10 +660,9 @@ public class RobotContainer {
                 arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO)
             .andThen(
                 AutoPathHelper.followPath(
-                    drivetrain, "ThreePieceBalance", ThreePieceBalanceEventMap))
+                    drivetrain, "ThreePieceBalance", ThreePieceBalanceEventMap, 3.75, 2.7))
             .andThen(new PreBalance(drivetrain))
-            .andThen(new Balance(drivetrain))
-            );
+            .andThen(new Balance(drivetrain)));
 
     // autoChooser.addOption(
 

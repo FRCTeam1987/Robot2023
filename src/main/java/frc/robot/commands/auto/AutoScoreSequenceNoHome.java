@@ -5,11 +5,9 @@
 package frc.robot.commands.auto;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants;
 import frc.robot.Constants.PositionConfig;
 import frc.robot.commands.EjectGamePiece;
 import frc.robot.commands.ScoreSequence;
-import frc.robot.commands.SetWristPositionSupplier;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.claw.Claw;
 import frc.robot.subsystems.wrist.Wrist;
@@ -29,7 +27,7 @@ public class AutoScoreSequenceNoHome extends SequentialCommandGroup {
         new ScoreSequence(arm, wrist, claw, positionConfigSupplier),
         new EjectGamePiece(claw).withTimeout(0.2)
         // new SetWristPositionSupplier(wrist, () -> 675 + Constants.WRIST_OFFSET)
-      );
+        );
 
     // new EjectGamePiece(claw).withTimeout(0.5),
     // new ParallelCommandGroup(
