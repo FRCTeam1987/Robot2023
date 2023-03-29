@@ -168,7 +168,7 @@
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
-      "velOverride": 1.0,
+      "velOverride": 1.2,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
@@ -212,13 +212,13 @@
       ]
     },
     {
-      "position": 0.15,
+      "position": 0.21400368430397743,
       "names": [
         "Collect Cube Long"
       ]
     },
     {
-      "position": 1.1731289950284085,
+      "position": 1.4,
       "names": [
         "Score Cube Prep Medium"
       ]
@@ -230,7 +230,7 @@
       ]
     },
     {
-      "position": 4.014723899147729,
+      "position": 4.5,
       "names": [
         "Score Cube Medium"
       ]

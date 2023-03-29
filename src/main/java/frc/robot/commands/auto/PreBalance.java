@@ -26,7 +26,7 @@ public class PreBalance extends CommandBase {
 
   @Override
   public void initialize() {
-    drive.drive(Math.copySign(0.75, drive.getPitch()), 0, 0, true);
+    drive.drive(Math.copySign(.8, drive.getPitch()), 0, 0, true);
     maxGyroAngle = Math.abs(drive.getPitch());
     startingPose = drive.getPoseX();
   }
@@ -50,7 +50,7 @@ public class PreBalance extends CommandBase {
   public boolean isFinished() {
     System.out.println(
         "Ran IsFinished" + (Util.isWithinTolerance(Math.abs(drive.getPitch()), 0, 2)));
-    return Math.abs(drive.getPoseX() - startingPose) > 0.75
+    return Math.abs(drive.getPoseX() - startingPose) > 0.5
         && Math.abs(drive.getPitch()) < maxGyroAngle - 2;
 
     // return Util.isWithinTolerance(Math.abs(drive.getPitch()), 0, 1);

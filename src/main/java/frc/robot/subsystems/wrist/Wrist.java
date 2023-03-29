@@ -64,6 +64,14 @@ public class Wrist extends SubsystemBase {
     return io.getDegrees();
   }
 
+  public void setPercent(final double percent) {
+    io.setPercent(percent);
+  }
+
+  public void configRelative(final int homeTicks) {
+    io.configRelative(homeTicks);
+  }
+
   public void periodic() {
     if (ADVANTAGE_KIT_ENABLED) {
       io.updateInputs(inputs);

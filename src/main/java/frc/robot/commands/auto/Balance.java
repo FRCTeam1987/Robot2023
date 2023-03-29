@@ -36,7 +36,7 @@ public class Balance extends PIDCommand {
     this.drive = drive;
     addRequirements(this.drive);
     this.getController().setSetpoint(0);
-    this.getController().setTolerance(5, 1);
+    this.getController().setTolerance(2, 1);
   }
 
   // Returns true when the command should end.

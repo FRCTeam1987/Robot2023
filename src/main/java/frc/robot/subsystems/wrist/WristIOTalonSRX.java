@@ -73,4 +73,15 @@ public class WristIOTalonSRX implements WristIO {
   public double getCurrentAmps() {
     return wristMotor.getStatorCurrent();
   }
+
+  @Override
+  public void configRelative(final int homeTicks) {
+    wristMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+    wristMotor.setSelectedSensorPosition(homeTicks);
+  }
+
+  @Override
+  public void setPercent(final double percent) {
+    wristMotor.set(ControlMode.PercentOutput, percent);
+  }
 }

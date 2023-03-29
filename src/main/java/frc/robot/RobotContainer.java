@@ -36,6 +36,7 @@ import frc.robot.commands.auto.AutoPathHelper;
 import frc.robot.commands.auto.AutoScoreSequenceNoHome;
 import frc.robot.commands.auto.Balance;
 import frc.robot.commands.auto.PreBalance;
+import frc.robot.commands.wrist.HomeWrist;
 import frc.robot.configs.CompRobotConfig;
 import frc.robot.configs.TestRobotConfig;
 import frc.robot.subsystems.arm.Arm;
@@ -582,7 +583,7 @@ public class RobotContainer {
             .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)))
             .andThen(new GoHome(arm, wrist).withTimeout(2)));
     TwoPieceNoCableEventMap.put(
-        "Score Cube Prep", new SetArm(arm, () -> -49.5, () -> 5, () -> true));
+        "Score Cube Prep", new SetArm(arm, () -> -49.5, () -> 1, () -> true));
     TwoPieceNoCableEventMap.put(
         "Score Cube",
         new AutoScoreSequence(
@@ -613,7 +614,7 @@ public class RobotContainer {
             .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)))
             .andThen(new GoHome(arm, wrist)));
     ThreePieceNoCableEventMap.put(
-        "Score Cube Prep Medium", new SetArm(arm, () -> -49.5, () -> 5, () -> true));
+        "Score Cube Prep Medium", new SetArm(arm, () -> -49.5, () -> 1, () -> true));
 
     final HashMap<String, Command> ThreePieceBalanceEventMap = new HashMap<>();
     ThreePieceBalanceEventMap.putAll(ThreePieceNoCableEventMap);
@@ -659,7 +660,9 @@ public class RobotContainer {
             .andThen(
                 AutoPathHelper.followPath(
                     drivetrain, "ThreePieceBalance", ThreePieceBalanceEventMap))
-            .andThen(new PreBalance(drivetrain)));
+            .andThen(new PreBalance(drivetrain))
+            .andThen(new Balance(drivetrain))
+            );
 
     // autoChooser.addOption(
 
@@ -707,6 +710,7 @@ public class RobotContainer {
             () -> PositionConfigs.BACK_CONE_FLOOR.armRotation,
             () -> PositionConfigs.BACK_CONE_FLOOR.armLength));
     TAB_MATCH.add(autoChooser);
+    TAB_MATCH.add("Re-Home Wrist", new HomeWrist(wrist));
   }
 
   /**
