@@ -18,6 +18,7 @@ public class CollectGamePiece extends CommandBase {
   private static final double COLLECTION_TIME = 0.1;
   private static final double CLAW_ROLLER_SPEED = -0.9;
   private static final double MAXIMUM_CURRENT = 20;
+
   private final GamePiece piece;
 
   public CollectGamePiece(final Claw claw, GamePiece piece) {
