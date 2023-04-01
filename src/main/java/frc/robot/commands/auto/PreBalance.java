@@ -24,25 +24,31 @@ public class PreBalance extends CommandBase {
     addRequirements(this.drive);
   }
 
+  private boolean hasDrivenDistance() {
+    return Math.abs(drive.getPoseX() - startingPose) > .6;
+  }
+
   @Override
   public void initialize() {
-    drive.drive(Math.copySign(.8, drive.getPitch()), 0, 0, true);
-    maxGyroAngle = Math.abs(drive.getPitch());
+    drive.drive(Math.copySign(.75, drive.getPitch()), 0, 0, true);
+    // maxGyroAngle = Math.abs(drive.getPitch());
     startingPose = drive.getPoseX();
   }
 
   @Override
   public void execute() {
-
-    maxGyroAngle = Math.max(Math.abs(drive.getPitch()), maxGyroAngle);
-    System.out.println("MaxAngle " + maxGyroAngle);
-    System.out.println(drive.getPitch());
+    if (hasDrivenDistance()) {
+      maxGyroAngle = Math.max(Math.abs(drive.getPitch()), maxGyroAngle);
+    }
+    // System.out.println("MaxAngle " + maxGyroAngle);
+    // System.out.println(drive.getPitch());
   }
 
   @Override
   public void end(boolean interrupted) {
     System.out.println("Ended");
     drive.stop();
+    drive.enableXstance();
   }
 
   // Returns true when the command should end.
@@ -50,8 +56,7 @@ public class PreBalance extends CommandBase {
   public boolean isFinished() {
     System.out.println(
         "Ran IsFinished" + (Util.isWithinTolerance(Math.abs(drive.getPitch()), 0, 2)));
-    return Math.abs(drive.getPoseX() - startingPose) > 0.5
-        && Math.abs(drive.getPitch()) < maxGyroAngle - 2;
+    return hasDrivenDistance() && Math.abs(drive.getPitch()) < maxGyroAngle - 1;
 
     // return Util.isWithinTolerance(Math.abs(drive.getPitch()), 0, 1);
   }

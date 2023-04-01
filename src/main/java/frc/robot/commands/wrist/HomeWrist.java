@@ -8,10 +8,10 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.wrist.Wrist;
 
-public class HomeWrist extends CommandBase {
+public class HomeWrist extends CommandBase { // README not tested do not use
 
-  private static final double HOMING_PERCENT = -0.2;
-  private static final double HOMING_CURRENT_THRESHOLD = 20;
+  private static final double HOMING_PERCENT = -0.4;
+  private static final double HOMING_CURRENT_THRESHOLD = 5;
 
   private final Wrist wrist;
 
@@ -36,11 +36,13 @@ public class HomeWrist extends CommandBase {
   public void end(boolean interrupted) {
     wrist.configRelative(Constants.WRIST_OFFSET);
     wrist.setPercent(0);
+    wrist.setPosition(Wrist.ANGLE_STRAIGHT);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return wrist.getCurrent() > HOMING_CURRENT_THRESHOLD;
+    System.out.println("Wrist Current:" + wrist.getCurrent());
+    return Math.abs(wrist.getCurrent()) > HOMING_CURRENT_THRESHOLD;
   }
 }

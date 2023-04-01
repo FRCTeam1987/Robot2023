@@ -76,10 +76,7 @@ public class TeleopSwerve extends CommandBase {
     this.rotationSupplier = rotationSupplier;
 
     addRequirements(drivetrain);
-    controller =
-        new PIDController(
-            0.01, 0.0,
-            0.0); // TODO replace with real values from testing. These values come from team 3467.
+    controller = new PIDController(0.01, 0.0, 0.0);
 
     controller.enableContinuousInput(-180, 180);
   }

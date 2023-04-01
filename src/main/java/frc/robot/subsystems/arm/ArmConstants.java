@@ -8,7 +8,7 @@ public final class ArmConstants {
   public static final double ROTATION_KI = 0.0;
   public static final double ROTATION_KD = 1.5;
   public static final double ROTATION_KF = -0.04392085;
-  public static final double ROTATION_MOTION_ACCELERATION = 1350;
+  public static final double ROTATION_MOTION_ACCELERATION = 1750;
   public static final double ROTATION_CRUISE_VELOCITY = 2250;
   public static final double ROTATION_ALLOWABLE_ERROR = 0.0; // 20
 
@@ -19,7 +19,7 @@ public final class ArmConstants {
   public static final double EXTENSION_CRUISE_VELOCITY = 65000;
   public static final double EXTENSION_ALLOWABLE_ERROR = 500.0;
 
-  public static final double CANCODER_OFFSET = -264.375; // -321.475
+  public static final double CANCODER_OFFSET = -323.037; // -321.475, beginning gkc arm: -26.375
   public static final double MAX_ROTATION_ANGLE = 115;
   public static final double FULL_ROTATION_DEGREES = 360.0;
   public static final double FULL_ROTATION_TICKS = 4096.0;

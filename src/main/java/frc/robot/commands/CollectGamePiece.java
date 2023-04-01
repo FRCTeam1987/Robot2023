@@ -28,7 +28,7 @@ public class CollectGamePiece extends CommandBase {
   }
 
   public boolean stopCondition() {
-    System.out.println("Current" + CLAW.getCurrent());
+    // System.out.println("Current" + CLAW.getCurrent());
     return CLAW.getCurrent() > MAXIMUM_CURRENT;
   }
 
