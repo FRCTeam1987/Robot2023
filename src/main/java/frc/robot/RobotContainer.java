@@ -242,7 +242,6 @@ public class RobotContainer {
             () -> 1,
             driverController::getPOV));
 
-
     configureButtonBindings();
     configureAutoCommands();
     configureSmartDashboard();
@@ -445,7 +444,6 @@ public class RobotContainer {
                 () -> 0.5,
                 driverController::getPOV));
 
-
     new Trigger(driverController::getLeftBumper)
         .onTrue(
             new SequentialCommandGroup(
@@ -618,7 +616,6 @@ public class RobotContainer {
             .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)))
             .andThen(new GoHome(arm, wrist).withTimeout(2)));
     TwoPieceNoCableEventMap.put(
-
         "Score Cube Prep", new SetArm(arm, () -> -49.5, () -> 1, () -> true));
 
     TwoPieceNoCableEventMap.put(
@@ -652,7 +649,6 @@ public class RobotContainer {
     final HashMap<String, Command> ThreePieceBalanceEventMap = new HashMap<>();
     ThreePieceBalanceEventMap.putAll(ThreePieceNoCableEventMap);
     ThreePieceBalanceEventMap.put("Balance", new PreBalance(drivetrain));
-
 
     autoChooser.addOption(
         "TwoPieceBalanceCable",
@@ -748,7 +744,6 @@ public class RobotContainer {
     TAB_MATCH.add(autoChooser);
 
     TAB_MATCH.add("Re-Home Wrist", new HomeWrist(wrist));
-
   }
 
   /**
