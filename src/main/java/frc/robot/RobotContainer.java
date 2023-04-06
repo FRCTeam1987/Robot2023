@@ -427,6 +427,8 @@ public class RobotContainer {
     //               wrist.setRotation(false);
     //             }));
     // oi.getRotateButton().onTrue(new InstantCommand(() -> arm.setArmAngle(45)));
+    new Trigger(coDriverController::getRightBumper)
+        .whileTrue(new InstantCommand(() -> claw.setRollerSpeed(-.6)));
     new Trigger(driverController::getRightBumper)
         .onTrue(new CollectSequence(arm, wrist, claw, () -> BACK_CUBE_FLOOR));
     new Trigger(() -> (driverController.getRightTriggerAxis() > 0.1))
@@ -623,6 +625,7 @@ public class RobotContainer {
 
     final HashMap<String, Command> ThreePieceNoCableEventMap = new HashMap<>();
     ThreePieceNoCableEventMap.putAll(TwoPieceNoCableEventMap);
+
     ThreePieceNoCableEventMap.put(
         "Collect Cube Long",
         new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR_LONG)
@@ -656,9 +659,12 @@ public class RobotContainer {
             .andThen(
                 new AutoScoreSequenceNoHome(
                     arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
+            .andThen(new GoHome(arm, wrist))
             .andThen(
                 AutoPathHelper.followPath(
-                    drivetrain, "ThreePieceNoCable", ThreePieceNoCableEventMap, 3.25, 2.5)));
+                    drivetrain, "ThreePieceNoCable", ThreePieceNoCableEventMap, 3.25, 2.7))
+            .andThen(new EjectGamePiece(claw).withTimeout(0.3))
+            .andThen(new GoHome(arm, wrist)));
 
     autoChooser.addOption(
         "ThreePieceCable",

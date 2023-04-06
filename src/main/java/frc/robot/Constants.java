@@ -32,7 +32,7 @@ public final class Constants {
 
   // FIXME: If Limelight is used, specify the pipeline for detecting AprilTags
   public static final int LIMELIGHT_PIPELINE = 0;
-  public static final int WRIST_OFFSET = 480; // -217 // 606 //Arm 1 gkc: 565
+  public static final int WRIST_OFFSET = 505; // Arm 1 gkc: 565
   public static final double AUTO_DRIVE_P_CONTROLLER = 6.0;
   public static final double AUTO_DRIVE_I_CONTROLLER = 0.0;
   public static final double AUTO_DRIVE_D_CONTROLLER = 0.0;
@@ -130,7 +130,7 @@ public final class Constants {
     public static final PositionConfig TEST_NEG =
         new PositionConfig(Arm.HOME_EXTENSION, -45, 1692 + WRIST_OFFSET, GamePiece.CONE);
     public static final PositionConfig FRONT_CUBE_FLOOR =
-        new PositionConfig(6, -107.9, 1790 + WRIST_OFFSET, GamePiece.CUBE);
+        new PositionConfig(6, -106, 1360 + WRIST_OFFSET, GamePiece.CUBE);
     public static final PositionConfig FRONT_CONE_FLOOR =
         new PositionConfig(Arm.HOME_EXTENSION, -102.4, 2072 + WRIST_OFFSET, GamePiece.CONE);
     public static final PositionConfig FRONT_CONE_FLOOR_TIPPED =
@@ -151,7 +151,7 @@ public final class Constants {
     public static final PositionConfig FRONT_CONE_TOP =
         new PositionConfig(37, -50, 606 + WRIST_OFFSET, GamePiece.CONE);
     public static final PositionConfig FRONT_CONE_TOP_AUTO =
-        new PositionConfig(36, -51, 506 + WRIST_OFFSET, GamePiece.CONE);
+        new PositionConfig(36, -49.5, 506 + WRIST_OFFSET, GamePiece.CONE);
 
     // public static final PositionConfig AUTO_FRONT_CONE_TOP =
     //     new PositionConfig(39, -47, 321 + WRIST_OFFSET, GamePiece.CONE); // -49 rotation, 656
