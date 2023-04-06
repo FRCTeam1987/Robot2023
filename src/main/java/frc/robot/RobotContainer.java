@@ -242,6 +242,7 @@ public class RobotContainer {
             () -> 1,
             driverController::getPOV));
 
+
     configureButtonBindings();
     configureAutoCommands();
     configureSmartDashboard();
@@ -300,6 +301,7 @@ public class RobotContainer {
     //     "Auto",
     //     new AutoScoreSequence(
     //         arm, wrist, claw, () -> Constants.PositionConfigs.AUTO_FRONT_CONE_TOP));
+
     // TAB_ARM.add("Seq 45 pos", new SequentialCommandTest(arm, wrist, 16, 45, 3289));
     // TAB_ARM.add("Seq -45 pos", new SequentialCommandTest(arm, wrist, 16, -45, 3289));
     // armTab.add("Collect Back Cube", );
@@ -378,6 +380,7 @@ public class RobotContainer {
     // reset gyro to 0 degrees
     new Trigger(driverController::getBackButton)
         .onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
+
     // x-stance
 
     // Creates a new Trigger object for the `Right bumper` button that collects cones
@@ -431,6 +434,7 @@ public class RobotContainer {
         .whileTrue(new InstantCommand(() -> claw.setRollerSpeed(-.6)));
     new Trigger(driverController::getRightBumper)
         .onTrue(new CollectSequence(arm, wrist, claw, () -> BACK_CUBE_FLOOR));
+
     new Trigger(() -> (driverController.getRightTriggerAxis() > 0.1))
         .whileTrue(
             new TeleopSwerve(
@@ -440,6 +444,7 @@ public class RobotContainer {
                 driverController::getRightX,
                 () -> 0.5,
                 driverController::getPOV));
+
 
     new Trigger(driverController::getLeftBumper)
         .onTrue(
@@ -613,7 +618,9 @@ public class RobotContainer {
             .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)))
             .andThen(new GoHome(arm, wrist).withTimeout(2)));
     TwoPieceNoCableEventMap.put(
+
         "Score Cube Prep", new SetArm(arm, () -> -49.5, () -> 1, () -> true));
+
     TwoPieceNoCableEventMap.put(
         "Score Cube",
         new AutoScoreSequence(
@@ -638,12 +645,14 @@ public class RobotContainer {
         new AutoScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_MEDIUM)
             // .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)))
             .andThen(new GoHome(arm, wrist)));
+
     ThreePieceNoCableEventMap.put(
         "Score Cube Prep Medium", new SetArm(arm, () -> -49.5, () -> 1, () -> true));
 
     final HashMap<String, Command> ThreePieceBalanceEventMap = new HashMap<>();
     ThreePieceBalanceEventMap.putAll(ThreePieceNoCableEventMap);
     ThreePieceBalanceEventMap.put("Balance", new PreBalance(drivetrain));
+
 
     autoChooser.addOption(
         "TwoPieceBalanceCable",
@@ -737,7 +746,9 @@ public class RobotContainer {
             () -> PositionConfigs.BACK_CONE_FLOOR.armRotation,
             () -> PositionConfigs.BACK_CONE_FLOOR.armLength));
     TAB_MATCH.add(autoChooser);
+
     TAB_MATCH.add("Re-Home Wrist", new HomeWrist(wrist));
+
   }
 
   /**
