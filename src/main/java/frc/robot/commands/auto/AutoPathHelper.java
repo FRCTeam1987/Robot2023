@@ -23,7 +23,11 @@ public class AutoPathHelper {
   // }
 
   public static Command followPath(
-      final Drivetrain drive, final String pathName, final HashMap<String, Command> eventMap) {
+      final Drivetrain drive,
+      final String pathName,
+      final HashMap<String, Command> eventMap,
+      double maxVelocity,
+      double maxAcceleration) {
     SwerveAutoBuilder autoBuilder =
         new SwerveAutoBuilder(
             drive::getPose,
@@ -38,6 +42,6 @@ public class AutoPathHelper {
             true,
             drive);
     return autoBuilder.fullAuto(
-        PathPlanner.loadPathGroup(pathName, new PathConstraints(3.25, 2.5)));
+        PathPlanner.loadPathGroup(pathName, new PathConstraints(maxVelocity, maxAcceleration)));
   }
 }

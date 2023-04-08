@@ -10,7 +10,7 @@ import frc.robot.subsystems.claw.Claw.GamePiece;
 
 public class EjectGamePiece extends CommandBase {
 
-  private static final double CLAW_ROLLER_SPEED = 0.75;
+  private static final double CLAW_ROLLER_SPEED = 0.6;
 
   private final Claw claw;
 
@@ -23,9 +23,12 @@ public class EjectGamePiece extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    claw.setRollerSpeed(0);
     GamePiece piece = claw.getGamePiece();
-    claw.setRollerSpeed(CLAW_ROLLER_SPEED);
+    if (piece == GamePiece.CUBE) {
+      claw.setRollerSpeed(CLAW_ROLLER_SPEED);
+    } else {
+      claw.setRollerSpeed(0.75);
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.

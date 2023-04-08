@@ -31,9 +31,10 @@ public class Vision extends SubsystemBase {
     Constants.TAB_MATCH.add(
         "Enable Estimator",
         new InstantCommand(
-            () -> {
-              this.LOGGING = true;
-            }));
+                () -> {
+                  this.LOGGING = true;
+                })
+            .ignoringDisable(true));
     Constants.TAB_VISION.add(
         "Disable Estimator",
         new InstantCommand(
@@ -43,9 +44,10 @@ public class Vision extends SubsystemBase {
     Constants.TAB_MATCH.add(
         "Disable Estimator",
         new InstantCommand(
-            () -> {
-              this.LOGGING = false;
-            }));
+                () -> {
+                  this.LOGGING = false;
+                })
+            .ignoringDisable(true));
   }
 
   @Override

@@ -19,7 +19,7 @@ public class Balance extends PIDCommand {
   public Balance(final Drivetrain drive) {
     super(
         // The controller that the command will use
-        new PIDController(0.2, 0, 0),
+        new PIDController(0.2, 0, 0), // TODO HEARTLAND 0.2, 0 ,0 STAGE 025, 0, 0
         // This should return the measurement
         drive::getPitch,
         // This should return the setpoint (can also be a constant)
@@ -36,7 +36,7 @@ public class Balance extends PIDCommand {
     this.drive = drive;
     addRequirements(this.drive);
     this.getController().setSetpoint(0);
-    this.getController().setTolerance(5, 1);
+    this.getController().setTolerance(2, 1);
   }
 
   // Returns true when the command should end.

@@ -1,10 +1,13 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.lib.team3061.RobotConfig;
 import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.util.Util;
 import java.util.function.DoubleSupplier;
+import java.util.function.IntSupplier;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -20,6 +23,15 @@ import org.littletonrobotics.junction.Logger;
  */
 public class TeleopSwerve extends CommandBase {
 
+  private PIDController controller;
+  private IntSupplier m_povDegree;
+  private DoubleSupplier m_speedMultiplier;
+  private boolean useDPad = false;
+  private double setPoint = 0.0;
+
+  private int dpadTolerance = 20;
+  // private BooleanSupplier holdButton;
+
   private final Drivetrain drivetrain;
   private final DoubleSupplier translationXSupplier;
   private final DoubleSupplier translationYSupplier;
@@ -30,7 +42,7 @@ public class TeleopSwerve extends CommandBase {
   private final SlewRateLimiter translationYSlewRate = new SlewRateLimiter(2.5);
   private final SlewRateLimiter rotationSlewRate = new SlewRateLimiter(2);
 
-  public static final double DEADBAND = 0.1;
+  public static final double DEADBAND = 0.05;
 
   private final double maxVelocityMetersPerSecond = RobotConfig.getInstance().getRobotMaxVelocity();
   private final double maxAngularVelocityRadiansPerSecond =
@@ -51,18 +63,32 @@ public class TeleopSwerve extends CommandBase {
       Drivetrain drivetrain,
       DoubleSupplier translationXSupplier,
       DoubleSupplier translationYSupplier,
-      DoubleSupplier rotationSupplier) {
+      DoubleSupplier rotationSupplier,
+      DoubleSupplier speedMultiplier,
+      IntSupplier povDegree) {
+
+    m_speedMultiplier = speedMultiplier;
+    m_povDegree = povDegree;
+    // this.holdButton = holdButton;
     this.drivetrain = drivetrain;
     this.translationXSupplier = translationXSupplier;
     this.translationYSupplier = translationYSupplier;
     this.rotationSupplier = rotationSupplier;
 
     addRequirements(drivetrain);
+    controller = new PIDController(0.01, 0.0, 0.0);
+
+    controller.enableContinuousInput(-180, 180);
+  }
+
+  @Override
+  public void initialize() {
+    useDPad = false;
+    setPoint = 0.0;
   }
 
   @Override
   public void execute() {
-
     // invert the controller input and apply the deadband and squaring to make the robot more
     // responsive to small changes in the controller
     double xPercentage =
@@ -72,8 +98,40 @@ public class TeleopSwerve extends CommandBase {
     double rotationPercentage =
         rotationSlewRate.calculate(modifyAxis(-rotationSupplier.getAsDouble()));
 
-    double xVelocity = xPercentage * maxVelocityMetersPerSecond;
-    double yVelocity = yPercentage * maxVelocityMetersPerSecond;
+    if (useDPad && !Util.isWithinTolerance(rotationSupplier.getAsDouble(), 0.0, 0.25)) {
+      useDPad = false;
+      setPoint = 0.0;
+      System.out.println("Stop using DPad.");
+    } else if (m_povDegree.getAsInt() >= 0) {
+      useDPad = true;
+      switch ((int) m_povDegree.getAsInt()) {
+        case 0:
+          setPoint = 0.0;
+          break;
+        case 90:
+          setPoint = -90;
+          break;
+        case 180:
+          setPoint = 180;
+          break;
+        case 270:
+          setPoint = 90;
+          break;
+      }
+    }
+    if (useDPad) {
+      controller.setSetpoint(setPoint);
+      rotationPercentage =
+          controller.calculate(
+              drivetrain.getPose().getRotation().getDegrees(), controller.getSetpoint());
+      // SmartDashboard.putNumber("rotationPercentage", rotationPercentage);
+      // SmartDas}hboard.putNumber("driverController setpoint", driverController.getSetpoint());
+    }
+    // double rotationPercentage =
+    //     rotationSlewRate.calculate(modifyAxis(-rotationSupplier.getAsDouble()));
+
+    double xVelocity = xPercentage * maxVelocityMetersPerSecond * m_speedMultiplier.getAsDouble();
+    double yVelocity = yPercentage * maxVelocityMetersPerSecond * m_speedMultiplier.getAsDouble();
     double rotationalVelocity = rotationPercentage * maxAngularVelocityRadiansPerSecond;
 
     Logger.getInstance().recordOutput("ActiveCommands/TeleopSwerve", true);

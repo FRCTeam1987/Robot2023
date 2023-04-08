@@ -23,4 +23,8 @@ public interface WristIO {
   double getDegrees();
 
   double getCurrentAmps();
+
+  void setPercent(final double percent);
+
+  void configRelative(final int homeTicks);
 }
