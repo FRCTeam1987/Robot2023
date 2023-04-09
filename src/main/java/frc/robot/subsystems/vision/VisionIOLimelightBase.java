@@ -9,6 +9,7 @@ public class VisionIOLimelightBase {
   public final String limelightName;
   private final DoubleArraySubscriber botPoseSubscriber;
   private final StringSubscriber jsonSubscriber;
+  private final DoubleSubscriber targetAreaSubscriber;
 
   public VisionIOLimelightBase(String limelightName) {
     this.limelightName = limelightName;
@@ -22,6 +23,7 @@ public class VisionIOLimelightBase {
         .withPosition(0, VisionIOLimelight.row++);
     botPoseSubscriber = inst.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
     jsonSubscriber = inst.getStringTopic("json").subscribe("[]");
+    targetAreaSubscriber = inst.getDoubleTopic("ta").subscribe(0.0);
   }
 
   public String getRawJson() {
@@ -35,6 +37,10 @@ public class VisionIOLimelightBase {
    */
   public int getVisibleTagCount() {
     return (int) jsonSubscriber.get().codePoints().filter(ch -> ch == 'm').count();
+  }
+
+  public double getTargetArea() {
+    return targetAreaSubscriber.get();
   }
 
   public double[] getBotPose() {

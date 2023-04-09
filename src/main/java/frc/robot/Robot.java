@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.lib.team6328.util.Alert;
 import frc.lib.team6328.util.Alert.AlertType;
-import frc.robot.util.BatteryTracker;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -48,7 +47,7 @@ public class Robot extends LoggedRobot {
 
       // Set a metadata value
       logger.recordMetadata("RuntimeType", getRuntimeType().toString());
-      logger.recordMetadata("BatteryName", BatteryTracker.scanBattery(10.0));
+      // logger.recordMetadata("BatteryName", BatteryTracker.scanBattery(10.0));
       logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
       logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
       logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
@@ -182,6 +181,6 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void teleopExit() {
-    robotContainer.enableXstance();
+    // robotContainer.enableXstance();
   }
 }

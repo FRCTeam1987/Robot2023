@@ -8,8 +8,8 @@ public final class ArmConstants {
   public static final double ROTATION_KI = 0.0;
   public static final double ROTATION_KD = 1.5;
   public static final double ROTATION_KF = -0.04392085;
-  public static final double ROTATION_MOTION_ACCELERATION = 1750;
-  public static final double ROTATION_CRUISE_VELOCITY = 2250;
+  public static final double ROTATION_MOTION_ACCELERATION = 2250;
+  public static final double ROTATION_CRUISE_VELOCITY = 2750;
   public static final double ROTATION_ALLOWABLE_ERROR = 0.0; // 20
 
   public static final double EXTENSION_KP = 1.6;

@@ -8,6 +8,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RuntimeType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -16,6 +18,7 @@ import frc.lib.team6328.util.Alert;
 import frc.lib.team6328.util.Alert.AlertType;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.claw.Claw.GamePiece;
+import java.util.List;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -27,12 +30,12 @@ import frc.robot.subsystems.claw.Claw.GamePiece;
  */
 public final class Constants {
 
-  public static final boolean ADVANTAGE_KIT_ENABLED = false;
+  public static final boolean ADVANTAGE_KIT_ENABLED = true;
   public static final boolean TUNING_MODE = false;
 
   // FIXME: If Limelight is used, specify the pipeline for detecting AprilTags
   public static final int LIMELIGHT_PIPELINE = 0;
-  public static final int WRIST_OFFSET = 505; // Arm 1 gkc: 565
+  public static final int WRIST_OFFSET = 475; // Arm 1 gkc: 565
   public static final double AUTO_DRIVE_P_CONTROLLER = 6.0;
   public static final double AUTO_DRIVE_I_CONTROLLER = 0.0;
   public static final double AUTO_DRIVE_D_CONTROLLER = 0.0;
@@ -130,7 +133,10 @@ public final class Constants {
     public static final PositionConfig TEST_NEG =
         new PositionConfig(Arm.HOME_EXTENSION, -45, 1692 + WRIST_OFFSET, GamePiece.CONE);
     public static final PositionConfig FRONT_CUBE_FLOOR =
-        new PositionConfig(6, -106, 1360 + WRIST_OFFSET, GamePiece.CUBE);
+        new PositionConfig(6, -110, 1360 + WRIST_OFFSET, GamePiece.CUBE);
+    public static final PositionConfig AUTO_ALMOST_FLOOR_CUBE =
+        new PositionConfig(Arm.HOME_EXTENSION, -80, 1550 + WRIST_OFFSET, GamePiece.CUBE);
+
     public static final PositionConfig FRONT_CONE_FLOOR =
         new PositionConfig(Arm.HOME_EXTENSION, -102.4, 2072 + WRIST_OFFSET, GamePiece.CONE);
     public static final PositionConfig FRONT_CONE_FLOOR_TIPPED =
@@ -141,9 +147,9 @@ public final class Constants {
         new PositionConfig(27, 88, 2076 + WRIST_OFFSET, GamePiece.CUBE);
 
     public static final PositionConfig BACK_CUBE_FLOOR =
-        new PositionConfig(Arm.HOME_EXTENSION, 100.0, 1550 + WRIST_OFFSET, GamePiece.CUBE);
+        new PositionConfig(Arm.HOME_EXTENSION, 102.0, 1550 + WRIST_OFFSET, GamePiece.CUBE);
     public static final PositionConfig BACK_CONE_FLOOR =
-        new PositionConfig(Arm.HOME_EXTENSION, 90.9, 1805 + WRIST_OFFSET, GamePiece.CONE);
+        new PositionConfig(Arm.HOME_EXTENSION, 92.3, 1705 + WRIST_OFFSET, GamePiece.CONE);
     public static final PositionConfig BACK_CONE_FLOOR_TIPPED =
         new PositionConfig(Arm.HOME_EXTENSION, 108, 1347 + WRIST_OFFSET, GamePiece.CONE);
     public static final PositionConfig FRONT_CONE_MEDIUM =
@@ -183,5 +189,12 @@ public final class Constants {
         new PositionConfig(18, 25, 3129 + WRIST_OFFSET, GamePiece.CONE);
     public static final PositionConfig FRONT_DOUBLE_SUBSTATION =
         new PositionConfig(13, -30, 544 + WRIST_OFFSET, GamePiece.CONE);
+  }
+
+  public static class OnTheFly {
+    public static final Pose2d BABY_BIRD = new Pose2d(13.6, 7.25, Rotation2d.fromDegrees(90));
+    public static final double GRID_X = 1.9;
+    public static final List<Double> CONE_NODES_Y = List.of(0.51, 1.625, 2.19, 3.305, 3.865, 4.98);
+    public static final double NODE_Y_TOLERANCE = 0.25;
   }
 }

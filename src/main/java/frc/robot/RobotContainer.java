@@ -11,6 +11,9 @@ import static frc.robot.subsystems.wrist.Wrist.ANGLE_STRAIGHT;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.FollowPathWithEvents;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -35,6 +38,7 @@ import frc.robot.commands.arm.SyncedArm;
 import frc.robot.commands.auto.AutoPathHelper;
 import frc.robot.commands.auto.AutoScoreSequenceNoHome;
 import frc.robot.commands.auto.Balance;
+import frc.robot.commands.auto.DriveToPose;
 import frc.robot.commands.auto.PreBalance;
 import frc.robot.commands.wrist.HomeWrist;
 import frc.robot.configs.CompRobotConfig;
@@ -50,6 +54,7 @@ import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIOTalonSRX;
 import frc.robot.util.BatteryTracker;
+import frc.robot.util.Util;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -168,7 +173,10 @@ public class RobotContainer {
             claw = new Claw(new ClawIOSparkMAX(config.getClawMotorID()));
             claw.setDefaultCommand(new DefaultClawRollersSpin(claw));
             // temp
-            vision = new Vision(new VisionIOLimelight("limelight-fl", "limelight-fr"));
+            // vision =
+            //     new Vision(
+            //         new VisionIOLimelight(
+            //             "limelight-fl", "limelight-fr", "limelight-bl", "limelight-br"));
             arm =
                 new Arm(
                     new ArmIOTalonFX(
@@ -240,7 +248,8 @@ public class RobotContainer {
             driverController::getLeftX,
             driverController::getRightX,
             () -> 1,
-            driverController::getPOV));
+            driverController::getPOV,
+            driverController::getLeftStickButtonPressed));
 
     configureButtonBindings();
     configureAutoCommands();
@@ -367,6 +376,34 @@ public class RobotContainer {
     TAB_MAIN.add("Angle 45, Length 36", new SetArm(arm, () -> 45, () -> 36, () -> false));
     TAB_MAIN.add("Set Home", new GoHome(arm, wrist));
     TAB_MAIN.add("Balance", new Balance(drivetrain));
+    TAB_MAIN.add(
+        "Closest Cone",
+        new DriveToPose(
+            drivetrain,
+            () -> {
+              final Pose2d currentPose = drivetrain.getPose();
+              if (currentPose.getX() > 2.5) {
+                DriverStation.reportWarning("X too far away, not auto driving to cone node", false);
+                return drivetrain.getPose();
+              }
+              final double currentY = currentPose.getY();
+              try {
+                final double closestNodeY =
+                    Constants.OnTheFly.CONE_NODES_Y.stream()
+                        .filter(
+                            (Double y) ->
+                                Util.isWithinTolerance(
+                                    currentY, y, Constants.OnTheFly.NODE_Y_TOLERANCE))
+                        .findFirst()
+                        .get();
+                return new Pose2d(
+                    Constants.OnTheFly.GRID_X, closestNodeY, Rotation2d.fromDegrees(180));
+              } catch (Exception e) {
+                DriverStation.reportWarning(
+                    "Not close enough, not auto driving to cone node", false);
+                return drivetrain.getPose();
+              }
+            }));
   }
 
   public boolean shouldScore() {
@@ -432,7 +469,7 @@ public class RobotContainer {
     new Trigger(coDriverController::getRightBumper)
         .whileTrue(new InstantCommand(() -> claw.setRollerSpeed(-.6)));
     new Trigger(driverController::getRightBumper)
-        .onTrue(new CollectSequence(arm, wrist, claw, () -> BACK_CUBE_FLOOR));
+        .onTrue(new CollectSequence(arm, wrist, claw, () -> BACK_CUBE_FLOOR, driverController));
 
     new Trigger(() -> (driverController.getRightTriggerAxis() > 0.1))
         .whileTrue(
@@ -442,7 +479,8 @@ public class RobotContainer {
                 driverController::getLeftX,
                 driverController::getRightX,
                 () -> 0.5,
-                driverController::getPOV));
+                driverController::getPOV,
+                driverController::getLeftStickButtonPressed));
 
     new Trigger(driverController::getLeftBumper)
         .onTrue(
@@ -455,9 +493,17 @@ public class RobotContainer {
         .onTrue(
             new ConditionalCommand(
                 new CollectSequence(
-                    arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_DOUBLE_SUBSTATION),
+                    arm,
+                    wrist,
+                    claw,
+                    () -> Constants.PositionConfigs.FRONT_DOUBLE_SUBSTATION,
+                    driverController),
                 new CollectSequence(
-                    arm, wrist, claw, () -> Constants.PositionConfigs.BACK_SINGLE_SUBSTATION),
+                    arm,
+                    wrist,
+                    claw,
+                    () -> Constants.PositionConfigs.BACK_SINGLE_SUBSTATION,
+                    driverController),
                 () -> doubleSubstation == true));
 
     // new SequentialCommandGroup(
@@ -513,11 +559,20 @@ public class RobotContainer {
 
     new Trigger(driverController::getYButton)
         .onTrue(
-            new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CONE_FLOOR));
+            new CollectSequence(
+                arm,
+                wrist,
+                claw,
+                () -> Constants.PositionConfigs.BACK_CONE_FLOOR,
+                driverController));
     new Trigger(driverController::getXButton)
         .onTrue(
             new CollectSequence(
-                arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CONE_FLOOR_TIPPED));
+                arm,
+                wrist,
+                claw,
+                () -> Constants.PositionConfigs.BACK_CONE_FLOOR_TIPPED,
+                driverController));
 
     // driver
 
@@ -644,6 +699,12 @@ public class RobotContainer {
             .andThen(new GoHome(arm, wrist)));
 
     ThreePieceNoCableEventMap.put(
+        "Score Cube Almost Low",
+        new AutoScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.AUTO_ALMOST_FLOOR_CUBE)
+            // .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)))
+            .andThen(new GoHome(arm, wrist)));
+
+    ThreePieceNoCableEventMap.put(
         "Score Cube Prep Medium", new SetArm(arm, () -> -49.5, () -> 1, () -> true));
 
     final HashMap<String, Command> ThreePieceBalanceEventMap = new HashMap<>();
@@ -678,6 +739,17 @@ public class RobotContainer {
             .andThen(
                 AutoPathHelper.followPath(
                     drivetrain, "ThreePieceCable", ThreePieceNoCableEventMap, 3.75, 2.7)));
+
+    autoChooser.addOption(
+        "Barker3Piece",
+        new AutoScoreSequenceNoHome(
+                arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO)
+                // .andThen(new GoHome(arm, wrist))
+            .andThen(
+                AutoPathHelper.followPath(
+                    drivetrain, "Barker3Piece", ThreePieceNoCableEventMap, 3.25, 3.0))
+            .andThen(new GoHome(arm, wrist))
+    );
 
     autoChooser.addOption(
         "TwoPieceBalanceNoCable",

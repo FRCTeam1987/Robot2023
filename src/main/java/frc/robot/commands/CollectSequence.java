@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -27,6 +28,15 @@ public class CollectSequence extends SequentialCommandGroup {
       final Wrist wrist,
       final Claw claw,
       final Supplier<PositionConfig> PositionConfig) {
+    addCommands(new CollectSequence(arm, wrist, claw, PositionConfig, null));
+  }
+
+  public CollectSequence(
+      final Arm arm,
+      final Wrist wrist,
+      final Claw claw,
+      final Supplier<PositionConfig> PositionConfig,
+      XboxController controller) {
     addCommands(
         new ParallelCommandGroup(
             new SetArm(
@@ -37,8 +47,8 @@ public class CollectSequence extends SequentialCommandGroup {
             new SetWristPositionSupplier(wrist, () -> PositionConfig.get().wristRotation),
             new InstantCommand(() -> claw.setRollerSpeed(-.5), claw)),
         new ConditionalCommand(
-            new CollectGamePiece(claw, GamePiece.CUBE),
-            new CollectGamePiece(claw, GamePiece.CONE),
+            new CollectGamePiece(claw, GamePiece.CUBE, controller),
+            new CollectGamePiece(claw, GamePiece.CONE, controller),
             () -> PositionConfig.get().gamePiece == GamePiece.CUBE),
         new ParallelCommandGroup(
             new SetArm(arm, () -> Arm.HOME_ROTATION, () -> Arm.HOME_EXTENSION, () -> true),
