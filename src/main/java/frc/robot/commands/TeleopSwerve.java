@@ -115,14 +115,15 @@ public class TeleopSwerve extends CommandBase {
       System.out.println("Stop using Y Lock.");
     } else if (m_shouldYLock.getAsBoolean() && drivetrain.getPoseX() < 2.5) {
       try {
-        m_ySetPoint =
-            Constants.OnTheFly.CONE_NODES_Y.stream()
-                .filter(
-                    (Double y) ->
-                        Util.isWithinTolerance(
-                            drivetrain.getPoseY(), y, Constants.OnTheFly.NODE_Y_TOLERANCE))
-                .findFirst()
-                .get();
+        m_ySetPoint = drivetrain.getPose().nearest(Constants.OnTheFly.CONE_NODES_POSE).getY();
+        // m_ySetPoint =
+        //     Constants.OnTheFly.CONE_NODES_Y.stream()
+        //         .filter(
+        //             (Double y) ->
+        //                 Util.isWithinTolerance(
+        //                     drivetrain.getPoseY(), y, Constants.OnTheFly.NODE_Y_TOLERANCE))
+        //         .findFirst()
+        //         .get();
         useYLock = true;
       } catch (NoSuchElementException e) {
         useYLock = false;

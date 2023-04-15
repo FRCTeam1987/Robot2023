@@ -136,9 +136,13 @@ public class Drivetrain extends SubsystemBase {
     TAB_MAIN.addBoolean("X-Stance On?", this::isXstance);
     TAB_MAIN.addBoolean("Field-Relative Enabled?", () -> this.isFieldRelative);
     TAB_MAIN.add("Reset Gyro", new InstantCommand(this::zeroGyroscope));
+    TAB_MAIN.addNumber("Average Velocity", this::getCharacterizationVelocity);
+
 
     if (DEBUGGING) {
+
       ShuffleboardTab tab = Shuffleboard.getTab(SUBSYSTEM_NAME);
+      tab.add("PoseEstimatorV", RobotOdometry.getInstance().getPoseEstimator().toString());
       tab.add(SUBSYSTEM_NAME, this);
       tab.addNumber("vx", this::getVelocityX);
       tab.addNumber("vy", this::getVelocityY);
@@ -618,5 +622,13 @@ public class Drivetrain extends SubsystemBase {
     NORMAL,
     X,
     CHARACTERIZATION
+  }
+
+  public double getAverageVelocity() {
+    double avg = 0.0;
+    for (SwerveModule swerveModule : swerveModules) {
+      avg += swerveModule.getState().speedMetersPerSecond;
+    }
+    return avg / (double) swerveModules.length;
   }
 }

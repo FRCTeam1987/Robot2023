@@ -34,7 +34,7 @@ public class HomeWrist extends CommandBase { // README not tested do not use
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    wrist.configRelative(Constants.WRIST_OFFSET);
+    wrist.configRelative(Constants.INSTALLED_ARM.getWristOffset());
     wrist.setPercent(0);
     wrist.setPosition(Wrist.ANGLE_STRAIGHT);
   }
@@ -42,7 +42,8 @@ public class HomeWrist extends CommandBase { // README not tested do not use
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    System.out.println("Wrist Current:" + wrist.getCurrent());
-    return Math.abs(wrist.getCurrent()) > HOMING_CURRENT_THRESHOLD;
+    // System.out.println("Wrist Current:" + wrist.getCurrent());
+    return wrist.hasHitHardstop();
+    // return Math.abs(wrist.getCurrent()) > HOMING_CURRENT_THRESHOLD;
   }
 }

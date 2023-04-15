@@ -28,6 +28,8 @@ import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIO;
 import frc.lib.team3061.swerve.SwerveModuleIOSim;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
+import frc.lib.team6328.util.Alert;
+import frc.lib.team6328.util.Alert.AlertType;
 import frc.robot.Constants.Mode;
 import frc.robot.Constants.PositionConfig;
 import frc.robot.Constants.PositionConfigs;
@@ -43,6 +45,7 @@ import frc.robot.commands.auto.PreBalance;
 import frc.robot.commands.wrist.HomeWrist;
 import frc.robot.configs.CompRobotConfig;
 import frc.robot.configs.TestRobotConfig;
+import frc.robot.subsystems.MultiLimelight;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.claw.Claw;
@@ -50,7 +53,6 @@ import frc.robot.subsystems.claw.Claw.GamePiece;
 import frc.robot.subsystems.claw.ClawIOSparkMAX;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIOTalonSRX;
 import frc.robot.util.BatteryTracker;
@@ -72,6 +74,7 @@ public class RobotContainer {
   private Wrist wrist;
   private Claw claw;
   private Height height = Height.HIGH;
+  private MultiLimelight multiLimelight;
 
   private boolean doubleSubstation = false;
 
@@ -93,7 +96,6 @@ public class RobotContainer {
   XboxController driverController =
       new XboxController(0); // Creates a CommandXboxController on port 1.
   XboxController coDriverController = new XboxController(1);
-
   /** Create the container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     /*
@@ -172,6 +174,13 @@ public class RobotContainer {
             wrist = new Wrist(new WristIOTalonSRX(config.getWristRotatorID()));
             claw = new Claw(new ClawIOSparkMAX(config.getClawMotorID()));
             claw.setDefaultCommand(new DefaultClawRollersSpin(claw));
+            multiLimelight = new MultiLimelight(
+                () -> (Math.abs(drivetrain.getCharacterizationVelocity()) < 0.25),
+                "limelight-fl",
+                "limelight-fr",
+                "limelight-bl",
+                "limelight-br"
+            );
             // temp
             // vision =
             //     new Vision(
@@ -295,6 +304,7 @@ public class RobotContainer {
           return this.getHeight().toString();
         });
     TAB_MATCH.addBoolean("Double Substation", () -> doubleSubstation);
+    TAB_MAIN.addBoolean("Switch Status", () -> wrist.hasHitHardstop());
     TAB_MATCH.add(
         "FRONT CUBE COLLECT",
         new CollectSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CUBE_FLOOR));
@@ -366,14 +376,14 @@ public class RobotContainer {
     TAB_MAIN.add(
         "Collect Sequence", new CollectSequence(arm, wrist, claw, collectionChooser::getSelected));
     TAB_MAIN.add("Eject Game Piece", new EjectGamePiece(claw).withTimeout(0.25));
-    TAB_MAIN.add("Angle 0, Length 1", new SetArm(arm, () -> 0, () -> 1, () -> true));
-    TAB_MAIN.add("Angle 25, Length 1", new SetArm(arm, () -> 25, () -> 1, () -> false));
-    TAB_MAIN.add("Angle 45, Length 1", new SetArm(arm, () -> 45, () -> 1, () -> false));
-    TAB_MAIN.add("Angle 65, Length 1", new SetArm(arm, () -> 65, () -> 1, () -> false));
-    TAB_MAIN.add("Angle 90, Length 1", new SetArm(arm, () -> 90, () -> 1, () -> false));
-    TAB_MAIN.add("Angle 45, Length 10", new SetArm(arm, () -> 45, () -> 10, () -> false));
-    TAB_MAIN.add("Angle 45, Length 20", new SetArm(arm, () -> 45, () -> 20, () -> false));
-    TAB_MAIN.add("Angle 45, Length 36", new SetArm(arm, () -> 45, () -> 36, () -> false));
+    // TAB_MAIN.add("Angle 0, Length 1", new SetArm(arm, () -> 0, () -> 1, () -> true));
+    // TAB_MAIN.add("Angle 25, Length 1", new SetArm(arm, () -> 25, () -> 1, () -> false));
+    // TAB_MAIN.add("Angle 45, Length 1", new SetArm(arm, () -> 45, () -> 1, () -> false));
+    // TAB_MAIN.add("Angle 65, Length 1", new SetArm(arm, () -> 65, () -> 1, () -> false));
+    // TAB_MAIN.add("Angle 90, Length 1", new SetArm(arm, () -> 90, () -> 1, () -> false));
+    // TAB_MAIN.add("Angle 45, Length 10", new SetArm(arm, () -> 45, () -> 10, () -> false));
+    // TAB_MAIN.add("Angle 45, Length 20", new SetArm(arm, () -> 45, () -> 20, () -> false));
+    // TAB_MAIN.add("Angle 45, Length 36", new SetArm(arm, () -> 45, () -> 36, () -> false));
     TAB_MAIN.add("Set Home", new GoHome(arm, wrist));
     TAB_MAIN.add("Balance", new Balance(drivetrain));
     TAB_MAIN.add(
@@ -467,7 +477,16 @@ public class RobotContainer {
     //             }));
     // oi.getRotateButton().onTrue(new InstantCommand(() -> arm.setArmAngle(45)));
     new Trigger(coDriverController::getRightBumper)
-        .whileTrue(new InstantCommand(() -> claw.setRollerSpeed(-.6)));
+        .onTrue(
+            new ConditionalCommand(
+                new RunClawForDuration(claw, 0.05),
+                new InstantCommand(
+                    () ->
+                        new Alert(
+                            "No Cone in claw, not running claw. CoDriver Right bumper pressed. ",
+                            AlertType.WARNING)),
+                () -> claw.isCone()));
+    // .whileTrue(new InstantCommand(() -> claw.setRollerSpeed(-.6)));
     new Trigger(driverController::getRightBumper)
         .onTrue(new CollectSequence(arm, wrist, claw, () -> BACK_CUBE_FLOOR, driverController));
 
@@ -700,7 +719,8 @@ public class RobotContainer {
 
     ThreePieceNoCableEventMap.put(
         "Score Cube Almost Low",
-        new AutoScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.AUTO_ALMOST_FLOOR_CUBE)
+        new AutoScoreSequence(
+                arm, wrist, claw, () -> Constants.PositionConfigs.AUTO_ALMOST_FLOOR_CUBE)
             // .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)))
             .andThen(new GoHome(arm, wrist)));
 
@@ -738,18 +758,17 @@ public class RobotContainer {
                 arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO)
             .andThen(
                 AutoPathHelper.followPath(
-                    drivetrain, "ThreePieceCable", ThreePieceNoCableEventMap, 3.75, 2.7)));
+                    drivetrain, "ThreePieceCable", ThreePieceNoCableEventMap, 3.5, 2.25)));
 
     autoChooser.addOption(
         "Barker3Piece",
         new AutoScoreSequenceNoHome(
                 arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO)
-                // .andThen(new GoHome(arm, wrist))
+            // .andThen(new GoHome(arm, wrist))
             .andThen(
                 AutoPathHelper.followPath(
-                    drivetrain, "Barker3Piece", ThreePieceNoCableEventMap, 3.25, 3.0))
-            .andThen(new GoHome(arm, wrist))
-    );
+                    drivetrain, "Barker3Piece", ThreePieceNoCableEventMap, 3.25, 2.5))
+            .andThen(new GoHome(arm, wrist)));
 
     autoChooser.addOption(
         "TwoPieceBalanceNoCable",
@@ -816,6 +835,8 @@ public class RobotContainer {
     TAB_MATCH.add(autoChooser);
 
     TAB_MATCH.add("Re-Home Wrist", new HomeWrist(wrist));
+    TAB_MATCH.addBoolean("Cone", () -> claw.isCone());
+    TAB_MATCH.addBoolean("Cube", () -> claw.isCube());
   }
 
   /**

@@ -72,7 +72,8 @@ public class Vision extends SubsystemBase {
           new Pose3d(
               new Translation3d(pose[0], pose[1], pose[2]),
               new Rotation3d(pose[3], pose[4], pose[5]));
-      // System.out.println(pose2.getX() + ", " + pose2.getY() + ", " + pose2.getRotation().getDegrees());
+      // System.out.println(pose2.getX() + ", " + pose2.getY() + ", " +
+      // pose2.getRotation().getDegrees());
       if (ADVANTAGE_KIT_ENABLED) {
         Logger.getInstance().recordOutput("Vision/RobotPose", pose3d);
       }

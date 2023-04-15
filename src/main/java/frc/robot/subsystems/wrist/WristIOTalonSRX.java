@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants;
 
 public class WristIOTalonSRX implements WristIO {
-  public static final int ANGLE_STRAIGHT = 1457 + Constants.WRIST_OFFSET;
+  public static final int ANGLE_STRAIGHT = 1457 + Constants.INSTALLED_ARM.getWristOffset();
 
   private final WPI_TalonSRX wristMotor;
 

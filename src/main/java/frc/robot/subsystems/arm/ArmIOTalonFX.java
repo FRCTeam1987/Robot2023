@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.lib.team6328.util.Alert;
+import frc.robot.Constants;
 import java.util.Map;
 
 public class ArmIOTalonFX implements ArmIO {
@@ -39,7 +40,8 @@ public class ArmIOTalonFX implements ArmIO {
     ROTATION_CANCODER = new CANCoder(ROTATION_CANCODER_ID, CAN_BUS_NAME);
     ROTATION_CANCODER.configFactoryDefault();
     ROTATION_CANCODER.configAllSettings(getCANCoderConfig());
-    ROTATION_CANCODER.setPosition(ROTATION_CANCODER.getAbsolutePosition() + CANCODER_OFFSET);
+    ROTATION_CANCODER.setPosition(
+        ROTATION_CANCODER.getAbsolutePosition() + Constants.INSTALLED_ARM.getCancoderOffset());
 
     ROTATION_LEADER_TALON = new TalonFX(ROTATION_LEADER_MOTOR_ID, CAN_BUS_NAME);
     ROTATION_LEADER_TALON.configFactoryDefault();

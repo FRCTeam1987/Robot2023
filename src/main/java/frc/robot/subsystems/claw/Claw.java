@@ -53,6 +53,10 @@ public class Claw extends SubsystemBase {
     return gamePiece == GamePiece.CONE;
   }
 
+  public boolean isCube() {
+    return gamePiece == GamePiece.CUBE;
+  }
+
   public void changeGamePiece() {
     if (Objects.requireNonNull(gamePiece) == GamePiece.CUBE) {
       setCone();

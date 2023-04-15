@@ -19,7 +19,6 @@ public final class ArmConstants {
   public static final double EXTENSION_CRUISE_VELOCITY = 65000;
   public static final double EXTENSION_ALLOWABLE_ERROR = 500.0;
 
-  public static final double CANCODER_OFFSET = -323.037; // -321.475, beginning gkc arm: -26.375
   public static final double MAX_ROTATION_ANGLE = 115;
   public static final double FULL_ROTATION_DEGREES = 360.0;
   public static final double FULL_ROTATION_TICKS = 4096.0;
@@ -44,7 +43,7 @@ public final class ArmConstants {
       (MAXIMUM_EXTENSION_LENGTH_INCHES - MINIMUM_EXTENSION_LENGTH_INCHES)
           / (MAXIMUM_POTENTIOMETER_VOLTAGE - MINIMUM_POTENTIOMETER_VOLTAGE);
 
-  public static final double ROTATION_VOLTAGE_COMPENSATION_SATURATION = 8;
+  public static final double ROTATION_VOLTAGE_COMPENSATION_SATURATION = 9;
   public static final double EXTENSION_VOLTAGE_COMPENSATION_SATURATION = 10;
   public static final double ROTATION_CLOSED_LOOP_RAMP_SECONDS = 0.3;
   public static final double EXTENSION_CLOSED_LOOP_RAMP_SECONDS = 0.1;
