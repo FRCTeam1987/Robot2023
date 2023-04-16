@@ -165,6 +165,7 @@ public class Robot extends LoggedRobot {
     }
     robotContainer.enableFieldRelative();
     robotContainer.disableXstance();
+    robotContainer.setShouldUseVision(false);
   }
 
   /** This method is invoked at the start of the test period. */

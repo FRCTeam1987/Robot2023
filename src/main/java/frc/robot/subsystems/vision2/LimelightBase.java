@@ -1,8 +1,5 @@
 package frc.robot.subsystems.vision2;
 
-import static frc.robot.Constants.LIMELIGHT_PIPELINE;
-import static frc.robot.Constants.TAB_VISION;
-
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -22,7 +19,7 @@ public class LimelightBase {
     // inst.getEntry("pipeline").setNumber(LIMELIGHT_PIPELINE);
     botPoseSubscriber = inst.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
     jsonSubscriber = inst.getStringTopic("json").subscribe("[]");
-    targetAreaSubscriber = inst.getDoubleTopic("ta").subscribe(0.0);  // > 2.5 is pretty stable
+    targetAreaSubscriber = inst.getDoubleTopic("ta").subscribe(0.0); // > 2.5 is pretty stable
   }
 
   public String getRawJson() {
@@ -30,10 +27,8 @@ public class LimelightBase {
   }
 
   /**
-   * This is cheeky and may break in the future. Each fiducial object in the json array contains
-one
-   * instance of the letter "m". We parse through the entire json string and grab the count of
-the
+   * This is cheeky and may break in the future. Each fiducial object in the json array contains one
+   * instance of the letter "m". We parse through the entire json string and grab the count of the
    * letter m.
    */
   public int getVisibleTagCount() {

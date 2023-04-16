@@ -157,24 +157,26 @@ public class NewSwerveDrivePoseEstimator {
 
   // TODO
   // This should be the only new thing to the pose estimator
-  // We might want to do this to ensure the pose we want to update with is close enough to the expected pose
-  // We could also use this to update the x,y and use the same rotation to avoid vision updating rotation, use the gyro
+  // We might want to do this to ensure the pose we want to update with is close enough to the
+  // expected pose
+  // We could also use this to update the x,y and use the same rotation to avoid vision updating
+  // rotation, use the gyro
   public Pose2d getEstimatedPose(final double timestampSeconds) {
     try {
-        if (m_poseBuffer.getInternalBuffer().lastKey() - kBufferDuration > timestampSeconds) {
-          return null;
-        }
-      } catch (NoSuchElementException ex) {
+      if (m_poseBuffer.getInternalBuffer().lastKey() - kBufferDuration > timestampSeconds) {
         return null;
       }
-  
-      // Step 1: Get the pose odometry measured at the moment the vision measurement was made.
-      var sample = m_poseBuffer.getSample(timestampSeconds);
-  
-      if (sample.isEmpty()) {
-        return null;
-      }
-      return sample.get().poseMeters;
+    } catch (NoSuchElementException ex) {
+      return null;
+    }
+
+    // Step 1: Get the pose odometry measured at the moment the vision measurement was made.
+    var sample = m_poseBuffer.getSample(timestampSeconds);
+
+    if (sample.isEmpty()) {
+      return null;
+    }
+    return sample.get().poseMeters;
   }
 
   /**

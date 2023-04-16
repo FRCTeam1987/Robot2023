@@ -16,7 +16,7 @@ public class Wrist extends SubsystemBase {
   private final DigitalInput wrist_switch = new DigitalInput(0);
 
   private final double currentThreshold = 10.0; // amps
-  public static final int ANGLE_STRAIGHT = 1457 + Constants.INSTALLED_ARM.getWristOffset(); // 2062
+  public static int ANGLE_STRAIGHT = 1457 + Constants.INSTALLED_ARM.getWristOffset(); // 2062
   public static final int ANGLE_FRONT_MAX = 795; // when telescope extended
   public static final int ANGLE_FRONT_PERPENDICULAR = 447;
   public static final int ANGLE_BACK_PERPENDICULAR = 2439;
@@ -44,6 +44,7 @@ public class Wrist extends SubsystemBase {
     TAB_WRIST
         .add("Set Front Half Perpendicular", new SetWristPosition(ANGLE_FRONT_HALF, this))
         .withSize(2, 1);
+    // TAB_WRIST.addBoolean("has hit limit switch", this::hasHitHardstop);
   }
 
   public double getCurrent() {

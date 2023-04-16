@@ -143,7 +143,7 @@ public class TeleopSwerve extends CommandBase {
       useDPad = true;
       switch ((int) m_povDegree.getAsInt()) {
         case 0:
-          setPoint = 0.0;
+          setPoint = 0;
           break;
         case 90:
           setPoint = -90;

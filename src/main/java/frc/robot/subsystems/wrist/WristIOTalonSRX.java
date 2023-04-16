@@ -1,11 +1,8 @@
 package frc.robot.subsystems.wrist;
 
-import static frc.robot.Constants.TAB_WRIST;
-
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants;
 
 public class WristIOTalonSRX implements WristIO {
@@ -34,15 +31,15 @@ public class WristIOTalonSRX implements WristIO {
     wristMotor.configContinuousCurrentLimit(15);
     wristMotor.configPeakCurrentLimit(30);
     // setPosition(ANGLE_STRAIGHT);
-    TAB_WRIST.add(
-        "reset",
-        new InstantCommand(
-            () -> {
-              wristMotor.set(TalonSRXControlMode.PercentOutput, 0.0);
-              wristMotor.setSelectedSensorPosition(0);
-            }));
-    TAB_WRIST.addNumber("Current Position", wristMotor::getSelectedSensorPosition);
-    TAB_WRIST.addNumber("Motor Voltage", wristMotor::getMotorOutputVoltage);
+    // TAB_WRIST.add(
+    //     "reset",
+    //     new InstantCommand(
+    //         () -> {
+    //           wristMotor.set(TalonSRXControlMode.PercentOutput, 0.0);
+    //           wristMotor.setSelectedSensorPosition(0);
+    //         }));
+    // TAB_WRIST.addNumber("Current Position", wristMotor::getSelectedSensorPosition);
+    // TAB_WRIST.addNumber("Motor Voltage", wristMotor::getMotorOutputVoltage);
   }
 
   @Override
@@ -76,7 +73,7 @@ public class WristIOTalonSRX implements WristIO {
 
   @Override
   public void configRelative(final int homeTicks) {
-    wristMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+    wristMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 10);
     wristMotor.setSelectedSensorPosition(homeTicks);
   }
 

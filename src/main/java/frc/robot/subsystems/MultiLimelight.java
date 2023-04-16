@@ -9,18 +9,16 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.Limelight.LimelightHelpers;
 import frc.lib.Limelight.LimelightHelpers.LimelightResults;
 import frc.lib.Limelight.PoseWithLatency;
 import frc.lib.team3061.util.RobotOdometry;
 import frc.robot.util.Util;
-
 import java.util.List;
-import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
 // TODO none of this is tested
@@ -44,8 +42,7 @@ public class MultiLimelight extends SubsystemBase {
   private final BooleanSupplier m_isPoseUpdateAllowed;
   private final List<String> m_limelights;
   private final SwerveDrivePoseEstimator m_poseEstimator;
-  public static final ShuffleboardTab TAB_MAIN = Shuffleboard.getTab("Main");
-
+  public static final ShuffleboardTab TAB_MAIN2 = Shuffleboard.getTab("Main2");
 
   /**
    * Creates a new MultiLimelight.
@@ -62,9 +59,11 @@ public class MultiLimelight extends SubsystemBase {
     m_alliance = Alliance.Invalid;
     m_poseEstimator = RobotOdometry.getInstance().getPoseEstimator();
 
-    TAB_MAIN.addNumber("estimated angle", () -> m_poseEstimator.getEstimatedPosition().getRotation().getDegrees());
-    TAB_MAIN.addNumber("estimated x", () -> m_poseEstimator.getEstimatedPosition().getX());
-    TAB_MAIN.addNumber("estimated y", () -> m_poseEstimator.getEstimatedPosition().getY());
+    //   TAB_MAIN2.addNumber(
+    //       "estimated angle", () ->
+    // m_poseEstimator.getEstimatedPosition().getRotation().getDegrees());
+    //   TAB_MAIN2.addNumber("estimated x", () -> m_poseEstimator.getEstimatedPosition().getX());
+    //   TAB_MAIN2.addNumber("estimated y", () -> m_poseEstimator.getEstimatedPosition().getY());
   }
 
   private void updatePose(final List<LimelightResults> llResults) {
@@ -108,29 +107,37 @@ public class MultiLimelight extends SubsystemBase {
     if (m_alliance == Alliance.Blue) {
       return llresult.targetingResults.getBotPose2d_wpiBlue();
     }
-    return llresult.targetingResults.getBotPose2d(); // TODO WHAT DO WE DO HERE?
+    return null; // TODO WHAT DO WE DO HERE?
   }
 
   public void updatePose(LimelightResults result) {
-    final Pose2d pose = m_alliance == Alliance.Red
-      ? result.targetingResults.getBotPose2d_wpiRed()
-      : result.targetingResults.getBotPose2d_wpiBlue();
-    final double latencySeconds = (
-      result.targetingResults.latency_capture
-      + result.targetingResults.latency_jsonParse
-      + result.targetingResults.latency_pipeline
-    ) / 1000.0;
-    final Pose2d currentPose = m_poseEstimator.getEstimatedPosition();
-    if (!Util.isWithinTolerance(pose.getX(), currentPose.getX(), 0.25)
-      || !Util.isWithinTolerance(pose.getY(), currentPose.getY(), 0.25)
-    ) {
-      DriverStation.reportWarning("Ignoring pose beyond range", false);
+    if (m_alliance == Alliance.Invalid) {
       return;
     }
-    m_poseEstimator.addVisionMeasurement(
-      pose,
-      Timer.getFPGATimestamp() - latencySeconds
-    );
+    final Pose2d currentPose = m_poseEstimator.getEstimatedPosition();
+    final Pose2d pose =
+        m_alliance == Alliance.Red
+            ? result.targetingResults.getBotPose2d_wpiRed()
+            : result.targetingResults.getBotPose2d_wpiBlue();
+    final double latencySeconds =
+        (result.targetingResults.latency_capture
+                + result.targetingResults.latency_jsonParse
+                + result.targetingResults.latency_pipeline)
+            / 1000.0;
+    // play with seeing how far we want to allow a pose update
+    if (!Util.isWithinTolerance(pose.getX(), currentPose.getX(), 1.0)
+        || !Util.isWithinTolerance(pose.getY(), currentPose.getY(), 1.0)) {
+      DriverStation.reportError("Ignoring pose beyond range", false); // UNCOMMENT ME FOR
+      // DEBUGGING
+      return;
+    }
+    if (pose.getX() > 4.75) {
+      DriverStation.reportWarning("Ignoring too far pose", false);
+      return;
+    }
+    m_poseEstimator.addVisionMeasurement(pose, Timer.getFPGATimestamp() - latencySeconds);
+    DriverStation.reportError("Updated pose! x: " + pose.getX() + ", y: " + pose.getY(), false);
+    // //UNCOMMENT ME FOR DEBUGGING
   }
 
   @Override
@@ -145,9 +152,21 @@ public class MultiLimelight extends SubsystemBase {
 
     for (String limelight : m_limelights) {
       LimelightResults result = null;
-      if (LimelightHelpers.getTA(limelight) > 2) {
+      // List<String> llsWithTag = List.of();
+      // final double tid = LimelightHelpers.getFiducialID(limelight);
+      // if (tid < 1 || tid > 8) {
+      //   DriverStation.reportWarning("Ignoring limelight: " + limelight + ", tid: " + tid, false);
+      //   break;
+      // }
+      final double ta = LimelightHelpers.getTA(limelight);
+      // if (ta <= 0.01) {
+      //   DriverStation.reportWarning("ignoring too small of target", false);
+      //   break;
+      // }
+      if (ta > 1.0) { // see how low this can go
         result = LimelightHelpers.getLatestResults(limelight);
         updatePose(result);
+        // llsWithTag.add(limelight);
         break;
       }
       if (result == null) {
@@ -206,5 +225,4 @@ public class MultiLimelight extends SubsystemBase {
 
     */
   }
-
 }
