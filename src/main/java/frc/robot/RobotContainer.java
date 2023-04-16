@@ -257,10 +257,10 @@ public class RobotContainer {
             driverController::getRightX,
             () -> 1,
             () -> {
-              if (claw.getGamePiece() == GamePiece.CONE && driverController.getAButtonPressed()) {
-                return 180;
-              } 
-              return driverController.getPOV();
+             // if (claw.getGamePiece() == GamePiece.CONE && driverController.getAButtonPressed()) {
+             //   return 180;
+             // } 
+             return driverController.getPOV();
             },
             driverController::getLeftStickButtonPressed));
 
@@ -509,17 +509,18 @@ public class RobotContainer {
                 driverController::getLeftX,
                 driverController::getRightX,
                 () -> 0.5,
-                () -> {
-                    if (claw.getGamePiece() == GamePiece.CONE && driverController.getAButtonPressed()) {
-                      return 180;
-                    }
-                    // } else if (driverController.getBButtonPressed() && doubleSubstation == false) {
-                    //   return 0;
-                    // } else if (driverController.getBButtonPressed() && doubleSubstation == true) {
-                    //   return 90;
-                    // }
-                    return driverController.getPOV();
-                  },
+                () -> { return driverController.getPOV();},
+                driverController::getLeftStickButtonPressed));
+                
+        new Trigger(() -> (driverController.getLeftTriggerAxis() > 0.1))
+        .whileTrue(
+            new TeleopSwerve(
+                drivetrain,
+                driverController::getLeftY,
+                driverController::getLeftX,
+                driverController::getRightX,
+                () -> 0.5,
+                () -> {return 180;},
                 driverController::getLeftStickButtonPressed));
 
     new Trigger(driverController::getLeftBumper)
@@ -762,8 +763,8 @@ public class RobotContainer {
 
     autoChooser.addOption(
         "ThreePieceNoCable",
-        new InstantCommand(() -> setShouldUseVision(true))
-            .andThen(new InstantCommand(() -> claw.setCone(), claw))
+        // new InstantCommand(() -> setShouldUseVision(true)).addThen
+            new InstantCommand(() -> claw.setCone(), claw)
             .andThen(
                 new AutoScoreSequenceNoHome(
                     arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))

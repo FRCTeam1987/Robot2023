@@ -163,7 +163,7 @@ public final class Constants {
             Arm.HOME_EXTENSION, 92.3, 1680 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
     public static final PositionConfig BACK_CONE_FLOOR_TIPPED =
         new PositionConfig(
-            Arm.HOME_EXTENSION, 108, 1347 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
+            Arm.HOME_EXTENSION, 102, 1603 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
     public static final PositionConfig FRONT_CONE_MEDIUM =
         new PositionConfig(20, -51, 536 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
     public static final PositionConfig FRONT_CONE_TOP =
