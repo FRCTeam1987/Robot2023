@@ -74,6 +74,8 @@ public class RobotContainer {
 
   private boolean doubleSubstation = false;
 
+  private boolean doubleSubstation = false;
+
   public enum Height {
     HIGH,
     MEDIUM,
@@ -185,6 +187,7 @@ public class RobotContainer {
             //     new Vision(
             //         new VisionIOLimelight(
             //             "limelight-fl", "limelight-fr", "limelight-bl", "limelight-br"));
+
             arm =
                 new Arm(
                     new ArmIOTalonFX(
@@ -263,6 +266,7 @@ public class RobotContainer {
              return driverController.getPOV();
             },
             driverController::getLeftStickButtonPressed));
+
 
     configureButtonBindings();
     configureAutoCommands();

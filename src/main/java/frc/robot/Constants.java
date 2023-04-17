@@ -143,7 +143,6 @@ public final class Constants {
     public static final PositionConfig AUTO_ALMOST_FLOOR_CUBE =
         new PositionConfig(
             Arm.HOME_EXTENSION, -80, 1550 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
-
     public static final PositionConfig FRONT_CONE_FLOOR =
         new PositionConfig(
             Arm.HOME_EXTENSION, -102.4, 2072 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
@@ -158,6 +157,7 @@ public final class Constants {
     public static final PositionConfig BACK_CUBE_FLOOR =
         new PositionConfig(
             Arm.HOME_EXTENSION, 102.0, 1550 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
+
     public static final PositionConfig BACK_CONE_FLOOR =
         new PositionConfig(
             Arm.HOME_EXTENSION, 92.3, 1680 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
