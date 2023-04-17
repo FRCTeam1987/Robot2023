@@ -11,8 +11,6 @@ import static frc.robot.subsystems.wrist.Wrist.ANGLE_STRAIGHT;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.FollowPathWithEvents;
-
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -71,8 +69,6 @@ public class RobotContainer {
   private Height height = Height.HIGH;
   private MultiLimelight multiLimelight;
   private boolean shouldUseVision = true;
-
-  private boolean doubleSubstation = false;
 
   private boolean doubleSubstation = false;
 
@@ -260,13 +256,13 @@ public class RobotContainer {
             driverController::getRightX,
             () -> 1,
             () -> {
-             // if (claw.getGamePiece() == GamePiece.CONE && driverController.getAButtonPressed()) {
-             //   return 180;
-             // } 
-             return driverController.getPOV();
+              // if (claw.getGamePiece() == GamePiece.CONE && driverController.getAButtonPressed())
+              // {
+              //   return 180;
+              // }
+              return driverController.getPOV();
             },
             driverController::getLeftStickButtonPressed));
-
 
     configureButtonBindings();
     configureAutoCommands();
@@ -513,10 +509,12 @@ public class RobotContainer {
                 driverController::getLeftX,
                 driverController::getRightX,
                 () -> 0.5,
-                () -> { return driverController.getPOV();},
+                () -> {
+                  return driverController.getPOV();
+                },
                 driverController::getLeftStickButtonPressed));
-                
-        new Trigger(() -> (driverController.getLeftTriggerAxis() > 0.1))
+
+    new Trigger(() -> (driverController.getLeftTriggerAxis() > 0.1))
         .whileTrue(
             new TeleopSwerve(
                 drivetrain,
@@ -524,7 +522,9 @@ public class RobotContainer {
                 driverController::getLeftX,
                 driverController::getRightX,
                 () -> 0.5,
-                () -> {return 180;},
+                () -> {
+                  return 180;
+                },
                 driverController::getLeftStickButtonPressed));
 
     new Trigger(driverController::getLeftBumper)
@@ -768,7 +768,7 @@ public class RobotContainer {
     autoChooser.addOption(
         "ThreePieceNoCable",
         // new InstantCommand(() -> setShouldUseVision(true)).addThen
-            new InstantCommand(() -> claw.setCone(), claw)
+        new InstantCommand(() -> claw.setCone(), claw)
             .andThen(
                 new AutoScoreSequenceNoHome(
                     arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))

@@ -78,6 +78,7 @@ public class Wrist extends SubsystemBase {
   public boolean hasHitHardstop() {
     return !wrist_switch.get();
   }
+
   public void periodic() {
     if (ADVANTAGE_KIT_ENABLED) {
       io.updateInputs(inputs);
