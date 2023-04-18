@@ -4,7 +4,7 @@
 
 package frc.robot.subsystems.drivetrain;
 
-import static frc.robot.Constants.TAB_MAIN;
+import static frc.robot.Constants.TAB_MAIN2;
 
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import edu.wpi.first.math.controller.PIDController;
@@ -132,13 +132,16 @@ public class Drivetrain extends SubsystemBase {
 
     this.poseEstimator = RobotOdometry.getInstance().getPoseEstimator();
 
-    TAB_MAIN.addNumber("Gyroscope Angle", () -> getRotation().getDegrees());
-    TAB_MAIN.addBoolean("X-Stance On?", this::isXstance);
-    TAB_MAIN.addBoolean("Field-Relative Enabled?", () -> this.isFieldRelative);
-    TAB_MAIN.add("Reset Gyro", new InstantCommand(this::zeroGyroscope));
+    TAB_MAIN2.addNumber("Gyroscope Angle", () -> getRotation().getDegrees()).withPosition(9, 3);
+    // TAB_MAIN2.addBoolean("X-Stance On?", this::isXstance);
+    // TAB_MAIN2.addBoolean("Field-Relative Enabled?", () -> this.isFieldRelative);
+    // TAB_MAIN2.add("Reset Gyro", new InstantCommand(this::zeroGyroscope));
+    // TAB_MAIN2.addNumber("Average Velocity", this::getCharacterizationVelocity);
 
     if (DEBUGGING) {
+
       ShuffleboardTab tab = Shuffleboard.getTab(SUBSYSTEM_NAME);
+      tab.add("PoseEstimatorV", RobotOdometry.getInstance().getPoseEstimator().toString());
       tab.add(SUBSYSTEM_NAME, this);
       tab.addNumber("vx", this::getVelocityX);
       tab.addNumber("vy", this::getVelocityY);
@@ -618,5 +621,13 @@ public class Drivetrain extends SubsystemBase {
     NORMAL,
     X,
     CHARACTERIZATION
+  }
+
+  public double getAverageVelocity() {
+    double avg = 0.0;
+    for (SwerveModule swerveModule : swerveModules) {
+      avg += swerveModule.getState().speedMetersPerSecond;
+    }
+    return avg / (double) swerveModules.length;
   }
 }

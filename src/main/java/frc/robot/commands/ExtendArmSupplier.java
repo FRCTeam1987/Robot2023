@@ -33,6 +33,6 @@ public class ExtendArmSupplier extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return Util.isWithinTolerance(arm.getArmLength(), inches.getAsInt(), 1);
+    return Util.isWithinTolerance(arm.getArmLength(), inches.getAsInt(), 2);
   }
 }

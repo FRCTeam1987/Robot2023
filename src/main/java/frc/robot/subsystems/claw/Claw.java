@@ -1,12 +1,8 @@
 package frc.robot.subsystems.claw;
 
 import static frc.robot.Constants.ADVANTAGE_KIT_ENABLED;
-import static frc.robot.Constants.TAB_CLAW;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.EjectGamePiece;
-import frc.robot.commands.StopClawRollers;
 import java.util.Objects;
 import org.littletonrobotics.junction.Logger;
 
@@ -28,13 +24,13 @@ public class Claw extends SubsystemBase {
   /** Creates a new Claw. */
   public Claw(ClawIO io) {
     this.io = io;
-    TAB_CLAW.add("Stop Claw", new StopClawRollers(this));
+    // TAB_CLAW.add("Stop Claw", new StopClawRollers(this));
     // TAB_CLAW.add("Collect Cube", new CollectGamePiece(this, GamePiece.CUBE));
     // TAB_CLAW.add("Collect Cone", new CollectGamePiece(this, GamePiece.CONE));
     // TAB_CLAW.add("Switch game piece", new InstantCommand(() ->
     // this.changeGamePiece()));
-    TAB_CLAW.add("Run Claw Plain", new InstantCommand(() -> setRollerSpeed(0.75), this));
-    TAB_CLAW.add("Eject Game Piece", new EjectGamePiece(this).withTimeout(0.25));
+    // TAB_CLAW.add("Run Claw Plain", new InstantCommand(() -> setRollerSpeed(0.75), this));
+    // TAB_CLAW.add("Eject Game Piece", new EjectGamePiece(this).withTimeout(0.25));
   }
 
   public void setCone() {
@@ -51,6 +47,10 @@ public class Claw extends SubsystemBase {
 
   public boolean isCone() {
     return gamePiece == GamePiece.CONE;
+  }
+
+  public boolean isCube() {
+    return gamePiece == GamePiece.CUBE;
   }
 
   public void changeGamePiece() {

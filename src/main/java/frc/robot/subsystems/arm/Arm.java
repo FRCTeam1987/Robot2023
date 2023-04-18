@@ -1,7 +1,7 @@
 package frc.robot.subsystems.arm;
 
 import static frc.robot.Constants.ADVANTAGE_KIT_ENABLED;
-import static frc.robot.Constants.TAB_ARM;
+import static frc.robot.Constants.TAB_MAIN2;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,8 +23,8 @@ public class Arm extends SubsystemBase {
 
   public Arm(ArmIO io) {
     this.io = io;
-    TAB_ARM.addNumber("Arm Angle", io::getArmAngle);
-    TAB_ARM.addNumber("Arm Length", io::getArmLength);
+    TAB_MAIN2.addNumber("Arm Angle", io::getArmAngle).withPosition(9, 1);
+    TAB_MAIN2.addNumber("Arm Length", io::getArmLength).withPosition(9, 2);
   }
 
   public void setArmAngle(double degrees) {

@@ -1,29 +1,25 @@
-package frc.robot.subsystems.vision;
-
-import static frc.robot.Constants.LIMELIGHT_PIPELINE;
-import static frc.robot.Constants.TAB_VISION;
+package frc.robot.subsystems.vision2;
 
 import edu.wpi.first.networktables.*;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
-public class VisionIOLimelightBase {
+public class LimelightBase {
   public final String limelightName;
   private final DoubleArraySubscriber botPoseSubscriber;
-  private final StringSubscriber jsonSubscriber;
+  private StringSubscriber jsonSubscriber;
   private final DoubleSubscriber targetAreaSubscriber;
+  private Alliance m_alliance;
 
-  public VisionIOLimelightBase(String limelightName) {
+  public LimelightBase(String limelightName) {
     this.limelightName = limelightName;
+    m_alliance = Alliance.Invalid;
 
-    String limelightNameShort = limelightName.replace("limelight-", "");
     NetworkTable inst = NetworkTableInstance.getDefault().getTable(limelightName);
-    // inst.getTable(limelightName).getEntry("ledMode").setNumber(1);
-    inst.getEntry("pipeline").setNumber(LIMELIGHT_PIPELINE);
-    TAB_VISION
-        .addNumber(limelightNameShort + " count", this::getVisibleTagCount)
-        .withPosition(0, VisionIOLimelight.row++);
+    // inst.getEntry("pipeline").setNumber(LIMELIGHT_PIPELINE);
     botPoseSubscriber = inst.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
     jsonSubscriber = inst.getStringTopic("json").subscribe("[]");
-    targetAreaSubscriber = inst.getDoubleTopic("ta").subscribe(0.0);
+    targetAreaSubscriber = inst.getDoubleTopic("ta").subscribe(0.0); // > 2.5 is pretty stable
   }
 
   public String getRawJson() {
@@ -44,6 +40,10 @@ public class VisionIOLimelightBase {
   }
 
   public double[] getBotPose() {
+    if (m_alliance == Alliance.Invalid) {
+      m_alliance = DriverStation.getAlliance();
+      return null;
+    }
     return botPoseSubscriber.get();
   }
 }

@@ -91,7 +91,7 @@ public class SetArm extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return isAngleOnTarget(2) && isLengthOnTarget(2);
+    return isAngleOnTarget(3.5) && isLengthOnTarget(2);
   }
 
   private boolean isAngleOnTarget(final double tolerance) {

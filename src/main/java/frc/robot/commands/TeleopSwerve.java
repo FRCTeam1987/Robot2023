@@ -2,10 +2,14 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.lib.team3061.RobotConfig;
+import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.Util;
+import java.util.NoSuchElementException;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
 import org.littletonrobotics.junction.Logger;
@@ -23,14 +27,15 @@ import org.littletonrobotics.junction.Logger;
  */
 public class TeleopSwerve extends CommandBase {
 
-  private PIDController controller;
+  private PIDController thetaController;
+  private PIDController yController;
   private IntSupplier m_povDegree;
+  private BooleanSupplier m_shouldYLock;
+  private double m_ySetPoint = 0.0;
   private DoubleSupplier m_speedMultiplier;
   private boolean useDPad = false;
+  private boolean useYLock = false;
   private double setPoint = 0.0;
-
-  private int dpadTolerance = 20;
-  // private BooleanSupplier holdButton;
 
   private final Drivetrain drivetrain;
   private final DoubleSupplier translationXSupplier;
@@ -44,8 +49,9 @@ public class TeleopSwerve extends CommandBase {
 
   public static final double DEADBAND = 0.05;
 
-  private final double maxVelocityMetersPerSecond = RobotConfig.getInstance().getRobotMaxVelocity();
-  private final double maxAngularVelocityRadiansPerSecond =
+  public static final double maxVelocityMetersPerSecond =
+      RobotConfig.getInstance().getRobotMaxVelocity();
+  public static final double maxAngularVelocityRadiansPerSecond =
       RobotConfig.getInstance().getRobotMaxAngularVelocity();
 
   /**
@@ -65,10 +71,13 @@ public class TeleopSwerve extends CommandBase {
       DoubleSupplier translationYSupplier,
       DoubleSupplier rotationSupplier,
       DoubleSupplier speedMultiplier,
-      IntSupplier povDegree) {
+      IntSupplier povDegree,
+      BooleanSupplier shouldYLock) {
 
     m_speedMultiplier = speedMultiplier;
     m_povDegree = povDegree;
+    m_shouldYLock = shouldYLock;
+
     // this.holdButton = holdButton;
     this.drivetrain = drivetrain;
     this.translationXSupplier = translationXSupplier;
@@ -76,15 +85,18 @@ public class TeleopSwerve extends CommandBase {
     this.rotationSupplier = rotationSupplier;
 
     addRequirements(drivetrain);
-    controller = new PIDController(0.01, 0.0, 0.0);
-
-    controller.enableContinuousInput(-180, 180);
+    thetaController = new PIDController(0.01, 0.0, 0.0);
+    thetaController.enableContinuousInput(-180, 180);
+    yController = new PIDController(0.7, 0.0, 0.0);
+    yController.enableContinuousInput(-1, 9);
   }
 
   @Override
   public void initialize() {
     useDPad = false;
+    useYLock = false;
     setPoint = 0.0;
+    m_ySetPoint = 0.0;
   }
 
   @Override
@@ -98,6 +110,32 @@ public class TeleopSwerve extends CommandBase {
     double rotationPercentage =
         rotationSlewRate.calculate(modifyAxis(-rotationSupplier.getAsDouble()));
 
+    if (useYLock && !Util.isWithinTolerance(translationYSupplier.getAsDouble(), 0.0, 0.5)) {
+      useYLock = false;
+      m_ySetPoint = 0.0;
+      System.out.println("Stop using Y Lock.");
+    } else if (m_shouldYLock.getAsBoolean() && drivetrain.getPoseX() < 2.5) {
+      try {
+        m_ySetPoint = drivetrain.getPose().nearest(Constants.OnTheFly.CONE_NODES_POSE).getY();
+        // m_ySetPoint =
+        //     Constants.OnTheFly.CONE_NODES_Y.stream()
+        //         .filter(
+        //             (Double y) ->
+        //                 Util.isWithinTolerance(
+        //                     drivetrain.getPoseY(), y, Constants.OnTheFly.NODE_Y_TOLERANCE))
+        //         .findFirst()
+        //         .get();
+        // useYLock = true;
+      } catch (NoSuchElementException e) {
+        useYLock = false;
+        DriverStation.reportWarning("Not close enough to cone node. Not locking.", false);
+      }
+    }
+    if (useYLock) {
+      yController.setSetpoint(m_ySetPoint);
+      yPercentage = yController.calculate(drivetrain.getPose().getY(), yController.getSetpoint());
+    }
+
     if (useDPad && !Util.isWithinTolerance(rotationSupplier.getAsDouble(), 0.0, 0.25)) {
       useDPad = false;
       setPoint = 0.0;
@@ -106,7 +144,7 @@ public class TeleopSwerve extends CommandBase {
       useDPad = true;
       switch ((int) m_povDegree.getAsInt()) {
         case 0:
-          setPoint = 0.0;
+          setPoint = 0;
           break;
         case 90:
           setPoint = -90;
@@ -120,10 +158,10 @@ public class TeleopSwerve extends CommandBase {
       }
     }
     if (useDPad) {
-      controller.setSetpoint(setPoint);
+      thetaController.setSetpoint(setPoint);
       rotationPercentage =
-          controller.calculate(
-              drivetrain.getPose().getRotation().getDegrees(), controller.getSetpoint());
+          thetaController.calculate(
+              drivetrain.getPose().getRotation().getDegrees(), thetaController.getSetpoint());
       // SmartDashboard.putNumber("rotationPercentage", rotationPercentage);
       // SmartDas}hboard.putNumber("driverController setpoint", driverController.getSetpoint());
     }

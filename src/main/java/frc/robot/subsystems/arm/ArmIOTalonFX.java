@@ -1,6 +1,6 @@
 package frc.robot.subsystems.arm;
 
-import static frc.robot.Constants.TAB_ARM;
+import static frc.robot.Constants.TAB_MAIN2;
 import static frc.robot.subsystems.arm.ArmConstants.*;
 
 import com.ctre.phoenix.motorcontrol.*;
@@ -8,14 +8,10 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderConfiguration;
-import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.lib.team6328.util.Alert;
-import java.util.Map;
+import frc.robot.Constants;
 
 public class ArmIOTalonFX implements ArmIO {
   private final TalonFX ROTATION_LEADER_TALON;
@@ -39,7 +35,8 @@ public class ArmIOTalonFX implements ArmIO {
     ROTATION_CANCODER = new CANCoder(ROTATION_CANCODER_ID, CAN_BUS_NAME);
     ROTATION_CANCODER.configFactoryDefault();
     ROTATION_CANCODER.configAllSettings(getCANCoderConfig());
-    ROTATION_CANCODER.setPosition(ROTATION_CANCODER.getAbsolutePosition() + CANCODER_OFFSET);
+    ROTATION_CANCODER.setPosition(
+        ROTATION_CANCODER.getAbsolutePosition() + Constants.INSTALLED_ARM.getCancoderOffset());
 
     ROTATION_LEADER_TALON = new TalonFX(ROTATION_LEADER_MOTOR_ID, CAN_BUS_NAME);
     ROTATION_LEADER_TALON.configFactoryDefault();
@@ -125,41 +122,48 @@ public class ArmIOTalonFX implements ArmIO {
 
   private void setShuffleboardLayout() {
 
-    ShuffleboardLayout rotList =
-        TAB_ARM.getLayout("Arm Rotation", BuiltInLayouts.kList).withSize(1, 5);
+    // ShuffleboardLayout rotList =
+    //     TAB_ARM.getLayout("Arm Rotation", BuiltInLayouts.kList).withSize(1, 5);
 
-    GenericEntry targetAngle =
-        rotList
-            .add("Target Angle", 0)
-            .withWidget(BuiltInWidgets.kNumberSlider)
-            .withProperties(Map.of("min", -MAX_ROTATION_ANGLE, "max", MAX_ROTATION_ANGLE))
-            .getEntry();
-    TAB_ARM.add("Rotate Arm", new InstantCommand(() -> setArmAngle(targetAngle.getDouble(0))));
-    rotList.addNumber("Arm Angle", this::getArmAngle);
-    rotList.addNumber("Rotation Motor Ticks", (() -> convertDegreesToTicks(getArmAngle())));
+    // GenericEntry targetAngle =
+    //     rotList
+    //         .add("Target Angle", 0)
+    //         .withWidget(BuiltInWidgets.kNumberSlider)
+    //         .withProperties(Map.of("min", -MAX_ROTATION_ANGLE, "max", MAX_ROTATION_ANGLE))
+    //         .getEntry();
+    // TAB_ARM.add("Rotate Arm", new InstantCommand(() -> setArmAngle(targetAngle.getDouble(0))));
+    // rotList.addNumber("Arm Angle", this::getArmAngle);
+    // rotList.addNumber("Rotation Motor Ticks", (() -> convertDegreesToTicks(getArmAngle())));
 
-    rotList.addNumber("Rotation voltage", ROTATION_LEADER_TALON::getMotorOutputVoltage);
-    rotList.addNumber("Rotation current", ROTATION_LEADER_TALON::getSupplyCurrent);
-    rotList.addNumber("Rotation error", ROTATION_LEADER_TALON::getClosedLoopError);
-    TAB_ARM.addNumber("SensorSelectedVelocity", ROTATION_LEADER_TALON::getSelectedSensorVelocity);
+    // rotList.addNumber("Rotation voltage", ROTATION_LEADER_TALON::getMotorOutputVoltage);
+    // rotList.addNumber("Rotation current", ROTATION_LEADER_TALON::getSupplyCurrent);
+    // rotList.addNumber("Rotation error", ROTATION_LEADER_TALON::getClosedLoopError);
+    // TAB_ARM.addNumber("SensorSelectedVelocity",
+    // ROTATION_LEADER_TALON::getSelectedSensorVelocity);
 
-    ShuffleboardLayout extList =
-        TAB_ARM.getLayout("Arm Extension", BuiltInLayouts.kList).withSize(1, 4);
+    // ShuffleboardLayout extList =
+    //     TAB_ARM.getLayout("Arm Extension", BuiltInLayouts.kList).withSize(1, 4);
 
-    GenericEntry targetLength = extList.add("Target Length", 0).getEntry();
+    // GenericEntry targetLength = extList.add("Target Length", 0).getEntry();
 
-    extList.addNumber("Arm Length Inches", this::getArmLength);
-    extList.addNumber("Extension Motor Ticks", EXTENSION_TALON::getSelectedSensorPosition);
-    extList.addNumber("Potentiometer Voltage", EXTENSION_POTENTIOMETER::getVoltage);
+    // extList.addNumber("Arm Length Inches", this::getArmLength);
+    // extList.addNumber("Extension Motor Ticks", EXTENSION_TALON::getSelectedSensorPosition);
+    // extList.addNumber("Potentiometer Voltage", EXTENSION_POTENTIOMETER::getVoltage);
 
-    TAB_ARM.add("Extend Arm", new InstantCommand(() -> setArmLength(targetLength.getDouble(0))));
+    // TAB_ARM.add("Extend Arm", new InstantCommand(() -> setArmLength(targetLength.getDouble(0))));
 
-    TAB_ARM.add("Coast Rotation", new InstantCommand(this::coastArmRotation).ignoringDisable(true));
-    TAB_ARM.add(
-        "Coast Extension", new InstantCommand(this::coastArmExtension).ignoringDisable(true));
-    TAB_ARM.add(
-        "Brake Extension", new InstantCommand(this::brakeArmExtension).ignoringDisable(true));
-    TAB_ARM.add("Brake Rotation", new InstantCommand(this::brakeArmRotation).ignoringDisable(true));
+    TAB_MAIN2
+        .add("Coast Rotation", new InstantCommand(this::coastArmRotation).ignoringDisable(true))
+        .withPosition(4, 0);
+    TAB_MAIN2
+        .add("Coast Extension", new InstantCommand(this::coastArmExtension).ignoringDisable(true))
+        .withPosition(5, 0);
+    TAB_MAIN2
+        .add("Brake Extension", new InstantCommand(this::brakeArmExtension).ignoringDisable(true))
+        .withPosition(5, 1);
+    TAB_MAIN2
+        .add("Brake Rotation", new InstantCommand(this::brakeArmRotation).ignoringDisable(true))
+        .withPosition(4, 1);
   }
 
   public int convertDegreesToTicks(double degrees) {

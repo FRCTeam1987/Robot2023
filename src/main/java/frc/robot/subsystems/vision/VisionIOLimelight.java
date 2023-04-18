@@ -23,6 +23,7 @@ public class VisionIOLimelight implements VisionIO {
   public VisionIOLimelightBase getBestLimelight() {
     try {
       return limelights.stream()
+          .sorted(Comparator.comparing(VisionIOLimelightBase::getTargetArea))
           .max(Comparator.comparing(VisionIOLimelightBase::getVisibleTagCount))
           .get();
     } catch (Exception e) {
