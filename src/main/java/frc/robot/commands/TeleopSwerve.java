@@ -125,7 +125,7 @@ public class TeleopSwerve extends CommandBase {
         //                     drivetrain.getPoseY(), y, Constants.OnTheFly.NODE_Y_TOLERANCE))
         //         .findFirst()
         //         .get();
-        useYLock = true;
+        // useYLock = true;
       } catch (NoSuchElementException e) {
         useYLock = false;
         DriverStation.reportWarning("Not close enough to cone node. Not locking.", false);
