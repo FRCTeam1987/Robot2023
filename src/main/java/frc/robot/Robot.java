@@ -182,6 +182,6 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void teleopExit() {
-    // robotContainer.enableXstance();
+    robotContainer.enableXstance();
   }
 }
