@@ -746,7 +746,8 @@ public class RobotContainer {
 
     ThreePieceNoCableEventMap.put(
         "Score Cube Medium Extended",
-        new AutoScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_MEDIUM_EXTENDED)
+        new AutoScoreSequence(
+                arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_MEDIUM_EXTENDED)
             // .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)))
             .andThen(new GoHome(arm, wrist)));
 
@@ -772,10 +773,11 @@ public class RobotContainer {
         "Score Cube Prep Low", new SetArm(arm, () -> -90, () -> 8, () -> false));
 
     ThreePieceNoCableEventMap.put(
-    "Collect Cube with timeout",
-    new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR).withTimeout(1.6)
-        .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)))
-        .andThen(new GoHome(arm, wrist).withTimeout(2)));
+        "Collect Cube with timeout",
+        new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR)
+            .withTimeout(1.6)
+            .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)))
+            .andThen(new GoHome(arm, wrist).withTimeout(2)));
 
     final HashMap<String, Command> ThreePieceBalanceEventMap = new HashMap<>();
     ThreePieceBalanceEventMap.putAll(ThreePieceNoCableEventMap);
@@ -845,7 +847,8 @@ public class RobotContainer {
             // .andThen(new GoHome(arm, wrist).withTimeout(1.0))
             // .andThen(new InstantCommand(() -> arm.setExtensionNominal()))
             .andThen(
-                AutoPathHelper.followPath(drivetrain, "2910", ThreePieceNoCableEventMap, 3.25, 2.75))
+                AutoPathHelper.followPath(
+                    drivetrain, "2910", ThreePieceNoCableEventMap, 3.25, 2.75))
             .andThen(new GoHome(arm, wrist)));
 
     autoChooser.addOption(
