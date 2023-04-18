@@ -115,6 +115,10 @@ public class MultiLimelight extends SubsystemBase {
       return;
     }
     final Pose2d currentPose = m_poseEstimator.getEstimatedPosition();
+    if (currentPose.getX() > 3.5 && currentPose.getX() < 4.4) {
+      DriverStation.reportError("Ignoring pose on bump", false);
+      return;
+    }
     final Pose2d pose =
         m_alliance == Alliance.Red
             ? result.targetingResults.getBotPose2d_wpiRed()
@@ -126,12 +130,15 @@ public class MultiLimelight extends SubsystemBase {
             / 1000.0;
     // play with seeing how far we want to allow a pose update
     if (!Util.isWithinTolerance(pose.getX(), currentPose.getX(), 1.0)
-        || !Util.isWithinTolerance(pose.getY(), currentPose.getY(), 1.0)) {
+        || !Util.isWithinTolerance(pose.getY(), currentPose.getY(), 1.0)
+        || pose.getY() < 0.4
+        || pose.getX() < 1.75
+        || (pose.getX() > 3.5 && pose.getX() < 4.4)) {
       DriverStation.reportError("Ignoring pose beyond range", false); // UNCOMMENT ME FOR
       // DEBUGGING
       return;
     }
-    if (pose.getX() > 4.75) {
+    if (pose.getX() > 4.8) {
       DriverStation.reportWarning("Ignoring too far pose", false);
       return;
     }

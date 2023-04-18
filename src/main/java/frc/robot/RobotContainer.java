@@ -11,8 +11,6 @@ import static frc.robot.subsystems.wrist.Wrist.ANGLE_STRAIGHT;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.FollowPathWithEvents;
-
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -257,10 +255,11 @@ public class RobotContainer {
             driverController::getRightX,
             () -> 1,
             () -> {
-             // if (claw.getGamePiece() == GamePiece.CONE && driverController.getAButtonPressed()) {
-             //   return 180;
-             // } 
-             return driverController.getPOV();
+              // if (claw.getGamePiece() == GamePiece.CONE && driverController.getAButtonPressed())
+              // {
+              //   return 180;
+              // }
+              return driverController.getPOV();
             },
             driverController::getLeftStickButtonPressed));
 
@@ -362,6 +361,7 @@ public class RobotContainer {
     TAB_MAIN2.add("Collect Chooser", collectionChooser).withPosition(0, 0);
 
     SendableChooser<PositionConfig> ScoreChooser = new SendableChooser<>();
+    ScoreChooser.addOption("SPIT_BACK_CUBE_FLOOR_LONG", SPIT_BACK_CUBE_FLOOR_LONG); // score
     ScoreChooser.addOption("BACK_CUBE_FLOOR", BACK_CUBE_FLOOR); // score
     ScoreChooser.addOption("BACK_CONE_FLOOR_TIPPED", PositionConfigs.BACK_CONE_FLOOR_TIPPED);
     ScoreChooser.addOption("BACK_CONE_TOP", PositionConfigs.BACK_CONE_TOP);
@@ -509,10 +509,12 @@ public class RobotContainer {
                 driverController::getLeftX,
                 driverController::getRightX,
                 () -> 0.5,
-                () -> { return driverController.getPOV();},
+                () -> {
+                  return driverController.getPOV();
+                },
                 driverController::getLeftStickButtonPressed));
-                
-        new Trigger(() -> (driverController.getLeftTriggerAxis() > 0.1))
+
+    new Trigger(() -> (driverController.getLeftTriggerAxis() > 0.1))
         .whileTrue(
             new TeleopSwerve(
                 drivetrain,
@@ -520,7 +522,9 @@ public class RobotContainer {
                 driverController::getLeftX,
                 driverController::getRightX,
                 () -> 0.5,
-                () -> {return 180;},
+                () -> {
+                  return 180;
+                },
                 driverController::getLeftStickButtonPressed));
 
     new Trigger(driverController::getLeftBumper)
@@ -740,6 +744,12 @@ public class RobotContainer {
             .andThen(new GoHome(arm, wrist)));
 
     ThreePieceNoCableEventMap.put(
+        "Score Cube Medium Extended",
+        new AutoScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_MEDIUM_EXTENDED)
+            // .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)))
+            .andThen(new GoHome(arm, wrist)));
+
+    ThreePieceNoCableEventMap.put(
         "Score Cube Almost Low",
         new AutoScoreSequence(
                 arm, wrist, claw, () -> Constants.PositionConfigs.AUTO_ALMOST_FLOOR_CUBE)
@@ -747,7 +757,24 @@ public class RobotContainer {
             .andThen(new GoHome(arm, wrist)));
 
     ThreePieceNoCableEventMap.put(
+        "Score Cube Back Floor Long",
+        new ScoreSequence(
+                arm, wrist, claw, () -> Constants.PositionConfigs.SPIT_BACK_CUBE_FLOOR_LONG)
+            .andThen(new EjectGamePiece(claw).withTimeout(.4))
+            // .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)))
+            .andThen(new SetArm(arm, () -> -90, () -> 1, () -> true)));
+
+    ThreePieceNoCableEventMap.put(
         "Score Cube Prep Medium", new SetArm(arm, () -> -49.5, () -> 1, () -> true));
+
+    ThreePieceNoCableEventMap.put(
+        "Score Cube Prep Low", new SetArm(arm, () -> -90, () -> 8, () -> false));
+
+    ThreePieceNoCableEventMap.put(
+    "Collect Cube with timeout",
+    new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR).withTimeout(1.6)
+        .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)))
+        .andThen(new GoHome(arm, wrist).withTimeout(2)));
 
     final HashMap<String, Command> ThreePieceBalanceEventMap = new HashMap<>();
     ThreePieceBalanceEventMap.putAll(ThreePieceNoCableEventMap);
@@ -764,7 +791,7 @@ public class RobotContainer {
     autoChooser.addOption(
         "ThreePieceNoCable",
         // new InstantCommand(() -> setShouldUseVision(true)).addThen
-            new InstantCommand(() -> claw.setCone(), claw)
+        new InstantCommand(() -> claw.setCone(), claw)
             .andThen(
                 new AutoScoreSequenceNoHome(
                     arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
@@ -806,6 +833,18 @@ public class RobotContainer {
             .andThen(
                 AutoPathHelper.followPath(
                     drivetrain, "Barker3PieceTwisty", ThreePieceNoCableEventMap, 3.25, 2.35))
+            .andThen(new GoHome(arm, wrist)));
+
+    autoChooser.addOption(
+        "2910",
+        new InstantCommand(() -> setShouldUseVision(true))
+            .andThen(
+                new AutoScoreSequenceNoHome(
+                    arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
+            // .andThen(new GoHome(arm, wrist).withTimeout(1.0))
+            // .andThen(new InstantCommand(() -> arm.setExtensionNominal()))
+            .andThen(
+                AutoPathHelper.followPath(drivetrain, "2910", ThreePieceNoCableEventMap, 3.25, 2.75))
             .andThen(new GoHome(arm, wrist)));
 
     autoChooser.addOption(
