@@ -170,7 +170,7 @@ public final class Constants {
     public static final PositionConfig FRONT_CONE_MEDIUM =
         new PositionConfig(20, -54, 536 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
     public static final PositionConfig FRONT_CONE_TOP =
-        new PositionConfig(37, -50, 606 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
+        new PositionConfig(37, -52, 606 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
     public static final PositionConfig FRONT_CONE_TOP_AUTO =
         new PositionConfig(36, -49.5, 506 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 

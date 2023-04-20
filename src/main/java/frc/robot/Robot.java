@@ -135,6 +135,11 @@ public class Robot extends LoggedRobot {
     logReceiverQueueAlert.set(Logger.getInstance().getReceiverQueueFault());
   }
 
+  // @Override
+  // public void disabledInit() {
+  //   robotContainer.setShouldUseVision(true);
+  // }
+
   @Override
   public void disabledPeriodic() {}
 
@@ -148,6 +153,7 @@ public class Robot extends LoggedRobot {
 
     // schedule the autonomous command
     if (autonomousCommand != null) {
+      robotContainer.setShouldUseVision(false);
       autonomousCommand.schedule();
     }
   }

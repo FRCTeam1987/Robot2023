@@ -6,7 +6,10 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
@@ -151,6 +154,36 @@ public class MultiLimelight extends SubsystemBase {
     // //UNCOMMENT ME FOR DEBUGGING
   }
 
+  public void updatePoseNoResults(Pose2d pose, double timing) {
+    if (m_alliance == Alliance.Invalid) {
+      return;
+    }
+    final Pose2d currentPose = m_poseEstimator.getEstimatedPosition();
+    if (currentPose.getX() > 3.5 && currentPose.getX() < 4.4) {
+      DriverStation.reportError("Ignoring pose on bump", false);
+      return;
+    }
+    final double latencySeconds = timing;
+    // play with seeing how far we want to allow a pose update
+    if (!Util.isWithinTolerance(pose.getX(), currentPose.getX(), 1.0)
+        || !Util.isWithinTolerance(pose.getY(), currentPose.getY(), 1.0)
+        || pose.getY() < 0.4
+        || pose.getX() < 1.75
+        || (pose.getX() > 3.5 && pose.getX() < 4.4)) {
+      DriverStation.reportError("Ignoring pose beyond range", false); // UNCOMMENT ME FOR
+      // DEBUGGING
+      return;
+    }
+    if (pose.getX() > 4.8) {
+      DriverStation.reportWarning("Ignoring too far pose", false);
+      return;
+    }
+    m_poseEstimator.addVisionMeasurement(pose, Timer.getFPGATimestamp() - latencySeconds);
+    DriverStation.reportError("Updated pose! x: " + pose.getX() + ", y: " + pose.getY(), false);
+    // //UNCOMMENT ME FOR DEBUGGING
+  }
+
+
   @Override
   public void periodic() {
     if (m_alliance == Alliance.Invalid) {
@@ -160,39 +193,53 @@ public class MultiLimelight extends SubsystemBase {
     if (!m_isPoseUpdateAllowed.getAsBoolean()) {
       return;
     }
-
     for (String limelight : m_limelights) {
-      LimelightResults result = null;
+      //LimelightResults result = null;
       // List<String> llsWithTag = List.of();
       // final double tid = LimelightHelpers.getFiducialID(limelight);
       // if (tid < 1 || tid > 8) {
       //   DriverStation.reportWarning("Ignoring limelight: " + limelight + ", tid: " + tid, false);
       //   break;
       // }
-      final double ta = LimelightHelpers.getTA(limelight);
+      //final double ta = LimelightHelpers.getTA(limelight);
+      int countTags = 0;
+      countTags = (int) LimelightHelpers.getJSONDump(limelight).codePoints().filter(ch -> ch == 'm').count();
       // if (ta <= 0.01) {
       //   DriverStation.reportWarning("ignoring too small of target", false);
       //   break;
       // }
 
-      if (ta > 1.0) { // see how low this can go
-        result = LimelightHelpers.getLatestResults(limelight);
-        updatePose(result);
-        // llsWithTag.add(limelight);
-        break;
-      }
+      // if (ta > 1.0) { // see how low this can go
+      //   double[] pose = m_alliance == Alliance.Blue ? LimelightHelpers.getBotPose_wpiBlue(limelight) : LimelightHelpers.getBotPose_wpiRed(limelight);
+      //   Pose2d pose2d =
+      //   new Pose3d(
+      //       new Translation3d(pose[0], pose[1], pose[2]),
+      //       new Rotation3d(pose[3], pose[4], pose[5])).toPose2d();
+      //   //result = LimelightHelpers.getLatestResults(limelight);
+      //   updatePoseNoResults(pose2d, pose[6] / 1000);
+      //   // llsWithTag.add(limelight);
+      //   break;
+      // }
 
-      if (result == null) {
-        result = LimelightHelpers.getLatestResults(limelight);
-      }
+      // if (result == null) {
+      //   result = LimelightHelpers.getLatestResults(limelight);
+      // }
 
-      if (result != null && result.targetingResults.targets_Fiducials.length > 1) {
-        updatePose(result);
+      if (countTags > 1) {
+        // updatePose(result);
+        double[] pose = m_alliance == Alliance.Blue ? LimelightHelpers.getBotPose_wpiBlue(limelight) : LimelightHelpers.getBotPose_wpiRed(limelight);
+        Pose2d pose2d =
+        new Pose3d(
+            new Translation3d(pose[0], pose[1], pose[2]),
+            new Rotation3d(pose[3], pose[4], pose[5])).toPose2d();
+        //result = LimelightHelpers.getLatestResults(limelight);
+        updatePoseNoResults(pose2d, pose[6] / 1000);
         return;
       }
 
       // LimelightHelpers.getTA(limelight);
     }
+
     // final Optional<LimelightResults> llResultsWithMultipleTags =
     //     m_limelights.stream()
     //         .map(limelight -> LimelightHelpers.getLatestResults(limelight))
@@ -240,4 +287,5 @@ public class MultiLimelight extends SubsystemBase {
 
     */
   }
+  
 }
