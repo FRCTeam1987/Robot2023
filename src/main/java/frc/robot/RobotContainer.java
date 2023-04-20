@@ -66,7 +66,7 @@ public class RobotContainer {
   private Claw claw;
   private Height height = Height.HIGH;
   private MultiLimelight multiLimelight;
-  private boolean shouldUseVision = true;
+  private boolean shouldUseVision = false;
 
   private boolean doubleSubstation = false;
 
@@ -173,9 +173,7 @@ public class RobotContainer {
                             // velocity can accept pose
                             && shouldUseVision), // see how high this can go
                     "limelight-fl",
-                    "limelight-fr",
-                    "limelight-bl",
-                    "limelight-br");
+                    "limelight-fr");
             // temp
             // vision =
             //     new Vision(
