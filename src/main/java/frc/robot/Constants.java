@@ -32,7 +32,7 @@ import java.util.List;
 public final class Constants {
 
   public static final ArmProfile ARM_A = new ArmProfile(475, -323.037);
-  public static final ArmProfile ARM_B = new ArmProfile(183, -202.412);
+  public static final ArmProfile ARM_B = new ArmProfile(46, -202.412);
   public static final ArmProfile INSTALLED_ARM = false ? ARM_A : ARM_B;
 
   public static final boolean ADVANTAGE_KIT_ENABLED = true;
