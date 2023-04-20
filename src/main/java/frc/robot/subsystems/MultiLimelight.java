@@ -59,6 +59,10 @@ public class MultiLimelight extends SubsystemBase {
     m_alliance = Alliance.Invalid;
     m_poseEstimator = RobotOdometry.getInstance().getPoseEstimator();
 
+    for (String m_limelight : m_limelights) {
+      LimelightHelpers.getLatestResults(m_limelight);
+    }
+
     //   TAB_MAIN2.addNumber(
     //       "estimated angle", () ->
     // m_poseEstimator.getEstimatedPosition().getRotation().getDegrees());
@@ -170,19 +174,23 @@ public class MultiLimelight extends SubsystemBase {
       //   DriverStation.reportWarning("ignoring too small of target", false);
       //   break;
       // }
+
       if (ta > 1.0) { // see how low this can go
         result = LimelightHelpers.getLatestResults(limelight);
         updatePose(result);
         // llsWithTag.add(limelight);
         break;
       }
+
       if (result == null) {
         result = LimelightHelpers.getLatestResults(limelight);
       }
+
       if (result != null && result.targetingResults.targets_Fiducials.length > 1) {
         updatePose(result);
         return;
       }
+
       // LimelightHelpers.getTA(limelight);
     }
     // final Optional<LimelightResults> llResultsWithMultipleTags =
