@@ -25,8 +25,6 @@ import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIO;
 import frc.lib.team3061.swerve.SwerveModuleIOSim;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
-import frc.lib.team6328.util.Alert;
-import frc.lib.team6328.util.Alert.AlertType;
 import frc.robot.Constants.Mode;
 import frc.robot.Constants.PositionConfig;
 import frc.robot.Constants.PositionConfigs;
@@ -307,7 +305,7 @@ public class RobotContainer {
     //       return this.getHeight().toString();
     //     });
     TAB_MATCH.addBoolean("Double Substation", () -> doubleSubstation);
-    // TAB_MAIN.addBoolean("Switch Status", () -> wrist.hasHitHardstop());
+    TAB_MATCH.addBoolean("Switch Status", () -> wrist.hasHitHardstop());
     TAB_MATCH.add(
         "FRONT CUBE COLLECT",
         new CollectSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CUBE_FLOOR));
@@ -396,6 +394,15 @@ public class RobotContainer {
     // TAB_MAIN.add("Angle 45, Length 20", new SetArm(arm, () -> 45, () -> 20, () -> false));
     // TAB_MAIN.add("Angle 45, Length 36", new SetArm(arm, () -> 45, () -> 36, () -> false));
     TAB_MAIN2.add("Set Home", new GoHome(arm, wrist)).withPosition(2, 0);
+    TAB_MAIN2.add(
+        "SPIT_BACK_CUBE_FLOOR_LONG",
+        new SequentialCommandGroup(
+            new ScoreSequence(
+                    arm, wrist, claw, () -> Constants.PositionConfigs.SPIT_BACK_CUBE_FLOOR_LONG)
+                .withTimeout(
+                    2.0) // timeout of extention, make longer than expected so that position is good
+                .andThen(new EjectGamePiece(claw).withTimeout(.4)) // 2910 auto spit timeout
+                .andThen(new SetArm(arm, () -> -90, () -> 1, () -> true))));
     // TAB_MAIN.add("Balance", new Balance(drivetrain));
     // TAB_MAIN.add(
     //     "Closest Cone",
@@ -489,15 +496,8 @@ public class RobotContainer {
     //             }));
     // oi.getRotateButton().onTrue(new InstantCommand(() -> arm.setArmAngle(45)));
     new Trigger(coDriverController::getRightBumper)
-        .onTrue(
-            new ConditionalCommand(
-                new RunClawForDuration(claw, 0.05),
-                new InstantCommand(
-                    () ->
-                        new Alert(
-                            "No Cone in claw, not running claw. CoDriver Right bumper pressed. ",
-                            AlertType.WARNING)),
-                () -> claw.isCone()));
+        .onTrue(new InstantCommand(() -> claw.setRollerSpeed(-0.9)))
+        .onFalse(new InstantCommand(() -> claw.stopRollers()));
     // .whileTrue(new InstantCommand(() -> claw.setRollerSpeed(-.6)));
     new Trigger(driverController::getRightBumper)
         .onTrue(new CollectSequence(arm, wrist, claw, () -> BACK_CUBE_FLOOR, driverController));
@@ -762,8 +762,9 @@ public class RobotContainer {
         "Score Cube Back Floor Long",
         new ScoreSequence(
                 arm, wrist, claw, () -> Constants.PositionConfigs.SPIT_BACK_CUBE_FLOOR_LONG)
-            .andThen(new EjectGamePiece(claw).withTimeout(.4))
-            // .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)))
+            // .withTimeout(
+            //     2.0) // timeout of extention, make longer than expected so that position is good
+            .andThen(new EjectGamePiece(claw).withTimeout(.4)) // 2910 auto spit timeout
             .andThen(new SetArm(arm, () -> -90, () -> 1, () -> true)));
 
     ThreePieceNoCableEventMap.put(
@@ -839,7 +840,7 @@ public class RobotContainer {
             .andThen(new GoHome(arm, wrist)));
 
     autoChooser.addOption(
-        "2910",
+        "2910 Red",
         new InstantCommand(() -> setShouldUseVision(true))
             .andThen(
                 new AutoScoreSequenceNoHome(
@@ -848,7 +849,20 @@ public class RobotContainer {
             // .andThen(new InstantCommand(() -> arm.setExtensionNominal()))
             .andThen(
                 AutoPathHelper.followPath(
-                    drivetrain, "2910", ThreePieceNoCableEventMap, 3.25, 2.75))
+                    drivetrain, "2910 Red", ThreePieceNoCableEventMap, 3.25, 2.75))
+            .andThen(new GoHome(arm, wrist)));
+
+    autoChooser.addOption(
+        "2910 Blue",
+        new InstantCommand(() -> setShouldUseVision(true))
+            .andThen(
+                new AutoScoreSequenceNoHome(
+                    arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
+            // .andThen(new GoHome(arm, wrist).withTimeout(1.0))
+            // .andThen(new InstantCommand(() -> arm.setExtensionNominal()))
+            .andThen(
+                AutoPathHelper.followPath(
+                    drivetrain, "2910 Blue", ThreePieceNoCableEventMap, 3.25, 2.75))
             .andThen(new GoHome(arm, wrist)));
 
     autoChooser.addOption(
