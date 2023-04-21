@@ -5,9 +5,10 @@
 package frc.robot.commands.auto;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
+import frc.lib.team6328.util.Alert;
 import frc.robot.subsystems.drivetrain.Drivetrain;
-import frc.robot.util.Util;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -19,7 +20,7 @@ public class Balance extends PIDCommand {
   public Balance(final Drivetrain drive) {
     super(
         // The controller that the command will use
-        new PIDController(0.2, 0, 0), // TODO HEARTLAND 0.2, 0 ,0 STAGE 025, 0, 0
+        new PIDController(0.23, 0, 0), // TODO HEARTLAND 0.2, 0 ,0 STAGE 025, 0, 0
         // This should return the measurement
         drive::getPitch,
         // This should return the setpoint (can also be a constant)
@@ -36,15 +37,14 @@ public class Balance extends PIDCommand {
     this.drive = drive;
     addRequirements(this.drive);
     this.getController().setSetpoint(0);
-    this.getController().setTolerance(2, 1);
+    this.getController().setTolerance(0.5, 0.25);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return this.getController().atSetpoint()
-        || Util.isWithinTolerance(drive.getPoseX(), 0, 1)
-        || Util.isWithinTolerance(drive.getPoseY(), 0, 1);
-    // TODO double check that this actually stops it from  driving safely
+    //DriverStation.reportError(this.getController().atSetpoint() == true ? "true" : "false", null);
+    return this.getController().atSetpoint();
+
   }
 }
