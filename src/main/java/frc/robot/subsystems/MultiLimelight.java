@@ -183,7 +183,6 @@ public class MultiLimelight extends SubsystemBase {
     // //UNCOMMENT ME FOR DEBUGGING
   }
 
-
   @Override
   public void periodic() {
     if (m_alliance == Alliance.Invalid) {
@@ -194,23 +193,27 @@ public class MultiLimelight extends SubsystemBase {
       return;
     }
     for (String limelight : m_limelights) {
-      //LimelightResults result = null;
+      // LimelightResults result = null;
       // List<String> llsWithTag = List.of();
       // final double tid = LimelightHelpers.getFiducialID(limelight);
       // if (tid < 1 || tid > 8) {
       //   DriverStation.reportWarning("Ignoring limelight: " + limelight + ", tid: " + tid, false);
       //   break;
       // }
-      //final double ta = LimelightHelpers.getTA(limelight);
+      // final double ta = LimelightHelpers.getTA(limelight);
       int countTags = 0;
-      countTags = (int) LimelightHelpers.getJSONDump(limelight).codePoints().filter(ch -> ch == 'm').count();
+      countTags =
+          (int)
+              LimelightHelpers.getJSONDump(limelight).codePoints().filter(ch -> ch == 'm').count();
       // if (ta <= 0.01) {
       //   DriverStation.reportWarning("ignoring too small of target", false);
       //   break;
       // }
 
       // if (ta > 1.0) { // see how low this can go
-      //   double[] pose = m_alliance == Alliance.Blue ? LimelightHelpers.getBotPose_wpiBlue(limelight) : LimelightHelpers.getBotPose_wpiRed(limelight);
+      //   double[] pose = m_alliance == Alliance.Blue ?
+      // LimelightHelpers.getBotPose_wpiBlue(limelight) :
+      // LimelightHelpers.getBotPose_wpiRed(limelight);
       //   Pose2d pose2d =
       //   new Pose3d(
       //       new Translation3d(pose[0], pose[1], pose[2]),
@@ -227,12 +230,16 @@ public class MultiLimelight extends SubsystemBase {
 
       if (countTags > 1) {
         // updatePose(result);
-        double[] pose = m_alliance == Alliance.Blue ? LimelightHelpers.getBotPose_wpiBlue(limelight) : LimelightHelpers.getBotPose_wpiRed(limelight);
+        double[] pose =
+            m_alliance == Alliance.Blue
+                ? LimelightHelpers.getBotPose_wpiBlue(limelight)
+                : LimelightHelpers.getBotPose_wpiRed(limelight);
         Pose2d pose2d =
-        new Pose3d(
-            new Translation3d(pose[0], pose[1], pose[2]),
-            new Rotation3d(pose[3], pose[4], pose[5])).toPose2d();
-        //result = LimelightHelpers.getLatestResults(limelight);
+            new Pose3d(
+                    new Translation3d(pose[0], pose[1], pose[2]),
+                    new Rotation3d(pose[3], pose[4], pose[5]))
+                .toPose2d();
+        // result = LimelightHelpers.getLatestResults(limelight);
         updatePoseNoResults(pose2d, pose[6] / 1000);
         return;
       }
@@ -287,5 +294,4 @@ public class MultiLimelight extends SubsystemBase {
 
     */
   }
-  
 }

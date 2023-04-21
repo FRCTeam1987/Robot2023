@@ -11,8 +11,6 @@ import static frc.robot.subsystems.wrist.Wrist.ANGLE_STRAIGHT;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.FollowPathWithEvents;
-
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -841,7 +839,7 @@ public class RobotContainer {
 
     autoChooser.addOption(
         "2910 Red",
-       (new InstantCommand(() -> setShouldUseVision(true)))
+        (new InstantCommand(() -> setShouldUseVision(true)))
             .andThen(
                 new AutoScoreSequenceNoHome(
                     arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
