@@ -867,9 +867,11 @@ public class RobotContainer {
         "TwoPieceBalanceNoCable",
         new AutoScoreSequenceNoHome(
                 arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO)
+            .andThen(new GoHome(arm, wrist).withTimeout(1))
             .andThen(
                 AutoPathHelper.followPath(
-                    drivetrain, "TwoPieceNoCable", TwoPieceNoCableEventMap, 3.25, 2.5)));
+                    drivetrain, "TwoPieceNoCable", TwoPieceNoCableEventMap, 3.25, 2.5))
+            .andThen(new Balance(drivetrain)));
 
     autoChooser.addOption(
         "ThreePieceBalance",
