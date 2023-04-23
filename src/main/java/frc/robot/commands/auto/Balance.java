@@ -5,9 +5,7 @@
 package frc.robot.commands.auto;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
-import frc.lib.team6328.util.Alert;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -43,8 +41,8 @@ public class Balance extends PIDCommand {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    //DriverStation.reportError(this.getController().atSetpoint() == true ? "true" : "false", null);
+    // DriverStation.reportError(this.getController().atSetpoint() == true ? "true" : "false",
+    // null);
     return this.getController().atSetpoint();
-
   }
 }
