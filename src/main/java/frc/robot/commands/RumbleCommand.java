@@ -16,8 +16,4 @@ public class RumbleCommand extends InstantCommand {
     new WaitCommand(duration);
     xboxController.getHID().setRumble(RumbleType.kBothRumble, 0);
   }
-
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
 }

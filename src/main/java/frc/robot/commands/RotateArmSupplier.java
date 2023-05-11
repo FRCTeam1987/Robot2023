@@ -26,9 +26,6 @@ public class RotateArmSupplier extends CommandBase {
   }
 
   @Override
-  public void execute() {}
-
-  @Override
   public void end(boolean interrupted) {
     if (!interrupted) {
       System.out.println("Not interrupted, holding current angle!");

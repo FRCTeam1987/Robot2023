@@ -21,10 +21,6 @@ public class FlipArm extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
-
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
@@ -34,10 +30,6 @@ public class FlipArm extends CommandBase {
       arm.setArmAngle(-arm.getArmAngle());
     }
   }
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
 

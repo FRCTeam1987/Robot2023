@@ -25,12 +25,6 @@ public class FlipWrist extends CommandBase {
   }
 
   @Override
-  public void execute() {}
-
-  @Override
-  public void end(boolean interrupted) {}
-
-  @Override
   public boolean isFinished() {
     return (Util.isWithinTolerance(WRIST.getDegrees(), (ROTATION ? 180.0 : 0), 3));
   }
