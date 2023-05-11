@@ -32,20 +32,12 @@ public class SetArm extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    // arm.setArmAngle(angleSupplier.getAsDouble());
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // final double desiredAngle = angleSupplier.getAsDouble();
-    // // TODO set arm angle only when more retracted, this assumes it is retracted and it might not
-    // be
-    // arm.setArmAngle(desiredAngle);
-
-    // if (isAngleOnTarget(5) && !isLengthOnTarget(1)) {
-    //   arm.setArmLength(lengthSupplier.getAsDouble());}
+    // TODO set arm angle only when more retracted, this assumes it is retracted and it might not be
 
     final double desiredLength = lengthSupplier.getAsDouble();
     final double desiredAngle = angleSupplier.getAsDouble();
@@ -63,18 +55,6 @@ public class SetArm extends CommandBase {
       }
     }
   }
-
-  // new ConditionalCommand(
-  //     new SequentialCommandGroup(
-  //       arm.setArmLength(desiredLength),
-  //       arm.setArmAngle(angleSupplier.getAsDouble())
-  //       ),
-  //     new SequentialCommandGroup(
-  //       arm.setArmAngle(desiredLength)),
-  //       arm.setArmLength(lengthSupplier.getAsDouble())
-  //       ),
-  //     isCollecting
-  //     );
 
   // Called once the command ends or is interrupted.
   @Override

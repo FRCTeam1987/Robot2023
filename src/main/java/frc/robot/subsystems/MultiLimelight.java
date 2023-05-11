@@ -55,8 +55,6 @@ public class MultiLimelight extends SubsystemBase {
    * @param limelights - Any number of limelight names to use.
    */
   public MultiLimelight(BooleanSupplier isPoseUpdateAllowed, String... limelights) {
-    // m_limelights = (List<NetworkTable>) List.of(limelights).stream().map(limelight ->
-    // NetworkTableInstance.getDefault().getTable(limelight));
     m_isPoseUpdateAllowed = isPoseUpdateAllowed;
     m_limelights = List.of(limelights);
     m_alliance = Alliance.Invalid;
@@ -65,12 +63,6 @@ public class MultiLimelight extends SubsystemBase {
     for (String m_limelight : m_limelights) {
       LimelightHelpers.getLatestResults(m_limelight);
     }
-
-    //   TAB_MAIN2.addNumber(
-    //       "estimated angle", () ->
-    // m_poseEstimator.getEstimatedPosition().getRotation().getDegrees());
-    //   TAB_MAIN2.addNumber("estimated x", () -> m_poseEstimator.getEstimatedPosition().getX());
-    //   TAB_MAIN2.addNumber("estimated y", () -> m_poseEstimator.getEstimatedPosition().getY());
   }
 
   private void updatePose(final List<LimelightResults> llResults) {
@@ -193,40 +185,10 @@ public class MultiLimelight extends SubsystemBase {
       return;
     }
     for (String limelight : m_limelights) {
-      // LimelightResults result = null;
-      // List<String> llsWithTag = List.of();
-      // final double tid = LimelightHelpers.getFiducialID(limelight);
-      // if (tid < 1 || tid > 8) {
-      //   DriverStation.reportWarning("Ignoring limelight: " + limelight + ", tid: " + tid, false);
-      //   break;
-      // }
-      // final double ta = LimelightHelpers.getTA(limelight);
       int countTags = 0;
       countTags =
           (int)
               LimelightHelpers.getJSONDump(limelight).codePoints().filter(ch -> ch == 'm').count();
-      // if (ta <= 0.01) {
-      //   DriverStation.reportWarning("ignoring too small of target", false);
-      //   break;
-      // }
-
-      // if (ta > 1.0) { // see how low this can go
-      //   double[] pose = m_alliance == Alliance.Blue ?
-      // LimelightHelpers.getBotPose_wpiBlue(limelight) :
-      // LimelightHelpers.getBotPose_wpiRed(limelight);
-      //   Pose2d pose2d =
-      //   new Pose3d(
-      //       new Translation3d(pose[0], pose[1], pose[2]),
-      //       new Rotation3d(pose[3], pose[4], pose[5])).toPose2d();
-      //   //result = LimelightHelpers.getLatestResults(limelight);
-      //   updatePoseNoResults(pose2d, pose[6] / 1000);
-      //   // llsWithTag.add(limelight);
-      //   break;
-      // }
-
-      // if (result == null) {
-      //   result = LimelightHelpers.getLatestResults(limelight);
-      // }
 
       if (countTags > 1) {
         // updatePose(result);
@@ -239,59 +201,9 @@ public class MultiLimelight extends SubsystemBase {
                     new Translation3d(pose[0], pose[1], pose[2]),
                     new Rotation3d(pose[3], pose[4], pose[5]))
                 .toPose2d();
-        // result = LimelightHelpers.getLatestResults(limelight);
         updatePoseNoResults(pose2d, pose[6] / 1000);
         return;
       }
-
-      // LimelightHelpers.getTA(limelight);
     }
-
-    // final Optional<LimelightResults> llResultsWithMultipleTags =
-    //     m_limelights.stream()
-    //         .map(limelight -> LimelightHelpers.getLatestResults(limelight))
-    //         .filter(llResult -> llResult.targetingResults.targets_Fiducials.length > 1)
-    //         .findFirst();
-    // if (llResultsWithMultipleTags.isEmpty()) {
-    //   return;
-    // }
-    // final LimelightResults llresult = llResultsWithMultipleTags.get();
-    // final Pose2d pose =
-    //     m_alliance == Alliance.Red
-    //         ? llresult.targetingResults.getBotPose2d_wpiRed()
-    //         : llresult.targetingResults.getBotPose2d_wpiBlue();
-    // final double latencySeconds =
-    //     (llresult.targetingResults.latency_capture
-    //             + llresult.targetingResults.latency_jsonParse
-    //             + llresult.targetingResults.latency_pipeline)
-    //         / 1000.0;
-
-    // m_poseEstimator.addVisionMeasurement(
-    //     pose,
-    //     Timer.getFPGATimestamp() - latencySeconds);
-    // return;
-
-    /*
-    final List<LimelightResults> llResultsWithTag =
-        m_limelights.stream()
-            .map(limelight -> LimelightHelpers.getLatestResults(limelight))
-            .filter(llResult -> llResult.targetingResults.targets_Fiducials.length > 0)
-            .collect(Collectors.toUnmodifiableList());
-    if (llResultsWithTag.size() <= 0) {
-      return;
-    }
-    // TODO do we want to average these out or just assume any LL with multiple tags is good to use.
-    final List<LimelightResults> llResultsWithMultiTags =
-        llResultsWithTag.stream().filter(llResult -> llResult.targetingResults.targets_Fiducials.length > 1).collect(Collectors.toUnmodifiableList());
-    if (llResultsWithMultiTags.size() > 0) {
-      updatePose(llResultsWithMultiTags);
-      return;
-    }
-
-    // TODO we may want to find the standard deviation before updating pose from LL's with only one
-    // tag.
-    updatePose(llResultsWithTag);
-
-    */
   }
 }

@@ -133,10 +133,6 @@ public class Drivetrain extends SubsystemBase {
     this.poseEstimator = RobotOdometry.getInstance().getPoseEstimator();
 
     TAB_MAIN2.addNumber("Gyroscope Angle", () -> getRotation().getDegrees()).withPosition(9, 3);
-    // TAB_MAIN2.addBoolean("X-Stance On?", this::isXstance);
-    // TAB_MAIN2.addBoolean("Field-Relative Enabled?", () -> this.isFieldRelative);
-    // TAB_MAIN2.add("Reset Gyro", new InstantCommand(this::zeroGyroscope));
-    // TAB_MAIN2.addNumber("Average Velocity", this::getCharacterizationVelocity);
 
     if (DEBUGGING) {
 
@@ -339,7 +335,6 @@ public class Drivetrain extends SubsystemBase {
     // update and log gyro inputs
     if (true) {
       gyroIO.updateInputs(gyroInputs);
-      // Logger.getInstance().processInputs("Drive/Gyro", gyroInputs);
     }
 
     // update and log the swerve moudles inputs

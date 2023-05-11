@@ -42,10 +42,6 @@ public class DriveToPose extends CommandBase {
       cancel();
       return;
     }
-    // drive.getAutoXController().reset();
-    // drive.getAutoYController().reset();
-    // drive.getAutoThetaController().reset();
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.

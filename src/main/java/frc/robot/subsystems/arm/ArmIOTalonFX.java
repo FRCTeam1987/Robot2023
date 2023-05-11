@@ -8,7 +8,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderConfiguration;
-import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.lib.team6328.util.Alert;
 import frc.robot.Constants;
@@ -18,7 +17,6 @@ public class ArmIOTalonFX implements ArmIO {
   private final TalonFX ROTATION_FOLLOWER_TALON;
   private final CANCoder ROTATION_CANCODER;
   private final TalonFX EXTENSION_TALON;
-  private final AnalogInput EXTENSION_POTENTIOMETER;
   private final Alert armOverRotateAlert =
       new Alert("Attempted to set arm rotation beyond safe range.", Alert.AlertType.ERROR);
   private final Alert armOverExtendAlert =
@@ -64,8 +62,6 @@ public class ArmIOTalonFX implements ArmIO {
     EXTENSION_TALON.configGetStatorCurrentLimit(
         new StatorCurrentLimitConfiguration(true, 25, 25, 150));
     EXTENSION_TALON.setSelectedSensorPosition(0.0);
-
-    EXTENSION_POTENTIOMETER = new AnalogInput(ROTATION_ANALOG_POTENTIOMETER_ID);
     // EXTENSION_TALON.setSelectedSensorPosition(convertVoltsToInches(EXTENSION_POTENTIOMETER.getVoltage()))
 
     // ArmFeedforward ff = new ArmFeedforward(0, 0.38, 2.23);
@@ -123,34 +119,43 @@ public class ArmIOTalonFX implements ArmIO {
   private void setShuffleboardLayout() {
 
     // ShuffleboardLayout rotList =
-    //     TAB_ARM.getLayout("Arm Rotation", BuiltInLayouts.kList).withSize(1, 5);
+    // TAB_ARM.getLayout("Arm Rotation", BuiltInLayouts.kList).withSize(1, 5);
 
     // GenericEntry targetAngle =
-    //     rotList
-    //         .add("Target Angle", 0)
-    //         .withWidget(BuiltInWidgets.kNumberSlider)
-    //         .withProperties(Map.of("min", -MAX_ROTATION_ANGLE, "max", MAX_ROTATION_ANGLE))
-    //         .getEntry();
-    // TAB_ARM.add("Rotate Arm", new InstantCommand(() -> setArmAngle(targetAngle.getDouble(0))));
+    // rotList
+    // .add("Target Angle", 0)
+    // .withWidget(BuiltInWidgets.kNumberSlider)
+    // .withProperties(Map.of("min", -MAX_ROTATION_ANGLE, "max",
+    // MAX_ROTATION_ANGLE))
+    // .getEntry();
+    // TAB_ARM.add("Rotate Arm", new InstantCommand(() ->
+    // setArmAngle(targetAngle.getDouble(0))));
     // rotList.addNumber("Arm Angle", this::getArmAngle);
-    // rotList.addNumber("Rotation Motor Ticks", (() -> convertDegreesToTicks(getArmAngle())));
+    // rotList.addNumber("Rotation Motor Ticks", (() ->
+    // convertDegreesToTicks(getArmAngle())));
 
-    // rotList.addNumber("Rotation voltage", ROTATION_LEADER_TALON::getMotorOutputVoltage);
-    // rotList.addNumber("Rotation current", ROTATION_LEADER_TALON::getSupplyCurrent);
-    // rotList.addNumber("Rotation error", ROTATION_LEADER_TALON::getClosedLoopError);
+    // rotList.addNumber("Rotation voltage",
+    // ROTATION_LEADER_TALON::getMotorOutputVoltage);
+    // rotList.addNumber("Rotation current",
+    // ROTATION_LEADER_TALON::getSupplyCurrent);
+    // rotList.addNumber("Rotation error",
+    // ROTATION_LEADER_TALON::getClosedLoopError);
     // TAB_ARM.addNumber("SensorSelectedVelocity",
     // ROTATION_LEADER_TALON::getSelectedSensorVelocity);
 
     // ShuffleboardLayout extList =
-    //     TAB_ARM.getLayout("Arm Extension", BuiltInLayouts.kList).withSize(1, 4);
+    // TAB_ARM.getLayout("Arm Extension", BuiltInLayouts.kList).withSize(1, 4);
 
     // GenericEntry targetLength = extList.add("Target Length", 0).getEntry();
 
     // extList.addNumber("Arm Length Inches", this::getArmLength);
-    // extList.addNumber("Extension Motor Ticks", EXTENSION_TALON::getSelectedSensorPosition);
-    // extList.addNumber("Potentiometer Voltage", EXTENSION_POTENTIOMETER::getVoltage);
+    // extList.addNumber("Extension Motor Ticks",
+    // EXTENSION_TALON::getSelectedSensorPosition);
+    // extList.addNumber("Potentiometer Voltage",
+    // EXTENSION_POTENTIOMETER::getVoltage);
 
-    // TAB_ARM.add("Extend Arm", new InstantCommand(() -> setArmLength(targetLength.getDouble(0))));
+    // TAB_ARM.add("Extend Arm", new InstantCommand(() ->
+    // setArmLength(targetLength.getDouble(0))));
 
     TAB_MAIN2
         .add("Coast Rotation", new InstantCommand(this::coastArmRotation).ignoringDisable(true))
@@ -200,10 +205,6 @@ public class ArmIOTalonFX implements ArmIO {
     return ticks * CONVERSION_FACTOR_TICKS_TO_INCHES;
   }
 
-  private double convertVoltsToInches(double volts) {
-    return (volts * CONVERSION_FACTOR_VOLTAGE_TO_INCHES);
-  }
-
   @Override
   public double getArmLength() {
     return convertTicksToInches(
@@ -231,16 +232,9 @@ public class ArmIOTalonFX implements ArmIO {
   @Override
   public void setArmAngle(double angle) {
     if (Math.abs(angle) < MAX_ROTATION_ANGLE) {
-      // ROTATION_LEADER_TALON.config_kP(0, ROTATION_KP);
       ROTATION_LEADER_TALON.config_kP(0, 2.75);
-      // ROTATION_LEADER_TALON.config_kP(0, 2.75);
-      // ROTATION_LEADER_TALON.config_kD(0, ROTATION_KD);
       ROTATION_LEADER_TALON.config_kD(0, 0);
       ROTATION_LEADER_TALON.set(TalonFXControlMode.MotionMagic, convertDegreesToTicks(angle));
-      // DemandType.ArbitraryFeedForward,
-      // (ArmConstants.rotationArbitraryFeedforwardValues.get(getArmLength())) *
-      // Math.cos(Math.toRadians(90.0 - angle))); //
-      // // ROTATION_KF * Math.cos(Math.toRadians(90.0 - angle))); //
     } else {
       armOverRotateAlert.set(true);
     }
@@ -252,7 +246,6 @@ public class ArmIOTalonFX implements ArmIO {
         TalonFXControlMode.PercentOutput,
         ArmConstants.rotationArbitraryFeedforwardValues.get(getArmLength())
             * Math.cos(Math.toRadians(90.0 - this.getArmAngle())));
-    // (-0.095) * Math.cos(Math.toRadians(90.0 - this.getArmAngle())));
   }
 
   @Override
@@ -274,17 +267,12 @@ public class ArmIOTalonFX implements ArmIO {
   public void holdCurrentAngle(double desiredPosition) {
     if (Math.abs(desiredPosition) < MAX_ROTATION_ANGLE) {
       ROTATION_LEADER_TALON.config_kP(0, 0.1);
-      // ROTATION_LEADER_TALON.config_kP(0, 0.4);
-      // ROTATION_LEADER_TALON.config_kP(0, 3.25);
       ROTATION_LEADER_TALON.config_kD(0, 0.0);
-      // ROTATION_LEADER_TALON.config_kD(0, 0.003);
       ROTATION_LEADER_TALON.set(
           TalonFXControlMode.Position,
           convertDegreesToTicks(desiredPosition),
           DemandType.ArbitraryFeedForward,
-          // (-0.05675) * Math.cos(Math.toRadians(90.0 - desiredPosition)));
           (-0.055) * Math.cos(Math.toRadians(90.0 - desiredPosition)));
-      // (-0.095) * Math.cos(Math.toRadians(90.0 - desiredPosition)));
     } else {
       armOverRotateAlert.set(true);
     }

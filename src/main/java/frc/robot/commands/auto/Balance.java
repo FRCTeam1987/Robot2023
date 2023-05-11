@@ -41,8 +41,6 @@ public class Balance extends PIDCommand {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // DriverStation.reportError(this.getController().atSetpoint() == true ? "true" : "false",
-    // null);
     return this.getController().atSetpoint();
   }
 }

@@ -30,16 +30,6 @@ public class WristIOTalonSRX implements WristIO {
     wristMotor.setSensorPhase(true);
     wristMotor.configContinuousCurrentLimit(15);
     wristMotor.configPeakCurrentLimit(30);
-    // setPosition(ANGLE_STRAIGHT);
-    // TAB_WRIST.add(
-    //     "reset",
-    //     new InstantCommand(
-    //         () -> {
-    //           wristMotor.set(TalonSRXControlMode.PercentOutput, 0.0);
-    //           wristMotor.setSelectedSensorPosition(0);
-    //         }));
-    // TAB_WRIST.addNumber("Current Position", wristMotor::getSelectedSensorPosition);
-    // TAB_WRIST.addNumber("Motor Voltage", wristMotor::getMotorOutputVoltage);
   }
 
   @Override

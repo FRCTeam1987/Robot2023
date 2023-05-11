@@ -78,7 +78,6 @@ public class TeleopSwerve extends CommandBase {
     m_povDegree = povDegree;
     m_shouldYLock = shouldYLock;
 
-    // this.holdButton = holdButton;
     this.drivetrain = drivetrain;
     this.translationXSupplier = translationXSupplier;
     this.translationYSupplier = translationYSupplier;
@@ -117,15 +116,6 @@ public class TeleopSwerve extends CommandBase {
     } else if (m_shouldYLock.getAsBoolean() && drivetrain.getPoseX() < 2.5) {
       try {
         m_ySetPoint = drivetrain.getPose().nearest(Constants.OnTheFly.CONE_NODES_POSE).getY();
-        // m_ySetPoint =
-        //     Constants.OnTheFly.CONE_NODES_Y.stream()
-        //         .filter(
-        //             (Double y) ->
-        //                 Util.isWithinTolerance(
-        //                     drivetrain.getPoseY(), y, Constants.OnTheFly.NODE_Y_TOLERANCE))
-        //         .findFirst()
-        //         .get();
-        // useYLock = true;
       } catch (NoSuchElementException e) {
         useYLock = false;
         DriverStation.reportWarning("Not close enough to cone node. Not locking.", false);
@@ -162,11 +152,7 @@ public class TeleopSwerve extends CommandBase {
       rotationPercentage =
           thetaController.calculate(
               drivetrain.getPose().getRotation().getDegrees(), thetaController.getSetpoint());
-      // SmartDashboard.putNumber("rotationPercentage", rotationPercentage);
-      // SmartDas}hboard.putNumber("driverController setpoint", driverController.getSetpoint());
     }
-    // double rotationPercentage =
-    //     rotationSlewRate.calculate(modifyAxis(-rotationSupplier.getAsDouble()));
 
     double xVelocity = xPercentage * maxVelocityMetersPerSecond * m_speedMultiplier.getAsDouble();
     double yVelocity = yPercentage * maxVelocityMetersPerSecond * m_speedMultiplier.getAsDouble();

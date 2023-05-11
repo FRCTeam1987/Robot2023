@@ -64,7 +64,6 @@ public class Vision extends SubsystemBase {
 
       }
     }
-    // System.out.println("vision periodic");
     VisionIOLimelightBase limelight = VisionIOLimelight.getInstance().getBestLimelight();
     try {
       double[] pose = limelight.getBotPose();
@@ -72,20 +71,15 @@ public class Vision extends SubsystemBase {
           new Pose3d(
               new Translation3d(pose[0], pose[1], pose[2]),
               new Rotation3d(pose[3], pose[4], pose[5]));
-      // System.out.println(pose2.getX() + ", " + pose2.getY() + ", " +
-      // pose2.getRotation().getDegrees());
       if (ADVANTAGE_KIT_ENABLED) {
         Logger.getInstance().recordOutput("Vision/RobotPose", pose3d);
       }
-      // if (LOGGING) {
       final Rotation2d currentAngle = poseEstimator.getEstimatedPosition().getRotation();
       final Pose2d visionPose = new Pose2d(pose3d.toPose2d().getTranslation(), currentAngle);
       if (visionPose.getX() == 0.0 || visionPose.getY() == 0.0) {
         return;
       }
       poseEstimator.addVisionMeasurement(visionPose, pose[6]);
-      // System.out.println(pose3d.toPose2d().toString());
-      // }
     } catch (Exception ignored) {
       if (hasThrownException) {
         DriverStation.reportWarning(

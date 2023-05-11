@@ -32,7 +32,6 @@ public class RotateArm extends CommandBase {
     if (!interrupted) {
       System.out.println("Not interrupted, holding current angle!");
       ARM.holdCurrentAngle(ANGLE);
-      // ARM.stallArm();
     }
   }
 

@@ -16,7 +16,6 @@ public class VisionIOLimelightBase {
 
     String limelightNameShort = limelightName.replace("limelight-", "");
     NetworkTable inst = NetworkTableInstance.getDefault().getTable(limelightName);
-    // inst.getTable(limelightName).getEntry("ledMode").setNumber(1);
     inst.getEntry("pipeline").setNumber(LIMELIGHT_PIPELINE);
     TAB_VISION
         .addNumber(limelightNameShort + " count", this::getVisibleTagCount)

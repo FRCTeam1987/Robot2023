@@ -52,9 +52,6 @@ public final class ArmConstants {
       new InterpolatingTreeMap<>();
 
   static {
-    // rotationArbitraryFeedforwardValues.put(0.0, -0.09);
-    // rotationArbitraryFeedforwardValues.put(1.0, -0.10);
-    // rotationArbitraryFeedforwardValues.put(2.0, -0.11);
     rotationArbitraryFeedforwardValues.put(0.0, -0.07);
     rotationArbitraryFeedforwardValues.put(3.0, -0.072);
     rotationArbitraryFeedforwardValues.put(6.0, -0.074);

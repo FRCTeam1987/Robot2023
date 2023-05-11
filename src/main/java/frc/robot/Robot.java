@@ -28,10 +28,12 @@ public class Robot extends LoggedRobot {
   private RobotContainer robotContainer;
   private final Alert logReceiverQueueAlert =
       new Alert("Logging queue exceeded capacity, data will NOT be logged.", AlertType.ERROR);
+
   /** Create a new Robot. */
   public Robot() {
     super(Constants.LOOP_PERIOD_SECS);
   }
+
   /**
    * This method is executed when the code first starts running on the robot and should be used for
    * any initialization code.
@@ -47,7 +49,6 @@ public class Robot extends LoggedRobot {
 
       // Set a metadata value
       logger.recordMetadata("RuntimeType", getRuntimeType().toString());
-      // logger.recordMetadata("BatteryName", BatteryTracker.scanBattery(10.0));
       logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
       logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
       logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
@@ -83,7 +84,8 @@ public class Robot extends LoggedRobot {
           // Run as fast as possible during replay
           setUseTiming(false);
 
-          // Prompt the user for a file path on the command line (if not open in AdvantageScope)
+          // Prompt the user for a file path on the command line (if not open in
+          // AdvantageScope)
           String path = LogFileUtil.findReplayLog();
 
           // Read log file for replay
@@ -94,7 +96,8 @@ public class Robot extends LoggedRobot {
           break;
       }
 
-      // Start logging! No more data receivers, replay sources, or metadata values may be added.
+      // Start logging! No more data receivers, replay sources, or metadata values may
+      // be added.
       logger.start();
 
       // Alternative logging of scheduled commands
@@ -125,20 +128,18 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotPeriodic() {
     /*
-     * Runs the Scheduler. This is responsible for polling buttons, adding newly-scheduled commands,
-     * running already-scheduled commands, removing finished or interrupted commands, and running
-     * subsystem periodic() methods. This must be called from the robot's periodic block in order
+     * Runs the Scheduler. This is responsible for polling buttons, adding
+     * newly-scheduled commands,
+     * running already-scheduled commands, removing finished or interrupted
+     * commands, and running
+     * subsystem periodic() methods. This must be called from the robot's periodic
+     * block in order
      * for anything in the Command-based framework to work.
      */
     CommandScheduler.getInstance().run();
 
     logReceiverQueueAlert.set(Logger.getInstance().getReceiverQueueFault());
   }
-
-  // @Override
-  // public void disabledInit() {
-  //   robotContainer.setShouldUseVision(true);
-  // }
 
   @Override
   public void disabledPeriodic() {}
@@ -162,8 +163,10 @@ public class Robot extends LoggedRobot {
   @Override
   public void teleopInit() {
     /*
-     * This makes sure that the autonomous stops running when teleop starts running. If you want the
-     * autonomous to continue until interrupted by another command, remove this line or comment it
+     * This makes sure that the autonomous stops running when teleop starts running.
+     * If you want the
+     * autonomous to continue until interrupted by another command, remove this line
+     * or comment it
      * out.
      */
     if (autonomousCommand != null) {

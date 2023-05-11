@@ -22,7 +22,6 @@ public class SyncedArm extends CommandBase {
   private double initialLength;
 
   private double angleRange;
-  private double lengthRange;
 
   /** Creates a new SyncedArm. */
   public SyncedArm(
@@ -39,23 +38,11 @@ public class SyncedArm extends CommandBase {
     initialAngle = arm.getArmAngle();
     initialLength = arm.getArmLength();
     angleRange = Math.abs(desiredAngle.getAsDouble() - initialAngle);
-    lengthRange = Math.abs(desiredLength.getAsDouble() - initialLength);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // final double currentAngle = arm.getArmAngle();
-    // final double currentAnglePercent = Math.abs(currentAngle / angleRange);
-    // final double currentLength = arm.getArmLength();
-    // final double currentLengthPercent = Math.abs(currentLength / lengthRange);
-    // final double desiredAngleValue = desiredAngle.getAsDouble();
-    // arm.setArmAngle(desiredAngle.getAsDouble());
-    // final double intermediateLength = isArmHome() ?
-    //   desiredAngleValue - (Math.sqrt(1-currentAnglePercent) * desiredAngleValue)
-    //   : desiredAngleValue - (Math.pow(1-currentAnglePercent, 2) * desiredAngleValue);
-    // arm.setArmLength(findLength());
-
     if (Util.isWithinTolerance(arm.getArmAngle(), desiredAngle.getAsDouble(), 1)) {
       SmartDashboard.putNumber("Intermediate Length", desiredLength.getAsDouble());
     } else {
@@ -96,7 +83,6 @@ public class SyncedArm extends CommandBase {
     SmartDashboard.putNumber("CurrentAnglePercent", currentAnglePercent);
 
     final double currentLength = arm.getArmLength();
-    final boolean isRetract = currentLength > desiredLength.getAsDouble();
     return Math.abs(
         (desiredLength.getAsDouble() - currentLength)
             * (Math.abs(
