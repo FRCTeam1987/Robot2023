@@ -33,6 +33,4 @@ public class ShootCube extends CommandBase {
     claw.stopRollers();
     claw.setGamePiece(GamePiece.NONE);
   }
-
-  
 }

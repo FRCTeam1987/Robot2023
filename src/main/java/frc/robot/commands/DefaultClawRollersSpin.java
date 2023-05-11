@@ -31,6 +31,4 @@ public class DefaultClawRollersSpin extends CommandBase {
       claw.stopRollers();
     }
   }
-
-
 }
