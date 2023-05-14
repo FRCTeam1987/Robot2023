@@ -4,6 +4,7 @@
 
 package frc.robot.commands.wrist;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.wrist.Wrist;
@@ -18,7 +19,7 @@ public class HomeWrist extends CommandBase { // README not tested do not use
   public HomeWrist(final Wrist wrist) {
     this.wrist = wrist;
     addRequirements(this.wrist);
-    Constants.TAB_MAIN2.addNumber("WristPos", wrist::getPosition).withPosition(9, 0);
+    Constants.TAB_MAIN.addNumber("WristPos", wrist::getPosition).withPosition(9, 0);
   }
 
   // Called when the command is initially scheduled.
@@ -30,23 +31,23 @@ public class HomeWrist extends CommandBase { // README not tested do not use
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("Interrupted: " + interrupted);
+    DriverStation.reportWarning("Home Writst Interrupted: " + interrupted, false);
     if (interrupted) {
       return;
     }
     wrist.setPercent(0);
-    System.out.println(wrist.getPosition() + " Before ConfigRelative");
+    DriverStation.reportWarning(wrist.getPosition() + " Before ConfigRelative", false);
     wrist.configRelative(Constants.INSTALLED_ARM.getWristOffset());
-    System.out.println(wrist.getPosition() + " After ConfigRelative");
+    DriverStation.reportWarning(wrist.getPosition() + " After ConfigRelative", false);
     wrist.setPosition(Wrist.ANGLE_STRAIGHT);
-    System.out.println(wrist.getPosition() + " After SetPosition");
+    DriverStation.reportWarning(wrist.getPosition() + " After SetPosition", false);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    System.out.println(
-        "is Finished: " + wrist.hasHitHardstop() + ", position: " + wrist.getPosition());
+    DriverStation.reportWarning(
+        "is Finished: " + wrist.hasHitHardstop() + ", position: " + wrist.getPosition(), false);
     return wrist.hasHitHardstop();
   }
 }

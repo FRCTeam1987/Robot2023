@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.RobotContainer.Height;
@@ -36,6 +37,6 @@ public class SetArmHeight extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println(height.toString());
+    DriverStation.reportWarning("arm height:" + height.toString(), false);
   }
 }

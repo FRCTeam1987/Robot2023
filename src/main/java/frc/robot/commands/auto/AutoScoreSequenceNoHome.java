@@ -24,7 +24,7 @@ public class AutoScoreSequenceNoHome extends SequentialCommandGroup {
       final Claw claw,
       final Supplier<PositionConfig> positionConfigSupplier) {
     addCommands(
-        new ScoreSequence(arm, wrist, claw, positionConfigSupplier),
+        new ScoreSequence(arm, wrist, positionConfigSupplier),
         new EjectGamePiece(claw).withTimeout(0.2));
   }
 }

@@ -22,7 +22,6 @@ public class SetWristPosition extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // TODO check the telescope length, if the length is below a value change the acceptable range
     wrist.setPosition(position);
   }
 

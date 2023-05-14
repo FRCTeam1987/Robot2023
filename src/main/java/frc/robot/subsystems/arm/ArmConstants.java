@@ -24,7 +24,6 @@ public final class ArmConstants {
   public static final double FULL_ROTATION_TICKS = 4096.0;
   public static final double MINIMUM_EXTENSION_LENGTH_INCHES = 0.0;
   public static final double MAXIMUM_EXTENSION_LENGTH_INCHES = 41.0;
-  // FIXME: That's not supposed to be a thing! Make this value not 0. Original: -161.0
   public static final double MINIMUM_EXTENSION_MOTOR_TICKS = 123.0;
   public static final double MAXIMUM_EXTENSION_MOTOR_TICKS = 70500.0;
   public static final double MINIMUM_POTENTIOMETER_VOLTAGE = 0.0635;

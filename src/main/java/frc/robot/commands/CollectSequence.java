@@ -27,29 +27,29 @@ public class CollectSequence extends SequentialCommandGroup {
       final Arm arm,
       final Wrist wrist,
       final Claw claw,
-      final Supplier<PositionConfig> PositionConfig) {
-    addCommands(new CollectSequence(arm, wrist, claw, PositionConfig, null));
+      final Supplier<PositionConfig> positionConfig) {
+    addCommands(new CollectSequence(arm, wrist, claw, positionConfig, null));
   }
 
   public CollectSequence(
       final Arm arm,
       final Wrist wrist,
       final Claw claw,
-      final Supplier<PositionConfig> PositionConfig,
+      final Supplier<PositionConfig> positionConfig,
       XboxController controller) {
     addCommands(
         new ParallelCommandGroup(
             new SetArm(
                 arm,
-                () -> PositionConfig.get().armRotation,
-                () -> PositionConfig.get().armLength,
+                () -> positionConfig.get().armRotation,
+                () -> positionConfig.get().armLength,
                 () -> false),
-            new SetWristPositionSupplier(wrist, () -> PositionConfig.get().wristRotation),
+            new SetWristPositionSupplier(wrist, () -> positionConfig.get().wristRotation),
             new InstantCommand(() -> claw.setRollerSpeed(-.5), claw)),
         new ConditionalCommand(
             new CollectGamePiece(claw, GamePiece.CUBE, controller),
             new CollectGamePiece(claw, GamePiece.CONE, controller),
-            () -> PositionConfig.get().gamePiece == GamePiece.CUBE),
+            () -> positionConfig.get().gamePiece == GamePiece.CUBE),
         new ParallelCommandGroup(
             new SetArm(arm, () -> Arm.HOME_ROTATION, () -> Arm.HOME_EXTENSION, () -> true),
             new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),

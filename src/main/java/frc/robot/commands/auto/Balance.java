@@ -18,18 +18,16 @@ public class Balance extends PIDCommand {
   public Balance(final Drivetrain drive) {
     super(
         // The controller that the command will use
-        new PIDController(0.225, 0, 0), // TODO HEARTLAND 0.2, 0 ,0 STAGE 025, 0, 0
+        new PIDController(0.225, 0, 0), // HEARTLAND 0.2, 0 ,0 STAGE 025, 0, 0
         // This should return the measurement
         drive::getPitch,
         // This should return the setpoint (can also be a constant)
         () -> 0,
         // This uses the output
-        output -> {
-          // Use the output here
-          {
-            drive.drive(-output / 7.0, 0, 0, true);
-          }
-        });
+        output ->
+            // Use the output here
+            drive.drive(-output / 7.0, 0, 0, true));
+
     // Use addRequirements() here to declare subsystem dependencies.
     // Configure additional PID options by calling `getController` here.
     this.drive = drive;

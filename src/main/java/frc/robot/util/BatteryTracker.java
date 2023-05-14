@@ -1,5 +1,6 @@
 package frc.robot.util;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SerialPort;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
@@ -16,17 +17,17 @@ public class BatteryTracker {
    * Website: https://qrcoderw.com/batch_qr_generator.php
    */
   private static final List<RobotType> supportedRobots = List.of(RobotType.ROBOT_2023_COMP);
-  public static final String defaultName = "BAT-0000-000";
+  public static final String DEFAULT_NAME = "BAT-0000-000";
 
-  private static final int nameLength = 12;
+  private static final int NAME_LENGTH = 12;
   private static final byte[] scanCommand =
       new byte[] {0x7e, 0x00, 0x08, 0x01, 0x00, 0x02, 0x01, (byte) 0xab, (byte) 0xcd};
   private static final byte[] responsePrefix =
       new byte[] {0x02, 0x00, 0x00, 0x01, 0x00, 0x33, 0x31};
-  private static final byte endMark = 0x0d; // CR
-  private static final int fullResponseLength = responsePrefix.length + nameLength + 1;
+  private static final byte ENDMARK = 0x0d; // CR
+  private static final int FULL_RESPONSE_LENGTH = responsePrefix.length + NAME_LENGTH + 1;
 
-  private static String name = defaultName;
+  private static String name = DEFAULT_NAME;
 
   /**
    * Scans the battery. This should be called before the first loop cycle
@@ -34,64 +35,67 @@ public class BatteryTracker {
    * @param timeout The time to wait before giving up
    */
   public static String scanBattery(double timeout) {
-    System.out.println("[BatteryTracker] Scanning...");
+    DriverStation.reportWarning("[BatteryTracker] Scanning...", false);
     if (Constants.getMode() == Mode.REAL) {
-      System.out.println("[BatteryTracker] Robot is real");
+      DriverStation.reportWarning("[BatteryTracker] Robot is real", false);
       if (supportedRobots.contains(Constants.getRobot())) {
-        System.out.println("[BatteryTracker] Robot is supported");
+        DriverStation.reportWarning("[BatteryTracker] Robot is supported", false);
         // Only scan on supported robots and in real mode
         try (SerialPort port = new SerialPort(9600, SerialPort.Port.kUSB)) {
           port.setTimeout(timeout);
           port.setWriteBufferSize(scanCommand.length);
-          port.setReadBufferSize(fullResponseLength);
+          port.setReadBufferSize(FULL_RESPONSE_LENGTH);
 
           port.write(scanCommand, scanCommand.length);
-          byte[] response = port.read(fullResponseLength);
+          byte[] response = port.read(FULL_RESPONSE_LENGTH);
 
           // Ensure response is correct length
-          if (response.length != fullResponseLength) {
-            System.out.println(
+          if (response.length != FULL_RESPONSE_LENGTH) {
+            DriverStation.reportWarning(
                 "[BatteryTracker] Expected "
-                    + fullResponseLength
+                    + FULL_RESPONSE_LENGTH
                     + " bytes from scanner, got "
-                    + response.length);
+                    + response.length,
+                false);
             return name;
           }
 
           // Ensure response starts with prefix
           for (int i = 0; i < responsePrefix.length; i++) {
             if (response[i] != responsePrefix[i]) {
-              System.out.println("[BatteryTracker] Invalid prefix from scanner.  Got data:");
-              System.out.println("[BatteryTracker] " + Arrays.toString(response));
+              DriverStation.reportWarning(
+                  "[BatteryTracker] Invalid prefix from scanner.  Got data:", false);
+              DriverStation.reportWarning("[BatteryTracker] " + Arrays.toString(response), false);
               return name;
             }
           }
 
           // Ensure response ends with suffix
-          if (response[response.length - 1] != endMark) {
-            System.out.println(
+          if (response[response.length - 1] != ENDMARK) {
+            DriverStation.reportWarning(
                 "[BatteryTracker] Invalid suffix from scanner.  Got "
-                    + response[response.length - 1]);
+                    + response[response.length - 1],
+                false);
           }
 
           // Read name from data
-          byte[] batteryNameBytes = new byte[nameLength];
-          System.arraycopy(response, responsePrefix.length, batteryNameBytes, 0, nameLength);
+          byte[] batteryNameBytes = new byte[NAME_LENGTH];
+          System.arraycopy(response, responsePrefix.length, batteryNameBytes, 0, NAME_LENGTH);
           name = new String(batteryNameBytes);
-          System.out.println("[BatteryTracker] Scanned battery " + name);
+          DriverStation.reportWarning("[BatteryTracker] Scanned battery " + name, false);
 
         } catch (Exception e) {
-          System.out.println("[BatteryTracker] Exception while trying to scan battery");
+          DriverStation.reportWarning(
+              "[BatteryTracker] Exception while trying to scan battery", false);
           e.printStackTrace();
         }
       } else {
-        System.out.println("[BatteryTracker] Unsupported Robot");
+        DriverStation.reportWarning("[BatteryTracker] Unsupported Robot", false);
       }
     } else {
-      System.out.println("[BatteryTracker] Robot is not real!");
+      DriverStation.reportWarning("[BatteryTracker] Robot is not real!", false);
     }
 
-    // TAB_MAIN.addString("Battery", () -> name);
     return name;
   }
 

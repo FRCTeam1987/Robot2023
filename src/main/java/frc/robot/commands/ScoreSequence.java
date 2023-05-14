@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants.PositionConfig;
 import frc.robot.commands.arm.SetArm;
 import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.claw.Claw;
 import frc.robot.subsystems.wrist.Wrist;
 import java.util.function.Supplier;
 
@@ -18,10 +17,7 @@ import java.util.function.Supplier;
 public class ScoreSequence extends ParallelCommandGroup {
   /** Creates a new ScoreSequence. */
   public ScoreSequence(
-      final Arm arm,
-      final Wrist wrist,
-      final Claw claw,
-      final Supplier<PositionConfig> positionConfigSupplier) {
+      final Arm arm, final Wrist wrist, final Supplier<PositionConfig> positionConfigSupplier) {
     addCommands(
         new SetArm(
             arm,

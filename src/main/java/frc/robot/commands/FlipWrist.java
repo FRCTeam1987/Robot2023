@@ -10,22 +10,22 @@ import frc.robot.util.Util;
 
 public class FlipWrist extends CommandBase {
 
-  private final Wrist WRIST;
-  private final boolean ROTATION;
+  private final Wrist wrist;
+  private final boolean rotation;
 
-  public FlipWrist(final Wrist WRIST, final boolean ROTATION) {
-    this.WRIST = WRIST;
-    this.ROTATION = ROTATION;
-    addRequirements(this.WRIST);
+  public FlipWrist(final Wrist wrist, final boolean rotation) {
+    this.wrist = wrist;
+    this.rotation = rotation;
+    addRequirements(this.wrist);
   }
 
   @Override
   public void initialize() {
-    WRIST.setRotation(ROTATION);
+    wrist.setRotation(rotation);
   }
 
   @Override
   public boolean isFinished() {
-    return (Util.isWithinTolerance(WRIST.getDegrees(), (ROTATION ? 180.0 : 0), 3));
+    return (Util.isWithinTolerance(wrist.getDegrees(), (rotation ? 180.0 : 0), 3));
   }
 }

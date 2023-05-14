@@ -33,7 +33,6 @@ public class SetArm extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // TODO set arm angle only when more retracted, this assumes it is retracted and it might not be
 
     final double desiredLength = lengthSupplier.getAsDouble();
     final double desiredAngle = angleSupplier.getAsDouble();

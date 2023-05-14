@@ -10,22 +10,22 @@ import frc.robot.util.Util;
 
 public class ExtendArm extends CommandBase {
 
-  private final Arm ARM;
-  private final int INCHES;
+  private final Arm arm;
+  private final int inches;
 
-  public ExtendArm(final Arm ARM, final int INCHES) {
-    this.ARM = ARM;
-    this.INCHES = INCHES;
-    addRequirements(this.ARM);
+  public ExtendArm(final Arm arm, final int inches) {
+    this.arm = arm;
+    this.inches = inches;
+    addRequirements(this.arm);
   }
 
   @Override
   public void initialize() {
-    ARM.setArmLength(INCHES);
+    arm.setArmLength(inches);
   }
 
   @Override
   public boolean isFinished() {
-    return (Util.isWithinTolerance(ARM.getArmLength(), INCHES, 1));
+    return (Util.isWithinTolerance(arm.getArmLength(), inches, 1));
   }
 }

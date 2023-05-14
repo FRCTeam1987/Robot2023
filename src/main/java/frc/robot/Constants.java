@@ -38,7 +38,7 @@ public final class Constants {
   public static final boolean ADVANTAGE_KIT_ENABLED = true;
   public static final boolean TUNING_MODE = false;
 
-  // FIXME: If Limelight is used, specify the pipeline for detecting AprilTags
+  // If Limelight is used, specify the pipeline for detecting AprilTags
   public static final int LIMELIGHT_PIPELINE = 0;
   public static final double AUTO_DRIVE_P_CONTROLLER = 6.0;
   public static final double AUTO_DRIVE_I_CONTROLLER = 0.0;
@@ -47,7 +47,7 @@ public final class Constants {
   public static final double AUTO_TURN_I_CONTROLLER = 0.0;
   public static final double AUTO_TURN_D_CONTROLLER = 0.0;
   public static final ShuffleboardTab TAB_VISION = Shuffleboard.getTab("Vision");
-  public static final ShuffleboardTab TAB_MAIN2 = Shuffleboard.getTab("Main2");
+  public static final ShuffleboardTab TAB_MAIN = Shuffleboard.getTab("Main2");
   public static final ShuffleboardTab TAB_ARM = Shuffleboard.getTab("Arm");
   public static final ShuffleboardTab TAB_WRIST = Shuffleboard.getTab("Wrist");
   public static final ShuffleboardTab TAB_CLAW = Shuffleboard.getTab("Claw");
@@ -62,7 +62,7 @@ public final class Constants {
   private static final Alert invalidRobotAlert =
       new Alert("Invalid robot selected, using competition robot as default.", AlertType.ERROR);
 
-  // FIXME: update for various robots
+  // For various robots:
   public static RobotType getRobot() {
     if (RobotBase.isReal()) {
       if (ROBOT == RobotType.ROBOT_SIMBOT) { // Invalid robot selected
@@ -81,7 +81,7 @@ public final class Constants {
     }
   }
 
-  // FIXME: update for various robots
+  // Updated for various robots
   public static Mode getMode() {
     switch (getRobot()) {
       case ROBOT_2023_TEST:
@@ -97,7 +97,7 @@ public final class Constants {
     }
   }
 
-  // FIXME: update for various robots
+  // Updated for various robots:
   public enum RobotType {
     ROBOT_2023_TEST,
     ROBOT_2023_COMP,
@@ -132,6 +132,7 @@ public final class Constants {
   }
 
   public static class PositionConfigs {
+
     public static final PositionConfig TEST_POS =
         new PositionConfig(
             Arm.HOME_EXTENSION, 45, 1692 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);

@@ -30,6 +30,7 @@ public class ClawIOSparkMAX implements ClawIO {
     return clawRollerMotor.getOutputCurrent();
   }
 
+  @Override
   public void setRollerSpeed(double speed) {
     clawRollerMotor.set(speed);
   }

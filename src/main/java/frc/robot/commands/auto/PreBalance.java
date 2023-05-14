@@ -4,6 +4,7 @@
 
 package frc.robot.commands.auto;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.Util;
@@ -43,7 +44,7 @@ public class PreBalance extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    System.out.println("Ended");
+    DriverStation.reportWarning("Ended PreBalance", false);
     drive.stop();
     drive.enableXstance();
   }
@@ -51,8 +52,8 @@ public class PreBalance extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    System.out.println(
-        "Ran IsFinished" + (Util.isWithinTolerance(Math.abs(drive.getPitch()), 0, 2)));
+    DriverStation.reportWarning(
+        "Ran IsFinished" + (Util.isWithinTolerance(Math.abs(drive.getPitch()), 0, 2)), false);
     return hasDrivenDistance() && Math.abs(drive.getPitch()) < maxGyroAngle - 1;
   }
 }

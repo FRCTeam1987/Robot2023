@@ -18,7 +18,7 @@ public class Claw extends SubsystemBase {
 
   private GamePiece gamePiece = GamePiece.CONE;
 
-  private final double currentThreshold = 10.0; // amps
+  private static final double CURRENT_THRESHOLD = 10.0; // amps
 
   /** Creates a new Claw. */
   public Claw(ClawIO io) {
@@ -74,9 +74,10 @@ public class Claw extends SubsystemBase {
   }
 
   public boolean hasGamePiece() {
-    return getCurrent() > currentThreshold;
+    return getCurrent() > CURRENT_THRESHOLD;
   }
 
+  @Override
   public void periodic() {
     if (ADVANTAGE_KIT_ENABLED) {
       io.updateInputs(inputs);

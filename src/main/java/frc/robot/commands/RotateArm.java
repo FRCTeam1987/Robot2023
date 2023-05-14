@@ -4,36 +4,37 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.util.Util;
 
 public class RotateArm extends CommandBase {
 
-  private final Arm ARM;
-  private final double ANGLE;
+  private final Arm arm;
+  private final double angle;
 
-  public RotateArm(final Arm ARM, final double ANGLE) {
-    this.ARM = ARM;
-    this.ANGLE = ANGLE;
-    addRequirements(this.ARM);
+  public RotateArm(final Arm arm, final double angle) {
+    this.arm = arm;
+    this.angle = angle;
+    addRequirements(this.arm);
   }
 
   @Override
   public void initialize() {
-    ARM.setArmAngle(ANGLE);
+    arm.setArmAngle(angle);
   }
 
   @Override
   public void end(boolean interrupted) {
     if (!interrupted) {
-      System.out.println("Not interrupted, holding current angle!");
-      ARM.holdCurrentAngle(ANGLE);
+      DriverStation.reportWarning("Not interrupted, holding current arm angle!", false);
+      arm.holdCurrentAngle(angle);
     }
   }
 
   @Override
   public boolean isFinished() {
-    return (Util.isWithinTolerance(ARM.getArmAngle(), ANGLE, 0.5));
+    return (Util.isWithinTolerance(arm.getArmAngle(), angle, 0.5));
   }
 }

@@ -16,17 +16,16 @@ import frc.robot.subsystems.wrist.Wrist;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class GoHome extends SequentialCommandGroup {
   /** Creates a new GoHome. */
-  public GoHome(final Arm ARM, final Wrist WRIST) {
+  public GoHome(final Arm arm, final Wrist wrist) {
     // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
     addCommands(
         new ConditionalCommand(
-            new ExtendArmSupplier(ARM, () -> 2),
+            new ExtendArmSupplier(arm, () -> 2),
             new InstantCommand(),
-            () -> ARM.getArmLength() > 4),
+            () -> arm.getArmLength() > 4),
         new ParallelCommandGroup(
-            new RotateArm(ARM, Arm.HOME_ROTATION),
-            new SetWristPosition(Wrist.ANGLE_STRAIGHT, WRIST)),
-        new InstantCommand(() -> ARM.setExtensionNominal(), ARM));
+            new RotateArm(arm, Arm.HOME_ROTATION),
+            new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
+        new InstantCommand(arm::setExtensionNominal, arm));
   }
 }

@@ -8,8 +8,6 @@
 
 package frc.lib.team3061.pneumatics;
 
-// import static frc.robot.Constants.TAB_MAIN;
-
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.team6328.util.Alert;
@@ -50,8 +48,6 @@ public class Pneumatics extends SubsystemBase {
     this.io = io;
     noPressureTimer.start();
     compressorEnabledTimer.start();
-
-    // TAB_MAIN.addNumber("Pressure", this::getPressure);
   }
 
   public double getPressure() {

@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.util.Util;
@@ -28,7 +29,7 @@ public class RotateArmSupplier extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     if (!interrupted) {
-      System.out.println("Not interrupted, holding current angle!");
+      DriverStation.reportWarning("Not interrupted, holding current arm angle!", false);
       arm.holdCurrentAngle(angleSupplier.getAsDouble());
     }
   }

@@ -24,7 +24,7 @@ public class FlipArm extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // TODO set arm angle only when more retracted, this assumes it is retracted and it might not be
+    // Sets arm angle only when more retracted, this assumes it is retracted and it might not be
     if (-arm.getArmAngle() < -90 || -arm.getArmAngle() > 90) arm.setArmAngle(arm.getArmAngle());
     else {
       arm.setArmAngle(-arm.getArmAngle());

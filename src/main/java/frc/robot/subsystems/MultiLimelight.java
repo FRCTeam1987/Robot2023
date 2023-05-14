@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -18,34 +17,32 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.Limelight.LimelightHelpers;
 import frc.lib.Limelight.LimelightHelpers.LimelightResults;
-import frc.lib.Limelight.PoseWithLatency;
 import frc.lib.team3061.util.RobotOdometry;
 import frc.robot.util.Util;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 
-// TODO none of this is tested
-
 public class MultiLimelight extends SubsystemBase {
 
-  public static double calculateStandardDeviation(double input_array[]) {
-    double sum = 0.0, standard_deviation = 0.0;
-    int array_length = input_array.length;
-    for (double temp : input_array) {
+  public static double calculateStandardDeviation(double[] inputArray) {
+    double sum = 0.0;
+    double standardDeviation = 0.0;
+    int arrayLength = inputArray.length;
+    for (double temp : inputArray) {
       sum += temp;
     }
-    double mean = sum / array_length;
-    for (double temp : input_array) {
-      standard_deviation += Math.pow(temp - mean, 2);
+    double mean = sum / arrayLength;
+    for (double temp : inputArray) {
+      standardDeviation += Math.pow(temp - mean, 2);
     }
-    return Math.sqrt(standard_deviation / array_length);
+    return Math.sqrt(standardDeviation / arrayLength);
   }
 
-  private Alliance m_alliance;
-  private final BooleanSupplier m_isPoseUpdateAllowed;
-  private final List<String> m_limelights;
-  private final SwerveDrivePoseEstimator m_poseEstimator;
-  public static final ShuffleboardTab TAB_MAIN2 = Shuffleboard.getTab("Main2");
+  private Alliance mAlliance;
+  private final BooleanSupplier mIsPoseUpdateAllowed;
+  private final List<String> mLimelights;
+  private final SwerveDrivePoseEstimator mPoseEstimator;
+  public static final ShuffleboardTab TAB_MAIN = Shuffleboard.getTab("Main2");
 
   /**
    * Creates a new MultiLimelight.
@@ -55,77 +52,33 @@ public class MultiLimelight extends SubsystemBase {
    * @param limelights - Any number of limelight names to use.
    */
   public MultiLimelight(BooleanSupplier isPoseUpdateAllowed, String... limelights) {
-    m_isPoseUpdateAllowed = isPoseUpdateAllowed;
-    m_limelights = List.of(limelights);
-    m_alliance = Alliance.Invalid;
-    m_poseEstimator = RobotOdometry.getInstance().getPoseEstimator();
+    mIsPoseUpdateAllowed = isPoseUpdateAllowed;
+    mLimelights = List.of(limelights);
+    mAlliance = Alliance.Invalid;
+    mPoseEstimator = RobotOdometry.getInstance().getPoseEstimator();
 
-    for (String m_limelight : m_limelights) {
+    for (String m_limelight : mLimelights) {
       LimelightHelpers.getLatestResults(m_limelight);
     }
   }
 
-  private void updatePose(final List<LimelightResults> llResults) {
-    final PoseWithLatency averagePose =
-        llResults.stream()
-            .map(
-                llResult ->
-                    new PoseWithLatency(
-                        getAlliancePose(llResult),
-                        llResult.targetingResults.latency_capture
-                            + llResult.targetingResults.latency_pipeline
-                            + llResult.targetingResults.latency_jsonParse))
-            .reduce(
-                null,
-                (accumulator, current) -> {
-                  if (accumulator == null) {
-                    return current;
-                  }
-                  return new PoseWithLatency(
-                      new Pose2d(
-                          (accumulator.getPose().getX() + current.getPose().getX()) / 2.0,
-                          (accumulator.getPose().getY() + current.getPose().getY()) / 2.0,
-                          Rotation2d.fromDegrees(
-                              (accumulator.getPose().getRotation().getDegrees()
-                                      + current.getPose().getRotation().getDegrees())
-                                  / 2.0)),
-                      (accumulator.getLatency() + current.getLatency()) / 2.0);
-                });
-    // TODO we may want to avoid updating the pose rotation... just x & y, use gyro as rotation;
-    // some teams are doing this
-    // TODO we may want to check the pose at latency time to make sure the pose from vision is
-    // "close enough" before we update
-    m_poseEstimator.addVisionMeasurement(
-        averagePose.getPose(), Timer.getFPGATimestamp() - averagePose.getLatency() / 1000);
-  }
-
-  private Pose2d getAlliancePose(final LimelightResults llresult) {
-    if (m_alliance == Alliance.Red) {
-      return llresult.targetingResults.getBotPose2d_wpiRed();
-    }
-    if (m_alliance == Alliance.Blue) {
-      return llresult.targetingResults.getBotPose2d_wpiBlue();
-    }
-    return null; // TODO WHAT DO WE DO HERE?
-  }
-
   public void updatePose(LimelightResults result) {
-    if (m_alliance == Alliance.Invalid) {
+    if (mAlliance == Alliance.Invalid) {
       return;
     }
-    final Pose2d currentPose = m_poseEstimator.getEstimatedPosition();
+    final Pose2d currentPose = mPoseEstimator.getEstimatedPosition();
     if (currentPose.getX() > 3.5 && currentPose.getX() < 4.4) {
       DriverStation.reportError("Ignoring pose on bump", false);
       return;
     }
     final Pose2d pose =
-        m_alliance == Alliance.Red
-            ? result.targetingResults.getBotPose2d_wpiRed()
-            : result.targetingResults.getBotPose2d_wpiBlue();
+        mAlliance == Alliance.Red
+            ? result.targetingResults.getBotPose2dWpiRed()
+            : result.targetingResults.getBotPose2dWpiBlue();
     final double latencySeconds =
-        (result.targetingResults.latency_capture
-                + result.targetingResults.latency_jsonParse
-                + result.targetingResults.latency_pipeline)
+        (result.targetingResults.latencyCapture
+                + result.targetingResults.latencyjsonParse
+                + result.targetingResults.latencyPipeline)
             / 1000.0;
     // play with seeing how far we want to allow a pose update
     if (!Util.isWithinTolerance(pose.getX(), currentPose.getX(), 1.0)
@@ -141,16 +94,16 @@ public class MultiLimelight extends SubsystemBase {
       DriverStation.reportWarning("Ignoring too far pose", false);
       return;
     }
-    m_poseEstimator.addVisionMeasurement(pose, Timer.getFPGATimestamp() - latencySeconds);
+    mPoseEstimator.addVisionMeasurement(pose, Timer.getFPGATimestamp() - latencySeconds);
     DriverStation.reportError("Updated pose! x: " + pose.getX() + ", y: " + pose.getY(), false);
     // //UNCOMMENT ME FOR DEBUGGING
   }
 
   public void updatePoseNoResults(Pose2d pose, double timing) {
-    if (m_alliance == Alliance.Invalid) {
+    if (mAlliance == Alliance.Invalid) {
       return;
     }
-    final Pose2d currentPose = m_poseEstimator.getEstimatedPosition();
+    final Pose2d currentPose = mPoseEstimator.getEstimatedPosition();
     if (currentPose.getX() > 3.5 && currentPose.getX() < 4.4) {
       DriverStation.reportError("Ignoring pose on bump", false);
       return;
@@ -170,32 +123,31 @@ public class MultiLimelight extends SubsystemBase {
       DriverStation.reportWarning("Ignoring too far pose", false);
       return;
     }
-    m_poseEstimator.addVisionMeasurement(pose, Timer.getFPGATimestamp() - latencySeconds);
+    mPoseEstimator.addVisionMeasurement(pose, Timer.getFPGATimestamp() - latencySeconds);
     DriverStation.reportError("Updated pose! x: " + pose.getX() + ", y: " + pose.getY(), false);
     // //UNCOMMENT ME FOR DEBUGGING
   }
 
   @Override
   public void periodic() {
-    if (m_alliance == Alliance.Invalid) {
-      m_alliance = DriverStation.getAlliance();
+    if (mAlliance == Alliance.Invalid) {
+      mAlliance = DriverStation.getAlliance();
       return;
     }
-    if (!m_isPoseUpdateAllowed.getAsBoolean()) {
+    if (!mIsPoseUpdateAllowed.getAsBoolean()) {
       return;
     }
-    for (String limelight : m_limelights) {
+    for (String limelight : mLimelights) {
       int countTags = 0;
       countTags =
           (int)
               LimelightHelpers.getJSONDump(limelight).codePoints().filter(ch -> ch == 'm').count();
 
       if (countTags > 1) {
-        // updatePose(result);
         double[] pose =
-            m_alliance == Alliance.Blue
-                ? LimelightHelpers.getBotPose_wpiBlue(limelight)
-                : LimelightHelpers.getBotPose_wpiRed(limelight);
+            mAlliance == Alliance.Blue
+                ? LimelightHelpers.getBotPoseWpiBlue(limelight)
+                : LimelightHelpers.getBotPoseWpiRed(limelight);
         Pose2d pose2d =
             new Pose3d(
                     new Translation3d(pose[0], pose[1], pose[2]),

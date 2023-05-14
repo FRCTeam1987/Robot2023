@@ -15,7 +15,6 @@ public class RunClawForDuration extends SequentialCommandGroup {
   /** Creates a new RunClawForDuration. */
   public RunClawForDuration(Claw claw, double timeInSeconds) {
     // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
     addCommands(
         new InstantCommand(() -> claw.setRollerSpeed(0.5)).withTimeout(timeInSeconds),
         new StopClawRollers(claw));

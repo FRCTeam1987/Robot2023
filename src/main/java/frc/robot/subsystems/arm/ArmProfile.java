@@ -6,19 +6,19 @@ package frc.robot.subsystems.arm;
 
 /** Add your docs here. */
 public class ArmProfile {
-  private int WRIST_OFFSET;
-  private final double CANCODER_OFFSET;
+  private int wristOffset;
+  private final double canCoderOffset;
 
   public ArmProfile(final int wristOffset, final double CANcoderOffset) {
-    WRIST_OFFSET = wristOffset;
-    CANCODER_OFFSET = CANcoderOffset;
+    this.wristOffset = wristOffset;
+    canCoderOffset = CANcoderOffset;
   }
 
   public double getCancoderOffset() {
-    return CANCODER_OFFSET;
+    return canCoderOffset;
   }
 
   public int getWristOffset() {
-    return WRIST_OFFSET;
+    return wristOffset;
   }
 }

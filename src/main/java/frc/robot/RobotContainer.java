@@ -45,7 +45,6 @@ import frc.robot.subsystems.claw.Claw;
 import frc.robot.subsystems.claw.Claw.GamePiece;
 import frc.robot.subsystems.claw.ClawIOSparkMAX;
 import frc.robot.subsystems.drivetrain.Drivetrain;
-import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIOTalonSRX;
 import java.util.HashMap;
@@ -77,7 +76,6 @@ public class RobotContainer {
     NONE
   }
 
-  private Vision vision;
   private Arm arm;
   // use AdvantageKit's LoggedDashboardChooser instead of SendableChooser to ensure accurate logging
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -181,7 +179,6 @@ public class RobotContainer {
                         config.getArmFollowerMotorID(),
                         config.getArmCanCoderID(),
                         config.getArmTelescopeID(),
-                        config.getArmPotentiometerAnalogId(),
                         config.getCANBusName()));
             break;
           }
@@ -233,9 +230,7 @@ public class RobotContainer {
             driverController::getLeftX,
             driverController::getRightX,
             () -> 1,
-            () -> {
-              return driverController.getPOV();
-            },
+            () -> driverController.getPOV(),
             driverController::getLeftStickButtonPressed));
 
     configureButtonBindings();
@@ -270,7 +265,6 @@ public class RobotContainer {
     collectionChooser.addOption("FRONT_CUBE_FLOOR", FRONT_CUBE_FLOOR);
     collectionChooser.addOption("FRONT_CONE_FLOOR", FRONT_CONE_FLOOR);
     collectionChooser.addOption("FRONT_CONE_FLOOR_TIPPED", FRONT_CONE_FLOOR_TIPPED);
-    collectionChooser.addOption("FRONT_CONE_TOP", FRONT_CONE_TOP);
     collectionChooser.addOption("FRONT_CONE_MEDIUM", FRONT_CONE_MEDIUM);
     collectionChooser.addOption("FRONT_CUBE_MEDIUM", FRONT_CUBE_MEDIUM);
     collectionChooser.addOption("FRONT_CUBE_TOP", FRONT_CUBE_TOP);
@@ -279,7 +273,7 @@ public class RobotContainer {
     collectionChooser.addOption("BACK_DOUBLE_SUBSTATION", BACK_DOUBLE_SUBSTATION);
     collectionChooser.addOption("FRONT_CONE_FLOOR_TIPPED_LONG", FRONT_CONE_FLOOR_TIPPED_LONG);
     collectionChooser.addOption("BACK_CUBE_FLOOR_LONG", BACK_CUBE_FLOOR_LONG);
-    TAB_MAIN2.add("Collect Chooser", collectionChooser).withPosition(0, 0);
+    TAB_MAIN.add("Collect Chooser", collectionChooser).withPosition(0, 0);
 
     SendableChooser<PositionConfig> ScoreChooser = new SendableChooser<>();
     ScoreChooser.addOption("SPIT_BACK_CUBE_FLOOR_LONG", SPIT_BACK_CUBE_FLOOR_LONG); // score
@@ -293,28 +287,25 @@ public class RobotContainer {
     ScoreChooser.addOption("FRONT_CUBE_MEDIUM", PositionConfigs.FRONT_CUBE_MEDIUM);
     ScoreChooser.addOption("FRONT_CUBE_TOP", PositionConfigs.FRONT_CUBE_TOP);
     ScoreChooser.addOption("FRONT_CONE_TOP", PositionConfigs.FRONT_CONE_TOP);
-    TAB_MAIN2.add("Score Chooser", ScoreChooser).withPosition(0, 1);
+    TAB_MAIN.add("Score Chooser", ScoreChooser).withPosition(0, 1);
 
-    TAB_MAIN2
-        .add("Score Sequence", new ScoreSequence(arm, wrist, claw, ScoreChooser::getSelected))
+    TAB_MAIN
+        .add("Score Sequence", new ScoreSequence(arm, wrist, ScoreChooser::getSelected))
         .withPosition(1, 1);
 
-    TAB_MAIN2
+    TAB_MAIN
         .add(
             "Collect Sequence",
             new CollectSequence(arm, wrist, claw, collectionChooser::getSelected))
         .withPosition(1, 0);
 
-    TAB_MAIN2
-        .add("Eject Game Piece", new EjectGamePiece(claw).withTimeout(0.25))
-        .withPosition(2, 1);
+    TAB_MAIN.add("Eject Game Piece", new EjectGamePiece(claw).withTimeout(0.25)).withPosition(2, 1);
 
-    TAB_MAIN2.add("Set Home", new GoHome(arm, wrist)).withPosition(2, 0);
-    TAB_MAIN2.add(
+    TAB_MAIN.add("Set Home", new GoHome(arm, wrist)).withPosition(2, 0);
+    TAB_MAIN.add(
         "SPIT_BACK_CUBE_FLOOR_LONG",
         new SequentialCommandGroup(
-            new ScoreSequence(
-                    arm, wrist, claw, () -> Constants.PositionConfigs.SPIT_BACK_CUBE_FLOOR_LONG)
+            new ScoreSequence(arm, wrist, () -> Constants.PositionConfigs.SPIT_BACK_CUBE_FLOOR_LONG)
                 .withTimeout(
                     2.0) // timeout of extention, make longer than expected so that position is good
                 .andThen(new EjectGamePiece(claw).withTimeout(.4)) // 2910 auto spit timeout
@@ -346,9 +337,7 @@ public class RobotContainer {
                 driverController::getLeftX,
                 driverController::getRightX,
                 () -> 0.5,
-                () -> {
-                  return driverController.getPOV();
-                },
+                () -> driverController.getPOV(),
                 driverController::getLeftStickButtonPressed));
 
     new Trigger(() -> (driverController.getLeftTriggerAxis() > 0.1))
@@ -359,9 +348,7 @@ public class RobotContainer {
                 driverController::getLeftX,
                 driverController::getRightX,
                 () -> 0.5,
-                () -> {
-                  return 180;
-                },
+                () -> 180,
                 driverController::getLeftStickButtonPressed));
 
     new Trigger(driverController::getLeftBumper)
@@ -386,20 +373,14 @@ public class RobotContainer {
                     claw,
                     () -> Constants.PositionConfigs.BACK_SINGLE_SUBSTATION,
                     driverController),
-                () -> doubleSubstation == true));
+                () -> doubleSubstation));
 
     new Trigger(coDriverController::getXButton)
         .onTrue(
             new ConditionalCommand(
-                new InstantCommand(
-                    () -> {
-                      doubleSubstation = true;
-                    }),
-                new InstantCommand(
-                    () -> {
-                      doubleSubstation = false;
-                    }),
-                () -> doubleSubstation == false));
+                new InstantCommand(() -> doubleSubstation = true),
+                new InstantCommand(() -> doubleSubstation = false),
+                () -> !doubleSubstation));
     new Trigger(coDriverController::getAButton)
         .onTrue(new InstantCommand(() -> this.setHeight(Height.FLOOR)));
     new Trigger(coDriverController::getBButton)
@@ -409,18 +390,18 @@ public class RobotContainer {
 
     ConditionalCommand floorScore =
         new ConditionalCommand(
-            new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CONE_FLOOR),
-            new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CUBE_FLOOR),
+            new ScoreSequence(arm, wrist, () -> PositionConfigs.FRONT_CONE_FLOOR),
+            new ScoreSequence(arm, wrist, () -> PositionConfigs.FRONT_CUBE_FLOOR),
             () -> claw.isCone());
     ConditionalCommand mediumScore =
         new ConditionalCommand(
-            new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CONE_MEDIUM),
-            new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CUBE_MEDIUM),
+            new ScoreSequence(arm, wrist, () -> PositionConfigs.FRONT_CONE_MEDIUM),
+            new ScoreSequence(arm, wrist, () -> PositionConfigs.FRONT_CUBE_MEDIUM),
             () -> claw.isCone());
     ConditionalCommand highScore =
         new ConditionalCommand(
-            new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CONE_TOP),
-            new ScoreSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CUBE_TOP),
+            new ScoreSequence(arm, wrist, () -> PositionConfigs.FRONT_CONE_TOP),
+            new ScoreSequence(arm, wrist, () -> PositionConfigs.FRONT_CUBE_TOP),
             () -> claw.isCone());
     new Trigger(driverController::getAButton)
         .onTrue(
@@ -559,8 +540,7 @@ public class RobotContainer {
 
     ThreePieceNoCableEventMap.put(
         "Score Cube Back Floor Long",
-        new ScoreSequence(
-                arm, wrist, claw, () -> Constants.PositionConfigs.SPIT_BACK_CUBE_FLOOR_LONG)
+        new ScoreSequence(arm, wrist, () -> Constants.PositionConfigs.SPIT_BACK_CUBE_FLOOR_LONG)
             .andThen(new EjectGamePiece(claw).withTimeout(.4)) // 2910 auto spit timeout
             .andThen(new SetArm(arm, () -> -90, () -> 1, () -> true)));
 

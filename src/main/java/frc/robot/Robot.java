@@ -141,9 +141,6 @@ public class Robot extends LoggedRobot {
     logReceiverQueueAlert.set(Logger.getInstance().getReceiverQueueFault());
   }
 
-  @Override
-  public void disabledPeriodic() {}
-
   /**
    * This method is invoked at the start of the autonomous period. It schedules the autonomous
    * command selected by your {@link RobotContainer} class.

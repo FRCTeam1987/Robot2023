@@ -12,9 +12,9 @@ import frc.lib.team3061.swerve.SwerveModuleConstants.SwerveType;
  * these methods, refer to the documentation in the RobotConfig class.
  */
 public class CompRobotConfig extends RobotConfig {
-  private static final int CLAW_MOTOR_ID = 8; // TODO change to 14
+  private static final int CLAW_MOTOR_ID = 8;
 
-  public static final int WRIST_ROTATOR_MOTOR = 8; // TODO change to 10
+  public static final int WRIST_ROTATOR_MOTOR = 8;
   public static final double ROBOT_ARM_HEIGHT_OFFSET = 12.0;
   public static final int ARM_TELESCOPE_MOTOR = 6;
   public static final int ARM_CANCODER = 7;
@@ -42,13 +42,10 @@ public class CompRobotConfig extends RobotConfig {
   public static final double BACK_RIGHT_MODULE_STEER_OFFSET = 63.633;
   private static final int GYRO_ID = 0;
 
-  // FIXME: update robot dimensions
   private static final double TRACKWIDTH_METERS = Units.inchesToMeters(18.75); // 22.5 inches
   private static final double WHEELBASE_METERS = Units.inchesToMeters(21.75); // 23.5 inches
   private static final double ROBOT_WIDTH_WITH_BUMPERS = 0.89; // meters
   private static final double ROBOT_LENGTH_WITH_BUMPERS = 0.91; // meters
-
-  // FIXME: tune PID values for the angle and drive motors for the swerve modules
 
   /* Angle Motor PID Values */
   private static final double ANGLE_KP = 0.45;
@@ -62,36 +59,26 @@ public class CompRobotConfig extends RobotConfig {
   private static final double DRIVE_KD = 0.0;
   private static final double DRIVE_KF = 0.0;
 
-  // FIXME: characterize the drivetrain and update these constants
   private static final double DRIVE_KS = 0.55493;
   private static final double DRIVE_KV = 2.3014;
   private static final double DRIVE_KA = 0.12872;
 
-  // FIXME: specify the type of swerve module (MK4 and MK4i are supported)
   private static final SwerveType SWERVE_TYPE = SwerveType.MK4I;
 
-  // FIXME: determine maximum velocities empirically
   private static final double MAX_VELOCITY_METERS_PER_SECOND = 4.25;
   private static final double MAX_COAST_VELOCITY_METERS_PER_SECOND = 0.05;
 
-  // FIXME: specify the name of the CANivore CAN FD bus as appropriate (an empty string uses the
-  // default CAN bus)
   private static final String CAN_BUS_NAME = "canfd";
 
-  // FIXME: specify the name of the camera used for detecting AprilTags
   private static final String CAMERA_NAME = "ov9268";
 
-  // FIXME: update this with the actual transform from the robot to the camera
   private static final Transform3d ROBOT_TO_CAMERA =
       new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
 
-  // FIXME: specify the configuration for pneumatics
   private static final int PNEUMATICS_HUB_ID = 20;
   private static final int FLOW_SENSOR_CHANNEL = 0;
   private static final int REV_HIGH_PRESSURE_SENSOR_CHANNEL = 0;
   private static final int REV_LOW_PRESSURE_SENSOR_CHANNEL = 1;
-
-  // FIXME: specify maximum velocity and acceleration and tune PID values for auto paths
 
   private static final double AUTO_MAX_SPEED_METERS_PER_SECOND = 2.0;
   private static final double AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 2.0;
@@ -110,31 +97,31 @@ public class CompRobotConfig extends RobotConfig {
   private static final int ANGLE_BACK_HALF = 2635; // when telescope extended
   private static final int ANGLE_FRONT_HALF = 1924; // when telescope extended
 
-  public int getANGLE_STRAIGHT() {
+  public int getAngleStraight() {
     return ANGLE_STRAIGHT;
   }
 
-  public int getANGLE_FRONT_MAX() {
+  public int getAngleFrontMax() {
     return ANGLE_FRONT_MAX;
   }
 
-  public int getANGLE_FRONT_PERPENDICULAR() {
+  public int getAngleFrontPerpendicular() {
     return ANGLE_FRONT_PERPENDICULAR;
   }
 
-  public int getANGLE_BACK_PERPENDICULAR() {
+  public int getAngleBackPerpendicular() {
     return ANGLE_BACK_PERPENDICULAR;
   }
 
-  public int getANGLE_BACK_MAX() {
+  public int getAngleBackMax() {
     return ANGLE_BACK_MAX;
   }
 
-  public int getANGLE_BACK_HALF() {
+  public int getAngleBackHalf() {
     return ANGLE_BACK_HALF;
   }
 
-  public int getANGLE_FRONT_HALF() {
+  public int getAngleFrontHalf() {
     return ANGLE_FRONT_HALF;
   }
 
