@@ -10,12 +10,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.lib.team6328.util.Alert;
 import frc.lib.team6328.util.Alert.AlertType;
-import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.inputs.LoggedPowerDistribution;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
-import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 /**
@@ -65,54 +63,28 @@ public class Robot extends LoggedRobot {
           logger.recordMetadata(GIT_DIRTY, "Unknown");
           break;
       }
-      switch (Constants.getMode()) {
-        case REAL:
-          logger.addDataReceiver(new WPILOGWriter("/media/sda1"));
 
-          // Provide log data over the network, viewable in Advantage Scope.
-          logger.addDataReceiver(new NT4Publisher());
+      logger.addDataReceiver(new WPILOGWriter("/media/sda1"));
 
-          LoggedPowerDistribution.getInstance();
-          break;
+      // Provide log data over the network, viewable in Advantage Scope.
+      logger.addDataReceiver(new NT4Publisher());
 
-        case SIM:
-          logger.addDataReceiver(new WPILOGWriter(""));
-          logger.addDataReceiver(new NT4Publisher());
-          break;
-
-        case REPLAY:
-          // Run as fast as possible during replay
-          setUseTiming(false);
-
-          // Prompt the user for a file path on the command line (if not open in
-          // AdvantageScope)
-          String path = LogFileUtil.findReplayLog();
-
-          // Read log file for replay
-          logger.setReplaySource(new WPILOGReader(path));
-
-          // Save replay results to a new log with the "_sim" suffix
-          logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(path, "_sim")));
-          break;
-      }
+      LoggedPowerDistribution.getInstance();
 
       // Start logging! No more data receivers, replay sources, or metadata values may
       // be added.
       logger.start();
-
-      // Alternative logging of scheduled commands
-      CommandScheduler.getInstance()
-          .onCommandInitialize(
-              command ->
-                  Logger.getInstance().recordOutput("Command initialized", command.getName()));
-      CommandScheduler.getInstance()
-          .onCommandInterrupt(
-              command ->
-                  Logger.getInstance().recordOutput("Command interrupted", command.getName()));
-      CommandScheduler.getInstance()
-          .onCommandFinish(
-              command -> Logger.getInstance().recordOutput("Command finished", command.getName()));
     }
+    // Alternative logging of scheduled commands
+    CommandScheduler.getInstance()
+        .onCommandInitialize(
+            command -> Logger.getInstance().recordOutput("Command initialized", command.getName()));
+    CommandScheduler.getInstance()
+        .onCommandInterrupt(
+            command -> Logger.getInstance().recordOutput("Command interrupted", command.getName()));
+    CommandScheduler.getInstance()
+        .onCommandFinish(
+            command -> Logger.getInstance().recordOutput("Command finished", command.getName()));
 
     // Invoke the factory method to create the RobotContainer singleton.
     robotContainer = RobotContainer.getInstance();

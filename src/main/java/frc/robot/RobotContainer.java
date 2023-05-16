@@ -19,13 +19,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.team3061.RobotConfig;
 import frc.lib.team3061.gyro.GyroIO;
 import frc.lib.team3061.gyro.GyroIOPigeon2;
-import frc.lib.team3061.pneumatics.Pneumatics;
-import frc.lib.team3061.pneumatics.PneumaticsIO;
 import frc.lib.team3061.swerve.SwerveModule;
-import frc.lib.team3061.swerve.SwerveModuleIO;
-import frc.lib.team3061.swerve.SwerveModuleIOSim;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
-import frc.robot.Constants.Mode;
 import frc.robot.Constants.PositionConfig;
 import frc.robot.Constants.PositionConfigs;
 import frc.robot.commands.*;
@@ -37,7 +32,6 @@ import frc.robot.commands.auto.Balance;
 import frc.robot.commands.auto.PreBalance;
 import frc.robot.commands.wrist.HomeWrist;
 import frc.robot.configs.CompRobotConfig;
-import frc.robot.configs.TestRobotConfig;
 import frc.robot.subsystems.MultiLimelight;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
@@ -94,131 +88,80 @@ public class RobotContainer {
      */
 
     // create real, simulated, or replay subsystems based on the mode and robot specified
-    if (Constants.getMode() != Mode.REPLAY) {
-      switch (Constants.getRobot()) {
-        case ROBOT_2023_TEST:
-        case ROBOT_2023_COMP:
-        case ROBOT_DEFAULT:
-          {
-            if (Constants.getRobot() == Constants.RobotType.ROBOT_2023_TEST) {
-              config = new TestRobotConfig();
-            } else if (Constants.getRobot() == Constants.RobotType.ROBOT_2023_COMP) {
-              config = new CompRobotConfig();
-            } else {
-              config = new TestRobotConfig();
-            }
+    config = new CompRobotConfig();
 
-            GyroIO gyro = new GyroIOPigeon2(0);
+    GyroIO gyro = new GyroIOPigeon2(0);
 
-            int[] driveMotorCANIDs = config.getSwerveDriveMotorCANIDs();
-            int[] steerMotorCANDIDs = config.getSwerveSteerMotorCANIDs();
-            int[] steerEncoderCANDIDs = config.getSwerveSteerEncoderCANIDs();
-            double[] steerOffsets = config.getSwerveSteerOffsets();
+    int[] driveMotorCANIDs = config.getSwerveDriveMotorCANIDs();
+    int[] steerMotorCANDIDs = config.getSwerveSteerMotorCANIDs();
+    int[] steerEncoderCANDIDs = config.getSwerveSteerEncoderCANIDs();
+    double[] steerOffsets = config.getSwerveSteerOffsets();
 
-            SwerveModule flModule =
-                new SwerveModule(
-                    new SwerveModuleIOTalonFX(
-                        0,
-                        driveMotorCANIDs[0],
-                        steerMotorCANDIDs[0],
-                        steerEncoderCANDIDs[0],
-                        steerOffsets[0]),
-                    0,
-                    config.getRobotMaxVelocity());
+    SwerveModule flModule =
+        new SwerveModule(
+            new SwerveModuleIOTalonFX(
+                0,
+                driveMotorCANIDs[0],
+                steerMotorCANDIDs[0],
+                steerEncoderCANDIDs[0],
+                steerOffsets[0]),
+            0,
+            config.getRobotMaxVelocity());
 
-            SwerveModule frModule =
-                new SwerveModule(
-                    new SwerveModuleIOTalonFX(
-                        1,
-                        driveMotorCANIDs[1],
-                        steerMotorCANDIDs[1],
-                        steerEncoderCANDIDs[1],
-                        steerOffsets[1]),
-                    1,
-                    config.getRobotMaxVelocity());
+    SwerveModule frModule =
+        new SwerveModule(
+            new SwerveModuleIOTalonFX(
+                1,
+                driveMotorCANIDs[1],
+                steerMotorCANDIDs[1],
+                steerEncoderCANDIDs[1],
+                steerOffsets[1]),
+            1,
+            config.getRobotMaxVelocity());
 
-            SwerveModule blModule =
-                new SwerveModule(
-                    new SwerveModuleIOTalonFX(
-                        2,
-                        driveMotorCANIDs[2],
-                        steerMotorCANDIDs[2],
-                        steerEncoderCANDIDs[2],
-                        steerOffsets[2]),
-                    2,
-                    config.getRobotMaxVelocity());
+    SwerveModule blModule =
+        new SwerveModule(
+            new SwerveModuleIOTalonFX(
+                2,
+                driveMotorCANIDs[2],
+                steerMotorCANDIDs[2],
+                steerEncoderCANDIDs[2],
+                steerOffsets[2]),
+            2,
+            config.getRobotMaxVelocity());
 
-            SwerveModule brModule =
-                new SwerveModule(
-                    new SwerveModuleIOTalonFX(
-                        3,
-                        driveMotorCANIDs[3],
-                        steerMotorCANDIDs[3],
-                        steerEncoderCANDIDs[3],
-                        steerOffsets[3]),
-                    3,
-                    config.getRobotMaxVelocity());
+    SwerveModule brModule =
+        new SwerveModule(
+            new SwerveModuleIOTalonFX(
+                3,
+                driveMotorCANIDs[3],
+                steerMotorCANDIDs[3],
+                steerEncoderCANDIDs[3],
+                steerOffsets[3]),
+            3,
+            config.getRobotMaxVelocity());
 
-            drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
-            wrist = new Wrist(new WristIOTalonSRX(config.getWristRotatorID()));
-            claw = new Claw(new ClawIOSparkMAX(config.getClawMotorID()));
-            claw.setDefaultCommand(new DefaultClawRollersSpin(claw));
-            multiLimelight =
-                new MultiLimelight(
-                    () ->
-                        (Math.abs(drivetrain.getCharacterizationVelocity()) < 0.025
-                            // velocity can accept pose
-                            && shouldUseVision), // see how high this can go
-                    "limelight-fl",
-                    "limelight-fr");
+    drivetrain = new Drivetrain(gyro, flModule, frModule, blModule, brModule);
+    wrist = new Wrist(new WristIOTalonSRX(config.getWristRotatorID()));
+    claw = new Claw(new ClawIOSparkMAX(config.getClawMotorID()));
+    claw.setDefaultCommand(new DefaultClawRollersSpin(claw));
+    multiLimelight =
+        new MultiLimelight(
+            () ->
+                (Math.abs(drivetrain.getCharacterizationVelocity()) < 0.025
+                    // velocity can accept pose
+                    && shouldUseVision), // see how high this can go
+            "limelight-fl",
+            "limelight-fr");
 
-            arm =
-                new Arm(
-                    new ArmIOTalonFX(
-                        config.getArmLeaderMotorID(),
-                        config.getArmFollowerMotorID(),
-                        config.getArmCanCoderID(),
-                        config.getArmTelescopeID(),
-                        config.getCANBusName()));
-            break;
-          }
-        case ROBOT_SIMBOT:
-          {
-            SwerveModule flModule =
-                new SwerveModule(new SwerveModuleIOSim(), 0, config.getRobotMaxVelocity());
-
-            SwerveModule frModule =
-                new SwerveModule(new SwerveModuleIOSim(), 1, config.getRobotMaxVelocity());
-
-            SwerveModule blModule =
-                new SwerveModule(new SwerveModuleIOSim(), 2, config.getRobotMaxVelocity());
-
-            SwerveModule brModule =
-                new SwerveModule(new SwerveModuleIOSim(), 3, config.getRobotMaxVelocity());
-            drivetrain = new Drivetrain(new GyroIO() {}, flModule, frModule, blModule, brModule);
-            new Pneumatics(new PneumaticsIO() {});
-
-            break;
-          }
-        default:
-          break;
-      }
-
-    } else {
-      SwerveModule flModule =
-          new SwerveModule(new SwerveModuleIO() {}, 0, config.getRobotMaxVelocity());
-
-      SwerveModule frModule =
-          new SwerveModule(new SwerveModuleIO() {}, 1, config.getRobotMaxVelocity());
-
-      SwerveModule blModule =
-          new SwerveModule(new SwerveModuleIO() {}, 2, config.getRobotMaxVelocity());
-
-      SwerveModule brModule =
-          new SwerveModule(new SwerveModuleIO() {}, 3, config.getRobotMaxVelocity());
-      drivetrain = new Drivetrain(new GyroIO() {}, flModule, frModule, blModule, brModule);
-      new Pneumatics(new PneumaticsIO() {});
-    }
+    arm =
+        new Arm(
+            new ArmIOTalonFX(
+                config.getArmLeaderMotorID(),
+                config.getArmFollowerMotorID(),
+                config.getArmCanCoderID(),
+                config.getArmTelescopeID(),
+                config.getCANBusName()));
 
     // disable all telemetry in the LiveWindow to reduce the processing during each iteration
     LiveWindow.disableAllTelemetry();

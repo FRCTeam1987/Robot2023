@@ -10,12 +10,8 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.RuntimeType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import frc.lib.team6328.util.Alert;
-import frc.lib.team6328.util.Alert.AlertType;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmProfile;
 import frc.robot.subsystems.claw.Claw.GamePiece;
@@ -32,7 +28,7 @@ import java.util.List;
 public final class Constants {
 
   public static final ArmProfile ARM_A = new ArmProfile(475, -323.037);
-  public static final ArmProfile ARM_B = new ArmProfile(1015, -202.412);
+  public static final ArmProfile ARM_B = new ArmProfile(1289, -202.412);
   public static final ArmProfile INSTALLED_ARM = false ? ARM_A : ARM_B;
 
   public static final boolean ADVANTAGE_KIT_ENABLED = true;
@@ -53,63 +49,7 @@ public final class Constants {
   public static final ShuffleboardTab TAB_CLAW = Shuffleboard.getTab("Claw");
   public static final ShuffleboardTab TAB_COMMANDS = Shuffleboard.getTab("Commands");
   public static final ShuffleboardTab TAB_MATCH = Shuffleboard.getTab("Match");
-  private static final RobotType ROBOT =
-      RobotBase.getRuntimeType().equals(RuntimeType.kRoboRIO)
-          ? RobotType.ROBOT_2023_TEST
-          : RobotType.ROBOT_2023_COMP;
   public static final double MAX_ANGULAR_VELOCITY = 10.0;
-
-  private static final Alert invalidRobotAlert =
-      new Alert("Invalid robot selected, using competition robot as default.", AlertType.ERROR);
-
-  // For various robots:
-  public static RobotType getRobot() {
-    if (RobotBase.isReal()) {
-      if (ROBOT == RobotType.ROBOT_SIMBOT) { // Invalid robot selected
-        invalidRobotAlert.set(true);
-        return RobotType.ROBOT_DEFAULT;
-      } else {
-        return ROBOT;
-      }
-    } else {
-      if (ROBOT == RobotType.ROBOT_SIMBOT && !ADVANTAGE_KIT_ENABLED) {
-        invalidRobotAlert.set(true);
-      } else {
-        return ROBOT;
-      }
-      return ROBOT;
-    }
-  }
-
-  // Updated for various robots
-  public static Mode getMode() {
-    switch (getRobot()) {
-      case ROBOT_2023_TEST:
-      case ROBOT_2023_COMP:
-      case ROBOT_DEFAULT:
-        return RobotBase.isReal() ? Mode.REAL : Mode.REPLAY;
-
-      case ROBOT_SIMBOT:
-        return Mode.SIM;
-
-      default:
-        return Mode.REAL;
-    }
-  }
-
-  // Updated for various robots:
-  public enum RobotType {
-    ROBOT_2023_TEST,
-    ROBOT_2023_COMP,
-    ROBOT_DEFAULT,
-    ROBOT_SIMBOT
-  }
-
-  public enum Mode {
-    REAL,
-    REPLAY,
-    SIM
-  }
 
   public static final double LOOP_PERIOD_SECS = 0.02;
 
