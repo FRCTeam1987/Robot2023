@@ -172,7 +172,7 @@ public class RobotContainer {
             driverController::getLeftY,
             driverController::getLeftX,
             driverController::getRightX,
-            () -> 1,
+            () -> 0.4,
             () -> driverController.getPOV(),
             driverController::getLeftStickButtonPressed));
 
@@ -263,7 +263,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     // reset gyro to 0 degrees
-    new Trigger(driverController::getBackButton)
+    new Trigger(coDriverController::getBackButton)
         .onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
 
     new Trigger(coDriverController::getRightBumper)
@@ -272,51 +272,53 @@ public class RobotContainer {
     new Trigger(driverController::getRightBumper)
         .onTrue(new CollectSequence(arm, wrist, claw, () -> BACK_CUBE_FLOOR, driverController));
 
-    new Trigger(() -> (driverController.getRightTriggerAxis() > 0.1))
-        .whileTrue(
-            new TeleopSwerve(
-                drivetrain,
-                driverController::getLeftY,
-                driverController::getLeftX,
-                driverController::getRightX,
-                () -> 0.5,
-                () -> driverController.getPOV(),
-                driverController::getLeftStickButtonPressed));
+    // new Trigger(() -> (driverController.getRightTriggerAxis() > 0.1))
+    //     .whileTrue(
+    //         new TeleopSwerve(
+    //             drivetrain,
+    //             driverController::getLeftY,
+    //             driverController::getLeftX,
+    //             driverController::getRightX,
+    //             () -> 0.5,
+    //             () -> driverController.getPOV(),
+    //             driverController::getLeftStickButtonPressed));
 
-    new Trigger(() -> (driverController.getLeftTriggerAxis() > 0.1))
-        .whileTrue(
-            new TeleopSwerve(
-                drivetrain,
-                driverController::getLeftY,
-                driverController::getLeftX,
-                driverController::getRightX,
-                () -> 0.5,
-                () -> 180,
-                driverController::getLeftStickButtonPressed));
+    // new Trigger(() -> (driverController.getLeftTriggerAxis() > 0.1))
+    //     .whileTrue(
+    //         new TeleopSwerve(
+    //             drivetrain,
+    //             driverController::getLeftY,
+    //             driverController::getLeftX,
+    //             driverController::getRightX,
+    //             () -> 0.5,
+    //             () -> 180,
+    //             driverController::getLeftStickButtonPressed));
 
-    new Trigger(driverController::getLeftBumper)
-        .onTrue(
-            new SequentialCommandGroup(
-                new EjectGamePiece(claw).withTimeout(0.25), new GoHome(arm, wrist)));
+    // new Trigger(driverController::getLeftBumper)
+    //     .onTrue(
+    //         new SequentialCommandGroup(
+    //             new EjectGamePiece(claw).withTimeout(0.25), new GoHome(arm, wrist)));
     new Trigger(coDriverController::getLeftBumper)
         .onTrue(new EjectGamePiece(claw).withTimeout(.25));
     new Trigger(driverController::getStartButton).onTrue(new GoHome(arm, wrist));
-    new Trigger(driverController::getBButton)
-        .onTrue(
-            new ConditionalCommand(
-                new CollectSequence(
-                    arm,
-                    wrist,
-                    claw,
-                    () -> Constants.PositionConfigs.FRONT_DOUBLE_SUBSTATION,
-                    driverController),
-                new CollectSequence(
-                    arm,
-                    wrist,
-                    claw,
-                    () -> Constants.PositionConfigs.BACK_SINGLE_SUBSTATION,
-                    driverController),
-                () -> doubleSubstation));
+    new Trigger(coDriverController::getStartButton).onTrue(new GoHome(arm, wrist));
+
+    // new Trigger(driverController::getBButton)
+    //     .onTrue(
+    //         new ConditionalCommand(
+    //             new CollectSequence(
+    //                 arm,
+    //                 wrist,
+    //                 claw,
+    //                 () -> Constants.PositionConfigs.FRONT_DOUBLE_SUBSTATION,
+    //                 driverController),
+    //             new CollectSequence(
+    //                 arm,
+    //                 wrist,
+    //                 claw,
+    //                 () -> Constants.PositionConfigs.BACK_SINGLE_SUBSTATION,
+    //                 driverController),
+    //             () -> doubleSubstation));
 
     new Trigger(coDriverController::getXButton)
         .onTrue(
@@ -349,18 +351,13 @@ public class RobotContainer {
     new Trigger(driverController::getAButton)
         .onTrue(
             new ConditionalCommand(
-                floorScore,
-                new ConditionalCommand(mediumScore, highScore, () -> height == Height.MEDIUM),
-                () -> height == Height.FLOOR));
+                    floorScore,
+                    new ConditionalCommand(mediumScore, highScore, () -> height == Height.MEDIUM),
+                    () -> height == Height.FLOOR)
+                .andThen(
+                    new SequentialCommandGroup(
+                        new EjectGamePiece(claw).withTimeout(0.25), new GoHome(arm, wrist))));
 
-    new Trigger(driverController::getYButton)
-        .onTrue(
-            new CollectSequence(
-                arm,
-                wrist,
-                claw,
-                () -> Constants.PositionConfigs.BACK_CONE_FLOOR,
-                driverController));
     new Trigger(driverController::getXButton)
         .onTrue(
             new CollectSequence(
