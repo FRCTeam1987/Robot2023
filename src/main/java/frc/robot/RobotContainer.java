@@ -8,9 +8,6 @@ import static frc.robot.Constants.*;
 import static frc.robot.Constants.PositionConfigs.*;
 import static frc.robot.subsystems.wrist.Wrist.ANGLE_STRAIGHT;
 
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.commands.FollowPathWithEvents;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -24,7 +21,6 @@ import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
 import frc.robot.Constants.PositionConfig;
 import frc.robot.Constants.PositionConfigs;
 import frc.robot.commands.*;
-import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
 import frc.robot.commands.arm.SetArm;
 import frc.robot.commands.auto.AutoPathHelper;
 import frc.robot.commands.auto.AutoScoreSequenceNoHome;
@@ -42,7 +38,6 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIOTalonSRX;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -377,45 +372,9 @@ public class RobotContainer {
     autoEventMap.put("event2", Commands.print("passed marker 2"));
 
     // build auto path commands
-    List<PathPlannerTrajectory> auto1Paths =
-        PathPlanner.loadPathGroup(
-            "Straight (shop)", config.getAutoMaxSpeed(), config.getAutoMaxAcceleration());
-    Command autoTest =
-        Commands.sequence(
-            new FollowPathWithEvents(
-                new FollowPath(auto1Paths.get(0), drivetrain, true),
-                auto1Paths.get(0).getMarkers(),
-                autoEventMap),
-            Commands.runOnce(drivetrain::enableXstance, drivetrain),
-            Commands.waitSeconds(5.0),
-            Commands.runOnce(drivetrain::disableXstance, drivetrain));
-
-    // build auto path commands
 
     // add commands to the auto chooser
     autoChooser.setDefaultOption("Do Nothing", new InstantCommand());
-
-    // demonstration of PathPlanner path group with event markers
-    autoChooser.addOption("Test Path", autoTest);
-
-    // "auto" command for tuning the drive velocity PID
-    autoChooser.addOption(
-        "Drive Velocity Tuning",
-        Commands.sequence(
-            Commands.runOnce(drivetrain::disableFieldRelative, drivetrain),
-            Commands.deadline(
-                Commands.waitSeconds(5.0),
-                Commands.run(() -> drivetrain.drive(1.5, 0.0, 0.0, false), drivetrain))));
-
-    // "auto" command for characterizing the drivetrain
-    autoChooser.addOption(
-        "Drive Characterization",
-        new FeedForwardCharacterization(
-            drivetrain,
-            true,
-            new FeedForwardCharacterizationData("drive"),
-            drivetrain::runCharacterizationVolts,
-            drivetrain::getCharacterizationVelocity));
 
     final HashMap<String, Command> someEventMap = new HashMap<>();
     someEventMap.put(
@@ -426,12 +385,6 @@ public class RobotContainer {
         "Score Cube",
         new AutoScoreSequence(
             arm, wrist, claw, () -> Constants.PositionConfigs.AUTO_FRONT_CUBE_TOP));
-
-    autoChooser.addOption(
-        "New Auto",
-        AutoPathHelper.followPath(drivetrain, "Some Auto", someEventMap, 3.25, 2.5)
-            .andThen(new Balance(drivetrain))
-            .andThen(() -> drivetrain.setXStance(), drivetrain));
 
     final HashMap<String, Command> TwoPieceNoCableEventMap = new HashMap<>();
     TwoPieceNoCableEventMap.put(
@@ -533,17 +486,6 @@ public class RobotContainer {
             .andThen(
                 AutoPathHelper.followPath(
                     drivetrain, "ThreePieceCable", ThreePieceNoCableEventMap, 3.5, 2.25)));
-
-    autoChooser.addOption(
-        "Barker3Piece",
-        new InstantCommand(() -> setShouldUseVision(true))
-            .andThen(
-                new AutoScoreSequenceNoHome(
-                    arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
-            .andThen(
-                AutoPathHelper.followPath(
-                    drivetrain, "Barker3Piece", ThreePieceNoCableEventMap, 3.25, 2.5))
-            .andThen(new GoHome(arm, wrist)));
 
     autoChooser.addOption(
         "Barker3PieceTwisty",
