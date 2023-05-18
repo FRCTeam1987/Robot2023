@@ -195,34 +195,36 @@ public class RobotContainer {
         new CollectSequence(arm, wrist, claw, () -> PositionConfigs.FRONT_CUBE_FLOOR));
 
     SendableChooser<PositionConfig> collectionChooser = new SendableChooser<>();
-    collectionChooser.addOption("BACK_CUBE_FLOOR", BACK_CUBE_FLOOR);
     collectionChooser.addOption("BACK_CONE_FLOOR", BACK_CONE_FLOOR);
     collectionChooser.addOption("BACK_CONE_FLOOR_TIPPED", BACK_CONE_FLOOR_TIPPED);
-    collectionChooser.addOption("FRONT_CUBE_FLOOR", FRONT_CUBE_FLOOR);
+    collectionChooser.addOption("BACK_CUBE_FLOOR", BACK_CUBE_FLOOR);
+    collectionChooser.addOption("BACK_CUBE_FLOOR_LONG", BACK_CUBE_FLOOR_LONG);
+    collectionChooser.addOption("BACK_DOUBLE_SUBSTATION", BACK_DOUBLE_SUBSTATION);
+    collectionChooser.addOption("BACK_SINGLE_SUBSTATION", BACK_SINGLE_SUBSTATION);
     collectionChooser.addOption("FRONT_CONE_FLOOR", FRONT_CONE_FLOOR);
     collectionChooser.addOption("FRONT_CONE_FLOOR_TIPPED", FRONT_CONE_FLOOR_TIPPED);
+    collectionChooser.addOption("FRONT_CONE_FLOOR_TIPPED_LONG", FRONT_CONE_FLOOR_TIPPED_LONG);
     collectionChooser.addOption("FRONT_CONE_MEDIUM", FRONT_CONE_MEDIUM);
+    collectionChooser.addOption("FRONT_CONE_TOP", FRONT_CONE_TOP);
+    collectionChooser.addOption("FRONT_CUBE_FLOOR", FRONT_CUBE_FLOOR);
     collectionChooser.addOption("FRONT_CUBE_MEDIUM", FRONT_CUBE_MEDIUM);
     collectionChooser.addOption("FRONT_CUBE_TOP", FRONT_CUBE_TOP);
-    collectionChooser.addOption("FRONT_CONE_TOP", FRONT_CONE_TOP);
-    collectionChooser.addOption("BACK_SINGLE_SUBSTATION", BACK_SINGLE_SUBSTATION);
-    collectionChooser.addOption("BACK_DOUBLE_SUBSTATION", BACK_DOUBLE_SUBSTATION);
-    collectionChooser.addOption("FRONT_CONE_FLOOR_TIPPED_LONG", FRONT_CONE_FLOOR_TIPPED_LONG);
-    collectionChooser.addOption("BACK_CUBE_FLOOR_LONG", BACK_CUBE_FLOOR_LONG);
+
     TAB_MAIN.add("Collect Chooser", collectionChooser).withPosition(0, 0);
 
     SendableChooser<PositionConfig> scoreChooser = new SendableChooser<>();
-    scoreChooser.addOption("SPIT_BACK_CUBE_FLOOR_LONG", SPIT_BACK_CUBE_FLOOR_LONG); // score
-    scoreChooser.addOption("BACK_CUBE_FLOOR", BACK_CUBE_FLOOR); // score
     scoreChooser.addOption("BACK_CONE_FLOOR_TIPPED", PositionConfigs.BACK_CONE_FLOOR_TIPPED);
-    scoreChooser.addOption("BACK_CONE_TOP", PositionConfigs.BACK_CONE_TOP);
     scoreChooser.addOption("BACK_CONE_MEDIUM", PositionConfigs.BACK_CONE_MEDIUM);
-    scoreChooser.addOption("BACK_CUBE_TOP", PositionConfigs.BACK_CUBE_TOP);
+    scoreChooser.addOption("BACK_CONE_TOP", PositionConfigs.BACK_CONE_TOP);
+    scoreChooser.addOption("BACK_CUBE_FLOOR", BACK_CUBE_FLOOR);
     scoreChooser.addOption("BACK_CUBE_MEDIUM", PositionConfigs.BACK_CUBE_MEDIUM);
+    scoreChooser.addOption("BACK_CUBE_TOP", PositionConfigs.BACK_CUBE_TOP);
     scoreChooser.addOption("FRONT_CONE_MEDIUM", PositionConfigs.FRONT_CONE_MEDIUM);
+    scoreChooser.addOption("FRONT_CONE_TOP", PositionConfigs.FRONT_CONE_TOP);
     scoreChooser.addOption("FRONT_CUBE_MEDIUM", PositionConfigs.FRONT_CUBE_MEDIUM);
     scoreChooser.addOption("FRONT_CUBE_TOP", PositionConfigs.FRONT_CUBE_TOP);
-    scoreChooser.addOption("FRONT_CONE_TOP", PositionConfigs.FRONT_CONE_TOP);
+    scoreChooser.addOption("SPIT_BACK_CUBE_FLOOR_LONG", SPIT_BACK_CUBE_FLOOR_LONG);
+
     TAB_MAIN.add("Score Chooser", scoreChooser).withPosition(0, 1);
 
     TAB_MAIN
