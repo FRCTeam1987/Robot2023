@@ -38,7 +38,6 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIOTalonSRX;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -71,7 +70,6 @@ public class RobotContainer {
 
   // RobotContainer singleton
   private static final RobotContainer robotContainer = new RobotContainer();
-  private final Map<String, Command> autoEventMap = new HashMap<>();
   XboxController driverController =
       new XboxController(0); // Creates a CommandXboxController on port 1.
   XboxController coDriverController = new XboxController(1);
@@ -213,22 +211,22 @@ public class RobotContainer {
     collectionChooser.addOption("BACK_CUBE_FLOOR_LONG", BACK_CUBE_FLOOR_LONG);
     TAB_MAIN.add("Collect Chooser", collectionChooser).withPosition(0, 0);
 
-    SendableChooser<PositionConfig> ScoreChooser = new SendableChooser<>();
-    ScoreChooser.addOption("SPIT_BACK_CUBE_FLOOR_LONG", SPIT_BACK_CUBE_FLOOR_LONG); // score
-    ScoreChooser.addOption("BACK_CUBE_FLOOR", BACK_CUBE_FLOOR); // score
-    ScoreChooser.addOption("BACK_CONE_FLOOR_TIPPED", PositionConfigs.BACK_CONE_FLOOR_TIPPED);
-    ScoreChooser.addOption("BACK_CONE_TOP", PositionConfigs.BACK_CONE_TOP);
-    ScoreChooser.addOption("BACK_CONE_MEDIUM", PositionConfigs.BACK_CONE_MEDIUM);
-    ScoreChooser.addOption("BACK_CUBE_TOP", PositionConfigs.BACK_CUBE_TOP);
-    ScoreChooser.addOption("BACK_CUBE_MEDIUM", PositionConfigs.BACK_CUBE_MEDIUM);
-    ScoreChooser.addOption("FRONT_CONE_MEDIUM", PositionConfigs.FRONT_CONE_MEDIUM);
-    ScoreChooser.addOption("FRONT_CUBE_MEDIUM", PositionConfigs.FRONT_CUBE_MEDIUM);
-    ScoreChooser.addOption("FRONT_CUBE_TOP", PositionConfigs.FRONT_CUBE_TOP);
-    ScoreChooser.addOption("FRONT_CONE_TOP", PositionConfigs.FRONT_CONE_TOP);
-    TAB_MAIN.add("Score Chooser", ScoreChooser).withPosition(0, 1);
+    SendableChooser<PositionConfig> scoreChooser = new SendableChooser<>();
+    scoreChooser.addOption("SPIT_BACK_CUBE_FLOOR_LONG", SPIT_BACK_CUBE_FLOOR_LONG); // score
+    scoreChooser.addOption("BACK_CUBE_FLOOR", BACK_CUBE_FLOOR); // score
+    scoreChooser.addOption("BACK_CONE_FLOOR_TIPPED", PositionConfigs.BACK_CONE_FLOOR_TIPPED);
+    scoreChooser.addOption("BACK_CONE_TOP", PositionConfigs.BACK_CONE_TOP);
+    scoreChooser.addOption("BACK_CONE_MEDIUM", PositionConfigs.BACK_CONE_MEDIUM);
+    scoreChooser.addOption("BACK_CUBE_TOP", PositionConfigs.BACK_CUBE_TOP);
+    scoreChooser.addOption("BACK_CUBE_MEDIUM", PositionConfigs.BACK_CUBE_MEDIUM);
+    scoreChooser.addOption("FRONT_CONE_MEDIUM", PositionConfigs.FRONT_CONE_MEDIUM);
+    scoreChooser.addOption("FRONT_CUBE_MEDIUM", PositionConfigs.FRONT_CUBE_MEDIUM);
+    scoreChooser.addOption("FRONT_CUBE_TOP", PositionConfigs.FRONT_CUBE_TOP);
+    scoreChooser.addOption("FRONT_CONE_TOP", PositionConfigs.FRONT_CONE_TOP);
+    TAB_MAIN.add("Score Chooser", scoreChooser).withPosition(0, 1);
 
     TAB_MAIN
-        .add("Score Sequence", new ScoreSequence(arm, wrist, ScoreChooser::getSelected))
+        .add("Score Sequence", new ScoreSequence(arm, wrist, scoreChooser::getSelected))
         .withPosition(1, 1);
 
     TAB_MAIN
@@ -245,7 +243,7 @@ public class RobotContainer {
         new SequentialCommandGroup(
             new ScoreSequence(arm, wrist, () -> Constants.PositionConfigs.SPIT_BACK_CUBE_FLOOR_LONG)
                 .withTimeout(
-                    2.0) // timeout of extention, make longer than expected so that position is good
+                    2.0) // timeout of extension, make longer than expected so that position is good
                 .andThen(new EjectGamePiece(claw).withTimeout(.4)) // 2910 auto spit timeout
                 .andThen(new SetArm(arm, () -> -90, () -> 1, () -> true))));
   }
@@ -368,94 +366,79 @@ public class RobotContainer {
 
   /** Use this method to define your commands for autonomous mode. */
   private void configureAutoCommands() {
-    autoEventMap.put("event1", Commands.print("passed marker 1"));
-    autoEventMap.put("event2", Commands.print("passed marker 2"));
 
     // build auto path commands
 
     // add commands to the auto chooser
     autoChooser.setDefaultOption("Do Nothing", new InstantCommand());
 
-    final HashMap<String, Command> someEventMap = new HashMap<>();
-    someEventMap.put(
-        "Score Cone",
-        new AutoScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP));
-    someEventMap.put("Collect Cube", new CollectSequence(arm, wrist, claw, () -> BACK_CUBE_FLOOR));
-    someEventMap.put(
-        "Score Cube",
-        new AutoScoreSequence(
-            arm, wrist, claw, () -> Constants.PositionConfigs.AUTO_FRONT_CUBE_TOP));
+    final HashMap<String, Command> autoEventMap = new HashMap<>();
 
-    final HashMap<String, Command> TwoPieceNoCableEventMap = new HashMap<>();
-    TwoPieceNoCableEventMap.put(
-        "Go Home",
-        new ParallelCommandGroup(
-            new SetArm(arm, () -> 0, () -> 1, () -> true),
-            new SetWristPosition(ANGLE_STRAIGHT, wrist)));
-    TwoPieceNoCableEventMap.put(
+    autoEventMap.put("Auto Balance", new Balance(drivetrain));
+
+    autoEventMap.put("Balance", new PreBalance(drivetrain));
+
+    autoEventMap.put(
         "Collect Cube",
         new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR)
             .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)))
             .andThen(new GoHome(arm, wrist).withTimeout(2)));
-    TwoPieceNoCableEventMap.put(
-        "Score Cube Prep", new SetArm(arm, () -> -49.5, () -> 1, () -> true));
 
-    TwoPieceNoCableEventMap.put(
-        "Score Cube",
-        new AutoScoreSequence(
-            arm, wrist, claw, () -> Constants.PositionConfigs.AUTO_FRONT_CUBE_TOP));
-    TwoPieceNoCableEventMap.put("Go Home 2", new GoHome(arm, wrist).withTimeout(2));
-    TwoPieceNoCableEventMap.put("Auto Balance", new Balance(drivetrain));
-
-    final HashMap<String, Command> ThreePieceNoCableEventMap = new HashMap<>();
-    ThreePieceNoCableEventMap.putAll(TwoPieceNoCableEventMap);
-
-    ThreePieceNoCableEventMap.put(
+    autoEventMap.put(
         "Collect Cube Long",
         new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR_LONG)
             .withTimeout(2.5)
             .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)))
             .andThen(new GoHome(arm, wrist).withTimeout(2)));
 
-    ThreePieceNoCableEventMap.put(
-        "Score Cube Medium",
-        new AutoScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_MEDIUM)
-            .andThen(new GoHome(arm, wrist)));
-
-    ThreePieceNoCableEventMap.put(
-        "Score Cube Medium Extended",
-        new AutoScoreSequence(
-                arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_MEDIUM_EXTENDED)
-            .andThen(new GoHome(arm, wrist)));
-
-    ThreePieceNoCableEventMap.put(
-        "Score Cube Almost Low",
-        new AutoScoreSequence(
-                arm, wrist, claw, () -> Constants.PositionConfigs.AUTO_ALMOST_FLOOR_CUBE)
-            .andThen(new GoHome(arm, wrist)));
-
-    ThreePieceNoCableEventMap.put(
-        "Score Cube Back Floor Long",
-        new ScoreSequence(arm, wrist, () -> Constants.PositionConfigs.SPIT_BACK_CUBE_FLOOR_LONG)
-            .andThen(new EjectGamePiece(claw).withTimeout(.4)) // 2910 auto spit timeout
-            .andThen(new SetArm(arm, () -> -90, () -> 1, () -> true)));
-
-    ThreePieceNoCableEventMap.put(
-        "Score Cube Prep Medium", new SetArm(arm, () -> -49.5, () -> 1, () -> true));
-
-    ThreePieceNoCableEventMap.put(
-        "Score Cube Prep Low", new SetArm(arm, () -> -90, () -> 8, () -> false));
-
-    ThreePieceNoCableEventMap.put(
+    autoEventMap.put(
         "Collect Cube with timeout",
         new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR)
             .withTimeout(1.6)
             .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)))
             .andThen(new GoHome(arm, wrist).withTimeout(2)));
 
-    final HashMap<String, Command> ThreePieceBalanceEventMap = new HashMap<>();
-    ThreePieceBalanceEventMap.putAll(ThreePieceNoCableEventMap);
-    ThreePieceBalanceEventMap.put("Balance", new PreBalance(drivetrain));
+    autoEventMap.put(
+        "Go Home",
+        new ParallelCommandGroup(
+            new SetArm(arm, () -> 0, () -> 1, () -> true),
+            new SetWristPosition(ANGLE_STRAIGHT, wrist)));
+
+    autoEventMap.put("Go Home 2", new GoHome(arm, wrist).withTimeout(2));
+
+    autoEventMap.put(
+        "Score Cube",
+        new AutoScoreSequence(
+            arm, wrist, claw, () -> Constants.PositionConfigs.AUTO_FRONT_CUBE_TOP));
+
+    autoEventMap.put(
+        "Score Cube Almost Low",
+        new AutoScoreSequence(
+                arm, wrist, claw, () -> Constants.PositionConfigs.AUTO_ALMOST_FLOOR_CUBE)
+            .andThen(new GoHome(arm, wrist)));
+
+    autoEventMap.put(
+        "Score Cube Back Floor Long",
+        new ScoreSequence(arm, wrist, () -> Constants.PositionConfigs.SPIT_BACK_CUBE_FLOOR_LONG)
+            .andThen(new EjectGamePiece(claw).withTimeout(.4)) // 2910 auto spit timeout
+            .andThen(new SetArm(arm, () -> -90, () -> 1, () -> true)));
+
+    autoEventMap.put(
+        "Score Cube Medium",
+        new AutoScoreSequence(arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_MEDIUM)
+            .andThen(new GoHome(arm, wrist)));
+
+    autoEventMap.put(
+        "Score Cube Medium Extended",
+        new AutoScoreSequence(
+                arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_MEDIUM_EXTENDED)
+            .andThen(new GoHome(arm, wrist)));
+
+    autoEventMap.put("Score Cube Prep", new SetArm(arm, () -> -49.5, () -> 1, () -> true));
+
+    autoEventMap.put("Score Cube Prep Low", new SetArm(arm, () -> -90, () -> 8, () -> false));
+
+    autoEventMap.put("Score Cube Prep Medium", new SetArm(arm, () -> -49.5, () -> 1, () -> true));
 
     autoChooser.addOption(
         "TwoPieceBalanceCable",
@@ -463,7 +446,7 @@ public class RobotContainer {
                 arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO)
             .andThen(
                 AutoPathHelper.followPath(
-                    drivetrain, "TwoPieceBalanceCable", TwoPieceNoCableEventMap, 3.25, 2.5)));
+                    drivetrain, "TwoPieceBalanceCable", autoEventMap, 3.25, 2.5)));
 
     autoChooser.addOption(
         "ThreePieceNoCable",
@@ -474,8 +457,7 @@ public class RobotContainer {
             .andThen(new GoHome(arm, wrist).withTimeout(1.0))
             .andThen(new InstantCommand(() -> arm.setExtensionNominal()))
             .andThen(
-                AutoPathHelper.followPath(
-                    drivetrain, "ThreePieceNoCable", ThreePieceNoCableEventMap, 2.75, 2.5))
+                AutoPathHelper.followPath(drivetrain, "ThreePieceNoCable", autoEventMap, 2.75, 2.5))
             .andThen(new EjectGamePiece(claw).withTimeout(0.3))
             .andThen(new GoHome(arm, wrist)));
 
@@ -484,8 +466,7 @@ public class RobotContainer {
         new AutoScoreSequenceNoHome(
                 arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO)
             .andThen(
-                AutoPathHelper.followPath(
-                    drivetrain, "ThreePieceCable", ThreePieceNoCableEventMap, 3.5, 2.25)));
+                AutoPathHelper.followPath(drivetrain, "ThreePieceCable", autoEventMap, 3.5, 2.25)));
 
     autoChooser.addOption(
         "Barker3PieceTwisty",
@@ -495,7 +476,7 @@ public class RobotContainer {
                     arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
             .andThen(
                 AutoPathHelper.followPath(
-                    drivetrain, "Barker3PieceTwisty", ThreePieceNoCableEventMap, 3.25, 2.35))
+                    drivetrain, "Barker3PieceTwisty", autoEventMap, 3.25, 2.35))
             .andThen(new GoHome(arm, wrist)));
 
     autoChooser.addOption(
@@ -504,9 +485,7 @@ public class RobotContainer {
             .andThen(
                 new AutoScoreSequenceNoHome(
                     arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
-            .andThen(
-                AutoPathHelper.followPath(
-                    drivetrain, "2910 Red", ThreePieceNoCableEventMap, 3.25, 2.75))
+            .andThen(AutoPathHelper.followPath(drivetrain, "2910 Red", autoEventMap, 3.25, 2.75))
             .andThen(new GoHome(arm, wrist)));
 
     autoChooser.addOption(
@@ -515,9 +494,7 @@ public class RobotContainer {
             .andThen(
                 new AutoScoreSequenceNoHome(
                     arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
-            .andThen(
-                AutoPathHelper.followPath(
-                    drivetrain, "2910 Blue", ThreePieceNoCableEventMap, 3.25, 2.75))
+            .andThen(AutoPathHelper.followPath(drivetrain, "2910 Blue", autoEventMap, 3.25, 2.75))
             .andThen(new GoHome(arm, wrist)));
 
     autoChooser.addOption(
@@ -526,8 +503,7 @@ public class RobotContainer {
                 arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO)
             .andThen(new GoHome(arm, wrist).withTimeout(1))
             .andThen(
-                AutoPathHelper.followPath(
-                    drivetrain, "TwoPieceNoCable", TwoPieceNoCableEventMap, 3.25, 2.5))
+                AutoPathHelper.followPath(drivetrain, "TwoPieceNoCable", autoEventMap, 3.25, 2.5))
             .andThen(new Balance(drivetrain)));
 
     autoChooser.addOption(
@@ -535,8 +511,7 @@ public class RobotContainer {
         new AutoScoreSequenceNoHome(
                 arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO)
             .andThen(
-                AutoPathHelper.followPath(
-                    drivetrain, "ThreePieceBalance", ThreePieceBalanceEventMap, 3.75, 2.7))
+                AutoPathHelper.followPath(drivetrain, "ThreePieceBalance", autoEventMap, 3.75, 2.7))
             .andThen(new PreBalance(drivetrain)));
 
     autoChooser.addOption(
@@ -548,9 +523,7 @@ public class RobotContainer {
                 new AutoScoreSequenceNoHome(
                     arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_TOP))
             .andThen(new GoHome(arm, wrist))
-            .andThen(
-                AutoPathHelper.followPath(
-                    drivetrain, "MobilityCube", ThreePieceBalanceEventMap, 1.5, 1))
+            .andThen(AutoPathHelper.followPath(drivetrain, "MobilityCube", autoEventMap, 1.5, 1))
             .andThen(new Balance(drivetrain)));
 
     autoChooser.addOption(
@@ -560,9 +533,7 @@ public class RobotContainer {
                 new AutoScoreSequenceNoHome(
                     arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
             .andThen(new GoHome(arm, wrist))
-            .andThen(
-                AutoPathHelper.followPath(
-                    drivetrain, "MobilityCone", ThreePieceBalanceEventMap, 1.5, 1))
+            .andThen(AutoPathHelper.followPath(drivetrain, "MobilityCone", autoEventMap, 1.5, 1))
             .andThen(new Balance(drivetrain)));
 
     autoChooser.addOption(
@@ -573,8 +544,7 @@ public class RobotContainer {
                     arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
             .andThen(new GoHome(arm, wrist))
             .andThen(
-                AutoPathHelper.followPath(
-                    drivetrain, "MobilityConeCable", ThreePieceBalanceEventMap, 1.5, 1))
+                AutoPathHelper.followPath(drivetrain, "MobilityConeCable", autoEventMap, 1.5, 1))
             .andThen(new Balance(drivetrain)));
 
     TAB_MATCH.add(autoChooser);

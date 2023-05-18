@@ -31,7 +31,7 @@ public class HomeWrist extends CommandBase { // README not tested do not use
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    DriverStation.reportWarning("Home Writst Interrupted: " + interrupted, false);
+    DriverStation.reportWarning("Home Wrist Interrupted: " + interrupted, false);
     if (interrupted) {
       return;
     }

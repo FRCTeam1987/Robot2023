@@ -148,7 +148,7 @@ public final class Constants {
     public static final PositionConfig BACK_SINGLE_SUBSTATION =
         new PositionConfig(0, 81, 750 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
-    public static final PositionConfig BACK_DOUBLE_SUBSTATION = // Dont Use me please
+    public static final PositionConfig BACK_DOUBLE_SUBSTATION = // Don't Use me please
         new PositionConfig(18, 25, 3129 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig FRONT_DOUBLE_SUBSTATION =

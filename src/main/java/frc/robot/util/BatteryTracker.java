@@ -19,7 +19,7 @@ public class BatteryTracker {
       new byte[] {0x7e, 0x00, 0x08, 0x01, 0x00, 0x02, 0x01, (byte) 0xab, (byte) 0xcd};
   private static final byte[] responsePrefix =
       new byte[] {0x02, 0x00, 0x00, 0x01, 0x00, 0x33, 0x31};
-  private static final byte ENDMARK = 0x0d; // CR
+  private static final byte END_MARK = 0x0d; // CR
   private static final int FULL_RESPONSE_LENGTH = responsePrefix.length + NAME_LENGTH + 1;
 
   private static String name = DEFAULT_NAME;
@@ -64,7 +64,7 @@ public class BatteryTracker {
       }
 
       // Ensure response ends with suffix
-      if (response[response.length - 1] != ENDMARK) {
+      if (response[response.length - 1] != END_MARK) {
         DriverStation.reportWarning(
             "[BatteryTracker] Invalid suffix from scanner.  Got " + response[response.length - 1],
             false);
