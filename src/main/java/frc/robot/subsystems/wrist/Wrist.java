@@ -13,10 +13,9 @@ import org.littletonrobotics.junction.Logger;
 public class Wrist extends SubsystemBase {
   private final WristIO io;
   private final WristIOInputsAutoLogged inputs = new WristIOInputsAutoLogged();
-  private final DigitalInput wrist_switch = new DigitalInput(0);
+  private final DigitalInput wristSwitch = new DigitalInput(0);
 
-  private final double currentThreshold = 10.0; // amps
-  public static int ANGLE_STRAIGHT = 1457 + Constants.INSTALLED_ARM.getWristOffset(); // 2062
+  public static final int ANGLE_STRAIGHT = 1457 + Constants.INSTALLED_ARM.getWristOffset(); // 2062
   public static final int ANGLE_FRONT_MAX = 795; // when telescope extended
   public static final int ANGLE_FRONT_PERPENDICULAR = 447;
   public static final int ANGLE_BACK_PERPENDICULAR = 2439;
@@ -27,7 +26,6 @@ public class Wrist extends SubsystemBase {
   /** Creates a new Wrist. */
   public Wrist(WristIO io) {
     this.io = io;
-    int row = 0;
     TAB_WRIST.add("Set Normal", new InstantCommand(() -> io.setRotation(true))).withSize(2, 1);
     TAB_WRIST.add("Set Invert", new InstantCommand(() -> io.setRotation(false))).withSize(2, 1);
 
@@ -44,7 +42,6 @@ public class Wrist extends SubsystemBase {
     TAB_WRIST
         .add("Set Front Half Perpendicular", new SetWristPosition(ANGLE_FRONT_HALF, this))
         .withSize(2, 1);
-    // TAB_WRIST.addBoolean("has hit limit switch", this::hasHitHardstop);
   }
 
   public double getCurrent() {
@@ -76,9 +73,10 @@ public class Wrist extends SubsystemBase {
   }
 
   public boolean hasHitHardstop() {
-    return !wrist_switch.get();
+    return !wristSwitch.get();
   }
 
+  @Override
   public void periodic() {
     if (ADVANTAGE_KIT_ENABLED) {
       io.updateInputs(inputs);

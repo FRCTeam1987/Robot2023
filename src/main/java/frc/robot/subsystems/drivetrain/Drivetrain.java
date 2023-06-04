@@ -4,7 +4,7 @@
 
 package frc.robot.subsystems.drivetrain;
 
-import static frc.robot.Constants.TAB_MAIN2;
+import static frc.robot.Constants.TAB_MAIN;
 
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import edu.wpi.first.math.controller.PIDController;
@@ -30,7 +30,6 @@ import frc.lib.team3061.gyro.GyroIOInputsAutoLogged;
 import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.util.RobotOdometry;
 import frc.lib.team6328.util.TunableNumber;
-import frc.robot.configs.CompRobotConfig;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -62,10 +61,10 @@ public class Drivetrain extends SubsystemBase {
   private final PIDController autoThetaController =
       new PIDController(autoTurnKp.get(), autoTurnKi.get(), autoTurnKd.get());
 
-  private final double trackwidthMeters = CompRobotConfig.getInstance().getTrackwidth();
-  private final double wheelbaseMeters = CompRobotConfig.getInstance().getWheelbase();
+  private final double trackwidthMeters = RobotConfig.getInstance().getTrackwidth();
+  private final double wheelbaseMeters = RobotConfig.getInstance().getWheelbase();
   private final SwerveDriveKinematics kinematics =
-      CompRobotConfig.getInstance().getSwerveDriveKinematics();
+      RobotConfig.getInstance().getSwerveDriveKinematics();
 
   private final SwerveModule[] swerveModules = new SwerveModule[4]; // FL, FR, BL, BR
 
@@ -132,11 +131,7 @@ public class Drivetrain extends SubsystemBase {
 
     this.poseEstimator = RobotOdometry.getInstance().getPoseEstimator();
 
-    TAB_MAIN2.addNumber("Gyroscope Angle", () -> getRotation().getDegrees()).withPosition(9, 3);
-    // TAB_MAIN2.addBoolean("X-Stance On?", this::isXstance);
-    // TAB_MAIN2.addBoolean("Field-Relative Enabled?", () -> this.isFieldRelative);
-    // TAB_MAIN2.add("Reset Gyro", new InstantCommand(this::zeroGyroscope));
-    // TAB_MAIN2.addNumber("Average Velocity", this::getCharacterizationVelocity);
+    TAB_MAIN.addNumber("Gyroscope Angle", () -> getRotation().getDegrees()).withPosition(9, 3);
 
     if (DEBUGGING) {
 
@@ -339,7 +334,6 @@ public class Drivetrain extends SubsystemBase {
     // update and log gyro inputs
     if (true) {
       gyroIO.updateInputs(gyroInputs);
-      // Logger.getInstance().processInputs("Drive/Gyro", gyroInputs);
     }
 
     // update and log the swerve moudles inputs
@@ -628,6 +622,6 @@ public class Drivetrain extends SubsystemBase {
     for (SwerveModule swerveModule : swerveModules) {
       avg += swerveModule.getState().speedMetersPerSecond;
     }
-    return avg / (double) swerveModules.length;
+    return avg / swerveModules.length;
   }
 }

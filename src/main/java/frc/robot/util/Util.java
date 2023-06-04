@@ -19,12 +19,6 @@ public class Util {
     return ctreVelocity * 10.0 / ticksPerRevolution;
   }
 
-  // TODO should return int if ticks
-  // public static double wheelRotationsToTicks(final double wheelRotations, final double reduction)
-  // {
-  //     return (int)(wheelRotations * Constants.ticksPerRotation * reduction);
-  // }
-
   public static boolean isWithinTolerance(
       double currentValue, double targetValue, double tolerance) {
     return Math.abs(currentValue - targetValue) <= tolerance;
@@ -48,7 +42,6 @@ public class Util {
       final double ticksPerRevolution,
       final double circumference,
       final double postEncoderGearing) {
-    // return ticks / (ticksPerRevolution * postEncoderGearing) * circumference;
     return rotationsToTicks(
         distanceToRotations(distance, ticksPerRevolution, circumference, postEncoderGearing));
   }

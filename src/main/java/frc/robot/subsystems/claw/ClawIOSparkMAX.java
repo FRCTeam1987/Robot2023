@@ -12,7 +12,6 @@ public class ClawIOSparkMAX implements ClawIO {
     clawRollerMotor.restoreFactoryDefaults();
     clawRollerMotor.setIdleMode(IdleMode.kBrake);
     clawRollerMotor.setSmartCurrentLimit(30);
-    // TODO ADD CURRENT LIMIT TO PROTECT MOTOR
   }
 
   @Override
@@ -31,6 +30,7 @@ public class ClawIOSparkMAX implements ClawIO {
     return clawRollerMotor.getOutputCurrent();
   }
 
+  @Override
   public void setRollerSpeed(double speed) {
     clawRollerMotor.set(speed);
   }

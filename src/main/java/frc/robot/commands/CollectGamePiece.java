@@ -13,9 +13,9 @@ import frc.robot.subsystems.claw.Claw.GamePiece;
 
 public class CollectGamePiece extends CommandBase {
 
-  private final Claw CLAW;
+  private final Claw claw;
   private final XboxController controller;
-  private Debouncer DEBOUNCER;
+  private Debouncer debouncer;
   private boolean isCollected;
 
   private static final double COLLECTION_TIME = 0.15;
@@ -29,31 +29,30 @@ public class CollectGamePiece extends CommandBase {
   }
 
   public CollectGamePiece(final Claw claw, GamePiece piece, XboxController controller) {
-    this.CLAW = claw;
+    this.claw = claw;
     this.piece = piece;
     this.controller = controller;
-    DEBOUNCER = new Debouncer(COLLECTION_TIME);
-    addRequirements(this.CLAW);
+    debouncer = new Debouncer(COLLECTION_TIME);
+    addRequirements(this.claw);
   }
 
   public boolean stopCondition() {
-    // System.out.println("Current" + CLAW.getCurrent());
-    return CLAW.getCurrent() > MAXIMUM_CURRENT;
+    return claw.getCurrent() > MAXIMUM_CURRENT;
   }
 
   @Override
   public void initialize() {
-    DEBOUNCER = new Debouncer(COLLECTION_TIME);
-    isCollected = DEBOUNCER.calculate(stopCondition());
-    CLAW.setRollerSpeed(CLAW_ROLLER_SPEED);
+    debouncer = new Debouncer(COLLECTION_TIME);
+    isCollected = debouncer.calculate(stopCondition());
+    claw.setRollerSpeed(CLAW_ROLLER_SPEED);
   }
 
   @Override
   public void execute() {
     boolean shouldStop = stopCondition();
-    isCollected = DEBOUNCER.calculate(shouldStop);
+    isCollected = debouncer.calculate(shouldStop);
     if (controller != null) {
-      if (shouldStop == true) {
+      if (shouldStop) {
         controller.setRumble(RumbleType.kBothRumble, 1);
       } else {
         controller.setRumble(RumbleType.kBothRumble, 0);
@@ -64,11 +63,11 @@ public class CollectGamePiece extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     if (piece == GamePiece.CUBE) {
-      CLAW.setRollerSpeed(DefaultClawRollersSpin.CLAW_ROLLER_SPEED);
+      claw.setRollerSpeed(DefaultClawRollersSpin.CLAW_ROLLER_SPEED);
     } else {
-      CLAW.stopRollers();
+      claw.stopRollers();
     }
-    CLAW.setGamePiece(piece);
+    claw.setGamePiece(piece);
     if (controller != null) {
       controller.setRumble(RumbleType.kBothRumble, 0);
     }

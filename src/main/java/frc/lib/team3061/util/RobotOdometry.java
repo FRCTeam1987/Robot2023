@@ -10,10 +10,9 @@ import frc.lib.team3061.RobotConfig;
  * Singleton class for SwerveDrivePoseEstimator that allows it to be shared by subsystems
  * (drivetrain and vision)
  */
-public class RobotOdometry {
+public final class RobotOdometry {
   private static final RobotOdometry robotOdometry = new RobotOdometry();
   private final SwerveDrivePoseEstimator estimator;
-  // TODO: [MARKER] This can become a local variable in constructor
   private final SwerveModulePosition[] defaultPositions =
       new SwerveModulePosition[] {
         new SwerveModulePosition(),

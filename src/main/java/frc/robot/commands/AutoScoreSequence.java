@@ -22,14 +22,8 @@ public class AutoScoreSequence extends SequentialCommandGroup {
       final Claw claw,
       final Supplier<PositionConfig> positionConfigSupplier) {
     addCommands(
-        new ScoreSequence(arm, wrist, claw, positionConfigSupplier),
+        new ScoreSequence(arm, wrist, positionConfigSupplier),
         new EjectGamePiece(claw).withTimeout(0.4),
         new GoHome(arm, wrist).withTimeout(2.0));
-
-    // new EjectGamePiece(claw).withTimeout(0.5),
-    // new ParallelCommandGroup(
-    //     new SetArm(arm, () -> Arm.HOME_ROTATION, () -> Arm.HOME_EXTENSION, () -> true),
-    //     new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),
-    // new InstantCommand(() -> arm.setExtensionNominal(), arm)
   }
 }

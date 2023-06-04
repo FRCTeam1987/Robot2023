@@ -8,19 +8,19 @@ import edu.wpi.first.math.geometry.Pose2d;
 
 /** Add your docs here. */
 public class PoseWithLatency {
-  private final Pose2d m_pose;
-  private final double m_latency;
+  private final Pose2d mPose;
+  private final double mLatency;
 
   public PoseWithLatency(final Pose2d pose, final double latency) {
-    m_pose = pose;
-    m_latency = latency;
+    mPose = pose;
+    mLatency = latency;
   }
 
   public Pose2d getPose() {
-    return m_pose;
+    return mPose;
   }
 
   public double getLatency() {
-    return m_latency;
+    return mLatency;
   }
 }

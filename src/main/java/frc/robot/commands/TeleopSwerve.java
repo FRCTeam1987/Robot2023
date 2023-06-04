@@ -29,10 +29,10 @@ public class TeleopSwerve extends CommandBase {
 
   private PIDController thetaController;
   private PIDController yController;
-  private IntSupplier m_povDegree;
-  private BooleanSupplier m_shouldYLock;
-  private double m_ySetPoint = 0.0;
-  private DoubleSupplier m_speedMultiplier;
+  private IntSupplier mPovDegree;
+  private BooleanSupplier mShouldYLock;
+  private double mYSetPoint = 0.0;
+  private DoubleSupplier mSpeedMultiplier;
   private boolean useDPad = false;
   private boolean useYLock = false;
   private double setPoint = 0.0;
@@ -42,16 +42,15 @@ public class TeleopSwerve extends CommandBase {
   private final DoubleSupplier translationYSupplier;
   private final DoubleSupplier rotationSupplier;
 
-  // TODO greyson play with these slew rate values
   private final SlewRateLimiter translationXSlewRate = new SlewRateLimiter(2.5);
   private final SlewRateLimiter translationYSlewRate = new SlewRateLimiter(2.5);
   private final SlewRateLimiter rotationSlewRate = new SlewRateLimiter(2);
 
   public static final double DEADBAND = 0.05;
 
-  public static final double maxVelocityMetersPerSecond =
+  public static final double MAX_VELOCITY_METERS_PER_SECOND =
       RobotConfig.getInstance().getRobotMaxVelocity();
-  public static final double maxAngularVelocityRadiansPerSecond =
+  public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND =
       RobotConfig.getInstance().getRobotMaxAngularVelocity();
 
   /**
@@ -74,11 +73,10 @@ public class TeleopSwerve extends CommandBase {
       IntSupplier povDegree,
       BooleanSupplier shouldYLock) {
 
-    m_speedMultiplier = speedMultiplier;
-    m_povDegree = povDegree;
-    m_shouldYLock = shouldYLock;
+    mSpeedMultiplier = speedMultiplier;
+    mPovDegree = povDegree;
+    mShouldYLock = shouldYLock;
 
-    // this.holdButton = holdButton;
     this.drivetrain = drivetrain;
     this.translationXSupplier = translationXSupplier;
     this.translationYSupplier = translationYSupplier;
@@ -96,7 +94,7 @@ public class TeleopSwerve extends CommandBase {
     useDPad = false;
     useYLock = false;
     setPoint = 0.0;
-    m_ySetPoint = 0.0;
+    mYSetPoint = 0.0;
   }
 
   @Override
@@ -112,37 +110,28 @@ public class TeleopSwerve extends CommandBase {
 
     if (useYLock && !Util.isWithinTolerance(translationYSupplier.getAsDouble(), 0.0, 0.5)) {
       useYLock = false;
-      m_ySetPoint = 0.0;
-      System.out.println("Stop using Y Lock.");
-    } else if (m_shouldYLock.getAsBoolean() && drivetrain.getPoseX() < 2.5) {
+      mYSetPoint = 0.0;
+      DriverStation.reportWarning("Stop using Y Lock.", false);
+    } else if (mShouldYLock.getAsBoolean() && drivetrain.getPoseX() < 2.5) {
       try {
-        m_ySetPoint = drivetrain.getPose().nearest(Constants.OnTheFly.CONE_NODES_POSE).getY();
-        // m_ySetPoint =
-        //     Constants.OnTheFly.CONE_NODES_Y.stream()
-        //         .filter(
-        //             (Double y) ->
-        //                 Util.isWithinTolerance(
-        //                     drivetrain.getPoseY(), y, Constants.OnTheFly.NODE_Y_TOLERANCE))
-        //         .findFirst()
-        //         .get();
-        // useYLock = true;
+        mYSetPoint = drivetrain.getPose().nearest(Constants.OnTheFly.CONE_NODES_POSE).getY();
       } catch (NoSuchElementException e) {
         useYLock = false;
         DriverStation.reportWarning("Not close enough to cone node. Not locking.", false);
       }
     }
     if (useYLock) {
-      yController.setSetpoint(m_ySetPoint);
+      yController.setSetpoint(mYSetPoint);
       yPercentage = yController.calculate(drivetrain.getPose().getY(), yController.getSetpoint());
     }
 
     if (useDPad && !Util.isWithinTolerance(rotationSupplier.getAsDouble(), 0.0, 0.25)) {
       useDPad = false;
       setPoint = 0.0;
-      System.out.println("Stop using DPad.");
-    } else if (m_povDegree.getAsInt() >= 0) {
+      DriverStation.reportWarning("Stop using DPad.", false);
+    } else if (mPovDegree.getAsInt() >= 0) {
       useDPad = true;
-      switch ((int) m_povDegree.getAsInt()) {
+      switch (mPovDegree.getAsInt()) {
         case 0:
           setPoint = 0;
           break;
@@ -155,6 +144,8 @@ public class TeleopSwerve extends CommandBase {
         case 270:
           setPoint = 90;
           break;
+        default:
+          break;
       }
     }
     if (useDPad) {
@@ -162,15 +153,13 @@ public class TeleopSwerve extends CommandBase {
       rotationPercentage =
           thetaController.calculate(
               drivetrain.getPose().getRotation().getDegrees(), thetaController.getSetpoint());
-      // SmartDashboard.putNumber("rotationPercentage", rotationPercentage);
-      // SmartDas}hboard.putNumber("driverController setpoint", driverController.getSetpoint());
     }
-    // double rotationPercentage =
-    //     rotationSlewRate.calculate(modifyAxis(-rotationSupplier.getAsDouble()));
 
-    double xVelocity = xPercentage * maxVelocityMetersPerSecond * m_speedMultiplier.getAsDouble();
-    double yVelocity = yPercentage * maxVelocityMetersPerSecond * m_speedMultiplier.getAsDouble();
-    double rotationalVelocity = rotationPercentage * maxAngularVelocityRadiansPerSecond;
+    double xVelocity =
+        xPercentage * MAX_VELOCITY_METERS_PER_SECOND * mSpeedMultiplier.getAsDouble();
+    double yVelocity =
+        yPercentage * MAX_VELOCITY_METERS_PER_SECOND * mSpeedMultiplier.getAsDouble();
+    double rotationalVelocity = rotationPercentage * MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
     Logger.getInstance().recordOutput("ActiveCommands/TeleopSwerve", true);
     Logger.getInstance().recordOutput("TeleopSwerve/xVelocity", xVelocity);

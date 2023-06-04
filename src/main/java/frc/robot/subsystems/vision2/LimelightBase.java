@@ -9,14 +9,13 @@ public class LimelightBase {
   private final DoubleArraySubscriber botPoseSubscriber;
   private StringSubscriber jsonSubscriber;
   private final DoubleSubscriber targetAreaSubscriber;
-  private Alliance m_alliance;
+  private Alliance mAlliance;
 
   public LimelightBase(String limelightName) {
     this.limelightName = limelightName;
-    m_alliance = Alliance.Invalid;
+    mAlliance = Alliance.Invalid;
 
     NetworkTable inst = NetworkTableInstance.getDefault().getTable(limelightName);
-    // inst.getEntry("pipeline").setNumber(LIMELIGHT_PIPELINE);
     botPoseSubscriber = inst.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {});
     jsonSubscriber = inst.getStringTopic("json").subscribe("[]");
     targetAreaSubscriber = inst.getDoubleTopic("ta").subscribe(0.0); // > 2.5 is pretty stable
@@ -40,9 +39,9 @@ public class LimelightBase {
   }
 
   public double[] getBotPose() {
-    if (m_alliance == Alliance.Invalid) {
-      m_alliance = DriverStation.getAlliance();
-      return null;
+    if (mAlliance == Alliance.Invalid) {
+      mAlliance = DriverStation.getAlliance();
+      return new double[0];
     }
     return botPoseSubscriber.get();
   }

@@ -18,8 +18,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.util.Util;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 /** Add your docs here. */
@@ -34,14 +34,14 @@ public class AutoPathHelper {
   public static final double NODE_Y_TOLERANCE = 0.25;
 
   public static Command followPath(
-      final Drivetrain drive, final String pathName, final HashMap<String, Command> eventMap) {
+      final Drivetrain drive, final String pathName, final Map<String, Command> eventMap) {
     return followPath(drive, pathName, eventMap, DEFAULT_MAX_VELOCITY, DEFAULT_MAX_ACCELERATION);
   }
 
   public static Command followPath(
       final Drivetrain drive,
       final String pathName,
-      final HashMap<String, Command> eventMap,
+      final Map<String, Command> eventMap,
       double maxVelocity,
       double maxAcceleration) {
     SwerveAutoBuilder autoBuilder =

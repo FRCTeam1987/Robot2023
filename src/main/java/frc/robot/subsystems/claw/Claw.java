@@ -18,19 +18,11 @@ public class Claw extends SubsystemBase {
 
   private GamePiece gamePiece = GamePiece.CONE;
 
-  // TODO: [MARKER] Make this a constant
-  private final double currentThreshold = 10.0; // amps
+  private static final double CURRENT_THRESHOLD = 10.0; // amps
 
   /** Creates a new Claw. */
   public Claw(ClawIO io) {
     this.io = io;
-    // TAB_CLAW.add("Stop Claw", new StopClawRollers(this));
-    // TAB_CLAW.add("Collect Cube", new CollectGamePiece(this, GamePiece.CUBE));
-    // TAB_CLAW.add("Collect Cone", new CollectGamePiece(this, GamePiece.CONE));
-    // TAB_CLAW.add("Switch game piece", new InstantCommand(() ->
-    // this.changeGamePiece()));
-    // TAB_CLAW.add("Run Claw Plain", new InstantCommand(() -> setRollerSpeed(0.75), this));
-    // TAB_CLAW.add("Eject Game Piece", new EjectGamePiece(this).withTimeout(0.25));
   }
 
   public void setCone() {
@@ -82,9 +74,10 @@ public class Claw extends SubsystemBase {
   }
 
   public boolean hasGamePiece() {
-    return getCurrent() > currentThreshold;
+    return getCurrent() > CURRENT_THRESHOLD;
   }
 
+  @Override
   public void periodic() {
     if (ADVANTAGE_KIT_ENABLED) {
       io.updateInputs(inputs);

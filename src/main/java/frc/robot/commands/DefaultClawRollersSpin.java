@@ -20,9 +20,6 @@ public class DefaultClawRollersSpin extends CommandBase {
   }
 
   @Override
-  public void initialize() {}
-
-  @Override
   public void execute() {
     GamePiece gamePiece = claw.getGamePiece();
     double speed = claw.getSpeedPercent();
@@ -33,13 +30,5 @@ public class DefaultClawRollersSpin extends CommandBase {
     } else if (gamePiece == GamePiece.NONE && speed != 0.0) {
       claw.stopRollers();
     }
-  }
-
-  @Override
-  public void end(boolean interrupted) {}
-
-  @Override
-  public boolean isFinished() {
-    return false;
   }
 }

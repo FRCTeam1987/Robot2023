@@ -119,12 +119,6 @@ public class FeedForwardCharacterization extends CommandBase {
     }
   }
 
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
-  }
-
   public static class FeedForwardCharacterizationData {
     private final String name;
     private final List<Double> velocityData = new LinkedList<>();
