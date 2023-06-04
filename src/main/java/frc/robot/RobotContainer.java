@@ -314,22 +314,14 @@ public class RobotContainer {
         .onTrue(new EjectGamePiece(claw).withTimeout(.25));
     new Trigger(() -> driverController.getStartButton() && !isCamperMode())
         .onTrue(new GoHome(arm, wrist));
-    new Trigger(() -> driverController.getBButton() && !isCamperMode())
-        .onTrue(
-            new ConditionalCommand(
-                new CollectSequence(
-                    arm,
-                    wrist,
-                    claw,
-                    () -> Constants.PositionConfigs.FRONT_DOUBLE_SUBSTATION,
-                    driverController),
-                new CollectSequence(
-                    arm,
-                    wrist,
-                    claw,
-                    () -> Constants.PositionConfigs.BACK_SINGLE_SUBSTATION,
-                    driverController),
-                () -> doubleSubstation));
+    new Trigger(() -> driverController.getBButton())
+        .onTrue(new CollectSequence(
+            arm,
+            wrist,
+            claw,
+            () -> Constants.PositionConfigs.BACK_SINGLE_SUBSTATION,
+            driverController)
+        );
 
     new Trigger(coDriverController::getXButton)
         .onTrue(
