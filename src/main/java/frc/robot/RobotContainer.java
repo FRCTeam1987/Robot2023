@@ -57,8 +57,6 @@ public class RobotContainer {
 
   private boolean doubleSubstation = false;
 
-  private boolean m_isCamperMode = true;
-
   public enum Height {
     HIGH,
     MEDIUM,
@@ -167,7 +165,7 @@ public class RobotContainer {
             driverController::getLeftY,
             driverController::getLeftX,
             driverController::getRightX,
-            () -> isCamperMode() ? 0.5 : 1.0,
+            () -> 1,
             () -> driverController.getPOV(),
             driverController::getLeftStickButtonPressed));
 
@@ -189,22 +187,7 @@ public class RobotContainer {
     return robotContainer;
   }
 
-  public boolean isCamperMode() {
-    return m_isCamperMode;
-  }
-
-  public void setCamperMode(final boolean isCamperMode) {
-    m_isCamperMode = isCamperMode;
-  }
-
-  public void toggleCamperMode() {
-    setCamperMode(!isCamperMode());
-  }
-
   private void configureSmartDashboard() {
-    TAB_MATCH.addBoolean("Is Camper Mode", this::isCamperMode);
-    TAB_MATCH.add(
-        "Toggle Camp Mode", new InstantCommand(this::toggleCamperMode).ignoringDisable(true));
     TAB_MATCH.addBoolean("Double Substation", () -> doubleSubstation);
     TAB_MATCH.addBoolean("Switch Status", () -> wrist.hasHitHardstop());
     TAB_MATCH.add(
@@ -281,7 +264,7 @@ public class RobotContainer {
     new Trigger(coDriverController::getRightBumper)
         .onTrue(new InstantCommand(() -> claw.setRollerSpeed(-0.9)))
         .onFalse(new InstantCommand(() -> claw.stopRollers()));
-    new Trigger(() -> driverController.getRightBumper() && !isCamperMode())
+    new Trigger(driverController::getRightBumper)
         .onTrue(new CollectSequence(arm, wrist, claw, () -> BACK_CUBE_FLOOR, driverController));
 
     new Trigger(() -> (driverController.getRightTriggerAxis() > 0.1))
@@ -312,16 +295,24 @@ public class RobotContainer {
                 new EjectGamePiece(claw).withTimeout(0.25), new GoHome(arm, wrist)));
     new Trigger(coDriverController::getLeftBumper)
         .onTrue(new EjectGamePiece(claw).withTimeout(.25));
-    new Trigger(() -> driverController.getStartButton() && !isCamperMode())
-        .onTrue(new GoHome(arm, wrist));
-    new Trigger(() -> driverController.getBButton())
-        .onTrue(new CollectSequence(
-            arm,
-            wrist,
-            claw,
-            () -> Constants.PositionConfigs.BACK_SINGLE_SUBSTATION,
-            driverController)
-        );
+
+    new Trigger(driverController::getStartButton).onTrue(new GoHome(arm, wrist));
+    new Trigger(driverController::getBButton)
+        .onTrue(
+            new ConditionalCommand(
+                new CollectSequence(
+                    arm,
+                    wrist,
+                    claw,
+                    () -> Constants.PositionConfigs.FRONT_DOUBLE_SUBSTATION,
+                    driverController),
+                new CollectSequence(
+                    arm,
+                    wrist,
+                    claw,
+                    () -> Constants.PositionConfigs.BACK_SINGLE_SUBSTATION,
+                    driverController),
+                () -> doubleSubstation));
 
     new Trigger(coDriverController::getXButton)
         .onTrue(
@@ -351,14 +342,14 @@ public class RobotContainer {
             new ScoreSequence(arm, wrist, () -> PositionConfigs.FRONT_CONE_TOP),
             new ScoreSequence(arm, wrist, () -> PositionConfigs.FRONT_CUBE_TOP),
             () -> claw.isCone());
-    new Trigger(() -> driverController.getAButton() && !isCamperMode())
+    new Trigger(driverController::getAButton)
         .onTrue(
             new ConditionalCommand(
                 floorScore,
                 new ConditionalCommand(mediumScore, highScore, () -> height == Height.MEDIUM),
                 () -> height == Height.FLOOR));
 
-    new Trigger(() -> driverController.getYButton() && !isCamperMode())
+    new Trigger(driverController::getYButton)
         .onTrue(
             new CollectSequence(
                 arm,
@@ -366,7 +357,7 @@ public class RobotContainer {
                 claw,
                 () -> Constants.PositionConfigs.BACK_CONE_FLOOR,
                 driverController));
-    new Trigger(() -> driverController.getXButton() && !isCamperMode())
+    new Trigger(driverController::getXButton)
         .onTrue(
             new CollectSequence(
                 arm,

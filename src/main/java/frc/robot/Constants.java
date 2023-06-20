@@ -80,8 +80,7 @@ public final class Constants {
         new PositionConfig(18, -46.5, 1177 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
 
     public static final PositionConfig BACK_CONE_FLOOR =
-        new PositionConfig(
-            1, 82.7, 1802 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
+        new PositionConfig(1, 82.7, 1802 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig BACK_CONE_FLOOR_TIPPED =
         new PositionConfig(
@@ -94,8 +93,7 @@ public final class Constants {
         new PositionConfig(38, 49.5, 2800 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig BACK_CUBE_FLOOR =
-        new PositionConfig(
-            4, 98.2, 2731 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
+        new PositionConfig(4, 98.2, 2731 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
 
     public static final PositionConfig BACK_CUBE_FLOOR_LONG =
         new PositionConfig(27, 88, 2076 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
