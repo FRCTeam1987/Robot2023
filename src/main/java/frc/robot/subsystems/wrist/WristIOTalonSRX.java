@@ -6,7 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import frc.robot.Constants;
 
 public class WristIOTalonSRX implements WristIO {
-  public static final int ANGLE_STRAIGHT = 1457 + Constants.INSTALLED_ARM.getWristOffset();
+  public static final int ANGLE_STRAIGHT = 1279 + Constants.INSTALLED_ARM.getWristOffset();
 
   private final WPI_TalonSRX wristMotor;
 
@@ -16,7 +16,7 @@ public class WristIOTalonSRX implements WristIO {
     wristConfig.motionAcceleration = 4000;
     wristConfig.motionCruiseVelocity = 6000;
     wristConfig.feedbackNotContinuous = true;
-    wristConfig.slot0.kP = 4.0;
+    wristConfig.slot0.kP = 6.0;
     wristConfig.slot0.kD = 0.0;
     wristConfig.slot0.allowableClosedloopError = 0;
     wristConfig.neutralDeadband = 0.001;
@@ -24,7 +24,7 @@ public class WristIOTalonSRX implements WristIO {
     wristMotor.configAllSettings(wristConfig);
     wristMotor.configSelectedFeedbackSensor(FeedbackDevice.PulseWidthEncodedPosition);
     wristMotor.setNeutralMode(NeutralMode.Brake);
-    wristMotor.configVoltageCompSaturation(6);
+    wristMotor.configVoltageCompSaturation(7);
     wristMotor.enableVoltageCompensation(true);
     wristMotor.setInverted(InvertType.InvertMotorOutput);
     wristMotor.setSensorPhase(true);

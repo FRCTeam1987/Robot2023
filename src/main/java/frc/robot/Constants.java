@@ -27,9 +27,9 @@ import java.util.List;
  */
 public final class Constants {
 
-  public static final ArmProfile ARM_A = new ArmProfile(475, -323.037);
+  public static final ArmProfile ARM_A = new ArmProfile(20, -323.037);
   public static final ArmProfile ARM_B = new ArmProfile(1289, -202.412);
-  public static final ArmProfile INSTALLED_ARM = false ? ARM_A : ARM_B;
+  public static final ArmProfile INSTALLED_ARM = true ? ARM_A : ARM_B;
 
   public static final boolean ADVANTAGE_KIT_ENABLED = true;
   public static final boolean TUNING_MODE = false;
@@ -80,8 +80,7 @@ public final class Constants {
         new PositionConfig(18, -46.5, 1177 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
 
     public static final PositionConfig BACK_CONE_FLOOR =
-        new PositionConfig(
-            Arm.HOME_EXTENSION, 92.3, 1680 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
+        new PositionConfig(1, 82.7, 1802 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig BACK_CONE_FLOOR_TIPPED =
         new PositionConfig(
@@ -94,8 +93,7 @@ public final class Constants {
         new PositionConfig(38, 49.5, 2800 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig BACK_CUBE_FLOOR =
-        new PositionConfig(
-            Arm.HOME_EXTENSION, 102.0, 1550 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
+        new PositionConfig(4, 98.2, 2731 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
 
     public static final PositionConfig BACK_CUBE_FLOOR_LONG =
         new PositionConfig(27, 88, 2076 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
