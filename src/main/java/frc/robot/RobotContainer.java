@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.lib.Limelight.LimelightHelpers;
 import frc.lib.team3061.RobotConfig;
 import frc.lib.team3061.gyro.GyroIO;
 import frc.lib.team3061.gyro.GyroIOPigeon2;
@@ -226,6 +227,12 @@ public class RobotContainer {
     scoreChooser.addOption("SPIT_BACK_CUBE_FLOOR_LONG", SPIT_BACK_CUBE_FLOOR_LONG);
 
     TAB_MAIN.add("Score Chooser", scoreChooser).withPosition(0, 1);
+
+    TAB_MAIN.add(
+        "Pipeline 2 CUBE", new InstantCommand(() -> setLimelightPipeline("limelight-fr", 2)));
+    TAB_MAIN.add(
+        "Pipeline 3 CONE", new InstantCommand(() -> setLimelightPipeline("limelight-fr", 3)));
+    TAB_MAIN.addNumber("TX of collector limelight", () -> LimelightHelpers.getTX("limelight-fr"));
 
     TAB_MAIN
         .add("Score Sequence", new ScoreSequence(arm, wrist, scoreChooser::getSelected))
@@ -588,5 +595,9 @@ public class RobotContainer {
 
   public void setShouldUseVision(boolean shouldUse) {
     shouldUseVision = shouldUse;
+  }
+
+  public void setLimelightPipeline(String limeLightName, int pipelineID) {
+    LimelightHelpers.setPipelineIndex(limeLightName, pipelineID);
   }
 }
