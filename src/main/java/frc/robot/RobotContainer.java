@@ -233,6 +233,8 @@ public class RobotContainer {
     TAB_MAIN.add(
         "Pipeline 3 CONE", new InstantCommand(() -> setLimelightPipeline("limelight-fr", 3)));
     TAB_MAIN.addNumber("TX of collector limelight", () -> LimelightHelpers.getTX("limelight-fr"));
+    TAB_MAIN.add(
+        "Drive To Nearest Object", new DriveToObject("limelight-fr", drivetrain, arm, 0.5));
 
     TAB_MAIN
         .add("Score Sequence", new ScoreSequence(arm, wrist, scoreChooser::getSelected))
