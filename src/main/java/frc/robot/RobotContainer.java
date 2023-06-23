@@ -26,6 +26,7 @@ import frc.robot.commands.arm.SetArm;
 import frc.robot.commands.auto.AutoPathHelper;
 import frc.robot.commands.auto.AutoScoreSequenceNoHome;
 import frc.robot.commands.auto.Balance;
+import frc.robot.commands.auto.DriveToPiece;
 import frc.robot.commands.auto.PreBalance;
 import frc.robot.commands.wrist.HomeWrist;
 import frc.robot.configs.CompRobotConfig;
@@ -234,7 +235,7 @@ public class RobotContainer {
         "Pipeline 3 CONE", new InstantCommand(() -> setLimelightPipeline("limelight-fr", 3)));
     TAB_MAIN.addNumber("TX of collector limelight", () -> LimelightHelpers.getTX("limelight-fr"));
     TAB_MAIN.add(
-        "Drive To Nearest Object", new DriveToObject("limelight-fr", drivetrain, arm, 0.5));
+        "Drive To Nearest Object", new DriveToPiece(drivetrain, () -> 0.5, "limelight-fr"));
 
     TAB_MAIN
         .add("Score Sequence", new ScoreSequence(arm, wrist, scoreChooser::getSelected))
