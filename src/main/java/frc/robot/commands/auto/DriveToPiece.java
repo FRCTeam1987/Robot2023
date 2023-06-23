@@ -5,6 +5,8 @@
 package frc.robot.commands.auto;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.lib.Limelight.LimelightHelpers;
 import frc.robot.subsystems.drivetrain.Drivetrain;
@@ -16,85 +18,74 @@ public class DriveToPiece extends CommandBase {
 
   private final Drivetrain drivetrain;
 
-  private String limelight = "limelight-fr";  // TODO rename this default so that it makes sense for its new purpose OR use the parameter value
-  private double initialXPose;
-  private double initialYPose;
+  private String limelight;
+  private Pose2d initialPose;
   private static final double kP = 0.03; // PID proportional gain
   private static final double kI = 0.00; // PID integral gain
   private static final double kD = 0.01; // PID derivative gain
   private static final double kToleranceDegrees = 2.0; // Tolerance for reaching the desired angle
+  private static final double maximumAllowableDistance = 1; // In Meters
+  boolean isDistanceTraveledToFar = distanceTraveled() > maximumAllowableDistance;
 
-  private final PIDController pidController;  // TODO rename this - what does this pid controller for?
+  private final PIDController rotationController;
 
   public DriveToPiece(
       final Drivetrain drivetrain, final DoubleSupplier velocitySupplier, String limelight) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.velocitySupplier = velocitySupplier;
     this.drivetrain = drivetrain;
-    // TODO if using a parameter, then save the limelight string parameter to this.limelight
+    this.limelight = limelight;
 
     // Create the PID controller
-    pidController = new PIDController(kP, kI, kD);
-    pidController.setTolerance(kToleranceDegrees);
+    rotationController = new PIDController(kP, kI, kD);
+    rotationController.setTolerance(kToleranceDegrees);
 
-    // Add the required subsystem (SwerveDriveSubsystem) to the command's requirements
     addRequirements(drivetrain);
   }
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     // Apply the output to the swerve
-    this.initialXPose = drivetrain.getPoseX();
-    this.initialYPose = drivetrain.getPoseY();
-    // TODO reset the PID controller
+    this.initialPose = drivetrain.getPose();
+    rotationController.reset();
   }
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    /*
-     * TODO
-     * I like the practice of short circuiting to keep the code more readable. For example:
-     * if (isVisible() == false) {
-     *  return;
-     * }
-     * // do something if visible
-     */
+    isDistanceTraveledToFar = distanceTraveled() > maximumAllowableDistance;
     if (LimelightHelpers.getTV(limelight)) {
-      double output = // TODO name this so that it is clear what the output is used for.
-          pidController.calculate(
+      drivetrain.disableFieldRelative();
+      double rotationalVelocity =
+          rotationController.calculate(
               drivetrain.getRotation().getDegrees(),
               drivetrain.getRotation().getDegrees() - LimelightHelpers.getTX(limelight));
-
-      /*
-       * TODO
-       * If choosing to do field-relative, then velocity for x and y need to be separate values. Otherwise, field relative will drive in a diagonal.
-       * If making it robot-relative, then a single velocity should be fine. Just enable / disable field relative as needed.
-       * We may need to flex this between the two modes for auto vs teleop.
-       */
       final double velocity = velocitySupplier.getAsDouble();
-      drivetrain.drive(velocity, velocity, output, true);
+      drivetrain.drive(velocity, velocity, rotationalVelocity, true);
+    } else {
+      return;
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (distanceTraveled() > 1) { // TODO reuse this logic
-      drivetrain.stop();  // TODO do we want to stop at the end anyways or especially when interruped? since this is for collecting game pieces. prevent further auto steps?
+    drivetrain.enableFieldRelative();
+    if (isDistanceTraveledToFar && !interrupted) {
+      drivetrain
+          .stop(); // Stop the drive train only when command isn't interrupted and robot drove too
+      // far
     }
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return distanceTraveled() > 1;  // TODO make this 1 a constant or parameter / should this command run forever and let other commands stop it in a ParallelRaceGroup / teleop?
+    return isDistanceTraveledToFar; // Saftey if command is improperly called or fails to collect
+    // gamepiece.
   }
 
   private double distanceTraveled() {
-    // TODO refactor this to use built in Pose logic / make reusable
-    // ex. Translation2d's getDistance()
-    return Math.sqrt(
-        Math.pow((drivetrain.getPoseY() - initialYPose), 2)
-            + Math.pow((drivetrain.getPoseX() - initialXPose), 2));
+    Translation2d currentPose = drivetrain.getPose().getTranslation();
+    return currentPose.getDistance(initialPose.getTranslation());
   }
 }

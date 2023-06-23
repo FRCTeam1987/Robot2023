@@ -588,6 +588,10 @@ public class RobotContainer {
     drivetrain.enableFieldRelative();
   }
 
+  public void disableFieldRelative() {
+    drivetrain.disableFieldRelative();
+  }
+
   public void enableXstance() {
     drivetrain.enableXstance();
   }
