@@ -8,6 +8,8 @@ import static frc.robot.Constants.*;
 import static frc.robot.Constants.PositionConfigs.*;
 import static frc.robot.subsystems.wrist.Wrist.ANGLE_STRAIGHT;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -26,7 +28,9 @@ import frc.robot.commands.arm.SetArm;
 import frc.robot.commands.auto.AutoPathHelper;
 import frc.robot.commands.auto.AutoScoreSequenceNoHome;
 import frc.robot.commands.auto.Balance;
+import frc.robot.commands.auto.BumpAuto;
 import frc.robot.commands.auto.DriveToPiece;
+import frc.robot.commands.auto.DriveToScore;
 import frc.robot.commands.auto.PreBalance;
 import frc.robot.commands.wrist.HomeWrist;
 import frc.robot.configs.CompRobotConfig;
@@ -49,12 +53,15 @@ import java.util.HashMap;
  */
 public class RobotContainer {
 
+  public static final String LIMELIGHT_COLLECT = "limelight-collect";
+  public static final String LIMELIGHT_SCORE = "limelight-scoring";
+
   private RobotConfig config;
   private Drivetrain drivetrain;
   private Wrist wrist;
   private Claw claw;
   private Height height = Height.HIGH;
-  private MultiLimelight multiLimelight;
+//   private MultiLimelight multiLimelight;
   private boolean shouldUseVision = false;
 
   private boolean doubleSubstation = false;
@@ -140,14 +147,14 @@ public class RobotContainer {
     wrist = new Wrist(new WristIOTalonSRX(config.getWristRotatorID()));
     claw = new Claw(new ClawIOSparkMAX(config.getClawMotorID()));
     claw.setDefaultCommand(new DefaultClawRollersSpin(claw));
-    multiLimelight =
-        new MultiLimelight(
-            () ->
-                (Math.abs(drivetrain.getCharacterizationVelocity()) < 0.025
-                    // velocity can accept pose
-                    && shouldUseVision), // see how high this can go
-            "limelight-fl",
-            "limelight-fr");
+    // multiLimelight =
+    //     new MultiLimelight(
+    //         () ->
+    //             (Math.abs(drivetrain.getCharacterizationVelocity()) < 0.025
+    //                 // velocity can accept pose
+    //                 && shouldUseVision), // see how high this can go
+    //         "limelight-fl",
+    //         "limelight-fr");
 
     arm =
         new Arm(
@@ -234,8 +241,7 @@ public class RobotContainer {
     TAB_MAIN.add(
         "Pipeline 3 CONE", new InstantCommand(() -> setLimelightPipeline("limelight-fr", 3)));
     TAB_MAIN.addNumber("TX of collector limelight", () -> LimelightHelpers.getTX("limelight-fr"));
-    TAB_MAIN.add(
-        "Drive To Nearest Object", new DriveToPiece(drivetrain, () -> 0.5, "limelight-fr"));
+    TAB_MAIN.add("Drive To Nearest Cone", new DriveToPiece(drivetrain, () -> 0.5, GamePiece.CONE));
 
     TAB_MAIN
         .add("Score Sequence", new ScoreSequence(arm, wrist, scoreChooser::getSelected))
@@ -258,10 +264,38 @@ public class RobotContainer {
                     2.0) // timeout of extension, make longer than expected so that position is good
                 .andThen(new EjectGamePiece(claw).withTimeout(.4)) // 2910 auto spit timeout
                 .andThen(new SetArm(arm, () -> -90, () -> 1, () -> true))));
+
+    TAB_TEST.add("AutoTest", new BumpAuto(arm, claw, drivetrain, wrist));
+    TAB_TEST.add("DriveToScore", new InstantCommand(() -> claw.setCube()).andThen(new DriveToScore(drivetrain, claw)));
+    TAB_TEST.add("Set180", new InstantCommand(() -> drivetrain.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(180)))));
   }
 
   public boolean shouldScore() {
     return true;
+  }
+
+  public static void setAprilTagPipeline() {
+    LimelightHelpers.setPipelineIndex(LIMELIGHT_SCORE, 1);
+  }
+
+  public static void setRetroReflectPipeline() {
+    LimelightHelpers.setPipelineIndex(LIMELIGHT_SCORE, 0);
+  }
+
+  public static void setConePipeline() {
+    LimelightHelpers.setPipelineIndex(LIMELIGHT_COLLECT, 3);
+  }
+
+  public static void setCubePipeline() {
+    LimelightHelpers.setPipelineIndex(LIMELIGHT_COLLECT, 2);
+  }
+
+  public static boolean canSeeGamePiece() {
+    return LimelightHelpers.getTV(LIMELIGHT_COLLECT);
+  }
+
+  public static boolean canSeeScoringTarget() {
+    return LimelightHelpers.getTV(LIMELIGHT_SCORE);
   }
 
   /** Use this method to define your button->command mappings. */

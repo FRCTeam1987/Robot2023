@@ -49,6 +49,7 @@ public final class Constants {
   public static final ShuffleboardTab TAB_CLAW = Shuffleboard.getTab("Claw");
   public static final ShuffleboardTab TAB_COMMANDS = Shuffleboard.getTab("Commands");
   public static final ShuffleboardTab TAB_MATCH = Shuffleboard.getTab("Match");
+  public static final ShuffleboardTab TAB_TEST = Shuffleboard.getTab("Test");
   public static final double MAX_ANGULAR_VELOCITY = 10.0;
 
   public static final double LOOP_PERIOD_SECS = 0.02;
