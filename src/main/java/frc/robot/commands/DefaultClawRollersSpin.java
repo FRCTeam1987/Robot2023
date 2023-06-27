@@ -12,7 +12,7 @@ public class DefaultClawRollersSpin extends CommandBase {
 
   private final Claw claw;
 
-  public static final double CLAW_ROLLER_SPEED = -0.15;
+  public static final double CLAW_ROLLER_SPEED = -0.05;
 
   public DefaultClawRollersSpin(Claw claw) {
     this.claw = claw;
@@ -21,14 +21,16 @@ public class DefaultClawRollersSpin extends CommandBase {
 
   @Override
   public void execute() {
-    GamePiece gamePiece = claw.getGamePiece();
-    double speed = claw.getSpeedPercent();
-    if (gamePiece == GamePiece.CONE && speed != 0.0) {
-      claw.setRollerSpeed(0.0);
-    } else if (gamePiece == GamePiece.CUBE) {
-      claw.setRollerSpeed(CLAW_ROLLER_SPEED);
-    } else if (gamePiece == GamePiece.NONE && speed != 0.0) {
-      claw.stopRollers();
-    }
+    // GamePiece gamePiece = claw.getGamePiece();
+    // double speed = claw.getSpeedPercent();
+    claw.setRollerSpeed(claw.isCone() ? -CLAW_ROLLER_SPEED : CLAW_ROLLER_SPEED);
+
+    // if (gamePiece == GamePiece.CONE && speed != 0.0) {
+    //   claw.setRollerSpeed(0.0);
+    // } else if (gamePiece == GamePiece.CUBE) {
+    //   claw.setRollerSpeed(CLAW_ROLLER_SPEED);
+    // } else if (gamePiece == GamePiece.NONE && speed != 0.0) {
+    //   claw.stopRollers();
+    // }
   }
 }

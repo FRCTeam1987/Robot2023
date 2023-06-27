@@ -15,8 +15,8 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 public class DriveToScore extends CommandBase {
 
   private static final String LIMELIGHT_NAME = RobotContainer.LIMELIGHT_SCORE;
-  private static final double TY_CONES = 0;
-  private static final double TY_CUBES = 9.6;
+  private static final double TY_CONES = 6.5;
+  private static final double TY_CUBES = 7.5;
   private static final double TY_MAGIC_OFFSET = 16.0; // Avoid irregular roll over of zero
 
   private final Drivetrain m_drive;
@@ -30,6 +30,7 @@ public class DriveToScore extends CommandBase {
     m_drive = drive;
     m_claw = claw;
     m_xController = new PIDController(0.05, 0, 0);
+    m_xController.setTolerance(4.0);
     m_yController = new PIDController(0.05, 0, 0);
     m_yController.enableContinuousInput(-28.5, 28.5);
     m_yController.setSetpoint(0);

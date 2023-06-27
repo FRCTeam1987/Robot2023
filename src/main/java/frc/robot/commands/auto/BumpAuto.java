@@ -27,7 +27,7 @@ import java.util.HashMap;
 public class BumpAuto extends SequentialCommandGroup {
 
   public final double MAX_VELOCITY = 3.25;
-  public final double MAX_ACCELERATION = 2.5;
+  public final double MAX_ACCELERATION = 3.0;
 
   public final HashMap<String, Command> eventMap01 = new HashMap<>();
   public final HashMap<String, Command> eventMap02 = new HashMap<>();
@@ -37,23 +37,23 @@ public class BumpAuto extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 
-    eventMap02.put("CubeScorePrep", new SetArm(arm, () -> -49.5, () -> 1, () -> true));
+    eventMap01.put("GoHome", new GoHome(arm, wrist));
+    eventMap02.put("CubeScorePrep", new SetArm(arm, () -> -49.5, () -> 4, () -> true));
 
     addCommands(
         new InstantCommand(() -> claw.setCone(), claw),
         new AutoScoreSequenceNoHome(
             arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO),
-        new GoHome(arm, wrist).withTimeout(0.5),
         AutoPathHelper.followPath(drive, "BumpAuto01", eventMap01, MAX_VELOCITY,
         MAX_ACCELERATION),
         new ParallelRaceGroup(
-            new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CONE_FLOOR)
+            new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR)
                 .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE))),
-            new DriveToPiece(drive, () -> -0.5, GamePiece.CONE)),
-        new GoHome(arm, wrist).withTimeout(2),
-        AutoPathHelper.followPath(drive, "BumpAuto02", eventMap02, MAX_VELOCITY,
+            new DriveToPiece(drive, () -> -1.5, GamePiece.CUBE)),
+        new GoHome(arm, wrist).withTimeout(0.5),
+        AutoPathHelper.followPathNoRotationReset(drive, "BumpAuto02", eventMap02, MAX_VELOCITY,
         MAX_ACCELERATION),
-        new DriveToScore(drive, claw),
+        new DriveToScore(drive, claw).withTimeout(2.5),
         new AutoScoreSequence(
             arm, wrist, claw, () -> Constants.PositionConfigs.AUTO_FRONT_CUBE_TOP),
         new GoHome(arm, wrist).withTimeout(0.5)

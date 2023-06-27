@@ -306,7 +306,7 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
 
     new Trigger(coDriverController::getRightBumper)
-        .onTrue(new InstantCommand(() -> claw.setRollerSpeed(-0.9)))
+        .onTrue(new InstantCommand(() -> claw.setRollerSpeed(0.9)))
         .onFalse(new InstantCommand(() -> claw.stopRollers()));
     new Trigger(driverController::getRightBumper)
         .onTrue(new CollectSequence(arm, wrist, claw, () -> BACK_CUBE_FLOOR, driverController));
@@ -369,6 +369,10 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> this.setHeight(Height.MEDIUM)));
     new Trigger(coDriverController::getYButton)
         .onTrue(new InstantCommand(() -> this.setHeight(Height.HIGH)));
+    new Trigger(coDriverController::getAButton)
+        .onTrue(new InstantCommand(() -> arm.setExtensionNominal(), arm)
+        .andThen(new WaitCommand(0.5)
+        .andThen(new InstantCommand(() -> arm.zeroExtension(), arm))));
 
     ConditionalCommand floorScore =
         new ConditionalCommand(

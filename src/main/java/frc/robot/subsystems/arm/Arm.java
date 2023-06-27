@@ -63,6 +63,10 @@ public class Arm extends SubsystemBase {
     io.setExtensionNominal();
   }
 
+  public void zeroExtension() {
+    io.zeroExtension();
+  }
+
   @Override
   public void periodic() {
     if (ADVANTAGE_KIT_ENABLED) {

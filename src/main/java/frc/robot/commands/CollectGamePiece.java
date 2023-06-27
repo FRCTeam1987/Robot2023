@@ -18,9 +18,9 @@ public class CollectGamePiece extends CommandBase {
   private Debouncer debouncer;
   private boolean isCollected;
 
-  private static final double COLLECTION_TIME = 0.15;
+  private static final double COLLECTION_TIME = 0.12;
   private static final double CLAW_ROLLER_SPEED = 0.95;
-  private static final double MAXIMUM_CURRENT = 33;
+  private static final double MAXIMUM_CURRENT = 35;
 
   private final GamePiece piece;
 
