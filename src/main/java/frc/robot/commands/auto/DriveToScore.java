@@ -9,14 +9,13 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.lib.Limelight.LimelightHelpers;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.claw.Claw;
-import frc.robot.subsystems.claw.Claw.GamePiece;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 
 public class DriveToScore extends CommandBase {
 
   private static final String LIMELIGHT_NAME = RobotContainer.LIMELIGHT_SCORE;
-  private static final double TY_CONES = 6.5;
-  private static final double TY_CUBES = 7.5;
+  private static final double TY_CONES = 7.0;
+  private static final double TY_CUBES = 4.25;
   private static final double TY_MAGIC_OFFSET = 16.0; // Avoid irregular roll over of zero
 
   private final Drivetrain m_drive;
@@ -29,12 +28,16 @@ public class DriveToScore extends CommandBase {
   public DriveToScore(final Drivetrain drive, final Claw claw) {
     m_drive = drive;
     m_claw = claw;
-    m_xController = new PIDController(0.05, 0, 0);
-    m_xController.setTolerance(4.0);
+    m_xController = new PIDController(0.1, 0, 0);
+    m_xController.setTolerance(2.0);
+
     m_yController = new PIDController(0.05, 0, 0);
+    m_yController.setTolerance(4.0);
     m_yController.enableContinuousInput(-28.5, 28.5);
     m_yController.setSetpoint(0);
+
     m_thetaController = new PIDController(0.03, 0.0, 0.0);
+    m_thetaController.setTolerance(4.0);
     m_thetaController.enableContinuousInput(-180, 180);
     m_thetaController.setSetpoint(180);
     addRequirements(m_drive);

@@ -5,7 +5,9 @@
 package frc.robot.commands.auto;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.lib.Limelight.LimelightHelpers;
 import frc.robot.RobotContainer;
@@ -24,13 +26,17 @@ public class DriveToPiece extends CommandBase {
   private static final String limelight = "limelight-collect";
 
   private Pose2d initialPose;
-  private static final double kP = 0.03; // PID proportional gain
+  private static final double kP = 0.07; // PID proportional gain
   private static final double kI = 0.00; // PID integral gain
-  private static final double kD = 0.01; // PID derivative gain
+  private static final double kD = 0.00; // PID derivative gain
   private static final double kToleranceDegrees = 0.1; // Tolerance for reaching the desired angle
-  private static final double maximumAllowableDistance = 1.75; // In Meters
+  private static final double maximumAllowableDistance = 3.0; // In Meters
+  private static final double slowDownDistance = 1.0; // Robot goes half speed once passed
 
   private final PIDController rotationController;
+
+  private Debouncer debouncer;
+  private static final double MAGIC_DEBOUNCE_TIME = 0.04; // TODO find correct value and change name
 
   public DriveToPiece(
       final Drivetrain drivetrain, final DoubleSupplier velocitySupplier, GamePiece gamePiece) {
@@ -58,17 +64,30 @@ public class DriveToPiece extends CommandBase {
     } else {
       RobotContainer.setCubePipeline();
     }
+    debouncer = new Debouncer(MAGIC_DEBOUNCE_TIME);
   }
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (LimelightHelpers.getTV(limelight) == false) {
+
+    boolean shouldStop = debouncer.calculate(LimelightHelpers.getTV(limelight) == false);
+
+    if (shouldStop) {
       drivetrain.stop();
       return;
     }
+
+    // if (LimelightHelpers.getTV(limelight) == false) {
+    //   drivetrain.stop();
+    //   return;
+    // }
     double rotationalVelocity =
         rotationController.calculate(LimelightHelpers.getTX(limelight), 0.0);
-    drivetrain.drive(velocitySupplier.getAsDouble(), 0.0, rotationalVelocity, true);
+    double speed =
+        distanceTraveled() > slowDownDistance
+            ? velocitySupplier.getAsDouble() / 2.0
+            : velocitySupplier.getAsDouble();
+    drivetrain.drive(speed, 0.0, rotationalVelocity, true);
   }
 
   // Called once the command ends or is interrupted.
@@ -76,9 +95,10 @@ public class DriveToPiece extends CommandBase {
   public void end(boolean interrupted) {
     drivetrain.enableFieldRelative();
     drivetrain.stop();
-    // if (isDistanceTraveledTooFar() && !interrupted) {
-    //   drivetrain.stop();
-    // }
+    if (isDistanceTraveledTooFar()) {
+      DriverStation.reportWarning("DriveToPiece Drove Too Far", false);
+      System.out.println("DriveToPiece Drove Too Far");
+    }
   }
 
   // Returns true when the command should end.
@@ -88,7 +108,8 @@ public class DriveToPiece extends CommandBase {
   }
 
   private double distanceTraveled() {
-    return drivetrain.getPose().getTranslation().getDistance(initialPose.getTranslation());
+    return Math.abs(
+        drivetrain.getPose().getTranslation().getDistance(initialPose.getTranslation()));
   }
 
   private boolean isDistanceTraveledTooFar() {

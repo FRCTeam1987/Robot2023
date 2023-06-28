@@ -1,0 +1,59 @@
+{
+  "waypoints": [
+    {
+      "anchorPoint": {
+        "x": 1.8774510060277718,
+        "y": 4.397943944298262
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.909374446027538,
+        "y": 4.840229012353641
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 5.25,
+        "y": 4.54928527975003
+      },
+      "prevControl": {
+        "x": 4.619192012476246,
+        "y": 4.804148250175923
+      },
+      "nextControl": null,
+      "holonomicAngle": 145.0,
+      "isReversal": false,
+      "velOverride": 2.0,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    }
+  ],
+  "maxVelocity": 3.25,
+  "maxAcceleration": null,
+  "isReversed": null,
+  "markers": [
+    {
+      "position": 0.01,
+      "names": [
+        "GoHome"
+      ]
+    }
+  ]
+}

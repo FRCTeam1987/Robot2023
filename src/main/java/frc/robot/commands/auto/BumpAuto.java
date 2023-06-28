@@ -6,13 +6,14 @@ package frc.robot.commands.auto;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.lib.Limelight.LimelightHelpers;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
-import frc.robot.commands.AutoScoreSequence;
 import frc.robot.commands.CollectSequence;
 import frc.robot.commands.GoHome;
+import frc.robot.commands.SetWristPosition;
 import frc.robot.commands.arm.SetArm;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.claw.Claw;
@@ -31,6 +32,7 @@ public class BumpAuto extends SequentialCommandGroup {
 
   public final HashMap<String, Command> eventMap01 = new HashMap<>();
   public final HashMap<String, Command> eventMap02 = new HashMap<>();
+  public final HashMap<String, Command> eventMap03 = new HashMap<>();
 
   /** Creates a new BumpAuto. */
   public BumpAuto(final Arm arm, final Claw claw, final Drivetrain drive, final Wrist wrist) {
@@ -38,25 +40,38 @@ public class BumpAuto extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
 
     eventMap01.put("GoHome", new GoHome(arm, wrist));
-    eventMap02.put("CubeScorePrep", new SetArm(arm, () -> -49.5, () -> 4, () -> true));
+    eventMap02.put(
+        "CubeScorePrep",
+        new ParallelCommandGroup(
+            new SetArm(arm, () -> -49.5, () -> 4, () -> true),
+            new SetWristPosition(2045 + Constants.INSTALLED_ARM.getWristOffset(), wrist)));
+    eventMap02.put("GoHome", new GoHome(arm, wrist).withTimeout(0.5));
+    eventMap03.put("GoHome", new GoHome(arm, wrist));
 
     addCommands(
         new InstantCommand(() -> claw.setCone(), claw),
         new AutoScoreSequenceNoHome(
             arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO),
-        AutoPathHelper.followPath(drive, "BumpAuto01", eventMap01, MAX_VELOCITY,
-        MAX_ACCELERATION),
+        AutoPathHelper.followPath(drive, "BumpAuto01", eventMap01, MAX_VELOCITY, MAX_ACCELERATION),
         new ParallelRaceGroup(
+            new DriveToPiece(drive, () -> -2.5, GamePiece.CUBE),
             new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR)
-                .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE))),
-            new DriveToPiece(drive, () -> -1.5, GamePiece.CUBE)),
-        new GoHome(arm, wrist).withTimeout(0.5),
-        AutoPathHelper.followPathNoRotationReset(drive, "BumpAuto02", eventMap02, MAX_VELOCITY,
-        MAX_ACCELERATION),
+                .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)))),
+        new WaitCommand(0.1),
+        AutoPathHelper.followPathNoRotationReset(
+            drive, "BumpAuto02", eventMap02, MAX_VELOCITY, MAX_ACCELERATION),
         new DriveToScore(drive, claw).withTimeout(2.5),
-        new AutoScoreSequence(
-            arm, wrist, claw, () -> Constants.PositionConfigs.AUTO_FRONT_CUBE_TOP),
-        new GoHome(arm, wrist).withTimeout(0.5)
-        );
+        new AutoScoreSequenceNoHome(
+            arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_TOP),
+        // new GoHome(arm, wrist).withTimeout(0.5),
+        // new WaitCommand(0.1),
+        AutoPathHelper.followPathNoRotationReset(
+            drive, "BumpAuto03", eventMap03, MAX_VELOCITY, MAX_ACCELERATION),
+        new ParallelRaceGroup(
+            new DriveToPiece(drive, () -> -2.25, GamePiece.CONE),
+            new CollectSequence(
+                    arm, wrist, claw, () -> Constants.PositionConfigs.AUTO_BACK_CONE_FLOOR)
+                .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CONE)))),
+        new GoHome(arm, wrist).withTimeout(1));
   }
 }

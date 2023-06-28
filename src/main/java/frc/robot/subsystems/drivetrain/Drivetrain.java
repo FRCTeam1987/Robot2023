@@ -515,6 +515,9 @@ public class Drivetrain extends SubsystemBase {
     resetPose(new Pose2d(pose.getTranslation(), getRotation()));
   }
 
+  public void fakeResetPose(final Pose2d pose) {
+  }
+
   /** Resets the robot's center of gravity about which it will rotate to the center of the robot. */
   public void resetCenterGrav() {
     setCenterGrav(0.0, 0.0);

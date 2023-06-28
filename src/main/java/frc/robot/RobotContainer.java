@@ -31,10 +31,10 @@ import frc.robot.commands.auto.Balance;
 import frc.robot.commands.auto.BumpAuto;
 import frc.robot.commands.auto.DriveToPiece;
 import frc.robot.commands.auto.DriveToScore;
+import frc.robot.commands.auto.NoBumpAuto;
 import frc.robot.commands.auto.PreBalance;
 import frc.robot.commands.wrist.HomeWrist;
 import frc.robot.configs.CompRobotConfig;
-import frc.robot.subsystems.MultiLimelight;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.claw.Claw;
@@ -61,7 +61,7 @@ public class RobotContainer {
   private Wrist wrist;
   private Claw claw;
   private Height height = Height.HIGH;
-//   private MultiLimelight multiLimelight;
+  //   private MultiLimelight multiLimelight;
   private boolean shouldUseVision = false;
 
   private boolean doubleSubstation = false;
@@ -266,8 +266,14 @@ public class RobotContainer {
                 .andThen(new SetArm(arm, () -> -90, () -> 1, () -> true))));
 
     TAB_TEST.add("AutoTest", new BumpAuto(arm, claw, drivetrain, wrist));
-    TAB_TEST.add("DriveToScore", new InstantCommand(() -> claw.setCube()).andThen(new DriveToScore(drivetrain, claw)));
-    TAB_TEST.add("Set180", new InstantCommand(() -> drivetrain.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(180)))));
+    TAB_TEST.add("NoBumpAuto", new NoBumpAuto(arm, claw, drivetrain, wrist));
+    TAB_TEST.add(
+        "DriveToScore",
+        new InstantCommand(() -> claw.setCube()).andThen(new DriveToScore(drivetrain, claw)));
+    TAB_TEST.add(
+        "Set180",
+        new InstantCommand(
+            () -> drivetrain.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(180)))));
   }
 
   public boolean shouldScore() {
@@ -369,10 +375,13 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> this.setHeight(Height.MEDIUM)));
     new Trigger(coDriverController::getYButton)
         .onTrue(new InstantCommand(() -> this.setHeight(Height.HIGH)));
-    new Trigger(coDriverController::getAButton)
-        .onTrue(new InstantCommand(() -> arm.setExtensionNominal(), arm)
-        .andThen(new WaitCommand(0.5)
-        .andThen(new InstantCommand(() -> arm.zeroExtension(), arm))));
+
+    new Trigger(() -> (coDriverController.getLeftTriggerAxis() > 0.1))
+        .whileTrue(
+            new InstantCommand(() -> arm.setExtensionNominal(), arm)
+                .andThen(
+                    new WaitCommand(0.5)
+                        .andThen(new InstantCommand(() -> arm.zeroExtension(), arm))));
 
     ConditionalCommand floorScore =
         new ConditionalCommand(
@@ -425,6 +434,11 @@ public class RobotContainer {
     final HashMap<String, Command> autoEventMap = new HashMap<>();
 
     autoEventMap.put("Auto Balance", new Balance(drivetrain));
+
+    // eventMap01.put("GoHome", new GoHome(arm, wrist));
+    // eventMap02.put("CubeScorePrep", new ParallelCommandGroup(new SetArm(arm, () -> -49.5, () ->
+    // 4, () -> true), new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)));
+    // eventMap02.put("GoHome", new GoHome(arm, wrist).withTimeout(0.5));
 
     autoEventMap.put("Balance", new PreBalance(drivetrain));
 
