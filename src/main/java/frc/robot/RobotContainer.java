@@ -28,7 +28,6 @@ import frc.robot.commands.arm.SetArm;
 import frc.robot.commands.auto.AutoPathHelper;
 import frc.robot.commands.auto.AutoScoreSequenceNoHome;
 import frc.robot.commands.auto.Balance;
-import frc.robot.commands.auto.BumpAuto;
 import frc.robot.commands.auto.DriveToPiece;
 import frc.robot.commands.auto.DriveToScore;
 import frc.robot.commands.auto.NoBumpAuto;
@@ -265,7 +264,6 @@ public class RobotContainer {
                 .andThen(new EjectGamePiece(claw).withTimeout(.4)) // 2910 auto spit timeout
                 .andThen(new SetArm(arm, () -> -90, () -> 1, () -> true))));
 
-    TAB_TEST.add("AutoTest", new BumpAuto(arm, claw, drivetrain, wrist));
     TAB_TEST.add("NoBumpAuto", new NoBumpAuto(arm, claw, drivetrain, wrist));
     TAB_TEST.add(
         "DriveToScore",
