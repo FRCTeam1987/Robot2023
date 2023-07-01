@@ -5,6 +5,7 @@
 package frc.robot.commands.auto;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.lib.Limelight.LimelightHelpers;
 import frc.robot.RobotContainer;
@@ -32,7 +33,7 @@ public class DriveToScore extends CommandBase {
     m_xController.setTolerance(2.0);
 
     m_yController = new PIDController(0.05, 0, 0);
-    m_yController.setTolerance(4.0);
+    m_yController.setTolerance(2.25);
     m_yController.enableContinuousInput(-28.5, 28.5);
     m_yController.setSetpoint(0);
 
@@ -46,6 +47,7 @@ public class DriveToScore extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    DriverStation.reportWarning("DriveToScore Command Started", false);
     m_drive.enableFieldRelative();
     m_xController.setSetpoint((m_claw.isCone() ? TY_CONES : TY_CUBES) + TY_MAGIC_OFFSET);
     m_xController.reset();
@@ -62,6 +64,8 @@ public class DriveToScore extends CommandBase {
   @Override
   public void execute() {
     if (RobotContainer.canSeeScoringTarget() == false) {
+      DriverStation.reportWarning("DriveToScore Can't see target", false);
+
       return;
     }
     m_drive.drive(
@@ -74,6 +78,7 @@ public class DriveToScore extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    DriverStation.reportWarning("DriveToScore at All SetPoints, command endings", false);
     m_drive.stop();
   }
 

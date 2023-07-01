@@ -29,7 +29,6 @@ import frc.robot.commands.auto.AutoPathHelper;
 import frc.robot.commands.auto.AutoScoreSequenceNoHome;
 import frc.robot.commands.auto.Balance;
 import frc.robot.commands.auto.BumpAuto;
-import frc.robot.commands.auto.DriveToPiece;
 import frc.robot.commands.auto.DriveToScore;
 import frc.robot.commands.auto.NoBumpAuto;
 import frc.robot.commands.auto.PreBalance;
@@ -236,12 +235,14 @@ public class RobotContainer {
 
     TAB_MAIN.add("Score Chooser", scoreChooser).withPosition(0, 1);
 
-    TAB_MAIN.add(
-        "Pipeline 2 CUBE", new InstantCommand(() -> setLimelightPipeline("limelight-fr", 2)));
-    TAB_MAIN.add(
-        "Pipeline 3 CONE", new InstantCommand(() -> setLimelightPipeline("limelight-fr", 3)));
-    TAB_MAIN.addNumber("TX of collector limelight", () -> LimelightHelpers.getTX("limelight-fr"));
-    TAB_MAIN.add("Drive To Nearest Cone", new DriveToPiece(drivetrain, () -> 0.5, GamePiece.CONE));
+    // TAB_MAIN.add(
+    //     "Pipeline 2 CUBE", new InstantCommand(() -> setLimelightPipeline("limelight-fr", 2)));
+    // TAB_MAIN.add(
+    //     "Pipeline 3 CONE", new InstantCommand(() -> setLimelightPipeline("limelight-fr", 3)));
+    // TAB_MAIN.addNumber("TX of collector limelight", () ->
+    // LimelightHelpers.getTX("limelight-fr"));
+    // TAB_MAIN.add("Drive To Nearest Cone", new DriveToPiece(drivetrain, () -> 0.5,
+    // GamePiece.CONE));
 
     TAB_MAIN
         .add("Score Sequence", new ScoreSequence(arm, wrist, scoreChooser::getSelected))
@@ -312,8 +313,8 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
 
     new Trigger(coDriverController::getRightBumper)
-        .onTrue(new InstantCommand(() -> claw.setRollerSpeed(0.9)))
-        .onFalse(new InstantCommand(() -> claw.stopRollers()));
+        .onTrue(new InstantCommand(() -> claw.setRollerSpeed(0.9)));
+
     new Trigger(driverController::getRightBumper)
         .onTrue(new CollectSequence(arm, wrist, claw, () -> BACK_CUBE_FLOOR, driverController));
 
@@ -344,31 +345,22 @@ public class RobotContainer {
             new SequentialCommandGroup(
                 new EjectGamePiece(claw).withTimeout(0.25), new GoHome(arm, wrist)));
     new Trigger(coDriverController::getLeftBumper)
-        .onTrue(new EjectGamePiece(claw).withTimeout(.25));
+        .onTrue(
+            new ConditionalCommand(
+                new EjectGamePiece(claw).withTimeout(.25),
+                new InstantCommand(),
+                () -> claw.hasGamePiece()));
+
     new Trigger(driverController::getStartButton).onTrue(new GoHome(arm, wrist));
     new Trigger(driverController::getBButton)
         .onTrue(
-            new ConditionalCommand(
-                new CollectSequence(
-                    arm,
-                    wrist,
-                    claw,
-                    () -> Constants.PositionConfigs.FRONT_DOUBLE_SUBSTATION,
-                    driverController),
-                new CollectSequence(
-                    arm,
-                    wrist,
-                    claw,
-                    () -> Constants.PositionConfigs.BACK_SINGLE_SUBSTATION,
-                    driverController),
-                () -> doubleSubstation));
+            new CollectSequence(
+                arm,
+                wrist,
+                claw,
+                () -> Constants.PositionConfigs.BACK_DOUBLE_SUBSTATION,
+                driverController));
 
-    new Trigger(coDriverController::getXButton)
-        .onTrue(
-            new ConditionalCommand(
-                new InstantCommand(() -> doubleSubstation = true),
-                new InstantCommand(() -> doubleSubstation = false),
-                () -> !doubleSubstation));
     new Trigger(coDriverController::getAButton)
         .onTrue(new InstantCommand(() -> this.setHeight(Height.FLOOR)));
     new Trigger(coDriverController::getBButton)
@@ -376,8 +368,8 @@ public class RobotContainer {
     new Trigger(coDriverController::getYButton)
         .onTrue(new InstantCommand(() -> this.setHeight(Height.HIGH)));
 
-    new Trigger(() -> (coDriverController.getLeftTriggerAxis() > 0.1))
-        .whileTrue(
+    new Trigger(coDriverController::getXButton)
+        .onTrue(
             new InstantCommand(() -> arm.setExtensionNominal(), arm)
                 .andThen(
                     new WaitCommand(0.5)
@@ -610,6 +602,9 @@ public class RobotContainer {
             .andThen(
                 AutoPathHelper.followPath(drivetrain, "MobilityConeCable", autoEventMap, 1.5, 1))
             .andThen(new Balance(drivetrain)));
+
+    autoChooser.addOption("3PieceBumpAutoAlign", new BumpAuto(arm, claw, drivetrain, wrist));
+    autoChooser.addOption("3PieceAutoAlign", new NoBumpAuto(arm, claw, drivetrain, wrist));
 
     TAB_MATCH.add(autoChooser);
 

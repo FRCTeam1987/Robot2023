@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.commands.AutoScoreSequence;
-import frc.robot.commands.CollectSequence;
+import frc.robot.commands.CollectSequenceNoHome;
 import frc.robot.commands.GoHome;
 import frc.robot.commands.SetWristPosition;
 import frc.robot.commands.arm.SetArm;
@@ -62,34 +62,47 @@ public class NoBumpAuto extends SequentialCommandGroup {
         new AutoScoreSequenceNoHome(
             arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO),
         // Step 2: Drive almost to the first game piece
-        AutoPathHelper.followPath(drive, "NoBumpAuto01", eventMap01, MAX_V, MAX_A),
+        new ParallelCommandGroup(
+            AutoPathHelper.followPath(drive, "NoBumpAuto01", eventMap01, MAX_V, MAX_A),
+            new InstantCommand(() -> RobotContainer.setCubePipeline())),
         // Step 3: Collect the first game piece
         new ParallelRaceGroup(
             new DriveToPiece(drive, () -> -2.25, GamePiece.CUBE),
-            new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR)
-                .andThen(new InstantCommand(() -> {
+            new CollectSequenceNoHome(
+                arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR)),
+        new WaitCommand(0.1)
+            .andThen(
+                () -> {
+                  RobotContainer.setAprilTagPipeline();
                   claw.setGamePiece(GamePiece.CUBE);
-                }))),
-        new WaitCommand(0.1).andThen(() -> RobotContainer.setAprilTagPipeline()),
+                }),
         // Step 4: Drive almost to the scoring location
-        AutoPathHelper.followPathNoRotationReset(drive, "NoBumpAuto02", eventMap02, MAX_V, MAX_A),
+        AutoPathHelper.followPathNoReset(drive, "NoBumpAuto02", eventMap02, MAX_V, MAX_A),
         // Step 5: Score the first game piece
         new DriveToScore(drive, claw).withTimeout(2.5),
         new AutoScoreSequenceNoHome(
             arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_TOP),
         // Step 6: Drive almost to the second game piece
-        AutoPathHelper.followPathNoRotationReset(drive, "NoBumpAuto03", eventMap03, MAX_V, MAX_A),
+        new ParallelCommandGroup(
+            AutoPathHelper.followPathNoRotationReset(
+                drive, "NoBumpAuto03", eventMap03, MAX_V, MAX_A),
+            new InstantCommand(() -> RobotContainer.setConePipeline())),
         // Step 7: Collect the second game piece
         new ParallelRaceGroup(
             new DriveToPiece(drive, () -> -2.0, GamePiece.CONE),
-            new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.AUTO_BACK_CONE_FLOOR)
-                .andThen(new InstantCommand(() -> {
-                  claw.setGamePiece(GamePiece.CONE);
-                }))).andThen(() -> RobotContainer.setRetroReflectPipeline()),
+            new CollectSequenceNoHome(
+                arm, wrist, claw, () -> Constants.PositionConfigs.AUTO_BACK_CONE_FLOOR)),
+        new WaitCommand(0.04),
         // Step 8: Drive almost to the scoring location
-        AutoPathHelper.followPathNoRotationReset(drive, "NoBumpAuto04", eventMap04, MAX_V, MAX_A),
+        new ParallelCommandGroup(
+            new InstantCommand(() -> RobotContainer.setRetroReflectPipeline()),
+            new InstantCommand(
+                () -> {
+                  claw.setGamePiece(GamePiece.CONE);
+                }),
+            AutoPathHelper.followPathNoReset(drive, "NoBumpAuto04", eventMap04, MAX_V, MAX_A)),
         // Step 9: Score the second game piece
-        new DriveToScore(drive, claw),
+        new DriveToScore(drive, claw).withTimeout(2.5),
         new AutoScoreSequence(
             arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO),
         new InstantCommand(() -> RobotContainer.setAprilTagPipeline()));

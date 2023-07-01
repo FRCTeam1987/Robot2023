@@ -393,7 +393,8 @@ public class LimelightHelpers {
     return new Pose2d(tran2d, r2d);
   }
 
-  public static NetworkTable getLimelightNTTable(String tableName) {
+  public static NetworkTable getLimelightNTTable(
+      String tableName) { // Add logs if network table issue persits on enable
     return NetworkTableInstance.getDefault().getTable(sanitizeName(tableName));
   }
 

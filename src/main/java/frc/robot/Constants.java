@@ -89,7 +89,7 @@ public final class Constants {
         new PositionConfig(1, 83, 1850 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig BACK_CONE_FLOOR =
-        new PositionConfig(1, 82.7, 1802 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
+        new PositionConfig(1, 82.7, 1830 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig
         BACK_CONE_FLOOR_TIPPED = // not a good angle with new LL mounts
@@ -113,9 +113,6 @@ public final class Constants {
     public static final PositionConfig BACK_CUBE_TOP =
         new PositionConfig(21, 51, 2360 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
 
-    public static final PositionConfig BACK_DOUBLE_SUBSTATION = // Don't Use me please
-        new PositionConfig(18, 25, 3129 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
-
     public static final PositionConfig BACK_SINGLE_SUBSTATION =
         new PositionConfig(0, 81, 750 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
@@ -131,10 +128,10 @@ public final class Constants {
         new PositionConfig(23, -102.4, 2130 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig FRONT_CONE_MEDIUM =
-        new PositionConfig(20.2, -41, 289 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
+        new PositionConfig(20.2, -44, 289 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig FRONT_CONE_TOP =
-        new PositionConfig(37.5, -43.6, 433 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
+        new PositionConfig(37.5, -45.6, 433 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig FRONT_CONE_TOP_AUTO =
         new PositionConfig(37.5, -43.6, 340 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
@@ -152,8 +149,8 @@ public final class Constants {
     public static final PositionConfig FRONT_CUBE_TOP =
         new PositionConfig(22, -57.8, 2045 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
 
-    public static final PositionConfig FRONT_DOUBLE_SUBSTATION =
-        new PositionConfig(23.4, 27, 2410 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
+    public static final PositionConfig BACK_DOUBLE_SUBSTATION =
+        new PositionConfig(23.4, 27, 2450 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig FRONT_SINGLE_SUBSTATION =
         new PositionConfig(0, -72, 2330 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
