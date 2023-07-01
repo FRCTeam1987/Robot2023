@@ -435,11 +435,6 @@ public class RobotContainer {
 
     autoEventMap.put("Auto Balance", new Balance(drivetrain));
 
-    // eventMap01.put("GoHome", new GoHome(arm, wrist));
-    // eventMap02.put("CubeScorePrep", new ParallelCommandGroup(new SetArm(arm, () -> -49.5, () ->
-    // 4, () -> true), new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)));
-    // eventMap02.put("GoHome", new GoHome(arm, wrist).withTimeout(0.5));
-
     autoEventMap.put("Balance", new PreBalance(drivetrain));
 
     autoEventMap.put(
@@ -503,6 +498,14 @@ public class RobotContainer {
     autoEventMap.put("Score Cube Prep Low", new SetArm(arm, () -> -90, () -> 8, () -> false));
 
     autoEventMap.put("Score Cube Prep Medium", new SetArm(arm, () -> -49.5, () -> 1, () -> true));
+
+    autoEventMap.put("GoHome", new GoHome(arm, wrist));
+
+    autoEventMap.put(
+        "CubeScorePrep",
+        new ParallelCommandGroup(
+            new SetArm(arm, () -> -49.5, () -> 4, () -> true),
+            new SetWristPosition(2045 + Constants.INSTALLED_ARM.getWristOffset(), wrist)));
 
     autoChooser.addOption(
         "TwoPieceBalanceCable",
@@ -610,6 +613,61 @@ public class RobotContainer {
             .andThen(
                 AutoPathHelper.followPath(drivetrain, "MobilityConeCable", autoEventMap, 1.5, 1))
             .andThen(new Balance(drivetrain)));
+
+    autoChooser.addOption(
+        "2PieceOverTheBumpAutoAllign", // Score the start cone and a cube
+        new InstantCommand(() -> claw.setCone(), claw)
+            .andThen(
+                new AutoScoreSequenceNoHome(
+                    arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
+            .andThen(AutoPathHelper.followPath(drivetrain, "BumpAuto01", autoEventMap, 3.25, 3.0))
+            .andThen(
+                new ParallelRaceGroup(
+                    new DriveToPiece(drivetrain, () -> -2.5, GamePiece.CUBE),
+                    new CollectSequence(
+                            arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR)
+                        .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)))))
+            .andThen(new WaitCommand(0.1))
+            .andThen(
+                AutoPathHelper.followPathNoRotationReset(
+                    drivetrain, "BumpAuto02", autoEventMap, 3.25, 3.0))
+            .andThen(new DriveToScore(drivetrain, claw).withTimeout(2.5))
+            .andThen(
+                new AutoScoreSequenceNoHome(
+                    arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_TOP))
+            .andThen(new GoHome(arm, wrist).withTimeout(0.5)));
+
+    autoChooser.addOption(
+        "3PieceOverTheBumpAutoAllign", // Score the start cone, a cube, and a cone
+        new InstantCommand(() -> claw.setCone(), claw)
+            .andThen(
+                new AutoScoreSequenceNoHome(
+                    arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
+            .andThen(AutoPathHelper.followPath(drivetrain, "BumpAuto01", autoEventMap, 3.25, 3.0))
+            .andThen(
+                new ParallelRaceGroup(
+                    new DriveToPiece(drivetrain, () -> -2.5, GamePiece.CUBE),
+                    new CollectSequence(
+                            arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR)
+                        .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)))))
+            .andThen(new WaitCommand(0.1))
+            .andThen(
+                AutoPathHelper.followPathNoRotationReset(
+                    drivetrain, "BumpAuto02", autoEventMap, 3.25, 3.0))
+            .andThen(new DriveToScore(drivetrain, claw).withTimeout(2.5))
+            .andThen(
+                new AutoScoreSequenceNoHome(
+                    arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_TOP))
+            .andThen(
+                AutoPathHelper.followPathNoRotationReset(
+                    drivetrain, "BumpAuto03", autoEventMap, 3.25, 3.0))
+            .andThen(
+                new ParallelRaceGroup(
+                    new DriveToPiece(drivetrain, () -> -2.25, GamePiece.CONE),
+                    new CollectSequence(
+                            arm, wrist, claw, () -> Constants.PositionConfigs.AUTO_BACK_CONE_FLOOR)
+                        .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CONE)))))
+            .andThen(new GoHome(arm, wrist).withTimeout(1)));
 
     TAB_MATCH.add(autoChooser);
 

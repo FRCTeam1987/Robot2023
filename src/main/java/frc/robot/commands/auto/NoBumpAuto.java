@@ -67,9 +67,11 @@ public class NoBumpAuto extends SequentialCommandGroup {
         new ParallelRaceGroup(
             new DriveToPiece(drive, () -> -2.25, GamePiece.CUBE),
             new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR)
-                .andThen(new InstantCommand(() -> {
-                  claw.setGamePiece(GamePiece.CUBE);
-                }))),
+                .andThen(
+                    new InstantCommand(
+                        () -> {
+                          claw.setGamePiece(GamePiece.CUBE);
+                        }))),
         new WaitCommand(0.1).andThen(() -> RobotContainer.setAprilTagPipeline()),
         // Step 4: Drive almost to the scoring location
         AutoPathHelper.followPathNoRotationReset(drive, "NoBumpAuto02", eventMap02, MAX_V, MAX_A),
@@ -81,11 +83,15 @@ public class NoBumpAuto extends SequentialCommandGroup {
         AutoPathHelper.followPathNoRotationReset(drive, "NoBumpAuto03", eventMap03, MAX_V, MAX_A),
         // Step 7: Collect the second game piece
         new ParallelRaceGroup(
-            new DriveToPiece(drive, () -> -2.0, GamePiece.CONE),
-            new CollectSequence(arm, wrist, claw, () -> Constants.PositionConfigs.AUTO_BACK_CONE_FLOOR)
-                .andThen(new InstantCommand(() -> {
-                  claw.setGamePiece(GamePiece.CONE);
-                }))).andThen(() -> RobotContainer.setRetroReflectPipeline()),
+                new DriveToPiece(drive, () -> -2.0, GamePiece.CONE),
+                new CollectSequence(
+                        arm, wrist, claw, () -> Constants.PositionConfigs.AUTO_BACK_CONE_FLOOR)
+                    .andThen(
+                        new InstantCommand(
+                            () -> {
+                              claw.setGamePiece(GamePiece.CONE);
+                            })))
+            .andThen(() -> RobotContainer.setRetroReflectPipeline()),
         // Step 8: Drive almost to the scoring location
         AutoPathHelper.followPathNoRotationReset(drive, "NoBumpAuto04", eventMap04, MAX_V, MAX_A),
         // Step 9: Score the second game piece
