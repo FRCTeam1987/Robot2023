@@ -4,6 +4,8 @@
 
 package frc.robot.commands.auto;
 
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -27,18 +29,21 @@ import java.util.HashMap;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class NoBumpAuto extends SequentialCommandGroup {
+public class NoBumpAuto2Cubes extends SequentialCommandGroup {
 
-  public final double MAX_V = 3.35;
-  public final double MAX_A = 3.1;
+  public final double MAX_V = 3.5;
+  public final double MAX_A = 3.25;
 
   public final HashMap<String, Command> eventMap01 = new HashMap<>();
   public final HashMap<String, Command> eventMap02 = new HashMap<>();
   public final HashMap<String, Command> eventMap03 = new HashMap<>();
   public final HashMap<String, Command> eventMap04 = new HashMap<>();
 
-  /** Creates a new NoBumpAuto. */
-  public NoBumpAuto(final Arm arm, final Claw claw, final Drivetrain drive, final Wrist wrist) {
+  private double startTime = 0;
+
+  /** Creates a new NoBumpAuto2Cubes. */
+  public NoBumpAuto2Cubes(
+      final Arm arm, final Claw claw, final Drivetrain drive, final Wrist wrist) {
 
     eventMap01.put("GoHome", new GoHome(arm, wrist));
 
@@ -48,17 +53,19 @@ public class NoBumpAuto extends SequentialCommandGroup {
         new ParallelCommandGroup(
             new SetArm(arm, () -> -49.5, () -> 4, () -> true),
             new SetWristPosition(2045 + Constants.INSTALLED_ARM.getWristOffset(), wrist)));
+    eventMap04.put(
+        "CubeScorePrep",
+        new ParallelCommandGroup(
+            new SetArm(arm, () -> -65.4, () -> 6, () -> true),
+            new SetWristPosition(2045 + Constants.INSTALLED_ARM.getWristOffset(), wrist)));
     eventMap03.put("GoHome", new GoHome(arm, wrist));
     eventMap04.put("GoHome", new GoHome(arm, wrist));
-    eventMap04.put(
-        "ConeScorePrep",
-        new ParallelCommandGroup(
-            new SetArm(arm, () -> -49.5, () -> 4, () -> true),
-            new SetWristPosition(2045 + Constants.INSTALLED_ARM.getWristOffset(), wrist)));
 
     addCommands(
+        new InstantCommand(() -> startTime = Timer.getFPGATimestamp()),
         // Step 1: Score preload
         new InstantCommand(() -> claw.setCone(), claw),
+        // new WaitCommand(0.26),
         new AutoScoreSequenceNoHome(
             arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO),
         // Step 2: Drive almost to the first game piece
@@ -70,7 +77,7 @@ public class NoBumpAuto extends SequentialCommandGroup {
             new DriveToPiece(drive, () -> -2.25, GamePiece.CUBE),
             new CollectSequenceNoHome(
                 arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR)),
-        new WaitCommand(0.1)
+        new WaitCommand(0.06)
             .andThen(
                 () -> {
                   RobotContainer.setAprilTagPipeline();
@@ -81,30 +88,32 @@ public class NoBumpAuto extends SequentialCommandGroup {
         // Step 5: Score the first game piece
         new DriveToScore(drive, claw).withTimeout(2.5),
         new AutoScoreSequenceNoHome(
-            arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_TOP),
+            arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_TOP_AUTO),
         // Step 6: Drive almost to the second game piece
         new ParallelCommandGroup(
             AutoPathHelper.followPathNoRotationReset(
                 drive, "NoBumpAuto03", eventMap03, MAX_V, MAX_A),
-            new InstantCommand(() -> RobotContainer.setConePipeline())),
+            new InstantCommand(() -> RobotContainer.setCubePipeline())), // Shouldnt need
         // Step 7: Collect the second game piece
         new ParallelRaceGroup(
-            new DriveToPiece(drive, () -> -2.0, GamePiece.CONE),
+            new DriveToPiece(drive, () -> -2.25, GamePiece.CUBE),
             new CollectSequenceNoHome(
-                arm, wrist, claw, () -> Constants.PositionConfigs.AUTO_BACK_CONE_FLOOR)),
+                arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR)),
         new WaitCommand(0.04),
         // Step 8: Drive almost to the scoring location
         new ParallelCommandGroup(
-            new InstantCommand(() -> RobotContainer.setRetroReflectPipeline()),
+            new InstantCommand(() -> RobotContainer.setAprilTagPipeline()), // Shouldnt need
             new InstantCommand(
                 () -> {
-                  claw.setGamePiece(GamePiece.CONE);
+                  claw.setGamePiece(GamePiece.CUBE);
                 }),
-            AutoPathHelper.followPathNoReset(drive, "NoBumpAuto04", eventMap04, MAX_V, MAX_A)),
+            AutoPathHelper.followPathNoReset(drive, "NoBumpAuto04Cube", eventMap04, MAX_V, MAX_A)),
         // Step 9: Score the second game piece
-        new DriveToScore(drive, claw).withTimeout(2.5),
+        new DriveToScore(drive, claw).withTimeout(5),
         new AutoScoreSequence(
-            arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO),
+            arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_MEDIUM_AUTO),
+        new InstantCommand(
+            () -> SmartDashboard.putNumber("Auto Time", Timer.getFPGATimestamp() - startTime)),
         new InstantCommand(() -> RobotContainer.setAprilTagPipeline()));
   }
 }

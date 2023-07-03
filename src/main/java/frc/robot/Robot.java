@@ -13,7 +13,6 @@ import frc.lib.team6328.util.Alert.AlertType;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.inputs.LoggedPowerDistribution;
-import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 /**
@@ -21,6 +20,8 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
  * to leverage AdvantageKit's logging features.
  */
 public class Robot extends LoggedRobot {
+
+  private int disabledPeriodicCounter = 0;
 
   private Command autonomousCommand;
   private RobotContainer robotContainer;
@@ -67,7 +68,7 @@ public class Robot extends LoggedRobot {
       logger.addDataReceiver(new WPILOGWriter("/media/sda1"));
 
       // Provide log data over the network, viewable in Advantage Scope.
-      logger.addDataReceiver(new NT4Publisher());
+      // logger.addDataReceiver(new NT4Publisher());
 
       LoggedPowerDistribution.getInstance();
 
@@ -120,6 +121,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
     autonomousCommand = robotContainer.getAutonomousCommand();
+    robotContainer.disableXstance();
 
     // schedule the autonomous command
     if (autonomousCommand != null) {
@@ -161,5 +163,18 @@ public class Robot extends LoggedRobot {
   @Override
   public void teleopExit() {
     robotContainer.enableXstance();
+  }
+
+  @Override
+  public void disabledPeriodic() {
+    if (disabledPeriodicCounter < 10) {
+      disabledPeriodicCounter++;
+      return;
+    }
+    RobotContainer.setCubePipeline();
+    RobotContainer.canSeeGamePiece();
+    RobotContainer.setAprilTagPipeline();
+    RobotContainer.canSeeScoringTarget();
+    disabledPeriodicCounter = 0;
   }
 }

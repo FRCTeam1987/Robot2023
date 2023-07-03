@@ -28,16 +28,16 @@
         "y": 0.754
       },
       "prevControl": {
-        "x": 2.7976800332011535,
+        "x": 2.7976800332011544,
         "y": 0.754
       },
       "nextControl": {
-        "x": 3.9092927801229447,
+        "x": 3.792627317511185,
         "y": 0.754
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
-      "velOverride": 1.75,
+      "velOverride": 2.4,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
@@ -53,16 +53,16 @@
         "y": 0.75
       },
       "prevControl": {
-        "x": 4.050845766870508,
+        "x": 4.0508457668705065,
         "y": 0.75
       },
       "nextControl": {
-        "x": 4.583082113266717,
+        "x": 4.652408613971981,
         "y": 0.75
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
-      "velOverride": 1.75,
+      "velOverride": 2.4,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
@@ -74,42 +74,17 @@
     },
     {
       "anchorPoint": {
-        "x": 4.9,
-        "y": 0.75
+        "x": 5.8234163787663515,
+        "y": 0.9610834414268651
       },
       "prevControl": {
-        "x": 4.543094452764808,
-        "y": 0.75
-      },
-      "nextControl": {
-        "x": 5.118897387713436,
-        "y": 0.75
-      },
-      "holonomicAngle": 180.0,
-      "isReversal": false,
-      "velOverride": null,
-      "isLocked": false,
-      "isStopPoint": false,
-      "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
-      }
-    },
-    {
-      "anchorPoint": {
-        "x": 5.639590911180521,
-        "y": 0.9312622252902928
-      },
-      "prevControl": {
-        "x": 5.433160104628586,
-        "y": 0.7934203064586687
+        "x": 5.431505635553589,
+        "y": 0.8700568361965714
       },
       "nextControl": null,
-      "holonomicAngle": -140.0,
+      "holonomicAngle": -160.0,
       "isReversal": false,
-      "velOverride": 2.25,
+      "velOverride": 2.0,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
@@ -128,6 +103,13 @@
       "position": 0.05,
       "names": [
         "GoHome"
+      ]
+    },
+    {
+      "position": 2.1,
+      "names": [
+        "event",
+        "CubeCollectPrep"
       ]
     }
   ]

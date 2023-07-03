@@ -15,9 +15,9 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 public class DriveToScore extends CommandBase {
 
   private static final String LIMELIGHT_NAME = RobotContainer.LIMELIGHT_SCORE;
-  private static final double TY_CONES = 7.0;
-  private static final double TY_CUBES = 4.25;
-  private static final double TY_MAGIC_OFFSET = 16.0; // Avoid irregular roll over of zero
+  private static final double TY_CONES = 4.5;
+  private static final double TY_CUBES = 3.5;
+  private static final double TY_MAGIC_OFFSET = 11.5; // Avoid irregular roll over of zero
 
   private final Drivetrain m_drive;
   private final Claw m_claw;
@@ -30,9 +30,9 @@ public class DriveToScore extends CommandBase {
     m_drive = drive;
     m_claw = claw;
     m_xController = new PIDController(0.1, 0, 0);
-    m_xController.setTolerance(2.0);
+    m_xController.setTolerance(1.5);
 
-    m_yController = new PIDController(0.05, 0, 0);
+    m_yController = new PIDController(0.075, 0, 0);
     m_yController.setTolerance(2.25);
     m_yController.enableContinuousInput(-28.5, 28.5);
     m_yController.setSetpoint(0);
@@ -68,11 +68,28 @@ public class DriveToScore extends CommandBase {
 
       return;
     }
+
+    // System.out.println("_____x: " +m_xController.calculate(LimelightHelpers.getTY(LIMELIGHT_NAME)
+    // + TY_MAGIC_OFFSET) + "y: " +
+    // m_yController.calculate(LimelightHelpers.getTX(LIMELIGHT_NAME)));
+    System.out.println(
+        "ty: "
+            + (LimelightHelpers.getTY(LIMELIGHT_NAME) + TY_MAGIC_OFFSET)
+            + " tx: "
+            + LimelightHelpers.getTX(LIMELIGHT_NAME));
     m_drive.drive(
         -m_xController.calculate(LimelightHelpers.getTY(LIMELIGHT_NAME) + TY_MAGIC_OFFSET),
-        -m_yController.calculate(LimelightHelpers.getTX(LIMELIGHT_NAME)),
+        -Math.min(m_yController.calculate(LimelightHelpers.getTX(LIMELIGHT_NAME)), 0.4),
         m_thetaController.calculate(m_drive.getPose().getRotation().getDegrees()),
         true);
+
+    // m_drive.drive(
+    //     -MathUtil.clamp(m_xController.calculate(LimelightHelpers.getTY(LIMELIGHT_NAME) +
+    // TY_MAGIC_OFFSET), 0.02, 0.5),
+    //     -MathUtil.clamp(m_yController.calculate(LimelightHelpers.getTX(LIMELIGHT_NAME)), 0.2,
+    // 0.5),
+    //     m_thetaController.calculate(m_drive.getPose().getRotation().getDegrees()),
+    //     true);
   }
 
   // Called once the command ends or is interrupted.

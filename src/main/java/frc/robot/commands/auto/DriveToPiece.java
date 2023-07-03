@@ -6,6 +6,7 @@ package frc.robot.commands.auto;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -30,13 +31,13 @@ public class DriveToPiece extends CommandBase {
   private static final double kI = 0.00; // PID integral gain
   private static final double kD = 0.00; // PID derivative gain
   private static final double kToleranceDegrees = 0.1; // Tolerance for reaching the desired angle
-  private static final double maximumAllowableDistance = 4.0; // In Meters
+  private static final double maximumAllowableDistance = 3.0; // In Meters
   private static final double slowDownDistance = 1.0; // Robot goes half speed once passed
 
   private final PIDController rotationController;
 
-  private Debouncer debouncer;
-  private static final double DEBOUNCE_TIME = 0.08; // TODO find correct value and change name
+  private Debouncer canSeePieceDebouncer;
+  private static final double DEBOUNCE_TIME = 0.06; // TODO find correct value and change name
 
   public DriveToPiece(
       final Drivetrain drivetrain, final DoubleSupplier velocitySupplier, GamePiece gamePiece) {
@@ -54,30 +55,28 @@ public class DriveToPiece extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    DriverStation.reportWarning("DriveToPiece Command Started", false);
-    System.out.println("DriveToPiece Command Started");
+    System.out.println("DriveToPiece - init");
     // Apply the output to the swerve
     this.initialPose = drivetrain.getPose();
     rotationController.reset();
     drivetrain.disableFieldRelative();
+    drivetrain.disableXstance();
 
     if (gamePiece == GamePiece.CONE) {
       RobotContainer.setConePipeline();
     } else {
       RobotContainer.setCubePipeline();
     }
-    debouncer = new Debouncer(DEBOUNCE_TIME);
+    canSeePieceDebouncer = new Debouncer(DEBOUNCE_TIME, DebounceType.kFalling);
   }
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    boolean shouldStop = debouncer.calculate(LimelightHelpers.getTV(limelight) == false);
-
-    if (shouldStop) {
-      DriverStation.reportWarning("DriveToPiece Can't see gamePicee", false);
-      System.out.println("DriveToPiece Can't see gamePicee");
-      drivetrain.stop();
+    if (!canSeePieceDebouncer.calculate(LimelightHelpers.getTV(limelight))) {
+      // DriverStation.reportWarning("DriveToPiece Can't see gamePicee", false);
+      System.out.println("DriveToPiece Can't see gamePice");
+      // drivetrain.stop();
+      drivetrain.drive(0.0, 0.0, 0.0, true);
       return;
     }
 
@@ -91,7 +90,7 @@ public class DriveToPiece extends CommandBase {
         distanceTraveled() > slowDownDistance
             ? velocitySupplier.getAsDouble() / 2.0
             : velocitySupplier.getAsDouble();
-    DriverStation.reportWarning("========================= DriveToPiece Speed: " + speed, false);
+    // System.out.println("========================= DriveToPiece Speed: " + speed);
 
     drivetrain.drive(speed, 0.0, rotationalVelocity, true);
   }
@@ -99,10 +98,11 @@ public class DriveToPiece extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    // TODO If it fails to pickup gamepiece send arm home
     DriverStation.reportWarning("DriveToPiece Command Finished", false);
     System.out.println("DriveToPiece Command Finished");
     drivetrain.enableFieldRelative();
-    drivetrain.stop();
+    drivetrain.drive(0.0, 0.0, 0.0, true);
     if (isDistanceTraveledTooFar()) {
       DriverStation.reportWarning("DriveToPiece Drove Too Far", false);
       System.out.println("DriveToPiece Drove Too Far");
