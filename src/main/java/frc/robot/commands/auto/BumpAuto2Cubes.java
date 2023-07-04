@@ -57,7 +57,7 @@ public class BumpAuto2Cubes extends SequentialCommandGroup {
     eventMap03.put(
         "CubeCollectPrep",
         new ParallelCommandGroup(
-            new SetArm(arm, () -> 90, () -> 4, () -> true),
+            new SetArm(arm, () -> 25, () -> 4, () -> true),
             new SetWristPosition(2731 + Constants.INSTALLED_ARM.getWristOffset(), wrist)));
 
     eventMap04.put("GoHome", new GoHome(arm, wrist));

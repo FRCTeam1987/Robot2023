@@ -196,7 +196,7 @@ public class RobotContainer {
   }
 
   private void configureSmartDashboard() {
-    TAB_MATCH.addNumber("Wrist Match Offset", () -> Constants.INSTALLED_ARM.getMatchOffset());
+    TAB_MATCH.addNumber("Wrist Offset", () -> Constants.INSTALLED_ARM.getWristOffset());
     TAB_MATCH.addBoolean("Double Substation", () -> doubleSubstation);
     TAB_MATCH.addBoolean("Switch Status", () -> wrist.hasHitHardstop());
     TAB_MATCH.add(
@@ -279,6 +279,11 @@ public class RobotContainer {
         "Set180",
         new InstantCommand(
             () -> drivetrain.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(180)))));
+    TAB_TEST.add(
+        "LAUNCH_LAST_AUTO_CUBE",
+        new AutoScoreSequence(
+            arm, wrist, claw, () -> Constants.PositionConfigs.LAUNCH_LAST_AUTO_CUBE)
+    );
   }
 
   public boolean shouldScore() {
@@ -350,10 +355,12 @@ public class RobotContainer {
                 new EjectGamePiece(claw).withTimeout(0.25), new GoHome(arm, wrist)));
     new Trigger(coDriverController::getLeftBumper)
         .onTrue(
-            new ConditionalCommand(
-                new EjectGamePiece(claw).withTimeout(.25),
-                new InstantCommand(),
-                () -> claw.hasGamePiece()));
+            new EjectGamePiece(claw).withTimeout(.25)
+            // new ConditionalCommand(
+            //     new EjectGamePiece(claw).withTimeout(.25),
+            //     new InstantCommand(),
+            //     () -> claw.hasGamePiece())
+        );
 
     new Trigger(driverController::getStartButton).onTrue(new GoHome(arm, wrist));
     new Trigger(driverController::getBButton)

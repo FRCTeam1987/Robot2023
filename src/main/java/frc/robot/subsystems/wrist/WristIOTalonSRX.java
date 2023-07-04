@@ -41,12 +41,18 @@ public class WristIOTalonSRX implements WristIO {
   public void setPosition(final int ticks) {
     // DriverStation.reportWarning("====== Returned ticks!: " + (ticks +
     // Constants.INSTALLED_ARM.getMatchOffset()), false);
-    wristMotor.set(
-        TalonSRXControlMode.MotionMagic,
-        ticks + Constants.INSTALLED_ARM.getMatchOffset(),
-        DemandType.ArbitraryFeedForward,
-        -0.1);
+    wristMotor.set(TalonSRXControlMode.MotionMagic, ticks, DemandType.ArbitraryFeedForward, -0.1);
   }
+
+  // public void setPosition(final int ticks) {
+  //   // DriverStation.reportWarning("====== Returned ticks!: " + (ticks +
+  //   // Constants.INSTALLED_ARM.getMatchOffset()), false);
+  //   wristMotor.set(
+  //       TalonSRXControlMode.MotionMagic,
+  //       ticks + Constants.INSTALLED_ARM.getMatchOffset(),
+  //       DemandType.ArbitraryFeedForward,
+  //       -0.1);
+  // }
 
   public int getPosition() {
     return (int) wristMotor.getSelectedSensorPosition();
