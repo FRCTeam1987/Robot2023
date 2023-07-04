@@ -77,6 +77,10 @@ public class Wrist extends SubsystemBase {
     return !wristSwitch.get();
   }
 
+  public void incrementMidMatchOffset(final int ticks) {
+    io.incrementMidMatchOffset(ticks);
+  }
+
   @Override
   public void periodic() {
     if (ADVANTAGE_KIT_ENABLED) {

@@ -10,6 +10,8 @@ public class WristIOTalonSRX implements WristIO {
 
   private final WPI_TalonSRX wristMotor;
 
+  private int midMatchOffsetTicks;
+
   public WristIOTalonSRX(int wristMotorID) {
     wristMotor = new WPI_TalonSRX(wristMotorID);
     TalonSRXConfiguration wristConfig = new TalonSRXConfiguration();
@@ -30,6 +32,7 @@ public class WristIOTalonSRX implements WristIO {
     wristMotor.setSensorPhase(true);
     wristMotor.configContinuousCurrentLimit(15);
     wristMotor.configPeakCurrentLimit(30);
+    midMatchOffsetTicks = 0;
   }
 
   @Override
@@ -82,5 +85,10 @@ public class WristIOTalonSRX implements WristIO {
   @Override
   public void setPercent(final double percent) {
     wristMotor.set(ControlMode.PercentOutput, percent);
+  }
+
+  @Override
+  public void incrementMidMatchOffset(final int ticks) {
+    midMatchOffsetTicks += ticks;
   }
 }

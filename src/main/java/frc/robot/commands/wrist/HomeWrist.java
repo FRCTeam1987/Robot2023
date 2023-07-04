@@ -4,35 +4,49 @@
 
 package frc.robot.commands.wrist;
 
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.wrist.Wrist;
 
 public class HomeWrist extends CommandBase { // README not tested do not use
 
-  private static final double HOMING_PERCENT = -0.45;
+  private static final double HOMING_PERCENT = -0.375;
 
   private final Wrist wrist;
+
+  private int previousPosition;
+  private Debouncer positionDebouncer;
+  private double startTime;
 
   /** Creates a new HomeWrist. */
   public HomeWrist(final Wrist wrist) {
     this.wrist = wrist;
     addRequirements(this.wrist);
     Constants.TAB_MAIN.addNumber("WristPos", wrist::getPosition).withPosition(9, 0);
+    startTime = 0;
+
+    previousPosition = 0;
+    positionDebouncer = new Debouncer(0.04);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     wrist.setPercent(HOMING_PERCENT);
+    previousPosition = wrist.getPosition();
+    positionDebouncer = new Debouncer(0.06);
+    startTime = Timer.getFPGATimestamp();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    DriverStation.reportWarning("Home Wrist Interrupted: " + interrupted, false);
     if (interrupted) {
+      DriverStation.reportWarning("Home Wrist Interrupted", false);
       return;
     }
     wrist.setPercent(0);
@@ -48,6 +62,9 @@ public class HomeWrist extends CommandBase { // README not tested do not use
   public boolean isFinished() {
     DriverStation.reportWarning(
         "is Finished: " + wrist.hasHitHardstop() + ", position: " + wrist.getPosition(), false);
-    return wrist.hasHitHardstop();
+    final boolean shouldFinish = positionDebouncer.calculate(wrist.getPosition() >= previousPosition);
+    previousPosition = wrist.getPosition();
+    return shouldFinish && Timer.getFPGATimestamp() >  startTime + 0.2;
+    // return wrist.getCurrent() > 10  && positionFilter.calculate(wrist.getPosition()) <= wrist.getPosition();
   }
 }

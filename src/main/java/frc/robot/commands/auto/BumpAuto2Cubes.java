@@ -39,8 +39,6 @@ public class BumpAuto2Cubes extends SequentialCommandGroup {
   public final HashMap<String, Command> eventMap03 = new HashMap<>();
   public final HashMap<String, Command> eventMap04 = new HashMap<>();
 
-  private double startTime = 0;
-
   /** Creates a new BumpAuto2Cubes. */
   public BumpAuto2Cubes(final Arm arm, final Claw claw, final Drivetrain drive, final Wrist wrist) {
     // Add your commands in the addCommands() call, e.g.
@@ -68,7 +66,6 @@ public class BumpAuto2Cubes extends SequentialCommandGroup {
             new SetWristPosition(2045 + Constants.INSTALLED_ARM.getWristOffset(), wrist)));
 
     addCommands(
-        new InstantCommand(() -> startTime = Timer.getFPGATimestamp()),
         new InstantCommand(() -> claw.setCone(), claw),
         new AutoScoreSequenceNoHome(
             arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_MEDIUM),
@@ -77,16 +74,25 @@ public class BumpAuto2Cubes extends SequentialCommandGroup {
             AutoPathHelper.followPath(
                 drive, "BumpAuto01", eventMap01, MAX_VELOCITY, MAX_ACCELERATION)),
         new ParallelRaceGroup(
-            new DriveToPiece(drive, () -> -2.25, GamePiece.CUBE),
+            new DriveToPiece(drive, () -> -2.375, GamePiece.CUBE),
             new CollectSequenceNoHome(
                     arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR)
                 .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)))),
-        // new WaitCommand(0.06),
         new ParallelCommandGroup(
             new InstantCommand(() -> RobotContainer.setAprilTagPipeline()),
             AutoPathHelper.followPathNoRotationReset(
                 drive, "BumpAuto02", eventMap02, MAX_VELOCITY, MAX_ACCELERATION)),
-        new DriveToScore(drive, claw).withTimeout(2.5),
+        new ParallelRaceGroup(
+            new DriveToScore(drive, claw).withTimeout(2.5),
+            new ParallelCommandGroup(
+                new SetArm(
+                    arm,
+                    () -> Constants.PositionConfigs.FRONT_CUBE_TOP.getArmRotation(),
+                    () -> Constants.PositionConfigs.FRONT_CUBE_TOP.getArmLength() - 8,
+                    () -> true),
+                new SetWristPosition(2045 + Constants.INSTALLED_ARM.getWristOffset(), wrist)
+            ).withTimeout(5)
+        ),
         new AutoScoreSequenceNoHome(
             arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_TOP),
         new ParallelCommandGroup(
@@ -94,7 +100,7 @@ public class BumpAuto2Cubes extends SequentialCommandGroup {
             AutoPathHelper.followPathNoRotationReset(
                 drive, "BumpAuto03", eventMap03, MAX_VELOCITY, MAX_ACCELERATION)),
         new ParallelRaceGroup(
-            new DriveToPiece(drive, () -> -2.0, GamePiece.CUBE),
+            new DriveToPiece(drive, () -> -1.875, GamePiece.CUBE),
             new CollectSequenceNoHome(
                 arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR)),
         new ParallelCommandGroup(
@@ -105,14 +111,18 @@ public class BumpAuto2Cubes extends SequentialCommandGroup {
         // Step 9: Score the second game piece
         new ParallelRaceGroup(
             new ParallelCommandGroup(
-                new SetArm(arm, () -> -65.4, () -> 6, () -> true),
-                new SetWristPosition(2045 + Constants.INSTALLED_ARM.getWristOffset(), wrist),
+                new SetArm(arm, 
+                    () -> Constants.PositionConfigs.LAUNCH_LAST_AUTO_CUBE.getArmRotation(),
+                    () -> Constants.PositionConfigs.LAUNCH_LAST_AUTO_CUBE.getArmLength(),
+                    () -> true),
+                new SetWristPosition(
+                    (int)Constants.PositionConfigs.LAUNCH_LAST_AUTO_CUBE.getWristRotation()
+                    + Constants.INSTALLED_ARM.getWristOffset(),
+                    wrist),
                 new WaitCommand(10)),
             new DriveToScore(drive, claw).withTimeout(5)),
         new AutoScoreSequence(
-            arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_MEDIUM_AUTO),
-        new InstantCommand(
-            () -> SmartDashboard.putNumber("Auto Time", Timer.getFPGATimestamp() - startTime)),
+            arm, wrist, claw, () -> Constants.PositionConfigs.LAUNCH_LAST_AUTO_CUBE),
         new InstantCommand(() -> RobotContainer.setAprilTagPipeline()));
   }
 }

@@ -21,6 +21,7 @@ public class CollectGamePiece extends CommandBase {
   private static final double COLLECTION_TIME = 0.1;
   private static final double CLAW_ROLLER_SPEED = 0.95;
   private static final double MAXIMUM_CURRENT = 38.5;
+  private static final double MAXIMUM_CURRENT_CUBE = 10.0;
 
   private final GamePiece piece;
 
@@ -37,7 +38,7 @@ public class CollectGamePiece extends CommandBase {
   }
 
   public boolean stopCondition() {
-    return claw.getCurrent() > MAXIMUM_CURRENT; // TODO flex this based on game piece type?
+    return claw.getCurrent() > (this.piece == GamePiece.CONE ? MAXIMUM_CURRENT : MAXIMUM_CURRENT_CUBE); // TODO flex this based on game piece type?
   }
 
   @Override

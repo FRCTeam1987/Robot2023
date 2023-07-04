@@ -30,10 +30,10 @@ public class DriveToScore extends CommandBase {
     m_drive = drive;
     m_claw = claw;
     m_xController = new PIDController(0.1, 0, 0);
-    m_xController.setTolerance(1.5);
+    m_xController.setTolerance(2.5);
 
     m_yController = new PIDController(0.075, 0, 0);
-    m_yController.setTolerance(2.25);
+    m_yController.setTolerance(3.0);
     m_yController.enableContinuousInput(-28.5, 28.5);
     m_yController.setSetpoint(0);
 
