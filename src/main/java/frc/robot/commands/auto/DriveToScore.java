@@ -30,7 +30,7 @@ public class DriveToScore extends CommandBase {
     m_drive = drive;
     m_claw = claw;
     m_xController = new PIDController(0.1, 0, 0);
-    m_xController.setTolerance(2.5);
+    m_xController.setTolerance(2.0);
 
     m_yController = new PIDController(0.075, 0, 0);
     m_yController.setTolerance(3.0);
@@ -38,7 +38,7 @@ public class DriveToScore extends CommandBase {
     m_yController.setSetpoint(0);
 
     m_thetaController = new PIDController(0.03, 0.0, 0.0);
-    m_thetaController.setTolerance(4.0);
+    m_thetaController.setTolerance(3.5);
     m_thetaController.enableContinuousInput(-180, 180);
     m_thetaController.setSetpoint(180);
     addRequirements(m_drive);
