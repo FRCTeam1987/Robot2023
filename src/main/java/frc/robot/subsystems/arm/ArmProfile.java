@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 public class ArmProfile {
   private int wristOffset;
   private final double canCoderOffset;
+  private int MatchOffset = 0;
 
   public ArmProfile(final int wristOffset, final double CANcoderOffset) {
     this.wristOffset = wristOffset;
@@ -25,7 +26,12 @@ public class ArmProfile {
   }
 
   public void addMatchOffset(int incrementAmount) {
-    wristOffset += incrementAmount;
-    DriverStation.reportWarning("-------- Modified MatchOffset!: " + wristOffset, false);
+    MatchOffset += incrementAmount;
+    DriverStation.reportWarning("-------- Modified MatchOffset!: " + MatchOffset, false);
+  }
+
+  public int getMatchOffset() {
+    DriverStation.reportWarning("- Returned MatchOffset!: " + MatchOffset, false);
+    return MatchOffset;
   }
 }

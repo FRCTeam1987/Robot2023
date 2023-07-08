@@ -5,7 +5,6 @@
 package frc.robot.commands.wrist;
 
 import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -26,7 +25,7 @@ public class HomeWrist extends CommandBase { // README not tested do not use
   public HomeWrist(final Wrist wrist) {
     this.wrist = wrist;
     addRequirements(this.wrist);
-    Constants.TAB_MAIN.addNumber("WristPos", wrist::getPosition).withPosition(9, 0);
+    // Constants.TAB_MAIN.addNumber("WristPos", wrist::getPosition).withPosition(9, 0);
     startTime = 0;
 
     previousPosition = 0;
@@ -60,11 +59,13 @@ public class HomeWrist extends CommandBase { // README not tested do not use
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    DriverStation.reportWarning(
-        "is Finished: " + wrist.hasHitHardstop() + ", position: " + wrist.getPosition(), false);
-    final boolean shouldFinish = positionDebouncer.calculate(wrist.getPosition() >= previousPosition);
+    // DriverStation.reportWarning(
+    //     "is Finished: " + wrist.hasHitHardstop() + ", position: " + wrist.getPosition(), false);
+    final boolean shouldFinish =
+        positionDebouncer.calculate(wrist.getPosition() >= previousPosition);
     previousPosition = wrist.getPosition();
-    return shouldFinish && Timer.getFPGATimestamp() >  startTime + 0.2;
-    // return wrist.getCurrent() > 10  && positionFilter.calculate(wrist.getPosition()) <= wrist.getPosition();
+    return shouldFinish && Timer.getFPGATimestamp() > startTime + 0.2;
+    // return wrist.getCurrent() > 10  && positionFilter.calculate(wrist.getPosition()) <=
+    // wrist.getPosition();
   }
 }

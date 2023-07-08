@@ -16,7 +16,7 @@ public class DriveToScore extends CommandBase {
 
   private static final String LIMELIGHT_NAME = RobotContainer.LIMELIGHT_SCORE;
   private static final double TY_CONES = 4.5;
-  private static final double TY_CUBES = 3.5;
+  private static final double TY_CUBES = 5.5; // 5.5
   private static final double TY_MAGIC_OFFSET = 11.5; // Avoid irregular roll over of zero
 
   private final Drivetrain m_drive;

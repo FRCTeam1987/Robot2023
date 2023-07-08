@@ -28,7 +28,7 @@ import java.util.List;
 public final class Constants {
 
   public static final ArmProfile ARM_A = new ArmProfile(569, -323.037);
-  public static final ArmProfile ARM_B = new ArmProfile(550, -202.412);
+  public static final ArmProfile ARM_B = new ArmProfile(560, -201); // +1.412
   public static ArmProfile INSTALLED_ARM = false ? ARM_A : ARM_B;
 
   public static final boolean ADVANTAGE_KIT_ENABLED = true;
@@ -75,12 +75,12 @@ public final class Constants {
       return this.wristRotation;
     }
 
-    public double getArmRotation()  {
-        return this.armRotation;
+    public double getArmRotation() {
+      return this.armRotation;
     }
 
-    public double getArmLength()  {
-        return  this.armLength;
+    public double getArmLength() {
+      return this.armLength;
     }
   }
 
@@ -167,7 +167,7 @@ public final class Constants {
         new PositionConfig(24, -57.8, 2045 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
 
     public static final PositionConfig BACK_DOUBLE_SUBSTATION =
-        new PositionConfig( 22.25, 27, 2450 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE); // Arm A 23.4, 27, 2450
+        new PositionConfig(22.25, 27, 2450 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig FRONT_SINGLE_SUBSTATION =
         new PositionConfig(0, -72, 2330 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
@@ -176,7 +176,7 @@ public final class Constants {
         new PositionConfig(27.2, -90.8, 1454 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
 
     public static final PositionConfig LAUNCH_LAST_AUTO_CUBE =
-        new PositionConfig(3, -28.0, 1970, GamePiece.CUBE);
+        new PositionConfig(6, -28.0, 1970, GamePiece.CUBE);
   }
 
   public static class OnTheFly {
