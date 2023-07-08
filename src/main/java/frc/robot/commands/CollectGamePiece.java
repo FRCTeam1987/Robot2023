@@ -38,7 +38,10 @@ public class CollectGamePiece extends CommandBase {
   }
 
   public boolean stopCondition() {
-    return claw.getCurrent() > (this.piece == GamePiece.CONE ? MAXIMUM_CURRENT : MAXIMUM_CURRENT_CUBE); // TODO flex this based on game piece type?
+    return claw.getCurrent()
+        > (this.piece == GamePiece.CONE
+            ? MAXIMUM_CURRENT
+            : MAXIMUM_CURRENT_CUBE); // TODO flex this based on game piece type?
   }
 
   @Override

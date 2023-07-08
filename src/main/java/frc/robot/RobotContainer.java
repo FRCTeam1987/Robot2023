@@ -196,7 +196,7 @@ public class RobotContainer {
   }
 
   private void configureSmartDashboard() {
-    TAB_MATCH.addNumber("Wrist Offset", () -> Constants.INSTALLED_ARM.getWristOffset());
+    TAB_MATCH.addNumber("Wrist Match Offset", () -> Constants.INSTALLED_ARM.getMatchOffset());
     TAB_MATCH.addBoolean("Double Substation", () -> doubleSubstation);
     TAB_MATCH.addBoolean("Switch Status", () -> wrist.hasHitHardstop());
     TAB_MATCH.add(
@@ -282,8 +282,15 @@ public class RobotContainer {
     TAB_TEST.add(
         "LAUNCH_LAST_AUTO_CUBE",
         new AutoScoreSequence(
-            arm, wrist, claw, () -> Constants.PositionConfigs.LAUNCH_LAST_AUTO_CUBE)
-    );
+            arm, wrist, claw, () -> Constants.PositionConfigs.LAUNCH_LAST_AUTO_CUBE));
+
+    TAB_TEST.add(
+        "Auto Cone Score",
+        new SequentialCommandGroup(
+            new InstantCommand(() -> claw.setCone(), claw),
+            new AutoScoreSequenceNoHome(
+                arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_MEDIUM),
+            new GoHome(arm, wrist)));
   }
 
   public boolean shouldScore() {
@@ -360,9 +367,9 @@ public class RobotContainer {
             //     new EjectGamePiece(claw).withTimeout(.25),
             //     new InstantCommand(),
             //     () -> claw.hasGamePiece())
-        );
+            );
 
-    new Trigger(driverController::getStartButton).onTrue(new GoHome(arm, wrist));
+    new Trigger(() -> coDriverController.getLeftTriggerAxis() > 0.9).onTrue(new HomeWrist(wrist));
     new Trigger(driverController::getBButton)
         .onTrue(
             new CollectSequence(
@@ -372,6 +379,7 @@ public class RobotContainer {
                 () -> Constants.PositionConfigs.BACK_DOUBLE_SUBSTATION,
                 driverController));
 
+    new Trigger(driverController::getStartButton).onTrue(new GoHome(arm, wrist));
     new Trigger(coDriverController::getStartButton)
         .onTrue(
             new InstantCommand(
@@ -512,6 +520,8 @@ public class RobotContainer {
 
     autoEventMap.put("Score Cube Prep", new SetArm(arm, () -> -49.5, () -> 1, () -> true));
 
+    autoEventMap.put("Shift Momentum", new SetArm(arm, () -> -39.0, () -> 1, () -> false));
+
     autoEventMap.put("Score Cube Prep Low", new SetArm(arm, () -> -90, () -> 8, () -> false));
 
     autoEventMap.put("Score Cube Prep Medium", new SetArm(arm, () -> -49.5, () -> 1, () -> true));
@@ -596,17 +606,30 @@ public class RobotContainer {
     //         .andThen(new PreBalance(drivetrain)));
 
     autoChooser.addOption(
-        "MobilityCone",
+        "MobilityConeNoBump",
         new WaitCommand(0) // Max of 2 seconds
             .andThen(
                 new AutoScoreSequenceNoHome(
                     arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
             .andThen(new GoHome(arm, wrist))
             .andThen(AutoPathHelper.followPath(drivetrain, "MobilityCone", autoEventMap, 1.5, 1))
+            .andThen(new GoHome(arm, wrist))
             .andThen(new Balance(drivetrain)));
 
+    // autoChooser.addOption(
+    //     "MobilityConeTest1NO BUMP",
+    //     new WaitCommand(0) // Max of 2 seconds
+    //         .andThen(
+    //             new AutoScoreSequenceNoHome(
+    //                 arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
+    //         .andThen(new GoHome(arm, wrist))
+    //         .andThen(
+    //             AutoPathHelper.followPath(drivetrain, "MobilityConeTest1", autoEventMap, 1.5, 1))
+    //         .andThen(new GoHome(arm, wrist))
+    //         .andThen(new Balance(drivetrain)));
+
     autoChooser.addOption(
-        "MobilityConeCable",
+        "MobilityConeBump",
         new WaitCommand(0) // Max of 2 seconds
             .andThen(
                 new AutoScoreSequenceNoHome(
@@ -614,12 +637,11 @@ public class RobotContainer {
             .andThen(new GoHome(arm, wrist))
             .andThen(
                 AutoPathHelper.followPath(drivetrain, "MobilityConeCable", autoEventMap, 1.5, 1))
+            .andThen(new GoHome(arm, wrist))
             .andThen(new Balance(drivetrain)));
 
-    autoChooser.addOption(
-        "3PieceCubeBumpAutoAlign", new BumpAuto2Cubes(arm, claw, drivetrain, wrist));
-    autoChooser.addOption(
-        "3PieceCubeAutoAlign", new NoBumpAuto2Cubes(arm, claw, drivetrain, wrist));
+    autoChooser.addOption("BumpAutoAlign", new BumpAuto2Cubes(arm, claw, drivetrain, wrist));
+    autoChooser.addOption("NoBumpAutoAlign", new NoBumpAuto2Cubes(arm, claw, drivetrain, wrist));
 
     TAB_MATCH.add(autoChooser);
 

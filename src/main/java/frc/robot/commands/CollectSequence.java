@@ -5,10 +5,13 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.Constants;
 import frc.robot.Constants.PositionConfig;
 import frc.robot.commands.arm.SetArm;
 import frc.robot.subsystems.arm.Arm;
@@ -50,6 +53,15 @@ public class CollectSequence extends SequentialCommandGroup {
             new CollectGamePiece(claw, GamePiece.CUBE, controller),
             new CollectGamePiece(claw, GamePiece.CONE, controller),
             () -> positionConfig.get().gamePiece == GamePiece.CUBE),
+        // TODO try this to see if delaying the arm going up for single sub collect is what we want
+        new ConditionalCommand(
+            new SequentialCommandGroup(
+                new InstantCommand(() -> controller.setRumble(RumbleType.kBothRumble, 1)),
+                new WaitCommand(0.4),
+                new InstantCommand(() -> controller.setRumble(RumbleType.kBothRumble, 0))
+            ),
+            new InstantCommand(),
+            () -> positionConfig.get().equals(Constants.PositionConfigs.BACK_CONE_FLOOR)),
         new ParallelCommandGroup(
             new SetArm(arm, () -> Arm.HOME_ROTATION, () -> Arm.HOME_EXTENSION, () -> true),
             new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)),

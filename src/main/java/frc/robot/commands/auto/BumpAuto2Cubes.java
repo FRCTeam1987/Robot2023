@@ -4,8 +4,6 @@
 
 package frc.robot.commands.auto;
 
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -67,7 +65,7 @@ public class BumpAuto2Cubes extends SequentialCommandGroup {
 
     addCommands(
         new InstantCommand(() -> claw.setCone(), claw),
-        new AutoScoreSequenceNoHome(
+        new AutoScoreSequenceNoHomeWait(
             arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_MEDIUM),
         new ParallelCommandGroup(
             new InstantCommand(() -> RobotContainer.setCubePipeline()),
@@ -85,14 +83,13 @@ public class BumpAuto2Cubes extends SequentialCommandGroup {
         new ParallelRaceGroup(
             new DriveToScore(drive, claw).withTimeout(2.5),
             new ParallelCommandGroup(
-                new SetArm(
-                    arm,
-                    () -> Constants.PositionConfigs.FRONT_CUBE_TOP.getArmRotation(),
-                    () -> Constants.PositionConfigs.FRONT_CUBE_TOP.getArmLength() - 8,
-                    () -> true),
-                new SetWristPosition(2045 + Constants.INSTALLED_ARM.getWristOffset(), wrist)
-            ).withTimeout(5)
-        ),
+                    new SetArm(
+                        arm,
+                        () -> Constants.PositionConfigs.FRONT_CUBE_TOP.getArmRotation(),
+                        () -> Constants.PositionConfigs.FRONT_CUBE_TOP.getArmLength() - 8,
+                        () -> true),
+                    new SetWristPosition(2045 + Constants.INSTALLED_ARM.getWristOffset(), wrist))
+                .withTimeout(5)),
         new AutoScoreSequenceNoHome(
             arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_TOP),
         new ParallelCommandGroup(
@@ -111,13 +108,14 @@ public class BumpAuto2Cubes extends SequentialCommandGroup {
         // Step 9: Score the second game piece
         new ParallelRaceGroup(
             new ParallelCommandGroup(
-                new SetArm(arm, 
+                new SetArm(
+                    arm,
                     () -> Constants.PositionConfigs.LAUNCH_LAST_AUTO_CUBE.getArmRotation(),
                     () -> Constants.PositionConfigs.LAUNCH_LAST_AUTO_CUBE.getArmLength(),
                     () -> true),
                 new SetWristPosition(
-                    (int)Constants.PositionConfigs.LAUNCH_LAST_AUTO_CUBE.getWristRotation()
-                    + Constants.INSTALLED_ARM.getWristOffset(),
+                    (int) Constants.PositionConfigs.LAUNCH_LAST_AUTO_CUBE.getWristRotation()
+                        + Constants.INSTALLED_ARM.getWristOffset(),
                     wrist),
                 new WaitCommand(10)),
             new DriveToScore(drive, claw).withTimeout(5)),

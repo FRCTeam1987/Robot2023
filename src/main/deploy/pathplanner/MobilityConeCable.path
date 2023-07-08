@@ -62,7 +62,7 @@
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
-      "velOverride": 0.5,
+      "velOverride": 0.75,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
@@ -99,11 +99,11 @@
     },
     {
       "anchorPoint": {
-        "x": 3.6,
+        "x": 3.9,
         "y": 2.75
       },
       "prevControl": {
-        "x": 4.321732860479742,
+        "x": 4.621732860479741,
         "y": 2.75
       },
       "nextControl": null,
@@ -120,5 +120,13 @@
       }
     }
   ],
-  "markers": []
+  "markers": [
+    {
+      "position": 3.45,
+      "names": [
+        "event",
+        "Shift Momentum"
+      ]
+    }
+  ]
 }
