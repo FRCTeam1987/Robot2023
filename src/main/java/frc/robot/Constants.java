@@ -27,9 +27,9 @@ import java.util.List;
  */
 public final class Constants {
 
-  public static final ArmProfile ARM_A = new ArmProfile(569, -323.037);
-  public static final ArmProfile ARM_B = new ArmProfile(560, -201); // +1.412
-  public static ArmProfile INSTALLED_ARM = false ? ARM_A : ARM_B;
+  public static final ArmProfile ARM_A = new ArmProfile(569, -322.037); //+1
+  public static final ArmProfile ARM_B = new ArmProfile(687, -201); // +1.412
+  public static ArmProfile INSTALLED_ARM = true ? ARM_A : ARM_B;
 
   public static final boolean ADVANTAGE_KIT_ENABLED = true;
   public static final boolean TUNING_MODE = false;
@@ -97,7 +97,7 @@ public final class Constants {
         new PositionConfig(1, 83, 1850 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig BACK_CONE_FLOOR =
-        new PositionConfig(1, 82.7, 1830 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
+        new PositionConfig(1, 82.7, 1735 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig
         BACK_CONE_FLOOR_TIPPED = // not a good angle with new LL mounts
@@ -167,7 +167,7 @@ public final class Constants {
         new PositionConfig(24, -57.8, 2045 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
 
     public static final PositionConfig BACK_DOUBLE_SUBSTATION =
-        new PositionConfig(22.25, 27, 2450 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
+        new PositionConfig(22.25, 27, 2390 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig FRONT_SINGLE_SUBSTATION =
         new PositionConfig(0, -72, 2330 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);

@@ -13,7 +13,7 @@ import frc.robot.subsystems.wrist.Wrist;
 
 public class HomeWrist extends CommandBase { // README not tested do not use
 
-  private static final double HOMING_PERCENT = -0.375;
+  private static final double HOMING_PERCENT = -0.45;
 
   private final Wrist wrist;
 
@@ -37,7 +37,7 @@ public class HomeWrist extends CommandBase { // README not tested do not use
   public void initialize() {
     wrist.setPercent(HOMING_PERCENT);
     previousPosition = wrist.getPosition();
-    positionDebouncer = new Debouncer(0.06);
+    positionDebouncer = new Debouncer(0.08);
     startTime = Timer.getFPGATimestamp();
   }
 
@@ -50,7 +50,7 @@ public class HomeWrist extends CommandBase { // README not tested do not use
     }
     wrist.setPercent(0);
     DriverStation.reportWarning(wrist.getPosition() + " Before ConfigRelative", false);
-    wrist.configRelative(Constants.INSTALLED_ARM.getWristOffset());
+    wrist.configRelative(Constants.INSTALLED_ARM.getWristOffset() - 100);
     DriverStation.reportWarning(wrist.getPosition() + " After ConfigRelative", false);
     wrist.setPosition(Wrist.ANGLE_STRAIGHT);
     DriverStation.reportWarning(wrist.getPosition() + " After SetPosition", false);

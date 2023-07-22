@@ -66,7 +66,7 @@ public class NoBumpAuto2Cubes extends SequentialCommandGroup {
         // Step 1: Score preload
         new InstantCommand(() -> claw.setCone(), claw),
         // new WaitCommand(0.26),
-        new AutoScoreSequenceNoHome(
+        new AutoScoreSequenceNoHomeWait(
             arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO),
         // Step 2: Drive almost to the first game piece
         new ParallelCommandGroup(
