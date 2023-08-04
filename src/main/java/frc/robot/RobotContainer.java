@@ -52,7 +52,6 @@ public class RobotContainer {
   private Wrist wrist;
   private Claw claw;
   private Height height = Height.HIGH;
-  private MultiLimelight multiLimelight;
   private boolean shouldUseVision = false;
 
   private boolean doubleSubstation = false;
