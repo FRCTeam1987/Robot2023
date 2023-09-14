@@ -649,8 +649,8 @@ public class RobotContainer {
     TAB_MATCH.add("Re-Home Wrist", new HomeWrist(wrist));
     TAB_MATCH.addBoolean("Cone", () -> claw.isCone());
     TAB_MATCH.addBoolean("Cube", () -> claw.isCube());
-    TAB_MATCH.add("Stop Wrist Motor", new InstantCommand(() ->  wrist.setPercent(0)));
-    
+    TAB_MATCH.add("Stop Wrist Motor", new InstantCommand(() -> wrist.setPercent(0)));
+
     TAB_TEST.add(
         "ScoreConeMid",
         new AutoScoreSequenceNoHome(

@@ -4,8 +4,8 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -58,8 +58,7 @@ public class CollectSequence extends SequentialCommandGroup {
             new SequentialCommandGroup(
                 new InstantCommand(() -> controller.setRumble(RumbleType.kBothRumble, 1)),
                 new WaitCommand(0.4),
-                new InstantCommand(() -> controller.setRumble(RumbleType.kBothRumble, 0))
-            ),
+                new InstantCommand(() -> controller.setRumble(RumbleType.kBothRumble, 0))),
             new InstantCommand(),
             () -> positionConfig.get().equals(Constants.PositionConfigs.BACK_CONE_FLOOR)),
         new ParallelCommandGroup(
