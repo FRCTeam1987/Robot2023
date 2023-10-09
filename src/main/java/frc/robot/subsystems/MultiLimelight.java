@@ -42,7 +42,7 @@ public class MultiLimelight extends SubsystemBase {
   private final BooleanSupplier mIsPoseUpdateAllowed;
   private final List<String> mLimelights;
   private final SwerveDrivePoseEstimator mPoseEstimator;
-  public static final ShuffleboardTab TAB_MAIN = Shuffleboard.getTab("Main2");
+  public static final ShuffleboardTab TAB_MAIN = Shuffleboard.getTab("Main");
 
   /**
    * Creates a new MultiLimelight.

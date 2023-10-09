@@ -15,7 +15,8 @@ public class Wrist extends SubsystemBase {
   private final WristIOInputsAutoLogged inputs = new WristIOInputsAutoLogged();
   private final DigitalInput wristSwitch = new DigitalInput(0);
 
-  public static final int ANGLE_STRAIGHT = 1457 + Constants.INSTALLED_ARM.getWristOffset(); // 2062
+  public static final int ANGLE_STRAIGHT =
+      1279 + Constants.INSTALLED_ARM.getWristOffset(); // 2048 total is true straight
   public static final int ANGLE_FRONT_MAX = 795; // when telescope extended
   public static final int ANGLE_FRONT_PERPENDICULAR = 447;
   public static final int ANGLE_BACK_PERPENDICULAR = 2439;
@@ -74,6 +75,10 @@ public class Wrist extends SubsystemBase {
 
   public boolean hasHitHardstop() {
     return !wristSwitch.get();
+  }
+
+  public void incrementMidMatchOffset(final int ticks) {
+    io.incrementMidMatchOffset(ticks);
   }
 
   @Override

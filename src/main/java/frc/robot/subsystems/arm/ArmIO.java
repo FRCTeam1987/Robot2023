@@ -33,4 +33,6 @@ public interface ArmIO {
   default void setExtensionNominal() {}
 
   default void stop() {}
+
+  default void zeroExtension() {}
 }

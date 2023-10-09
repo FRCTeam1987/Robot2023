@@ -8,11 +8,14 @@ import static frc.robot.Constants.*;
 import static frc.robot.Constants.PositionConfigs.*;
 import static frc.robot.subsystems.wrist.Wrist.ANGLE_STRAIGHT;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.lib.Limelight.LimelightHelpers;
 import frc.lib.team3061.RobotConfig;
 import frc.lib.team3061.gyro.GyroIO;
 import frc.lib.team3061.gyro.GyroIOPigeon2;
@@ -25,10 +28,12 @@ import frc.robot.commands.arm.SetArm;
 import frc.robot.commands.auto.AutoPathHelper;
 import frc.robot.commands.auto.AutoScoreSequenceNoHome;
 import frc.robot.commands.auto.Balance;
+import frc.robot.commands.auto.BumpAuto2Cubes;
+import frc.robot.commands.auto.DriveToScore;
+import frc.robot.commands.auto.NoBumpAuto2Cubes;
 import frc.robot.commands.auto.PreBalance;
 import frc.robot.commands.wrist.HomeWrist;
 import frc.robot.configs.CompRobotConfig;
-import frc.robot.subsystems.MultiLimelight;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.claw.Claw;
@@ -47,12 +52,15 @@ import java.util.HashMap;
  */
 public class RobotContainer {
 
+  public static final String LIMELIGHT_COLLECT = "limelight-collect";
+  public static final String LIMELIGHT_SCORE = "limelight-scoring";
+
   private RobotConfig config;
   private Drivetrain drivetrain;
   private Wrist wrist;
   private Claw claw;
   private Height height = Height.HIGH;
-  private MultiLimelight multiLimelight;
+  //   private MultiLimelight multiLimelight;
   private boolean shouldUseVision = false;
 
   private boolean doubleSubstation = false;
@@ -138,14 +146,14 @@ public class RobotContainer {
     wrist = new Wrist(new WristIOTalonSRX(config.getWristRotatorID()));
     claw = new Claw(new ClawIOSparkMAX(config.getClawMotorID()));
     claw.setDefaultCommand(new DefaultClawRollersSpin(claw));
-    multiLimelight =
-        new MultiLimelight(
-            () ->
-                (Math.abs(drivetrain.getCharacterizationVelocity()) < 0.025
-                    // velocity can accept pose
-                    && shouldUseVision), // see how high this can go
-            "limelight-fl",
-            "limelight-fr");
+    // multiLimelight =
+    //     new MultiLimelight(
+    //         () ->
+    //             (Math.abs(drivetrain.getCharacterizationVelocity()) < 0.025
+    //                 // velocity can accept pose
+    //                 && shouldUseVision), // see how high this can go
+    //         "limelight-fl",
+    //         "limelight-fr");
 
     arm =
         new Arm(
@@ -188,6 +196,7 @@ public class RobotContainer {
   }
 
   private void configureSmartDashboard() {
+    TAB_MATCH.addNumber("Wrist Match Offset", () -> Constants.INSTALLED_ARM.getMatchOffset());
     TAB_MATCH.addBoolean("Double Substation", () -> doubleSubstation);
     TAB_MATCH.addBoolean("Switch Status", () -> wrist.hasHitHardstop());
     TAB_MATCH.add(
@@ -227,6 +236,15 @@ public class RobotContainer {
 
     TAB_MAIN.add("Score Chooser", scoreChooser).withPosition(0, 1);
 
+    // TAB_MAIN.add(
+    //     "Pipeline 2 CUBE", new InstantCommand(() -> setLimelightPipeline("limelight-fr", 2)));
+    // TAB_MAIN.add(
+    //     "Pipeline 3 CONE", new InstantCommand(() -> setLimelightPipeline("limelight-fr", 3)));
+    // TAB_MAIN.addNumber("TX of collector limelight", () ->
+    // LimelightHelpers.getTX("limelight-fr"));
+    // TAB_MAIN.add("Drive To Nearest Cone", new DriveToPiece(drivetrain, () -> 0.5,
+    // GamePiece.CONE));
+
     TAB_MAIN
         .add("Score Sequence", new ScoreSequence(arm, wrist, scoreChooser::getSelected))
         .withPosition(1, 1);
@@ -240,18 +258,67 @@ public class RobotContainer {
     TAB_MAIN.add("Eject Game Piece", new EjectGamePiece(claw).withTimeout(0.25)).withPosition(2, 1);
 
     TAB_MAIN.add("Set Home", new GoHome(arm, wrist)).withPosition(2, 0);
-    TAB_MAIN.add(
-        "SPIT_BACK_CUBE_FLOOR_LONG",
+    // TAB_MAIN.add(
+    //     "SPIT_BACK_CUBE_FLOOR_LONG",
+    //     new SequentialCommandGroup(
+    //         new ScoreSequence(arm, wrist, () ->
+    // Constants.PositionConfigs.SPIT_BACK_CUBE_FLOOR_LONG)
+    //             .withTimeout(
+    //                 2.0) // timeout of extension, make longer than expected so that position is
+    // good
+    //             .andThen(new EjectGamePiece(claw).withTimeout(.4)) // 2910 auto spit timeout
+    //             .andThen(new SetArm(arm, () -> -90, () -> 1, () -> true))));
+
+    TAB_TEST.add(
+        "DriveToScoreCube",
+        new InstantCommand(() -> claw.setCube()).andThen(new DriveToScore(drivetrain, claw)));
+    TAB_TEST.add(
+        "DriveToScoreCone",
+        new InstantCommand(() -> claw.setCone()).andThen(new DriveToScore(drivetrain, claw)));
+    TAB_TEST.add(
+        "Set180",
+        new InstantCommand(
+            () -> drivetrain.resetPose(new Pose2d(0, 0, Rotation2d.fromDegrees(180)))));
+    TAB_TEST.add(
+        "LAUNCH_LAST_AUTO_CUBE",
+        new AutoScoreSequence(
+            arm, wrist, claw, () -> Constants.PositionConfigs.LAUNCH_LAST_AUTO_CUBE));
+
+    TAB_TEST.add(
+        "Auto Cone Score",
         new SequentialCommandGroup(
-            new ScoreSequence(arm, wrist, () -> Constants.PositionConfigs.SPIT_BACK_CUBE_FLOOR_LONG)
-                .withTimeout(
-                    2.0) // timeout of extension, make longer than expected so that position is good
-                .andThen(new EjectGamePiece(claw).withTimeout(.4)) // 2910 auto spit timeout
-                .andThen(new SetArm(arm, () -> -90, () -> 1, () -> true))));
+            new InstantCommand(() -> claw.setCone(), claw),
+            new AutoScoreSequenceNoHome(
+                arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_MEDIUM),
+            new GoHome(arm, wrist)));
   }
 
   public boolean shouldScore() {
     return true;
+  }
+
+  public static void setAprilTagPipeline() {
+    LimelightHelpers.setPipelineIndex(LIMELIGHT_SCORE, 1);
+  }
+
+  public static void setRetroReflectPipeline() {
+    LimelightHelpers.setPipelineIndex(LIMELIGHT_SCORE, 0);
+  }
+
+  public static void setConePipeline() {
+    LimelightHelpers.setPipelineIndex(LIMELIGHT_COLLECT, 3);
+  }
+
+  public static void setCubePipeline() {
+    LimelightHelpers.setPipelineIndex(LIMELIGHT_COLLECT, 2);
+  }
+
+  public static boolean canSeeGamePiece() {
+    return LimelightHelpers.getTV(LIMELIGHT_COLLECT);
+  }
+
+  public static boolean canSeeScoringTarget() {
+    return LimelightHelpers.getTV(LIMELIGHT_SCORE);
   }
 
   /** Use this method to define your button->command mappings. */
@@ -262,8 +329,8 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(drivetrain::zeroGyroscope, drivetrain));
 
     new Trigger(coDriverController::getRightBumper)
-        .onTrue(new InstantCommand(() -> claw.setRollerSpeed(-0.9)))
-        .onFalse(new InstantCommand(() -> claw.stopRollers()));
+        .onTrue(new InstantCommand(() -> claw.setRollerSpeed(0.9)));
+
     new Trigger(driverController::getRightBumper)
         .onTrue(new CollectSequence(arm, wrist, claw, () -> BACK_CUBE_FLOOR, driverController));
 
@@ -294,37 +361,47 @@ public class RobotContainer {
             new SequentialCommandGroup(
                 new EjectGamePiece(claw).withTimeout(0.25), new GoHome(arm, wrist)));
     new Trigger(coDriverController::getLeftBumper)
-        .onTrue(new EjectGamePiece(claw).withTimeout(.25));
-    new Trigger(driverController::getStartButton).onTrue(new GoHome(arm, wrist));
+        .onTrue(
+            new EjectGamePiece(claw).withTimeout(.25)
+            // new ConditionalCommand(
+            //     new EjectGamePiece(claw).withTimeout(.25),
+            //     new InstantCommand(),
+            //     () -> claw.hasGamePiece())
+            );
+
+    new Trigger(() -> coDriverController.getLeftTriggerAxis() > 0.9).onTrue(new HomeWrist(wrist));
     new Trigger(driverController::getBButton)
         .onTrue(
-            new ConditionalCommand(
-                new CollectSequence(
-                    arm,
-                    wrist,
-                    claw,
-                    () -> Constants.PositionConfigs.FRONT_DOUBLE_SUBSTATION,
-                    driverController),
-                new CollectSequence(
-                    arm,
-                    wrist,
-                    claw,
-                    () -> Constants.PositionConfigs.BACK_SINGLE_SUBSTATION,
-                    driverController),
-                () -> doubleSubstation));
+            new CollectSequence(
+                arm,
+                wrist,
+                claw,
+                () -> Constants.PositionConfigs.BACK_DOUBLE_SUBSTATION,
+                driverController));
 
-    new Trigger(coDriverController::getXButton)
+    new Trigger(driverController::getStartButton).onTrue(new GoHome(arm, wrist));
+    new Trigger(coDriverController::getStartButton)
         .onTrue(
-            new ConditionalCommand(
-                new InstantCommand(() -> doubleSubstation = true),
-                new InstantCommand(() -> doubleSubstation = false),
-                () -> !doubleSubstation));
+            new InstantCommand(
+                () -> Constants.INSTALLED_ARM.addMatchOffset(29))); // Increase wrist Offset
+    new Trigger(coDriverController::getBackButton)
+        .onTrue(
+            new InstantCommand(
+                () -> Constants.INSTALLED_ARM.addMatchOffset(-29))); // Decrease wrist offset
+
     new Trigger(coDriverController::getAButton)
         .onTrue(new InstantCommand(() -> this.setHeight(Height.FLOOR)));
     new Trigger(coDriverController::getBButton)
         .onTrue(new InstantCommand(() -> this.setHeight(Height.MEDIUM)));
     new Trigger(coDriverController::getYButton)
         .onTrue(new InstantCommand(() -> this.setHeight(Height.HIGH)));
+
+    new Trigger(coDriverController::getXButton)
+        .onTrue(
+            new InstantCommand(() -> arm.setExtensionNominal(), arm)
+                .andThen(
+                    new WaitCommand(0.5)
+                        .andThen(new InstantCommand(() -> arm.zeroExtension(), arm))));
 
     ConditionalCommand floorScore =
         new ConditionalCommand(
@@ -377,6 +454,11 @@ public class RobotContainer {
     final HashMap<String, Command> autoEventMap = new HashMap<>();
 
     autoEventMap.put("Auto Balance", new Balance(drivetrain));
+
+    // eventMap01.put("GoHome", new GoHome(arm, wrist));
+    // eventMap02.put("CubeScorePrep", new ParallelCommandGroup(new SetArm(arm, () -> -49.5, () ->
+    // 4, () -> true), new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)));
+    // eventMap02.put("GoHome", new GoHome(arm, wrist).withTimeout(0.5));
 
     autoEventMap.put("Balance", new PreBalance(drivetrain));
 
@@ -438,108 +520,116 @@ public class RobotContainer {
 
     autoEventMap.put("Score Cube Prep", new SetArm(arm, () -> -49.5, () -> 1, () -> true));
 
+    autoEventMap.put("Shift Momentum", new SetArm(arm, () -> -39.0, () -> 1, () -> false));
+
     autoEventMap.put("Score Cube Prep Low", new SetArm(arm, () -> -90, () -> 8, () -> false));
 
     autoEventMap.put("Score Cube Prep Medium", new SetArm(arm, () -> -49.5, () -> 1, () -> true));
 
-    autoChooser.addOption(
-        "TwoPieceBalanceCable",
-        new AutoScoreSequenceNoHome(
-                arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO)
-            .andThen(
-                AutoPathHelper.followPath(
-                    drivetrain, "TwoPieceBalanceCable", autoEventMap, 3.25, 2.5)));
+    // autoChooser.addOption(
+    //     "TwoPieceBalanceCable",
+    //     new AutoScoreSequenceNoHome(
+    //             arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO)
+    //         .andThen(
+    //             AutoPathHelper.followPath(
+    //                 drivetrain, "TwoPieceBalanceCable", autoEventMap, 3.25, 2.5)));
+
+    // autoChooser.addOption(
+    //     "ThreePieceNoCable",
+    //     new InstantCommand(() -> claw.setCone(), claw)
+    //         .andThen(
+    //             new AutoScoreSequenceNoHome(
+    //                 arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
+    //         .andThen(new GoHome(arm, wrist).withTimeout(1.0))
+    //         .andThen(new InstantCommand(() -> arm.setExtensionNominal()))
+    //         .andThen(
+    //             AutoPathHelper.followPath(drivetrain, "ThreePieceNoCable", autoEventMap, 2.75,
+    // 2.5))
+    //         .andThen(new EjectGamePiece(claw).withTimeout(0.3))
+    //         .andThen(new GoHome(arm, wrist)));
+
+    // autoChooser.addOption(
+    //     "ThreePieceCable",
+    //     new AutoScoreSequenceNoHome(
+    //             arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO)
+    //         .andThen(
+    //             AutoPathHelper.followPath(drivetrain, "ThreePieceCable", autoEventMap, 3.5,
+    // 2.25)));
+
+    // autoChooser.addOption(
+    //     "Barker3PieceTwisty",
+    //     new InstantCommand(() -> setShouldUseVision(true))
+    //         .andThen(
+    //             new AutoScoreSequenceNoHome(
+    //                 arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
+    //         .andThen(
+    //             AutoPathHelper.followPath(
+    //                 drivetrain, "Barker3PieceTwisty", autoEventMap, 3.25, 2.35))
+    //         .andThen(new GoHome(arm, wrist)));
+
+    // autoChooser.addOption(
+    //     "2910 Red",
+    //     (new InstantCommand(() -> setShouldUseVision(true)))
+    //         .andThen(
+    //             new AutoScoreSequenceNoHome(
+    //                 arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
+    //         .andThen(AutoPathHelper.followPath(drivetrain, "2910 Red", autoEventMap, 3.25, 2.75))
+    //         .andThen(new GoHome(arm, wrist)));
+
+    // autoChooser.addOption(
+    //     "2910 Blue",
+    //     new InstantCommand(() -> setShouldUseVision(true))
+    //         .andThen(
+    //             new AutoScoreSequenceNoHome(
+    //                 arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
+    //         .andThen(AutoPathHelper.followPath(drivetrain, "2910 Blue", autoEventMap, 3.25,
+    // 2.75))
+    //         .andThen(new GoHome(arm, wrist)));
+
+    // autoChooser.addOption(
+    //     "TwoPieceBalanceNoCable",
+    //     new AutoScoreSequenceNoHome(
+    //             arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO)
+    //         .andThen(new GoHome(arm, wrist).withTimeout(1))
+    //         .andThen(
+    //             AutoPathHelper.followPath(drivetrain, "TwoPieceNoCable", autoEventMap, 3.25,
+    // 2.5))
+    //         .andThen(new Balance(drivetrain)));
+
+    // autoChooser.addOption(
+    //     "ThreePieceBalance",
+    //     new AutoScoreSequenceNoHome(
+    //             arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO)
+    //         .andThen(
+    //             AutoPathHelper.followPath(drivetrain, "ThreePieceBalance", autoEventMap, 3.75,
+    // 2.7))
+    //         .andThen(new PreBalance(drivetrain)));
 
     autoChooser.addOption(
-        "ThreePieceNoCable",
-        new InstantCommand(() -> claw.setCone(), claw)
-            .andThen(
-                new AutoScoreSequenceNoHome(
-                    arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
-            .andThen(new GoHome(arm, wrist).withTimeout(1.0))
-            .andThen(new InstantCommand(() -> arm.setExtensionNominal()))
-            .andThen(
-                AutoPathHelper.followPath(drivetrain, "ThreePieceNoCable", autoEventMap, 2.75, 2.5))
-            .andThen(new EjectGamePiece(claw).withTimeout(0.3))
-            .andThen(new GoHome(arm, wrist)));
-
-    autoChooser.addOption(
-        "ThreePieceCable",
-        new AutoScoreSequenceNoHome(
-                arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO)
-            .andThen(
-                AutoPathHelper.followPath(drivetrain, "ThreePieceCable", autoEventMap, 3.5, 2.25)));
-
-    autoChooser.addOption(
-        "Barker3PieceTwisty",
-        new InstantCommand(() -> setShouldUseVision(true))
-            .andThen(
-                new AutoScoreSequenceNoHome(
-                    arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
-            .andThen(
-                AutoPathHelper.followPath(
-                    drivetrain, "Barker3PieceTwisty", autoEventMap, 3.25, 2.35))
-            .andThen(new GoHome(arm, wrist)));
-
-    autoChooser.addOption(
-        "2910 Red",
-        (new InstantCommand(() -> setShouldUseVision(true)))
-            .andThen(
-                new AutoScoreSequenceNoHome(
-                    arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
-            .andThen(AutoPathHelper.followPath(drivetrain, "2910 Red", autoEventMap, 3.25, 2.75))
-            .andThen(new GoHome(arm, wrist)));
-
-    autoChooser.addOption(
-        "2910 Blue",
-        new InstantCommand(() -> setShouldUseVision(true))
-            .andThen(
-                new AutoScoreSequenceNoHome(
-                    arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
-            .andThen(AutoPathHelper.followPath(drivetrain, "2910 Blue", autoEventMap, 3.25, 2.75))
-            .andThen(new GoHome(arm, wrist)));
-
-    autoChooser.addOption(
-        "TwoPieceBalanceNoCable",
-        new AutoScoreSequenceNoHome(
-                arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO)
-            .andThen(new GoHome(arm, wrist).withTimeout(1))
-            .andThen(
-                AutoPathHelper.followPath(drivetrain, "TwoPieceNoCable", autoEventMap, 3.25, 2.5))
-            .andThen(new Balance(drivetrain)));
-
-    autoChooser.addOption(
-        "ThreePieceBalance",
-        new AutoScoreSequenceNoHome(
-                arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO)
-            .andThen(
-                AutoPathHelper.followPath(drivetrain, "ThreePieceBalance", autoEventMap, 3.75, 2.7))
-            .andThen(new PreBalance(drivetrain)));
-
-    autoChooser.addOption(
-        "CubeMobility",
-        new WaitCommand(0) // Max of 2 seconds
-            .andThen(new CollectGamePiece(claw, GamePiece.CUBE).withTimeout(0.2))
-            .andThen(new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)))
-            .andThen(
-                new AutoScoreSequenceNoHome(
-                    arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_TOP))
-            .andThen(new GoHome(arm, wrist))
-            .andThen(AutoPathHelper.followPath(drivetrain, "MobilityCube", autoEventMap, 1.5, 1))
-            .andThen(new Balance(drivetrain)));
-
-    autoChooser.addOption(
-        "MobilityCone",
+        "MobilityConeNoBump",
         new WaitCommand(0) // Max of 2 seconds
             .andThen(
                 new AutoScoreSequenceNoHome(
                     arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
             .andThen(new GoHome(arm, wrist))
             .andThen(AutoPathHelper.followPath(drivetrain, "MobilityCone", autoEventMap, 1.5, 1))
+            .andThen(new GoHome(arm, wrist))
             .andThen(new Balance(drivetrain)));
 
+    // autoChooser.addOption(
+    //     "MobilityConeTest1NO BUMP",
+    //     new WaitCommand(0) // Max of 2 seconds
+    //         .andThen(
+    //             new AutoScoreSequenceNoHome(
+    //                 arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
+    //         .andThen(new GoHome(arm, wrist))
+    //         .andThen(
+    //             AutoPathHelper.followPath(drivetrain, "MobilityConeTest1", autoEventMap, 1.5, 1))
+    //         .andThen(new GoHome(arm, wrist))
+    //         .andThen(new Balance(drivetrain)));
+
     autoChooser.addOption(
-        "MobilityConeCable",
+        "MobilityConeBump",
         new WaitCommand(0) // Max of 2 seconds
             .andThen(
                 new AutoScoreSequenceNoHome(
@@ -547,7 +637,11 @@ public class RobotContainer {
             .andThen(new GoHome(arm, wrist))
             .andThen(
                 AutoPathHelper.followPath(drivetrain, "MobilityConeCable", autoEventMap, 1.5, 1))
+            .andThen(new GoHome(arm, wrist))
             .andThen(new Balance(drivetrain)));
+
+    autoChooser.addOption("BumpAutoAlign", new BumpAuto2Cubes(arm, claw, drivetrain, wrist));
+    autoChooser.addOption("NoBumpAutoAlign", new NoBumpAuto2Cubes(arm, claw, drivetrain, wrist));
 
     TAB_MATCH.add(autoChooser);
 
@@ -555,6 +649,13 @@ public class RobotContainer {
     TAB_MATCH.add("Re-Home Wrist", new HomeWrist(wrist));
     TAB_MATCH.addBoolean("Cone", () -> claw.isCone());
     TAB_MATCH.addBoolean("Cube", () -> claw.isCube());
+    TAB_MATCH.add("Stop Wrist Motor", new InstantCommand(() -> wrist.setPercent(0)));
+
+    TAB_TEST.add(
+        "ScoreConeMid",
+        new AutoScoreSequenceNoHome(
+                arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_MEDIUM_AUTO)
+            .andThen(new GoHome(arm, wrist)));
   }
 
   /**
@@ -578,6 +679,10 @@ public class RobotContainer {
     drivetrain.enableFieldRelative();
   }
 
+  public void disableFieldRelative() {
+    drivetrain.disableFieldRelative();
+  }
+
   public void enableXstance() {
     drivetrain.enableXstance();
   }
@@ -588,5 +693,9 @@ public class RobotContainer {
 
   public void setShouldUseVision(boolean shouldUse) {
     shouldUseVision = shouldUse;
+  }
+
+  public void setLimelightPipeline(String limeLightName, int pipelineID) {
+    LimelightHelpers.setPipelineIndex(limeLightName, pipelineID);
   }
 }

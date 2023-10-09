@@ -22,6 +22,7 @@ public class SetWristPosition extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    // DriverStation.reportWarning("==== Should Go Home ", false);
     wrist.setPosition(position);
   }
 

@@ -61,6 +61,52 @@ public class AutoPathHelper {
         PathPlanner.loadPathGroup(pathName, new PathConstraints(maxVelocity, maxAcceleration)));
   }
 
+  public static Command followPathNoRotationReset(
+      final Drivetrain drive,
+      final String pathName,
+      final Map<String, Command> eventMap,
+      double maxVelocity,
+      double maxAcceleration) {
+    SwerveAutoBuilder autoBuilder =
+        new SwerveAutoBuilder(
+            drive::getPose,
+            drive::resetPoseNoRotation,
+            drive.getKinematics(),
+            new PIDConstants(
+                AUTO_DRIVE_P_CONTROLLER, AUTO_DRIVE_I_CONTROLLER, AUTO_DRIVE_D_CONTROLLER),
+            new PIDConstants(
+                AUTO_TURN_P_CONTROLLER, AUTO_TURN_I_CONTROLLER, AUTO_TURN_D_CONTROLLER),
+            drive::setSwerveModuleStates,
+            eventMap,
+            true,
+            drive);
+    return autoBuilder.fullAuto(
+        PathPlanner.loadPathGroup(pathName, new PathConstraints(maxVelocity, maxAcceleration)));
+  }
+
+  public static Command followPathNoReset(
+      final Drivetrain drive,
+      final String pathName,
+      final Map<String, Command> eventMap,
+      double maxVelocity,
+      double maxAcceleration) {
+    SwerveAutoBuilder autoBuilder =
+        new SwerveAutoBuilder(
+            drive::getPose,
+            drive::fakeResetPose,
+            drive.getKinematics(),
+            new PIDConstants(
+                AUTO_DRIVE_P_CONTROLLER, AUTO_DRIVE_I_CONTROLLER, AUTO_DRIVE_D_CONTROLLER),
+            new PIDConstants(
+                AUTO_TURN_P_CONTROLLER, AUTO_TURN_I_CONTROLLER, AUTO_TURN_D_CONTROLLER),
+            drive::setSwerveModuleStates,
+            eventMap,
+            true,
+            drive);
+    return autoBuilder.fullAuto(
+        PathPlanner.loadPathGroup(pathName, new PathConstraints(maxVelocity, maxAcceleration)));
+  }
+
   // Assumes creating a new command upon button press and throw away...
   // Might want to consider using suppliers for poses
   // Need a way to cancel this command if it goes awry mid-match

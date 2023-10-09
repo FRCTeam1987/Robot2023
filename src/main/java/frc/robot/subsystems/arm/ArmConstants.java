@@ -15,7 +15,7 @@ public final class ArmConstants {
   public static final double EXTENSION_KP = 1.6;
   public static final double EXTENSION_KI = 0.0;
   public static final double EXTENSION_KD = 0.0;
-  public static final double EXTENSION_MOTION_ACCELERATION = 50000;
+  public static final double EXTENSION_MOTION_ACCELERATION = 40000;
   public static final double EXTENSION_CRUISE_VELOCITY = 65000;
   public static final double EXTENSION_ALLOWABLE_ERROR = 500.0;
 

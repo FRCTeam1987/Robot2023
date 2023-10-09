@@ -18,9 +18,10 @@ public class CollectGamePiece extends CommandBase {
   private Debouncer debouncer;
   private boolean isCollected;
 
-  private static final double COLLECTION_TIME = 0.15;
-  private static final double CLAW_ROLLER_SPEED = -0.9;
-  private static final double MAXIMUM_CURRENT = 27.5;
+  private static final double COLLECTION_TIME = 0.1;
+  private static final double CLAW_ROLLER_SPEED = 0.95;
+  private static final double MAXIMUM_CURRENT = 38.5;
+  private static final double MAXIMUM_CURRENT_CUBE = 15.0;
 
   private final GamePiece piece;
 
@@ -37,14 +38,17 @@ public class CollectGamePiece extends CommandBase {
   }
 
   public boolean stopCondition() {
-    return claw.getCurrent() > MAXIMUM_CURRENT;
+    return claw.getCurrent()
+        > (this.piece == GamePiece.CONE
+            ? MAXIMUM_CURRENT
+            : MAXIMUM_CURRENT_CUBE); // TODO flex this based on game piece type?
   }
 
   @Override
   public void initialize() {
     debouncer = new Debouncer(COLLECTION_TIME);
     isCollected = debouncer.calculate(stopCondition());
-    claw.setRollerSpeed(CLAW_ROLLER_SPEED);
+    claw.setRollerSpeed(piece == GamePiece.CONE ? CLAW_ROLLER_SPEED : -CLAW_ROLLER_SPEED);
   }
 
   @Override

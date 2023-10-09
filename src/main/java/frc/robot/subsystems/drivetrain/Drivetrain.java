@@ -22,14 +22,17 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.Limelight.LimelightHelpers;
 import frc.lib.team3061.RobotConfig;
 import frc.lib.team3061.gyro.GyroIO;
 import frc.lib.team3061.gyro.GyroIOInputsAutoLogged;
 import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.util.RobotOdometry;
 import frc.lib.team6328.util.TunableNumber;
+import frc.robot.RobotContainer;
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -38,6 +41,7 @@ import org.littletonrobotics.junction.Logger;
  * robot's rotation.
  */
 public class Drivetrain extends SubsystemBase {
+
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
 
@@ -111,6 +115,9 @@ public class Drivetrain extends SubsystemBase {
       SwerveModule frModule,
       SwerveModule blModule,
       SwerveModule brModule) {
+
+    SmartDashboard.putNumber("Offset", 0.0);
+
     this.gyroIO = gyroIO;
     this.swerveModules[0] = flModule;
     this.swerveModules[1] = frModule;
@@ -268,7 +275,8 @@ public class Drivetrain extends SubsystemBase {
    */
   public void drive(
       double xVelocity, double yVelocity, double rotationalVelocity, boolean isOpenLoop) {
-
+    // System.out.println(
+    //     "drive ----- mode: " + driveMode + ", x: " + xVelocity + ", y: " + yVelocity);
     switch (driveMode) {
       case NORMAL:
         if (isFieldRelative) {
@@ -330,6 +338,11 @@ public class Drivetrain extends SubsystemBase {
    */
   @Override
   public void periodic() {
+
+    SmartDashboard.putNumber(
+        "TY+Off",
+        LimelightHelpers.getTY(RobotContainer.LIMELIGHT_SCORE)
+            + SmartDashboard.getNumber("Offset", 0.0));
 
     // update and log gyro inputs
     if (true) {
@@ -511,6 +524,12 @@ public class Drivetrain extends SubsystemBase {
         new Pose2d(pose.getTranslation(), pose.getRotation()));
   }
 
+  public void resetPoseNoRotation(final Pose2d pose) {
+    resetPose(new Pose2d(pose.getTranslation(), getRotation()));
+  }
+
+  public void fakeResetPose(final Pose2d pose) {}
+
   /** Resets the robot's center of gravity about which it will rotate to the center of the robot. */
   public void resetCenterGrav() {
     setCenterGrav(0.0, 0.0);
@@ -548,12 +567,14 @@ public class Drivetrain extends SubsystemBase {
    * useful when shooting. The robot cannot be driven until x-stance is disabled.
    */
   public void enableXstance() {
+    DriverStation.reportWarning("!!!!!!!!!!!! enableXstance", true);
     this.driveMode = DriveMode.X;
     this.setXStance();
   }
 
   /** Disables the x-stance, allowing the robot to be driven. */
   public void disableXstance() {
+    System.out.println("!!!!!!!!!!!! disableXstance");
     this.driveMode = DriveMode.NORMAL;
   }
 

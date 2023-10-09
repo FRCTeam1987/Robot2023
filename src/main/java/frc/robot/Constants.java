@@ -27,9 +27,9 @@ import java.util.List;
  */
 public final class Constants {
 
-  public static final ArmProfile ARM_A = new ArmProfile(475, -323.037);
-  public static final ArmProfile ARM_B = new ArmProfile(1289, -202.412);
-  public static final ArmProfile INSTALLED_ARM = false ? ARM_A : ARM_B;
+  public static final ArmProfile ARM_A = new ArmProfile(1012, -322.037); // +1
+  public static final ArmProfile ARM_B = new ArmProfile(687, -201); // +1.412
+  public static ArmProfile INSTALLED_ARM = true ? ARM_A : ARM_B;
 
   public static final boolean ADVANTAGE_KIT_ENABLED = true;
   public static final boolean TUNING_MODE = false;
@@ -43,12 +43,13 @@ public final class Constants {
   public static final double AUTO_TURN_I_CONTROLLER = 0.0;
   public static final double AUTO_TURN_D_CONTROLLER = 0.0;
   public static final ShuffleboardTab TAB_VISION = Shuffleboard.getTab("Vision");
-  public static final ShuffleboardTab TAB_MAIN = Shuffleboard.getTab("Main2");
+  public static final ShuffleboardTab TAB_MAIN = Shuffleboard.getTab("Main");
   public static final ShuffleboardTab TAB_ARM = Shuffleboard.getTab("Arm");
   public static final ShuffleboardTab TAB_WRIST = Shuffleboard.getTab("Wrist");
   public static final ShuffleboardTab TAB_CLAW = Shuffleboard.getTab("Claw");
   public static final ShuffleboardTab TAB_COMMANDS = Shuffleboard.getTab("Commands");
   public static final ShuffleboardTab TAB_MATCH = Shuffleboard.getTab("Match");
+  public static final ShuffleboardTab TAB_TEST = Shuffleboard.getTab("Test");
   public static final double MAX_ANGULAR_VELOCITY = 10.0;
 
   public static final double LOOP_PERIOD_SECS = 0.02;
@@ -69,6 +70,18 @@ public final class Constants {
       this.wristRotation = wristRotation;
       this.gamePiece = gamePiece;
     }
+
+    public double getWristRotation() {
+      return this.wristRotation;
+    }
+
+    public double getArmRotation() {
+      return this.armRotation;
+    }
+
+    public double getArmLength() {
+      return this.armLength;
+    }
   }
 
   public static class PositionConfigs {
@@ -77,15 +90,18 @@ public final class Constants {
             Arm.HOME_EXTENSION, -80, 1550 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
 
     public static final PositionConfig AUTO_FRONT_CUBE_TOP =
-        new PositionConfig(18, -46.5, 1177 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
+        new PositionConfig(18, -57.8, 2045 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
+
+    public static final PositionConfig
+        AUTO_BACK_CONE_FLOOR = // TODO might not be necessary, maybe use regular position
+        new PositionConfig(1, 83, 1850 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig BACK_CONE_FLOOR =
-        new PositionConfig(
-            Arm.HOME_EXTENSION, 92.3, 1680 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
+        new PositionConfig(1, 82.7, 1735 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
-    public static final PositionConfig BACK_CONE_FLOOR_TIPPED =
-        new PositionConfig(
-            Arm.HOME_EXTENSION, 102, 1603 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
+    public static final PositionConfig
+        BACK_CONE_FLOOR_TIPPED = // not a good angle with new LL mounts
+        new PositionConfig(10.25, 105.25, 1460 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig BACK_CONE_MEDIUM =
         new PositionConfig(22, 47.9, 701 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
@@ -94,8 +110,7 @@ public final class Constants {
         new PositionConfig(38, 49.5, 2800 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig BACK_CUBE_FLOOR =
-        new PositionConfig(
-            Arm.HOME_EXTENSION, 102.0, 1550 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
+        new PositionConfig(4, 98.2, 2731 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
 
     public static final PositionConfig BACK_CUBE_FLOOR_LONG =
         new PositionConfig(27, 88, 2076 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
@@ -105,9 +120,6 @@ public final class Constants {
 
     public static final PositionConfig BACK_CUBE_TOP =
         new PositionConfig(21, 51, 2360 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
-
-    public static final PositionConfig BACK_DOUBLE_SUBSTATION = // Don't Use me please
-        new PositionConfig(18, 25, 3129 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig BACK_SINGLE_SUBSTATION =
         new PositionConfig(0, 81, 750 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
@@ -124,35 +136,47 @@ public final class Constants {
         new PositionConfig(23, -102.4, 2130 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig FRONT_CONE_MEDIUM =
-        new PositionConfig(20, -54, 536 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
+        new PositionConfig(20.7, -43.5, 300 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
+
+    public static final PositionConfig FRONT_CONE_MEDIUM_AUTO =
+        new PositionConfig(18, -40, 125 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig FRONT_CONE_TOP =
-        new PositionConfig(37, -52, 606 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
+        new PositionConfig(37.5, -45.6, 433 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig FRONT_CONE_TOP_AUTO =
-        new PositionConfig(36, -49.5, 506 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
+        new PositionConfig(37.5, -43.6, 340 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig FRONT_CUBE_FLOOR =
         new PositionConfig(
-            Arm.HOME_EXTENSION, -105, 1360 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
+            Arm.HOME_EXTENSION, -87, 1738 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
 
     public static final PositionConfig FRONT_CUBE_MEDIUM =
-        new PositionConfig(1, -47, 1016 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
+        new PositionConfig(3, -65.4, 2128 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
+
+    public static final PositionConfig FRONT_CUBE_MEDIUM_AUTO =
+        new PositionConfig(6, -65.4, 2128 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
 
     public static final PositionConfig FRONT_CUBE_MEDIUM_EXTENDED =
         new PositionConfig(5, -47, 1016 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
 
     public static final PositionConfig FRONT_CUBE_TOP =
-        new PositionConfig(20, -48.5, 1077 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
+        new PositionConfig(22, -57.8, 2045 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
 
-    public static final PositionConfig FRONT_DOUBLE_SUBSTATION =
-        new PositionConfig(14.5, -27, 390 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
+    public static final PositionConfig FRONT_CUBE_TOP_AUTO =
+        new PositionConfig(24, -57.8, 2045 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
+
+    public static final PositionConfig BACK_DOUBLE_SUBSTATION =
+        new PositionConfig(22.25, 27, 2390 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig FRONT_SINGLE_SUBSTATION =
         new PositionConfig(0, -72, 2330 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig SPIT_BACK_CUBE_FLOOR_LONG =
         new PositionConfig(27.2, -90.8, 1454 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
+
+    public static final PositionConfig LAUNCH_LAST_AUTO_CUBE =
+        new PositionConfig(6, -28.0, 1970, GamePiece.CUBE);
   }
 
   public static class OnTheFly {

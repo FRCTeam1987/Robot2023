@@ -27,7 +27,7 @@ public class EjectGamePiece extends CommandBase {
     if (piece == GamePiece.CUBE) {
       claw.setRollerSpeed(CLAW_ROLLER_SPEED);
     } else {
-      claw.setRollerSpeed(0.75);
+      claw.setRollerSpeed(-0.9);
     }
   }
 

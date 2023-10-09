@@ -27,4 +27,6 @@ public interface WristIO {
   void setPercent(final double percent);
 
   void configRelative(final int homeTicks);
+
+  void incrementMidMatchOffset(final int ticks);
 }

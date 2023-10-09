@@ -244,6 +244,11 @@ public class ArmIOTalonFX implements ArmIO {
   }
 
   @Override
+  public void zeroExtension() {
+    extensionTalon.setSelectedSensorPosition(0);
+  }
+
+  @Override
   public synchronized void updateInputs(ArmIOInputs inputs) {
     inputs.currentAmps =
         new double[] {
