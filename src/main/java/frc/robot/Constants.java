@@ -27,7 +27,7 @@ import java.util.List;
  */
 public final class Constants {
 
-  public static final ArmProfile ARM_A = new ArmProfile(1012, -322.037); // +1
+  public static final ArmProfile ARM_A = new ArmProfile(570, -322.037); // +1
   public static final ArmProfile ARM_B = new ArmProfile(687, -201); // +1.412
   public static ArmProfile INSTALLED_ARM = true ? ARM_A : ARM_B;
 

@@ -435,14 +435,6 @@ public class RobotContainer {
                 claw,
                 () -> Constants.PositionConfigs.BACK_CONE_FLOOR,
                 driverController));
-    new Trigger(driverController::getXButton)
-        .onTrue(
-            new CollectSequence(
-                arm,
-                wrist,
-                claw,
-                () -> Constants.PositionConfigs.BACK_CONE_FLOOR_TIPPED,
-                driverController));
   }
 
   /** Use this method to define your commands for autonomous mode. */
