@@ -32,6 +32,7 @@ import frc.robot.commands.auto.BumpAuto2Cubes;
 import frc.robot.commands.auto.BumpAuto2CubesBalance;
 import frc.robot.commands.auto.DriveToScore;
 import frc.robot.commands.auto.NoBumpAuto2Cubes;
+import frc.robot.commands.auto.NoBumpAuto2CubesBalance;
 import frc.robot.commands.auto.PreBalance;
 import frc.robot.commands.wrist.HomeWrist;
 import frc.robot.configs.CompRobotConfig;
@@ -646,7 +647,9 @@ public class RobotContainer {
         "2BumpBalance",
         new BumpAuto2CubesBalance(arm, claw, drivetrain, wrist).andThen(new Balance(drivetrain)));
 
-    autoChooser.addOption("NoBumpAutoAlign", new NoBumpAuto2Cubes(arm, claw, drivetrain, wrist));
+    // autoChooser.addOption("NoBumpAutoAlign", new NoBumpAuto2Cubes(arm, claw, drivetrain, wrist));
+    autoChooser.addOption(
+        "NoBump2CubesBalanceAutoAlign", new NoBumpAuto2CubesBalance(arm, claw, drivetrain, wrist).andThen(new Balance(drivetrain)));
 
     TAB_MATCH.add(autoChooser);
 
@@ -654,7 +657,9 @@ public class RobotContainer {
     TAB_MATCH.add("Re-Home Wrist", new HomeWrist(wrist));
     TAB_MATCH.addBoolean("Cone", () -> claw.isCone());
     TAB_MATCH.addBoolean("Cube", () -> claw.isCube());
-    TAB_MATCH.add("Stop Wrist Motor", new InstantCommand(() -> wrist.setPercent(0)));
+    TAB_MATCH.add(
+        "Stop Wrist Motor",
+        new InstantCommand(() -> wrist.setPercent(0)).andThen(new Balance(drivetrain)));
 
     TAB_TEST.add(
         "ScoreConeMid",
