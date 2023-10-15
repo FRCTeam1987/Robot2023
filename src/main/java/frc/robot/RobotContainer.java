@@ -31,7 +31,6 @@ import frc.robot.commands.auto.Balance;
 import frc.robot.commands.auto.BumpAuto2Cubes;
 import frc.robot.commands.auto.BumpAuto2CubesBalance;
 import frc.robot.commands.auto.DriveToScore;
-import frc.robot.commands.auto.NoBumpAuto2Cubes;
 import frc.robot.commands.auto.NoBumpAuto2CubesBalance;
 import frc.robot.commands.auto.PreBalance;
 import frc.robot.commands.wrist.HomeWrist;
@@ -641,7 +640,8 @@ public class RobotContainer {
 
     // autoChooser.addOption("NoBumpAutoAlign", new NoBumpAuto2Cubes(arm, claw, drivetrain, wrist));
     autoChooser.addOption(
-        "NoBump2CubesBalanceAutoAlign", new NoBumpAuto2CubesBalance(arm, claw, drivetrain, wrist).andThen(new Balance(drivetrain)));
+        "NoBump2CubesBalanceAutoAlign",
+        new NoBumpAuto2CubesBalance(arm, claw, drivetrain, wrist).andThen(new Balance(drivetrain)));
 
     TAB_MATCH.add(autoChooser);
 
