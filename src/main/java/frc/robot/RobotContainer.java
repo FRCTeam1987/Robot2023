@@ -61,8 +61,6 @@ public class RobotContainer {
   private Wrist wrist;
   private Claw claw;
   private Height height = Height.HIGH;
-  //   private MultiLimelight multiLimelight;
-  private boolean shouldUseVision = false;
 
   private boolean doubleSubstation = false;
 
@@ -638,7 +636,6 @@ public class RobotContainer {
         "2BumpBalance",
         new BumpAuto2CubesBalance(arm, claw, drivetrain, wrist).andThen(new Balance(drivetrain)));
 
-    // autoChooser.addOption("NoBumpAutoAlign", new NoBumpAuto2Cubes(arm, claw, drivetrain, wrist));
     autoChooser.addOption(
         "NoBump2CubesBalanceAutoAlign",
         new NoBumpAuto2CubesBalance(arm, claw, drivetrain, wrist).andThen(new Balance(drivetrain)));
@@ -691,10 +688,6 @@ public class RobotContainer {
 
   public void disableXstance() {
     drivetrain.disableXstance();
-  }
-
-  public void setShouldUseVision(boolean shouldUse) {
-    shouldUseVision = shouldUse;
   }
 
   public void setLimelightPipeline(String limeLightName, int pipelineID) {

@@ -125,7 +125,6 @@ public class Robot extends LoggedRobot {
 
     // schedule the autonomous command
     if (autonomousCommand != null) {
-      robotContainer.setShouldUseVision(false);
       autonomousCommand.schedule();
     }
   }
@@ -145,7 +144,6 @@ public class Robot extends LoggedRobot {
     }
     robotContainer.enableFieldRelative();
     robotContainer.disableXstance();
-    robotContainer.setShouldUseVision(false);
   }
 
   /** This method is invoked at the start of the test period. */
