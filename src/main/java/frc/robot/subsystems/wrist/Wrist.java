@@ -1,8 +1,8 @@
 package frc.robot.subsystems.wrist;
 
 import static frc.robot.Constants.ADVANTAGE_KIT_ENABLED;
-import static frc.robot.Constants.TAB_WRIST;
 import static frc.robot.Constants.TAB_MAIN;
+import static frc.robot.Constants.TAB_WRIST;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -44,10 +44,8 @@ public class Wrist extends SubsystemBase {
     TAB_WRIST
         .add("Set Front Half Perpendicular", new SetWristPosition(ANGLE_FRONT_HALF, this))
         .withSize(2, 1);
-    TAB_WRIST
-        .addNumber("Current", this::getCurrent);
-    TAB_MAIN
-        .addNumber("Wrist Position", this::getPositionWithOffset).withPosition(9, 0);
+    TAB_WRIST.addNumber("Current", this::getCurrent);
+    TAB_MAIN.addNumber("Wrist Position", this::getPositionWithOffset).withPosition(9, 0);
   }
 
   public double getCurrent() {

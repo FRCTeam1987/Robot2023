@@ -97,8 +97,7 @@ public final class Constants {
         new PositionConfig(1, 83, 1850 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig BACK_CONE_FLOOR =
-        new PositionConfig(1, 82.7, 1837
-         + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
+        new PositionConfig(1, 82.7, 1837 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig
         BACK_CONE_FLOOR_TIPPED = // not a good angle with new LL mounts

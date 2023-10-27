@@ -62,8 +62,6 @@ public class RobotContainer {
   private Wrist wrist;
   private Claw claw;
   private Height height = Height.HIGH;
-  //   private MultiLimelight multiLimelight;
-  private boolean shouldUseVision = false;
 
   private boolean doubleSubstation = false;
 
@@ -148,14 +146,6 @@ public class RobotContainer {
     wrist = new Wrist(new WristIOTalonSRX(config.getWristRotatorID()));
     claw = new Claw(new ClawIOSparkMAX(config.getClawMotorID()));
     claw.setDefaultCommand(new DefaultClawRollersSpin(claw));
-    // multiLimelight =
-    //     new MultiLimelight(
-    //         () ->
-    //             (Math.abs(drivetrain.getCharacterizationVelocity()) < 0.025
-    //                 // velocity can accept pose
-    //                 && shouldUseVision), // see how high this can go
-    //         "limelight-fl",
-    //         "limelight-fr");
 
     arm =
         new Arm(
@@ -449,11 +439,6 @@ public class RobotContainer {
 
     autoEventMap.put("Auto Balance", new Balance(drivetrain));
 
-    // eventMap01.put("GoHome", new GoHome(arm, wrist));
-    // eventMap02.put("CubeScorePrep", new ParallelCommandGroup(new SetArm(arm, () -> -49.5, () ->
-    // 4, () -> true), new SetWristPosition(Wrist.ANGLE_STRAIGHT, wrist)));
-    // eventMap02.put("GoHome", new GoHome(arm, wrist).withTimeout(0.5));
-
     autoEventMap.put("Balance", new PreBalance(drivetrain));
 
     autoEventMap.put(
@@ -520,85 +505,6 @@ public class RobotContainer {
 
     autoEventMap.put("Score Cube Prep Medium", new SetArm(arm, () -> -49.5, () -> 1, () -> true));
 
-    // autoChooser.addOption(
-    //     "TwoPieceBalanceCable",
-    //     new AutoScoreSequenceNoHome(
-    //             arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO)
-    //         .andThen(
-    //             AutoPathHelper.followPath(
-    //                 drivetrain, "TwoPieceBalanceCable", autoEventMap, 3.25, 2.5)));
-
-    // autoChooser.addOption(
-    //     "ThreePieceNoCable",
-    //     new InstantCommand(() -> claw.setCone(), claw)
-    //         .andThen(
-    //             new AutoScoreSequenceNoHome(
-    //                 arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
-    //         .andThen(new GoHome(arm, wrist).withTimeout(1.0))
-    //         .andThen(new InstantCommand(() -> arm.setExtensionNominal()))
-    //         .andThen(
-    //             AutoPathHelper.followPath(drivetrain, "ThreePieceNoCable", autoEventMap, 2.75,
-    // 2.5))
-    //         .andThen(new EjectGamePiece(claw).withTimeout(0.3))
-    //         .andThen(new GoHome(arm, wrist)));
-
-    // autoChooser.addOption(
-    //     "ThreePieceCable",
-    //     new AutoScoreSequenceNoHome(
-    //             arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO)
-    //         .andThen(
-    //             AutoPathHelper.followPath(drivetrain, "ThreePieceCable", autoEventMap, 3.5,
-    // 2.25)));
-
-    // autoChooser.addOption(
-    //     "Barker3PieceTwisty",
-    //     new InstantCommand(() -> setShouldUseVision(true))
-    //         .andThen(
-    //             new AutoScoreSequenceNoHome(
-    //                 arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
-    //         .andThen(
-    //             AutoPathHelper.followPath(
-    //                 drivetrain, "Barker3PieceTwisty", autoEventMap, 3.25, 2.35))
-    //         .andThen(new GoHome(arm, wrist)));
-
-    // autoChooser.addOption(
-    //     "2910 Red",
-    //     (new InstantCommand(() -> setShouldUseVision(true)))
-    //         .andThen(
-    //             new AutoScoreSequenceNoHome(
-    //                 arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
-    //         .andThen(AutoPathHelper.followPath(drivetrain, "2910 Red", autoEventMap, 3.25, 2.75))
-    //         .andThen(new GoHome(arm, wrist)));
-
-    // autoChooser.addOption(
-    //     "2910 Blue",
-    //     new InstantCommand(() -> setShouldUseVision(true))
-    //         .andThen(
-    //             new AutoScoreSequenceNoHome(
-    //                 arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
-    //         .andThen(AutoPathHelper.followPath(drivetrain, "2910 Blue", autoEventMap, 3.25,
-    // 2.75))
-    //         .andThen(new GoHome(arm, wrist)));
-
-    // autoChooser.addOption(
-    //     "TwoPieceBalanceNoCable",
-    //     new AutoScoreSequenceNoHome(
-    //             arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO)
-    //         .andThen(new GoHome(arm, wrist).withTimeout(1))
-    //         .andThen(
-    //             AutoPathHelper.followPath(drivetrain, "TwoPieceNoCable", autoEventMap, 3.25,
-    // 2.5))
-    //         .andThen(new Balance(drivetrain)));
-
-    // autoChooser.addOption(
-    //     "ThreePieceBalance",
-    //     new AutoScoreSequenceNoHome(
-    //             arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO)
-    //         .andThen(
-    //             AutoPathHelper.followPath(drivetrain, "ThreePieceBalance", autoEventMap, 3.75,
-    // 2.7))
-    //         .andThen(new PreBalance(drivetrain)));
-
     autoChooser.addOption(
         "TaxiConeNoBumpSideBalance",
         new WaitCommand(0) // Max of 2 seconds
@@ -609,18 +515,6 @@ public class RobotContainer {
             .andThen(AutoPathHelper.followPath(drivetrain, "MobilityCone", autoEventMap, 1.5, 1))
             .andThen(new GoHome(arm, wrist))
             .andThen(new Balance(drivetrain)));
-
-    // autoChooser.addOption(
-    //     "MobilityConeTest1NO BUMP",
-    //     new WaitCommand(0) // Max of 2 seconds
-    //         .andThen(
-    //             new AutoScoreSequenceNoHome(
-    //                 arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO))
-    //         .andThen(new GoHome(arm, wrist))
-    //         .andThen(
-    //             AutoPathHelper.followPath(drivetrain, "MobilityConeTest1", autoEventMap, 1.5, 1))
-    //         .andThen(new GoHome(arm, wrist))
-    //         .andThen(new Balance(drivetrain)));
 
     autoChooser.addOption(
         "TaxiConeBumpSideBalance",
@@ -692,10 +586,6 @@ public class RobotContainer {
 
   public void disableXstance() {
     drivetrain.disableXstance();
-  }
-
-  public void setShouldUseVision(boolean shouldUse) {
-    shouldUseVision = shouldUse;
   }
 
   public void setLimelightPipeline(String limeLightName, int pipelineID) {

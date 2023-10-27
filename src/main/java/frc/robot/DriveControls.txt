@@ -1,0 +1,21 @@
+Driver Controls: 
+BackButton - Zero Gyroscope 
+RightBumper - Collect Cube Floor 
+RightTrigger - Reduce Speed 
+LeftTrigger - Reduce Speed, Align Straight 
+LeftBumper - Eject / Score 
+B - Collect Double Substation 
+StartButton - Go home 
+A - Score 
+Y - Collect Cone Floor
+
+CoDriver Controls: 
+RightBumper - Correctional Grab GamePiece 
+LeftBumper - Eject (No home)
+LeftTrigger - Home Wrist 
+StartButton - Increase Wrist Offset 
+BackButton - Decrease Wrist Offset 
+A - Set Height Floor 
+B - Set Height Medium 
+Y - Set Height High 
+X - Zero Arm Extension
