@@ -31,6 +31,7 @@ import frc.robot.commands.auto.Balance;
 import frc.robot.commands.auto.BumpAuto2Cubes;
 import frc.robot.commands.auto.BumpAuto2CubesBalance;
 import frc.robot.commands.auto.DriveToScore;
+import frc.robot.commands.auto.NoBumpAuto2Cubes;
 import frc.robot.commands.auto.NoBumpAuto2CubesBalance;
 import frc.robot.commands.auto.PreBalance;
 import frc.robot.commands.wrist.HomeWrist;
@@ -599,7 +600,7 @@ public class RobotContainer {
     //         .andThen(new PreBalance(drivetrain)));
 
     autoChooser.addOption(
-        "MobilityConeNoBump",
+        "TaxiConeNoBumpSideBalance",
         new WaitCommand(0) // Max of 2 seconds
             .andThen(
                 new AutoScoreSequenceNoHome(
@@ -622,7 +623,7 @@ public class RobotContainer {
     //         .andThen(new Balance(drivetrain)));
 
     autoChooser.addOption(
-        "MobilityConeBump",
+        "TaxiConeBumpSideBalance",
         new WaitCommand(0) // Max of 2 seconds
             .andThen(
                 new AutoScoreSequenceNoHome(
@@ -633,14 +634,14 @@ public class RobotContainer {
             .andThen(new GoHome(arm, wrist))
             .andThen(new Balance(drivetrain)));
 
-    autoChooser.addOption("BumpAutoAlign", new BumpAuto2Cubes(arm, claw, drivetrain, wrist));
+    autoChooser.addOption("Bump3Piece", new BumpAuto2Cubes(arm, claw, drivetrain, wrist));
     autoChooser.addOption(
-        "2BumpBalance",
+        "Bump2PieceBalance",
         new BumpAuto2CubesBalance(arm, claw, drivetrain, wrist).andThen(new Balance(drivetrain)));
 
-    // autoChooser.addOption("NoBumpAutoAlign", new NoBumpAuto2Cubes(arm, claw, drivetrain, wrist));
+    autoChooser.addOption("NoBump3Piece", new NoBumpAuto2Cubes(arm, claw, drivetrain, wrist));
     autoChooser.addOption(
-        "NoBump2CubesBalanceAutoAlign",
+        "NoBump2PieceBalance",
         new NoBumpAuto2CubesBalance(arm, claw, drivetrain, wrist).andThen(new Balance(drivetrain)));
 
     TAB_MATCH.add(autoChooser);

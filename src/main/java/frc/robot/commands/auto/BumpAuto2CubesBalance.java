@@ -80,7 +80,7 @@ public class BumpAuto2CubesBalance extends SequentialCommandGroup {
             AutoPathHelper.followPathNoRotationReset(
                 drive, "BumpAuto02", eventMap02, MAX_VELOCITY, MAX_ACCELERATION)),
         new ParallelRaceGroup(
-            new DriveToScore(drive, claw).withTimeout(2.5),
+            new DriveToScore(drive, claw).withTimeout(1.5),
             new ParallelCommandGroup(
                     new SetArm(
                         arm,

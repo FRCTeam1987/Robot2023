@@ -85,7 +85,7 @@ public class NoBumpAuto2CubesBalance extends SequentialCommandGroup {
         // Step 4: Drive almost to the scoring location
         AutoPathHelper.followPathNoReset(drive, "NoBumpAuto02", eventMap02, MAX_V, MAX_A),
         // Step 5: Score the first game piece
-        new DriveToScore(drive, claw).withTimeout(2.5),
+        new DriveToScore(drive, claw).withTimeout(1.5),
         new AutoScoreSequenceNoHome(
             arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_TOP_AUTO),
         // Step 6: Drive almost to the second game piece
