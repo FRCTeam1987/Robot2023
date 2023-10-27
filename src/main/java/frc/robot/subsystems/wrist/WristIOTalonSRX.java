@@ -15,12 +15,12 @@ public class WristIOTalonSRX implements WristIO {
   public WristIOTalonSRX(int wristMotorID) {
     wristMotor = new WPI_TalonSRX(wristMotorID);
     TalonSRXConfiguration wristConfig = new TalonSRXConfiguration();
-    wristConfig.motionAcceleration = 4000;
-    wristConfig.motionCruiseVelocity = 6000;
+    wristConfig.motionAcceleration = 6000;
+    wristConfig.motionCruiseVelocity = 12000;
     wristConfig.feedbackNotContinuous = true;
     wristConfig.slot0.kP = 5.0;
-    wristConfig.slot0.kD = 2.0;
-    wristConfig.slot0.allowableClosedloopError = 0;
+    wristConfig.slot0.kD = 1.0;
+    wristConfig.slot0.allowableClosedloopError = 20;
     wristConfig.neutralDeadband = 0.001;
     wristMotor.configFactoryDefault();
     wristMotor.configAllSettings(wristConfig);
@@ -94,5 +94,10 @@ public class WristIOTalonSRX implements WristIO {
   @Override
   public void incrementMidMatchOffset(final int ticks) {
     midMatchOffsetTicks += ticks;
+  }
+
+  @Override
+  public double getError() {
+    return wristMotor.getClosedLoopError();
   }
 }

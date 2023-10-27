@@ -46,10 +46,15 @@ public class Wrist extends SubsystemBase {
         .withSize(2, 1);
     TAB_WRIST.addNumber("Current", this::getCurrent);
     TAB_MAIN.addNumber("Wrist Position", this::getPositionWithOffset).withPosition(9, 0);
+    TAB_WRIST.addNumber("Position Error", this::getError);
   }
 
   public double getCurrent() {
     return io.getCurrentAmps();
+  }
+
+  public double getError() {
+    return io.getError();
   }
 
   public double getPositionWithOffset() {

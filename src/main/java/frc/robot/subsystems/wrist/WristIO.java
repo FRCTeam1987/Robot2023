@@ -19,6 +19,8 @@ public interface WristIO {
 
   int getPosition();
 
+  double getError();
+
   /** Return wrist degree */
   double getDegrees();
 

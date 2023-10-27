@@ -27,6 +27,7 @@ import frc.robot.commands.*;
 import frc.robot.commands.arm.SetArm;
 import frc.robot.commands.auto.AutoPathHelper;
 import frc.robot.commands.auto.AutoScoreSequenceNoHome;
+import frc.robot.commands.auto.AutoScoreSequenceNoHomeWait;
 import frc.robot.commands.auto.Balance;
 import frc.robot.commands.auto.BumpAuto2Cubes;
 import frc.robot.commands.auto.BumpAuto2CubesBalance;
@@ -504,6 +505,13 @@ public class RobotContainer {
     autoEventMap.put("Score Cube Prep Low", new SetArm(arm, () -> -90, () -> 8, () -> false));
 
     autoEventMap.put("Score Cube Prep Medium", new SetArm(arm, () -> -49.5, () -> 1, () -> true));
+
+    // autoChooser.addOption("Thursday Test", new SequentialCommandGroup(
+    //     new InstantCommand(() -> claw.setCone(), claw),
+    //     new AutoScoreSequenceNoHomeWait(
+    //         arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO),  // FRONT_CONE_MEDIUM
+    //     new GoHome(arm, wrist)
+    // ));
 
     autoChooser.addOption(
         "TaxiConeNoBumpSideBalance",

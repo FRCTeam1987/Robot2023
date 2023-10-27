@@ -27,7 +27,7 @@ import java.util.List;
  */
 public final class Constants {
 
-  public static final ArmProfile ARM_A = new ArmProfile(691, -322.037); // +1
+  public static final ArmProfile ARM_A = new ArmProfile(788, -322.037); // +1
   public static final ArmProfile ARM_B = new ArmProfile(687, -201); // +1.412
   public static ArmProfile INSTALLED_ARM = true ? ARM_A : ARM_B;
 
@@ -145,7 +145,7 @@ public final class Constants {
         new PositionConfig(37.5, -45.6, 433 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig FRONT_CONE_TOP_AUTO =
-        new PositionConfig(37.5, -43.6, 340 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
+        new PositionConfig(37.5, -43.0, 450 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig FRONT_CUBE_FLOOR =
         new PositionConfig(
@@ -167,7 +167,7 @@ public final class Constants {
         new PositionConfig(24, -57.8, 2045 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
 
     public static final PositionConfig BACK_DOUBLE_SUBSTATION =
-        new PositionConfig(21.41, 25.22, 2560 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
+        new PositionConfig(21.41, 25.22, 2530 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig FRONT_SINGLE_SUBSTATION =
         new PositionConfig(0, -72, 2330 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
