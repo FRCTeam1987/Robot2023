@@ -84,23 +84,23 @@ public class BumpAuto2CubesBalance extends SequentialCommandGroup {
             new ParallelCommandGroup(
                     new SetArm(
                         arm,
-                        () -> Constants.PositionConfigs.FRONT_CUBE_TOP.getArmRotation(),
-                        () -> Constants.PositionConfigs.FRONT_CUBE_TOP.getArmLength() - 8,
+                        () -> Constants.PositionConfigs.FRONT_CUBE_MEDIUM_AUTO.getArmRotation(),
+                        () -> Constants.PositionConfigs.FRONT_CUBE_MEDIUM_AUTO.getArmLength() - 8,
                         () -> true),
                     new SetWristPosition(2045 + Constants.INSTALLED_ARM.getWristOffset(), wrist))
                 .withTimeout(5)),
         new AutoScoreSequenceNoHome(
-            arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_TOP),
+            arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_MEDIUM_AUTO),
         new ParallelCommandGroup(
-            new InstantCommand(() -> RobotContainer.setCubePipeline()),
+            new InstantCommand(() -> RobotContainer.setConePipeline()),
             AutoPathHelper.followPathNoRotationReset(
                 drive, "BumpAuto03", eventMap03, MAX_VELOCITY, MAX_ACCELERATION)),
-        new ParallelRaceGroup(
-            new DriveToPiece(drive, () -> -1.875, GamePiece.CUBE),
+        new ParallelRaceGroup(  // Add short timeout and go home to ensure balance
+            new DriveToPiece(drive, () -> -1.5, GamePiece.CONE),
             new CollectSequenceNoHome(
-                arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR)),
+                arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CONE_FLOOR)),
         new ParallelCommandGroup(
-            new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)),
+            new InstantCommand(() -> claw.setGamePiece(GamePiece.CONE)),
             AutoPathHelper.followPathNoReset(
                 drive, "BumpAuto04Balance", eventMap04, MAX_VELOCITY, MAX_ACCELERATION)),
 

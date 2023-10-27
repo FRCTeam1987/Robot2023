@@ -97,7 +97,7 @@ public final class Constants {
         new PositionConfig(1, 83, 1850 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig BACK_CONE_FLOOR =
-        new PositionConfig(1, 82.7, 1837 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
+        new PositionConfig(1, 81.7, 1837 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig
         BACK_CONE_FLOOR_TIPPED = // not a good angle with new LL mounts
@@ -167,7 +167,7 @@ public final class Constants {
         new PositionConfig(24, -57.8, 2045 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
 
     public static final PositionConfig BACK_DOUBLE_SUBSTATION =
-        new PositionConfig(21.41, 25.22, 2530 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
+        new PositionConfig(23.5, 25.22, 2545 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig FRONT_SINGLE_SUBSTATION =
         new PositionConfig(0, -72, 2330 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);

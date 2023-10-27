@@ -19,7 +19,7 @@ public class WristIOTalonSRX implements WristIO {
     wristConfig.motionCruiseVelocity = 12000;
     wristConfig.feedbackNotContinuous = true;
     wristConfig.slot0.kP = 5.0;
-    wristConfig.slot0.kD = 1.0;
+    wristConfig.slot0.kD = 1.3;
     wristConfig.slot0.allowableClosedloopError = 20;
     wristConfig.neutralDeadband = 0.001;
     wristMotor.configFactoryDefault();
