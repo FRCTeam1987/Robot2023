@@ -27,7 +27,7 @@ import java.util.List;
  */
 public final class Constants {
 
-  public static final ArmProfile ARM_A = new ArmProfile(788, -322.037); // +1
+  public static final ArmProfile ARM_A = new ArmProfile(786, -322.037); // +1
   public static final ArmProfile ARM_B = new ArmProfile(687, -201); // +1.412
   public static ArmProfile INSTALLED_ARM = true ? ARM_A : ARM_B;
 
@@ -97,7 +97,8 @@ public final class Constants {
         new PositionConfig(1, 83, 1850 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig BACK_CONE_FLOOR =
-        new PositionConfig(1, 81.7, 1837 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
+        new PositionConfig(1, 75.1, 2130 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE); // 1880
+    // new PositionConfig(1, 81.7, 1880 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE); //1880
 
     public static final PositionConfig
         BACK_CONE_FLOOR_TIPPED = // not a good angle with new LL mounts
@@ -139,13 +140,13 @@ public final class Constants {
         new PositionConfig(20.7, -43.5, 300 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig FRONT_CONE_MEDIUM_AUTO =
-        new PositionConfig(18, -40, 125 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
+        new PositionConfig(22, -40, 225 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig FRONT_CONE_TOP =
         new PositionConfig(37.5, -45.6, 433 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig FRONT_CONE_TOP_AUTO =
-        new PositionConfig(37.5, -43.0, 450 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
+        new PositionConfig(38.5, -43.0, 450 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
 
     public static final PositionConfig FRONT_CUBE_FLOOR =
         new PositionConfig(
@@ -161,13 +162,14 @@ public final class Constants {
         new PositionConfig(5, -47, 1016 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
 
     public static final PositionConfig FRONT_CUBE_TOP =
-        new PositionConfig(22, -57.8, 2045 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
+        new PositionConfig(23, -57.8, 2045 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
 
     public static final PositionConfig FRONT_CUBE_TOP_AUTO =
         new PositionConfig(24, -57.8, 2045 + INSTALLED_ARM.getWristOffset(), GamePiece.CUBE);
 
     public static final PositionConfig BACK_DOUBLE_SUBSTATION =
-        new PositionConfig(23.5, 25.22, 2545 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);
+        new PositionConfig(
+            23.25, 24.22, 2575 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE); // 2575
 
     public static final PositionConfig FRONT_SINGLE_SUBSTATION =
         new PositionConfig(0, -72, 2330 + INSTALLED_ARM.getWristOffset(), GamePiece.CONE);

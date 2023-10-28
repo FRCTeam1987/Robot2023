@@ -33,7 +33,7 @@ public class DriveToScore extends CommandBase {
     m_xController.setTolerance(2.0);
 
     m_yController = new PIDController(0.075, 0, 0);
-    m_yController.setTolerance(3.0);
+    m_yController.setTolerance(4.0);
     m_yController.enableContinuousInput(-28.5, 28.5);
     m_yController.setSetpoint(0);
 

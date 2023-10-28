@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.arm;
 
-import edu.wpi.first.wpilibj.DriverStation;
-
 /** Add your docs here. */
 public class ArmProfile {
   private int wristOffset;

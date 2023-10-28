@@ -26,7 +26,7 @@ public class AutoScoreSequenceNoHomeWait extends SequentialCommandGroup {
       final Supplier<PositionConfig> positionConfigSupplier) {
     addCommands(
         new ScoreSequence(arm, wrist, positionConfigSupplier),
-        new WaitCommand(.15),
+        new WaitCommand(.25),
         new EjectGamePiece(claw).withTimeout(0.16));
   }
 }

@@ -74,9 +74,10 @@ public class NoBumpAuto2Cubes extends SequentialCommandGroup {
             new InstantCommand(() -> RobotContainer.setCubePipeline())),
         // Step 3: Collect the first game piece
         new ParallelRaceGroup(
-            new DriveToPiece(drive, () -> -2.25, GamePiece.CUBE),
-            new CollectSequenceNoHome(
-                arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR)),
+                new DriveToPiece(drive, () -> -2.25, GamePiece.CUBE),
+                new CollectSequenceNoHome(
+                    arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR))
+            .withTimeout(3.25),
         new WaitCommand(0.06)
             .andThen(
                 () -> {
@@ -86,7 +87,7 @@ public class NoBumpAuto2Cubes extends SequentialCommandGroup {
         // Step 4: Drive almost to the scoring location
         AutoPathHelper.followPathNoReset(drive, "NoBumpAuto02", eventMap02, MAX_V, MAX_A),
         // Step 5: Score the first game piece
-        new DriveToScore(drive, claw).withTimeout(2.5),
+        new DriveToScore(drive, claw).withTimeout(1.375),
         new AutoScoreSequenceNoHome(
             arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_TOP_AUTO),
         // Step 6: Drive almost to the second game piece
@@ -96,9 +97,10 @@ public class NoBumpAuto2Cubes extends SequentialCommandGroup {
             new InstantCommand(() -> RobotContainer.setCubePipeline())), // Shouldnt need
         // Step 7: Collect the second game piece
         new ParallelRaceGroup(
-            new DriveToPiece(drive, () -> -2.0, GamePiece.CUBE),
-            new CollectSequenceNoHome(
-                arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR)),
+                new DriveToPiece(drive, () -> -2.0, GamePiece.CUBE),
+                new CollectSequenceNoHome(
+                    arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR))
+            .withTimeout(3.25),
         new WaitCommand(0.04),
         // Step 8: Drive almost to the scoring location
         new ParallelCommandGroup(
@@ -109,7 +111,7 @@ public class NoBumpAuto2Cubes extends SequentialCommandGroup {
                 }),
             AutoPathHelper.followPathNoReset(drive, "NoBumpAuto04Cube", eventMap04, MAX_V, MAX_A)),
         // Step 9: Score the second game piece
-        new DriveToScore(drive, claw).withTimeout(5),
+        new DriveToScore(drive, claw).withTimeout(1.375),
         new AutoScoreSequence(
             arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_MEDIUM_AUTO),
         new InstantCommand(

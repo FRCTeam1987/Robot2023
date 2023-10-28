@@ -95,7 +95,7 @@ public class BumpAuto2CubesBalance extends SequentialCommandGroup {
             new InstantCommand(() -> RobotContainer.setConePipeline()),
             AutoPathHelper.followPathNoRotationReset(
                 drive, "BumpAuto03", eventMap03, MAX_VELOCITY, MAX_ACCELERATION)),
-        new ParallelRaceGroup(  // Add short timeout and go home to ensure balance
+        new ParallelRaceGroup( // Add short timeout and go home to ensure balance
             new DriveToPiece(drive, () -> -1.5, GamePiece.CONE),
             new CollectSequenceNoHome(
                 arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CONE_FLOOR)),

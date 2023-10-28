@@ -89,7 +89,7 @@ public class BumpAuto2Cubes extends SequentialCommandGroup {
                         () -> Constants.PositionConfigs.FRONT_CUBE_TOP.getArmLength() - 8,
                         () -> true),
                     new SetWristPosition(2045 + Constants.INSTALLED_ARM.getWristOffset(), wrist))
-                .withTimeout(5)),
+                .withTimeout(1.5)),
         new AutoScoreSequenceNoHome(
             arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_TOP),
         new ParallelCommandGroup(
@@ -97,7 +97,7 @@ public class BumpAuto2Cubes extends SequentialCommandGroup {
             AutoPathHelper.followPathNoRotationReset(
                 drive, "BumpAuto03", eventMap03, MAX_VELOCITY, MAX_ACCELERATION)),
         new ParallelRaceGroup(
-            new DriveToPiece(drive, () -> -1.875, GamePiece.CUBE),
+            new DriveToPiece(drive, () -> -1.7, GamePiece.CUBE),
             new CollectSequenceNoHome(
                 arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR)),
         new ParallelCommandGroup(
@@ -107,20 +107,20 @@ public class BumpAuto2Cubes extends SequentialCommandGroup {
                 drive, "BumpAuto04", eventMap04, MAX_VELOCITY, MAX_ACCELERATION)),
         // Step 9: Score the second game piece
         new ParallelRaceGroup(
-            new ParallelCommandGroup(
-                new SetArm(
-                    arm,
-                    () -> Constants.PositionConfigs.LAUNCH_LAST_AUTO_CUBE.getArmRotation(),
-                    () -> Constants.PositionConfigs.LAUNCH_LAST_AUTO_CUBE.getArmLength(),
-                    () -> true),
-                new SetWristPosition(
-                    (int) Constants.PositionConfigs.LAUNCH_LAST_AUTO_CUBE.getWristRotation()
-                        + Constants.INSTALLED_ARM.getWristOffset(),
-                    wrist),
-                new WaitCommand(10)),
+            // new ParallelCommandGroup(
+            //     new SetArm(
+            //         arm,
+            //         () -> Constants.PositionConfigs.LAUNCH_LAST_AUTO_CUBE.getArmRotation(),
+            //         () -> Constants.PositionConfigs.LAUNCH_LAST_AUTO_CUBE.getArmLength(),
+            //         () -> true),
+            //     new SetWristPosition(
+            //         (int) Constants.PositionConfigs.LAUNCH_LAST_AUTO_CUBE.getWristRotation()
+            //             + Constants.INSTALLED_ARM.getWristOffset(),
+            //         wrist),
+            //     new WaitCommand(10)),
             new DriveToScore(drive, claw).withTimeout(5)),
-        new AutoScoreSequence(
-            arm, wrist, claw, () -> Constants.PositionConfigs.LAUNCH_LAST_AUTO_CUBE),
+        // new AutoScoreSequence(
+        //     arm, wrist, claw, () -> Constants.PositionConfigs.LAUNCH_LAST_AUTO_CUBE),
         new InstantCommand(() -> RobotContainer.setAprilTagPipeline()));
   }
 }

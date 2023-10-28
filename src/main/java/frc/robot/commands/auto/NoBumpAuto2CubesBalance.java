@@ -95,9 +95,10 @@ public class NoBumpAuto2CubesBalance extends SequentialCommandGroup {
             new InstantCommand(() -> RobotContainer.setConePipeline())), // Shouldnt need
         // Step 7: Collect the second game piece
         new ParallelRaceGroup(
-            new DriveToPiece(drive, () -> -1.25, GamePiece.CONE),
-            new CollectSequenceNoHome(
-                arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CONE_FLOOR)).withTimeout(2.0),
+                new DriveToPiece(drive, () -> -1.5, GamePiece.CONE),
+                new CollectSequenceNoHome(
+                    arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CONE_FLOOR))
+            .withTimeout(2.0),
         new WaitCommand(0.04),
         // Step 8: Drive almost to the scoring location
         new ParallelCommandGroup(

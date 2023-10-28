@@ -376,11 +376,11 @@ public class RobotContainer {
     new Trigger(coDriverController::getStartButton)
         .onTrue(
             new InstantCommand(
-                () -> Constants.INSTALLED_ARM.addMatchOffset(29))); // Increase wrist Offset
+                () -> Constants.INSTALLED_ARM.addMatchOffset(22))); // Increase wrist Offset
     new Trigger(coDriverController::getBackButton)
         .onTrue(
             new InstantCommand(
-                () -> Constants.INSTALLED_ARM.addMatchOffset(-29))); // Decrease wrist offset
+                () -> Constants.INSTALLED_ARM.addMatchOffset(-22))); // Decrease wrist offset
 
     new Trigger(coDriverController::getAButton)
         .onTrue(new InstantCommand(() -> this.setHeight(Height.FLOOR)));
@@ -506,12 +506,16 @@ public class RobotContainer {
 
     autoEventMap.put("Score Cube Prep Medium", new SetArm(arm, () -> -49.5, () -> 1, () -> true));
 
-    // autoChooser.addOption("Thursday Test", new SequentialCommandGroup(
-    //     new InstantCommand(() -> claw.setCone(), claw),
-    //     new AutoScoreSequenceNoHomeWait(
-    //         arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_TOP_AUTO),  // FRONT_CONE_MEDIUM
-    //     new GoHome(arm, wrist)
-    // ));
+    autoChooser.addOption(
+        "Thursday Test",
+        new SequentialCommandGroup(
+            new InstantCommand(() -> claw.setCone(), claw),
+            new AutoScoreSequenceNoHomeWait(
+                arm,
+                wrist,
+                claw,
+                () -> Constants.PositionConfigs.BACK_DOUBLE_SUBSTATION), // FRONT_CONE_MEDIUM
+            new GoHome(arm, wrist)));
 
     autoChooser.addOption(
         "TaxiConeNoBumpSideBalance",
@@ -552,6 +556,22 @@ public class RobotContainer {
     TAB_MATCH.add("Re-Home Wrist", new HomeWrist(wrist));
     TAB_MATCH.addBoolean("Cone", () -> claw.isCone());
     TAB_MATCH.addBoolean("Cube", () -> claw.isCube());
+    TAB_MATCH.add(
+        "Force Cone Eject",
+        new SequentialCommandGroup(
+            new InstantCommand(() -> claw.setGamePiece(GamePiece.CONE)),
+            new EjectGamePiece(claw),
+            new WaitCommand(1.5),
+            new InstantCommand(() -> claw.setGamePiece(GamePiece.NONE)),
+            new InstantCommand(() -> claw.setRollerSpeed(0.0))));
+    TAB_MATCH.add(
+        "Force Cube Eject",
+        new SequentialCommandGroup(
+            new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)),
+            new EjectGamePiece(claw),
+            new WaitCommand(1.5),
+            new InstantCommand(() -> claw.setGamePiece(GamePiece.NONE)),
+            new InstantCommand(() -> claw.setRollerSpeed(0.0))));
     TAB_MATCH.add(
         "Stop Wrist Motor",
         new InstantCommand(() -> wrist.setPercent(0)).andThen(new Balance(drivetrain)));
