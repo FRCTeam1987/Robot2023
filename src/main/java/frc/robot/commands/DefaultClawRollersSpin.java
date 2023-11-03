@@ -11,6 +11,8 @@ public class DefaultClawRollersSpin extends CommandBase {
 
   private final Claw claw;
 
+  public static final double CONE_ROLLER_SPEED = 0.1;
+  public static final double CUBE_ROLLER_SPEED = -0.05;
   public static final double CLAW_ROLLER_SPEED = -0.05;
 
   public DefaultClawRollersSpin(Claw claw) {
@@ -22,7 +24,7 @@ public class DefaultClawRollersSpin extends CommandBase {
   public void execute() {
     // GamePiece gamePiece = claw.getGamePiece();
     // double speed = claw.getSpeedPercent();
-    claw.setRollerSpeed(claw.isCone() ? -CLAW_ROLLER_SPEED : CLAW_ROLLER_SPEED);
+    claw.setRollerSpeed(claw.isCone() ? CONE_ROLLER_SPEED : CUBE_ROLLER_SPEED);
 
     // if (gamePiece == GamePiece.CONE && speed != 0.0) {
     //   claw.setRollerSpeed(0.0);

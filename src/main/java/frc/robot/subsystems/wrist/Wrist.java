@@ -1,6 +1,7 @@
 package frc.robot.subsystems.wrist;
 
 import static frc.robot.Constants.ADVANTAGE_KIT_ENABLED;
+import static frc.robot.Constants.TAB_MAIN;
 import static frc.robot.Constants.TAB_WRIST;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -16,7 +17,7 @@ public class Wrist extends SubsystemBase {
   private final DigitalInput wristSwitch = new DigitalInput(0);
 
   public static final int ANGLE_STRAIGHT =
-      1279 + Constants.INSTALLED_ARM.getWristOffset(); // 2048 total is true straight
+      1347 + Constants.INSTALLED_ARM.getWristOffset(); // 2048 total is true straight
   public static final int ANGLE_FRONT_MAX = 795; // when telescope extended
   public static final int ANGLE_FRONT_PERPENDICULAR = 447;
   public static final int ANGLE_BACK_PERPENDICULAR = 2439;
@@ -43,10 +44,21 @@ public class Wrist extends SubsystemBase {
     TAB_WRIST
         .add("Set Front Half Perpendicular", new SetWristPosition(ANGLE_FRONT_HALF, this))
         .withSize(2, 1);
+    TAB_WRIST.addNumber("Current", this::getCurrent);
+    TAB_MAIN.addNumber("Wrist Position", this::getPositionWithOffset).withPosition(9, 0);
+    TAB_WRIST.addNumber("Position Error", this::getError);
   }
 
   public double getCurrent() {
     return io.getCurrentAmps();
+  }
+
+  public double getError() {
+    return io.getError();
+  }
+
+  public double getPositionWithOffset() {
+    return getPosition() - Constants.INSTALLED_ARM.getWristOffset();
   }
 
   public void setRotation(boolean inverted) {

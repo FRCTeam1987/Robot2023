@@ -25,7 +25,7 @@ import java.util.HashMap;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class BumpAuto2Cubes extends SequentialCommandGroup {
+public class BumpAuto2CubesBalance extends SequentialCommandGroup {
 
   public final double MAX_VELOCITY = 3.35;
   public final double MAX_ACCELERATION = 3.25;
@@ -36,7 +36,8 @@ public class BumpAuto2Cubes extends SequentialCommandGroup {
   public final HashMap<String, Command> eventMap04 = new HashMap<>();
 
   /** Creates a new BumpAuto2Cubes. */
-  public BumpAuto2Cubes(final Arm arm, final Claw claw, final Drivetrain drive, final Wrist wrist) {
+  public BumpAuto2CubesBalance(
+      final Arm arm, final Claw claw, final Drivetrain drive, final Wrist wrist) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 
@@ -79,44 +80,44 @@ public class BumpAuto2Cubes extends SequentialCommandGroup {
             AutoPathHelper.followPathNoRotationReset(
                 drive, "BumpAuto02", eventMap02, MAX_VELOCITY, MAX_ACCELERATION)),
         new ParallelRaceGroup(
-            new DriveToScore(drive, claw).withTimeout(2.5),
+            new DriveToScore(drive, claw).withTimeout(1.5),
             new ParallelCommandGroup(
                     new SetArm(
                         arm,
-                        () -> Constants.PositionConfigs.FRONT_CUBE_TOP.getArmRotation(),
-                        () -> Constants.PositionConfigs.FRONT_CUBE_TOP.getArmLength() - 8,
+                        () -> Constants.PositionConfigs.FRONT_CUBE_MEDIUM_AUTO.getArmRotation(),
+                        () -> Constants.PositionConfigs.FRONT_CUBE_MEDIUM_AUTO.getArmLength() - 8,
                         () -> true),
                     new SetWristPosition(2045 + Constants.INSTALLED_ARM.getWristOffset(), wrist))
-                .withTimeout(1.5)),
+                .withTimeout(5)),
         new AutoScoreSequenceNoHome(
-            arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_TOP),
+            arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CUBE_MEDIUM_AUTO),
         new ParallelCommandGroup(
-            new InstantCommand(() -> RobotContainer.setCubePipeline()),
+            new InstantCommand(() -> RobotContainer.setConePipeline()),
             AutoPathHelper.followPathNoRotationReset(
                 drive, "BumpAuto03", eventMap03, MAX_VELOCITY, MAX_ACCELERATION)),
-        new ParallelRaceGroup(
-            new DriveToPiece(drive, () -> -1.7, GamePiece.CUBE),
+        new ParallelRaceGroup( // Add short timeout and go home to ensure balance
+            new DriveToPiece(drive, () -> -1.5, GamePiece.CONE),
             new CollectSequenceNoHome(
-                arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CUBE_FLOOR)),
+                arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CONE_FLOOR)),
         new ParallelCommandGroup(
-            new InstantCommand(() -> RobotContainer.setAprilTagPipeline()), // Shouldnt need
-            new InstantCommand(() -> claw.setGamePiece(GamePiece.CUBE)),
+            new InstantCommand(() -> claw.setGamePiece(GamePiece.CONE)),
             AutoPathHelper.followPathNoReset(
-                drive, "BumpAuto04", eventMap04, MAX_VELOCITY, MAX_ACCELERATION)),
+                drive, "BumpAuto04Balance", eventMap04, MAX_VELOCITY, MAX_ACCELERATION)),
+
         // Step 9: Score the second game piece
-        new ParallelRaceGroup(
-            // new ParallelCommandGroup(
-            //     new SetArm(
-            //         arm,
-            //         () -> Constants.PositionConfigs.LAUNCH_LAST_AUTO_CUBE.getArmRotation(),
-            //         () -> Constants.PositionConfigs.LAUNCH_LAST_AUTO_CUBE.getArmLength(),
-            //         () -> true),
-            //     new SetWristPosition(
-            //         (int) Constants.PositionConfigs.LAUNCH_LAST_AUTO_CUBE.getWristRotation()
-            //             + Constants.INSTALLED_ARM.getWristOffset(),
-            //         wrist),
-            //     new WaitCommand(10)),
-            new DriveToScore(drive, claw).withTimeout(5)),
+        // new ParallelRaceGroup(
+        //     new ParallelCommandGroup(
+        //         new SetArm(
+        //             arm,
+        //             () -> Constants.PositionConfigs.LAUNCH_LAST_AUTO_CUBE.getArmRotation(),
+        //             () -> Constants.PositionConfigs.LAUNCH_LAST_AUTO_CUBE.getArmLength(),
+        //             () -> true),
+        //         new SetWristPosition(
+        //             (int) Constants.PositionConfigs.LAUNCH_LAST_AUTO_CUBE.getWristRotation()
+        //                 + Constants.INSTALLED_ARM.getWristOffset(),
+        //             wrist),
+        //         new WaitCommand(10)),
+        //     new DriveToScore(drive, claw).withTimeout(5)),
         // new AutoScoreSequence(
         //     arm, wrist, claw, () -> Constants.PositionConfigs.LAUNCH_LAST_AUTO_CUBE),
         new InstantCommand(() -> RobotContainer.setAprilTagPipeline()));

@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.arm;
 
-import edu.wpi.first.wpilibj.DriverStation;
-
 /** Add your docs here. */
 public class ArmProfile {
   private int wristOffset;
@@ -27,11 +25,11 @@ public class ArmProfile {
 
   public void addMatchOffset(int incrementAmount) {
     MatchOffset += incrementAmount;
-    DriverStation.reportWarning("-------- Modified MatchOffset!: " + MatchOffset, false);
+    // DriverStation.reportWarning("-------- Modified MatchOffset!: " + MatchOffset, false);
   }
 
   public int getMatchOffset() {
-    DriverStation.reportWarning("- Returned MatchOffset!: " + MatchOffset, false);
+    // DriverStation.reportWarning("- Returned MatchOffset!: " + MatchOffset, false);
     return MatchOffset;
   }
 }
