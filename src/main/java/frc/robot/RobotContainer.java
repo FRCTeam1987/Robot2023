@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.Limelight.LimelightHelpers;
 import frc.lib.team3061.RobotConfig;
 import frc.lib.team3061.gyro.GyroIO;
-import frc.lib.team3061.gyro.GyroIOPigeon2;
+import frc.lib.team3061.gyro.GyroIOAHRS;
 import frc.lib.team3061.swerve.SwerveModule;
 import frc.lib.team3061.swerve.SwerveModuleIOTalonFX;
 import frc.robot.Constants.PositionConfig;
@@ -92,7 +92,7 @@ public class RobotContainer {
     // create real, simulated, or replay subsystems based on the mode and robot specified
     config = new CompRobotConfig();
 
-    GyroIO gyro = new GyroIOPigeon2(0);
+    GyroIO gyro = new GyroIOAHRS();
 
     int[] driveMotorCANIDs = config.getSwerveDriveMotorCANIDs();
     int[] steerMotorCANDIDs = config.getSwerveSteerMotorCANIDs();

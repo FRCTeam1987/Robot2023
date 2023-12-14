@@ -63,9 +63,9 @@ public class BumpAuto2CubesBalance extends SequentialCommandGroup {
             new SetWristPosition(2045 + Constants.INSTALLED_ARM.getWristOffset(), wrist)));
 
     addCommands(
-        new InstantCommand(() -> claw.setCone(), claw),
-        new AutoScoreSequenceNoHomeWait(
-            arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_MEDIUM),
+        //new InstantCommand(() -> claw.setCone(), claw),
+        //new AutoScoreSequenceNoHomeWait(
+            //arm, wrist, claw, () -> Constants.PositionConfigs.FRONT_CONE_MEDIUM),
         new ParallelCommandGroup(
             new InstantCommand(() -> RobotContainer.setCubePipeline()),
             AutoPathHelper.followPath(
@@ -99,10 +99,11 @@ public class BumpAuto2CubesBalance extends SequentialCommandGroup {
             new DriveToPiece(drive, () -> -1.5, GamePiece.CONE),
             new CollectSequenceNoHome(
                 arm, wrist, claw, () -> Constants.PositionConfigs.BACK_CONE_FLOOR)),
-        new ParallelCommandGroup(
-            new InstantCommand(() -> claw.setGamePiece(GamePiece.CONE)),
-            AutoPathHelper.followPathNoReset(
-                drive, "BumpAuto04Balance", eventMap04, MAX_VELOCITY, MAX_ACCELERATION)),
+        new GoHome(arm, wrist),        
+        // new ParallelCommandGroup(
+        //     new InstantCommand(() -> claw.setGamePiece(GamePiece.CONE)),
+        //     AutoPathHelper.followPathNoReset(
+        //         drive, "BumpAuto04Balance", eventMap04, MAX_VELOCITY, MAX_ACCELERATION)),
 
         // Step 9: Score the second game piece
         // new ParallelRaceGroup(
